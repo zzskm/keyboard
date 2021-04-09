@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html data-theme="" data-scrapbook-source="https://config.qmk.fm/#/print" data-scrapbook-create="20210203030422951" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="QMK Configurator is an online tool used for easily creating firmware files for keyboards supported in qmk_firmware"><style type="text/css">svg:not(:root).svg-inline--fa {
+  overflow: visible;
+}
+
+.svg-inline--fa {
+  display: inline-block;
+  font-size: inherit;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.225em;
+}
+.svg-inline--fa.fa-w-1 {
+  width: 0.0625em;
+}
+.svg-inline--fa.fa-w-2 {
+  width: 0.125em;
+}
+.svg-inline--fa.fa-w-3 {
+  width: 0.1875em;
+}
+.svg-inline--fa.fa-w-4 {
+  width: 0.25em;
+}
+.svg-inline--fa.fa-w-5 {
+  width: 0.3125em;
+}
+.svg-inline--fa.fa-w-6 {
+  width: 0.375em;
+}
+.svg-inline--fa.fa-w-7 {
+  width: 0.4375em;
+}
+.svg-inline--fa.fa-w-8 {
+  width: 0.5em;
+}
+.svg-inline--fa.fa-w-9 {
+  width: 0.5625em;
+}
+.svg-inline--fa.fa-w-10 {
+  width: 0.625em;
+}
+.svg-inline--fa.fa-w-11 {
+  width: 0.6875em;
+}
+.svg-inline--fa.fa-w-12 {
+  width: 0.75em;
+}
+.svg-inline--fa.fa-w-13 {
+  width: 0.8125em;
+}
+.svg-inline--fa.fa-w-14 {
+  width: 0.875em;
+}
+.svg-inline--fa.fa-w-15 {
+  width: 0.9375em;
+}
+.svg-inline--fa.fa-w-16 {
+  width: 1em;
+}
+.svg-inline--fa.fa-w-17 {
+  width: 1.0625em;
+}
+.svg-inline--fa.fa-w-18 {
+  width: 1.125em;
+}
+.svg-inline--fa.fa-w-19 {
+  width: 1.1875em;
+}
+.svg-inline--fa.fa-w-20 {
+  width: 1.25em;
+}
+.svg-inline--fa.fa-pull-left {
+  margin-right: 0.3em;
+  width: auto;
+}
+.svg-inline--fa.fa-pull-right {
+  margin-left: 0.3em;
+  width: auto;
+}
+.svg-inline--fa.fa-border {
+  height: 1.5em;
+}
+.svg-inline--fa.fa-li {
+  width: 2em;
+}
+.svg-inline--fa.fa-fw {
+  width: 1.25em;
+}
+
+.fa-layers svg.svg-inline--fa {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fa-layers {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+.fa-layers svg.svg-inline--fa {
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter, .fa-layers-text {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+}
+
+.fa-layers-text {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter {
+  background-color: #ff253a;
+  border-radius: 1em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  color: #fff;
+  height: 1.5em;
+  line-height: 1;
+  max-width: 5em;
+  min-width: 1.5em;
+  overflow: hidden;
+  padding: 0.25em;
+  right: 0;
+  text-overflow: ellipsis;
+  top: 0;
+  -webkit-transform: scale(0.25);
+          transform: scale(0.25);
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-bottom-right {
+  bottom: 0;
+  right: 0;
+  top: auto;
+  -webkit-transform: scale(0.25);
+          transform: scale(0.25);
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+}
+
+.fa-layers-bottom-left {
+  bottom: 0;
+  left: 0;
+  right: auto;
+  top: auto;
+  -webkit-transform: scale(0.25);
+          transform: scale(0.25);
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+
+.fa-layers-top-right {
+  right: 0;
+  top: 0;
+  -webkit-transform: scale(0.25);
+          transform: scale(0.25);
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-top-left {
+  left: 0;
+  right: auto;
+  top: 0;
+  -webkit-transform: scale(0.25);
+          transform: scale(0.25);
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.fa-lg {
+  font-size: 1.3333333333em;
+  line-height: 0.75em;
+  vertical-align: -0.0667em;
+}
+
+.fa-xs {
+  font-size: 0.75em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+}
+
+.fa-1x {
+  font-size: 1em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: 2.5em;
+  padding-left: 0;
+}
+.fa-ul > li {
+  position: relative;
+}
+
+.fa-li {
+  left: -2em;
+  position: absolute;
+  text-align: center;
+  width: 2em;
+  line-height: inherit;
+}
+
+.fa-border {
+  border: solid 0.08em #eee;
+  border-radius: 0.1em;
+  padding: 0.2em 0.25em 0.15em;
+}
+
+.fa-pull-left {
+  float: left;
+}
+
+.fa-pull-right {
+  float: right;
+}
+
+.fa.fa-pull-left,
+.fas.fa-pull-left,
+.far.fa-pull-left,
+.fal.fa-pull-left,
+.fab.fa-pull-left {
+  margin-right: 0.3em;
+}
+.fa.fa-pull-right,
+.fas.fa-pull-right,
+.far.fa-pull-right,
+.fal.fa-pull-right,
+.fab.fa-pull-right {
+  margin-left: 0.3em;
+}
+
+.fa-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
+          animation: fa-spin 2s infinite linear;
+}
+
+.fa-pulse {
+  -webkit-animation: fa-spin 1s infinite steps(8);
+          animation: fa-spin 1s infinite steps(8);
+}
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fa-rotate-90 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+  -webkit-transform: scale(-1, 1);
+          transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  -webkit-transform: scale(1, -1);
+          transform: scale(1, -1);
+}
+
+.fa-flip-both, .fa-flip-horizontal.fa-flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  -webkit-transform: scale(-1, -1);
+          transform: scale(-1, -1);
+}
+
+:root .fa-rotate-90,
+:root .fa-rotate-180,
+:root .fa-rotate-270,
+:root .fa-flip-horizontal,
+:root .fa-flip-vertical,
+:root .fa-flip-both {
+  -webkit-filter: none;
+          filter: none;
+}
+
+.fa-stack {
+  display: inline-block;
+  height: 2em;
+  position: relative;
+  width: 2.5em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.svg-inline--fa.fa-stack-1x {
+  height: 1em;
+  width: 1.25em;
+}
+.svg-inline--fa.fa-stack-2x {
+  height: 2em;
+  width: 2.5em;
+}
+
+.fa-inverse {
+  color: #fff;
+}
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.sr-only-focusable:active, .sr-only-focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+.svg-inline--fa .fa-primary {
+  fill: var(--fa-primary-color, currentColor);
+  opacity: 1;
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa .fa-secondary {
+  fill: var(--fa-secondary-color, currentColor);
+  opacity: 0.4;
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-primary {
+  opacity: 0.4;
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-secondary {
+  opacity: 1;
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa mask .fa-primary,
+.svg-inline--fa mask .fa-secondary {
+  fill: black;
+}
+
+.fad.fa-inverse {
+  color: #fff;
+}</style><link rel="icon" href="file:///D:/Downloads/WebScrapBook/data/20210203030422951/favicon.ico"><title>QMK Configurator</title><style>.qmk-hidden-drag-n-drop {
+          margin-left: -100vh;
+        }</style><link rel="preload" as="style"><link rel="preload" as="style"><link rel="preload" as="script"><link rel="preload" as="script"><link href="QMK%20Configurator_default_files/chunk-vendors.css" rel="stylesheet"><link href="QMK%20Configurator_default_files/app.css" rel="stylesheet"><style>@media print {#ghostery-tracker-tally {display:none !important}}</style><style type="text/css">.vue-js-switch[data-v-25adc6c0]{display:inline-block;position:relative;vertical-align:middle;user-select:none;font-size:10px;cursor:pointer}.vue-js-switch .v-switch-input[data-v-25adc6c0]{opacity:0;position:absolute;width:1px;height:1px}.vue-js-switch .v-switch-label[data-v-25adc6c0]{position:absolute;top:0;font-weight:600;color:#fff;z-index:1}.vue-js-switch .v-switch-label.v-left[data-v-25adc6c0]{left:10px}.vue-js-switch .v-switch-label.v-right[data-v-25adc6c0]{right:10px}.vue-js-switch .v-switch-core[data-v-25adc6c0]{display:block;position:relative;box-sizing:border-box;outline:0;margin:0;transition:border-color .3s,background-color .3s;user-select:none}.vue-js-switch .v-switch-core .v-switch-button[data-v-25adc6c0]{display:block;position:absolute;overflow:hidden;top:0;left:0;border-radius:100%;background-color:#fff;z-index:2}.vue-js-switch.disabled[data-v-25adc6c0]{pointer-events:none;opacity:.6}</style><style type="text/css">.slideout-panel-open{overflow:hidden}.slideout-panel{display:block;transition:opacity .15s}.slideout-panel .slideout-panel-bg{position:fixed;z-index:1000;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);transition:opacity .3s ease;overflow-y:hidden;z-index:100}.slideout-panel .slideout-panel-bg.transparent{background-color:transparent}.slideout-panel .slideout-panel-bg.fadeIn-enter{opacity:0}.slideout-panel .slideout-panel-bg.fadeIn-enter-to,.slideout-panel .slideout-panel-bg.fadeIn-leave{opacity:1}.slideout-panel .slideout-panel-bg.fadeIn-leave-to{opacity:0}.slideout-panel .slideout-panel-bg.fadeIn-leave-active{transition-delay:.4s}.slideout-panel .slideout-wrapper{position:static}.slideout-panel .slideout-wrapper .slideout{height:100%;position:fixed;top:0;bottom:0;background:#fff;transition-timing-function:cubic-bezier(.215,.61,.355,1);transition-duration:.6s;overflow-y:auto;transition-delay:.4s}.slideout-panel .slideout-wrapper .slideout.open-on-left{right:auto;left:0}.slideout-panel .slideout-wrapper .slideout.open-on-left.slideIn-enter{transform:translateX(-100%)}.slideout-panel .slideout-wrapper .slideout.open-on-left.slideIn-enter-to,.slideout-panel .slideout-wrapper .slideout.open-on-left.slideIn-leave{transform:translateX(0)}.slideout-panel .slideout-wrapper .slideout.open-on-left.slideIn-leave-to{transform:translateX(-100%)}.slideout-panel .slideout-wrapper .slideout.open-on-left.slideIn-leave-active{transition-delay:0}.slideout-panel .slideout-wrapper .slideout.open-on-top{right:0;left:0;bottom:auto;top:0}.slideout-panel .slideout-wrapper .slideout.open-on-top.slideIn-enter{transform:translateY(-100%)}.slideout-panel .slideout-wrapper .slideout.open-on-top.slideIn-enter-to,.slideout-panel .slideout-wrapper .slideout.open-on-top.slideIn-leave{transform:translateY(0)}.slideout-panel .slideout-wrapper .slideout.open-on-top.slideIn-leave-to{transform:translateY(-100%)}.slideout-panel .slideout-wrapper .slideout.open-on-top.slideIn-leave-active{transition-delay:0}.slideout-panel .slideout-wrapper .slideout.open-on-bottom{right:0;left:0;bottom:0;top:auto}.slideout-panel .slideout-wrapper .slideout.open-on-bottom.slideIn-enter{transform:translateY(100%)}.slideout-panel .slideout-wrapper .slideout.open-on-bottom.slideIn-enter-to,.slideout-panel .slideout-wrapper .slideout.open-on-bottom.slideIn-leave{transform:translateY(0)}.slideout-panel .slideout-wrapper .slideout.open-on-bottom.slideIn-leave-to{transform:translateY(100%)}.slideout-panel .slideout-wrapper .slideout.open-on-bottom.slideIn-leave-active{transition-delay:0}.slideout-panel .slideout-wrapper .slideout.open-on-right{right:0;left:auto}.slideout-panel .slideout-wrapper .slideout.open-on-right.slideIn-enter{transform:translateX(100%)}.slideout-panel .slideout-wrapper .slideout.open-on-right.slideIn-enter-to,.slideout-panel .slideout-wrapper .slideout.open-on-right.slideIn-leave{transform:translateX(0)}.slideout-panel .slideout-wrapper .slideout.open-on-right.slideIn-leave-to{transform:translateX(100%)}</style><style type="text/css">.resize-observer[data-v-b329ee4c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}.resize-observer[data-v-b329ee4c] object{display:block;position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden;pointer-events:none;z-index:-1}</style>
+</head>
+<body><div><div class="layer-output"><div class="print-keymap" style="--unit-width:1; --unit-height:1; --default-smaller-key-font-size:0.61rem; --default-key-font-size:0.85rem; --default-key-height:40px; --default-key-width:40px; --default-key-x-spacing:45px; --default-key-y-spacing:45px; width: 535px; height: 175px;"><div id="key-0-0" title="Esc" class="key smaller k1u">Esc</div><div id="key-0-1" title="Q" class="key k1u" style="left: 45px;">Q</div><div id="key-0-2" title="W" class="key k1u" style="left: 90px;">W</div><div id="key-0-3" title="E" class="key k1u" style="left: 135px;">E</div><div id="key-0-4" title="R" class="key k1u" style="left: 180px;">R</div><div id="key-0-5" title="T" class="key k1u" style="left: 225px;">T</div><div id="key-0-6" title="Y" class="key k1u" style="left: 270px;">Y</div><div id="key-0-7" title="U" class="key k1u" style="left: 315px;">U</div><div id="key-0-8" title="I" class="key k1u" style="left: 360px;">I</div><div id="key-0-9" title="O" class="key k1u" style="left: 405px;">O</div><div id="key-0-10" title="P" class="key k1u" style="left: 450px;">P</div><div id="key-0-11" title="Back
+Space" class="key smaller k1u" style="left: 495px;">Back
+Space</div><div id="key-0-12" title="Tab" class="key smaller k1u" style="top: 45px;">Tab</div><div id="key-0-13" title="LGUI_T
+(KC_A)" class="key smaller k1u" style="top: 45px; left: 45px;">LGUI_T
+(KC_A)</div><div id="key-0-14" title="LALT_T
+(KC_S)" class="key smaller k1u" style="top: 45px; left: 90px;">LALT_T
+(KC_S)</div><div id="key-0-15" title="LCTL_T
+(KC_D)" class="key smaller k1u" style="top: 45px; left: 135px;">LCTL_T
+(KC_D)</div><div id="key-0-16" title="LSFT_T
+(KC_F)" class="key smaller k1u" style="top: 45px; left: 180px;">LSFT_T
+(KC_F)</div><div id="key-0-17" title="G" class="key k1u" style="top: 45px; left: 225px;">G</div><div id="key-0-18" title="H" class="key k1u" style="top: 45px; left: 270px;">H</div><div id="key-0-19" title="RSFT_T
+(KC_J)" class="key smaller k1u" style="top: 45px; left: 315px;">RSFT_T
+(KC_J)</div><div id="key-0-20" title="RCTL_T
+(KC_K)" class="key smaller k1u" style="top: 45px; left: 360px;">RCTL_T
+(KC_K)</div><div id="key-0-21" title="RALT_T
+(KC_L)" class="key smaller k1u" style="top: 45px; left: 405px;">RALT_T
+(KC_L)</div><div id="key-0-22" title="RGUI_T
+(KC_SCLN)" class="key smaller k1u" style="top: 45px; left: 450px;">RGUI_T
+(KC_SCLN)</div><div id="key-0-23" title="&quot;
+'" class="key smaller k1u" style="top: 45px; left: 495px;">"
+'</div><div id="key-0-24" title="Left
+Shift" class="key smaller k1u" style="top: 90px;">Left
+Shift</div><div id="key-0-25" title="Z" class="key k1u" style="top: 90px; left: 45px;">Z</div><div id="key-0-26" title="X" class="key k1u" style="top: 90px; left: 90px;">X</div><div id="key-0-27" title="C" class="key k1u" style="top: 90px; left: 135px;">C</div><div id="key-0-28" title="V" class="key k1u" style="top: 90px; left: 180px;">V</div><div id="key-0-29" title="B" class="key k1u" style="top: 90px; left: 225px;">B</div><div id="key-0-30" title="N" class="key k1u" style="top: 90px; left: 270px;">N</div><div id="key-0-31" title="M" class="key k1u" style="top: 90px; left: 315px;">M</div><div id="key-0-32" title="&lt;
+," class="key smaller k1u" style="top: 90px; left: 360px;">&lt;
+,</div><div id="key-0-33" title="&gt;
+." class="key smaller k1u" style="top: 90px; left: 405px;">&gt;
+.</div><div id="key-0-34" title="?
+/" class="key smaller k1u" style="top: 90px; left: 450px;">?
+/</div><div id="key-0-35" title="Enter" class="key smaller k1u" style="top: 90px; left: 495px;">Enter</div><div id="key-0-36" title="MO(3)" class="key smaller k1u" style="top: 135px;">MO(3)</div><div id="key-0-37" title="Left
+Ctrl" class="key smaller k1u" style="top: 135px; left: 45px;">Left
+Ctrl</div><div id="key-0-38" title="Left
+OS" class="key smaller k1u" style="top: 135px; left: 90px;">Left
+OS</div><div id="key-0-39" title="Left
+Alt" class="key smaller k1u" style="top: 135px; left: 135px;">Left
+Alt</div><div id="key-0-40" title="MO(1)" class="key smaller k1u" style="top: 135px; left: 180px;">MO(1)</div><div id="key-0-41" title="Space" class="key smaller k2u" style="top: 135px; left: 225px;">Space</div><div id="key-0-42" title="MO(2)" class="key smaller k1u" style="top: 135px; left: 315px;">MO(2)</div><div id="key-0-43" title="Left" class="key smaller k1u" style="top: 135px; left: 360px;">Left</div><div id="key-0-44" title="Down" class="key smaller k1u" style="top: 135px; left: 405px;">Down</div><div id="key-0-45" title="Up" class="key smaller k1u" style="top: 135px; left: 450px;">Up</div><div id="key-0-46" title="LT 3,
+KC_RGHT" class="key smaller k1u" style="top: 135px; left: 495px;">LT 3,
+KC_RGHT</div></div></div><div class="layer-output"><h3 class="layer-output-title"></h3><div class="print-keymap" style="--unit-width:1; --unit-height:1; --default-smaller-key-font-size:0.61rem; --default-key-font-size:0.85rem; --default-key-height:40px; --default-key-width:40px; --default-key-x-spacing:45px; --default-key-y-spacing:45px; width: 535px; height: 175px;"><div id="key-1-0" title="~" class="key k1u">~</div><div id="key-1-1" title="!" class="key k1u" style="left: 45px;">!</div><div id="key-1-2" title="@" class="key k1u" style="left: 90px;">@</div><div id="key-1-3" title="#" class="key k1u" style="left: 135px;">#</div><div id="key-1-4" title="$" class="key k1u" style="left: 180px;">$</div><div id="key-1-5" title="%" class="key k1u" style="left: 225px;">%</div><div id="key-1-6" title="^" class="key k1u" style="left: 270px;">^</div><div id="key-1-7" title="&amp;" class="key k1u" style="left: 315px;">&amp;</div><div id="key-1-8" title="*" class="key k1u" style="left: 360px;">*</div><div id="key-1-9" title="(" class="key k1u" style="left: 405px;">(</div><div id="key-1-10" title=")" class="key k1u" style="left: 450px;">)</div><div id="key-1-11" title="Back
+Space" class="key smaller k1u" style="left: 495px;">Back
+Space</div><div id="key-1-12" title="▽" class="key k1u" style="top: 45px;">▽</div><div id="key-1-13" title="F1" class="key smaller k1u" style="top: 45px; left: 45px;">F1</div><div id="key-1-14" title="F2" class="key smaller k1u" style="top: 45px; left: 90px;">F2</div><div id="key-1-15" title="F3" class="key smaller k1u" style="top: 45px; left: 135px;">F3</div><div id="key-1-16" title="F4" class="key smaller k1u" style="top: 45px; left: 180px;">F4</div><div id="key-1-17" title="F5" class="key smaller k1u" style="top: 45px; left: 225px;">F5</div><div id="key-1-18" title="F6" class="key smaller k1u" style="top: 45px; left: 270px;">F6</div><div id="key-1-19" title="_
+
+-" class="key smaller k1u" style="top: 45px; left: 315px;">_
+
+-</div><div id="key-1-20" title="+
+=" class="key smaller k1u" style="top: 45px; left: 360px;">+
+=</div><div id="key-1-21" title="{
+[" class="key smaller k1u" style="top: 45px; left: 405px;">{
+[</div><div id="key-1-22" title="}
+]" class="key smaller k1u" style="top: 45px; left: 450px;">}
+]</div><div id="key-1-23" title="|" class="key k1u" style="top: 45px; left: 495px;">|</div><div id="key-1-24" title="▽" class="key k1u" style="top: 90px;">▽</div><div id="key-1-25" title="F7" class="key smaller k1u" style="top: 90px; left: 45px;">F7</div><div id="key-1-26" title="F8" class="key smaller k1u" style="top: 90px; left: 90px;">F8</div><div id="key-1-27" title="F9" class="key smaller k1u" style="top: 90px; left: 135px;">F9</div><div id="key-1-28" title="F10" class="key smaller k1u" style="top: 90px; left: 180px;">F10</div><div id="key-1-29" title="F11" class="key smaller k1u" style="top: 90px; left: 225px;">F11</div><div id="key-1-30" title="F12" class="key smaller k1u" style="top: 90px; left: 270px;">F12</div><div id="key-1-31" title="_
+" class="key k1u" style="top: 90px; left: 315px;">_
+</div><div id="key-1-32" title="+" class="key k1u" style="top: 90px; left: 360px;">+</div><div id="key-1-33" title="{" class="key k1u" style="top: 90px; left: 405px;">{</div><div id="key-1-34" title="}" class="key k1u" style="top: 90px; left: 450px;">}</div><div id="key-1-35" title="Enter" class="key smaller k1u" style="top: 90px; left: 495px;">Enter</div><div id="key-1-36" title="▽" class="key k1u" style="top: 135px;">▽</div><div id="key-1-37" title="▽" class="key k1u" style="top: 135px; left: 45px;">▽</div><div id="key-1-38" title="▽" class="key k1u" style="top: 135px; left: 90px;">▽</div><div id="key-1-39" title="▽" class="key k1u" style="top: 135px; left: 135px;">▽</div><div id="key-1-40" title="▽" class="key k1u" style="top: 135px; left: 180px;">▽</div><div id="key-1-41" title="▽" class="key k2u" style="top: 135px; left: 225px;">▽</div><div id="key-1-42" title="MO(5)" class="key smaller k1u" style="top: 135px; left: 315px;">MO(5)</div><div id="key-1-43" title="Home" class="key smaller k1u" style="top: 135px; left: 360px;">Home</div><div id="key-1-44" title="Page
+Down" class="key smaller k1u" style="top: 135px; left: 405px;">Page
+Down</div><div id="key-1-45" title="Page
+Up" class="key smaller k1u" style="top: 135px; left: 450px;">Page
+Up</div><div id="key-1-46" title="End" class="key smaller k1u" style="top: 135px; left: 495px;">End</div></div></div><div class="layer-output"><h3 class="layer-output-title"></h3><div class="print-keymap" style="--unit-width:1; --unit-height:1; --default-smaller-key-font-size:0.61rem; --default-key-font-size:0.85rem; --default-key-height:40px; --default-key-width:40px; --default-key-x-spacing:45px; --default-key-y-spacing:45px; width: 535px; height: 175px;"><div id="key-2-0" title="~
+`" class="key smaller k1u">~
+`</div><div id="key-2-1" title="!
+1" class="key smaller k1u" style="left: 45px;">!
+1</div><div id="key-2-2" title="@
+2" class="key smaller k1u" style="left: 90px;">@
+2</div><div id="key-2-3" title="#
+3" class="key smaller k1u" style="left: 135px;">#
+3</div><div id="key-2-4" title="$
+4" class="key smaller k1u" style="left: 180px;">$
+4</div><div id="key-2-5" title="%
+5" class="key smaller k1u" style="left: 225px;">%
+5</div><div id="key-2-6" title="^
+6" class="key smaller k1u" style="left: 270px;">^
+6</div><div id="key-2-7" title="&amp;
+7" class="key smaller k1u" style="left: 315px;">&amp;
+7</div><div id="key-2-8" title="*
+8" class="key smaller k1u" style="left: 360px;">*
+8</div><div id="key-2-9" title="(
+9" class="key smaller k1u" style="left: 405px;">(
+9</div><div id="key-2-10" title=")
+0" class="key smaller k1u" style="left: 450px;">)
+0</div><div id="key-2-11" title="Back
+Space" class="key smaller k1u" style="left: 495px;">Back
+Space</div><div id="key-2-12" title="▽" class="key k1u" style="top: 45px;">▽</div><div id="key-2-13" title="F1" class="key smaller k1u" style="top: 45px; left: 45px;">F1</div><div id="key-2-14" title="F2" class="key smaller k1u" style="top: 45px; left: 90px;">F2</div><div id="key-2-15" title="F3" class="key smaller k1u" style="top: 45px; left: 135px;">F3</div><div id="key-2-16" title="F4" class="key smaller k1u" style="top: 45px; left: 180px;">F4</div><div id="key-2-17" title="F5" class="key smaller k1u" style="top: 45px; left: 225px;">F5</div><div id="key-2-18" title="F6" class="key smaller k1u" style="top: 45px; left: 270px;">F6</div><div id="key-2-19" title="_
+
+-" class="key smaller k1u" style="top: 45px; left: 315px;">_
+
+-</div><div id="key-2-20" title="+
+=" class="key smaller k1u" style="top: 45px; left: 360px;">+
+=</div><div id="key-2-21" title="{
+[" class="key smaller k1u" style="top: 45px; left: 405px;">{
+[</div><div id="key-2-22" title="}
+]" class="key smaller k1u" style="top: 45px; left: 450px;">}
+]</div><div id="key-2-23" title="|
+\" class="key smaller k1u" style="top: 45px; left: 495px;">|
+\</div><div id="key-2-24" title="▽" class="key k1u" style="top: 90px;">▽</div><div id="key-2-25" title="F7" class="key smaller k1u" style="top: 90px; left: 45px;">F7</div><div id="key-2-26" title="F8" class="key smaller k1u" style="top: 90px; left: 90px;">F8</div><div id="key-2-27" title="F9" class="key smaller k1u" style="top: 90px; left: 135px;">F9</div><div id="key-2-28" title="F10" class="key smaller k1u" style="top: 90px; left: 180px;">F10</div><div id="key-2-29" title="F11" class="key smaller k1u" style="top: 90px; left: 225px;">F11</div><div id="key-2-30" title="F12" class="key smaller k1u" style="top: 90px; left: 270px;">F12</div><div id="key-2-31" title="_
+" class="key k1u" style="top: 90px; left: 315px;">_
+</div><div id="key-2-32" title="+" class="key k1u" style="top: 90px; left: 360px;">+</div><div id="key-2-33" title="{" class="key k1u" style="top: 90px; left: 405px;">{</div><div id="key-2-34" title="}" class="key k1u" style="top: 90px; left: 450px;">}</div><div id="key-2-35" title="Enter" class="key smaller k1u" style="top: 90px; left: 495px;">Enter</div><div id="key-2-36" title="▽" class="key k1u" style="top: 135px;">▽</div><div id="key-2-37" title="▽" class="key k1u" style="top: 135px; left: 45px;">▽</div><div id="key-2-38" title="▽" class="key k1u" style="top: 135px; left: 90px;">▽</div><div id="key-2-39" title="▽" class="key k1u" style="top: 135px; left: 135px;">▽</div><div id="key-2-40" title="MO(5)" class="key smaller k1u" style="top: 135px; left: 180px;">MO(5)</div><div id="key-2-41" title="▽" class="key k2u" style="top: 135px; left: 225px;">▽</div><div id="key-2-42" title="▽" class="key k1u" style="top: 135px; left: 315px;">▽</div><div id="key-2-43" title="Home" class="key smaller k1u" style="top: 135px; left: 360px;">Home</div><div id="key-2-44" title="Page
+Down" class="key smaller k1u" style="top: 135px; left: 405px;">Page
+Down</div><div id="key-2-45" title="Page
+Up" class="key smaller k1u" style="top: 135px; left: 450px;">Page
+Up</div><div id="key-2-46" title="End" class="key smaller k1u" style="top: 135px; left: 495px;">End</div></div></div><div class="layer-output"><h3 class="layer-output-title"></h3><div class="print-keymap" style="--unit-width:1; --unit-height:1; --default-smaller-key-font-size:0.61rem; --default-key-font-size:0.85rem; --default-key-height:40px; --default-key-width:40px; --default-key-x-spacing:45px; --default-key-y-spacing:45px; width: 535px; height: 175px;"><div id="key-3-0" title="" class="key k1u"></div><div id="key-3-1" title="LGUI
+(KC_1)" class="key smaller k1u" style="left: 45px;">LGUI
+(KC_1)</div><div id="key-3-2" title="LGUI
+(KC_2)" class="key smaller k1u" style="left: 90px;">LGUI
+(KC_2)</div><div id="key-3-3" title="LGUI
+(KC_3)" class="key smaller k1u" style="left: 135px;">LGUI
+(KC_3)</div><div id="key-3-4" title="LGUI
+(KC_4)" class="key smaller k1u" style="left: 180px;">LGUI
+(KC_4)</div><div id="key-3-5" title="LGUI
+(KC_5)" class="key smaller k1u" style="left: 225px;">LGUI
+(KC_5)</div><div id="key-3-6" title="+" class="key k1u" style="left: 270px;">+</div><div id="key-3-7" title="_
+
+-" class="key smaller k1u" style="left: 315px;">_
+
+-</div><div id="key-3-8" title="&amp;
+7" class="key smaller k1u" style="left: 360px;">&amp;
+7</div><div id="key-3-9" title="*
+8" class="key smaller k1u" style="left: 405px;">*
+8</div><div id="key-3-10" title="(
+9" class="key smaller k1u" style="left: 450px;">(
+9</div><div id="key-3-11" title="Delete" class="key smaller k1u" style="left: 495px;">Delete</div><div id="key-3-12" title="▽" class="key k1u" style="top: 45px;">▽</div><div id="key-3-13" title="" class="key k1u" style="top: 45px; left: 45px;"></div><div id="key-3-14" title="SGUI
+(KC_S)" class="key smaller k1u" style="top: 45px; left: 90px;">SGUI
+(KC_S)</div><div id="key-3-15" title="" class="key k1u" style="top: 45px; left: 135px;"></div><div id="key-3-16" title="" class="key k1u" style="top: 45px; left: 180px;"></div><div id="key-3-17" title="" class="key k1u" style="top: 45px; left: 225px;"></div><div id="key-3-18" title="*" class="key k1u" style="top: 45px; left: 270px;">*</div><div id="key-3-19" title="?
+/" class="key smaller k1u" style="top: 45px; left: 315px;">?
+/</div><div id="key-3-20" title="$
+4" class="key smaller k1u" style="top: 45px; left: 360px;">$
+4</div><div id="key-3-21" title="%
+5" class="key smaller k1u" style="top: 45px; left: 405px;">%
+5</div><div id="key-3-22" title="^
+6" class="key smaller k1u" style="top: 45px; left: 450px;">^
+6</div><div id="key-3-23" title="Back
+Space" class="key smaller k1u" style="top: 45px; left: 495px;">Back
+Space</div><div id="key-3-24" title="▽" class="key k1u" style="top: 90px;">▽</div><div id="key-3-25" title="" class="key k1u" style="top: 90px; left: 45px;"></div><div id="key-3-26" title="" class="key k1u" style="top: 90px; left: 90px;"></div><div id="key-3-27" title="" class="key k1u" style="top: 90px; left: 135px;"></div><div id="key-3-28" title="" class="key k1u" style="top: 90px; left: 180px;"></div><div id="key-3-29" title="" class="key k1u" style="top: 90px; left: 225px;"></div><div id="key-3-30" title="" class="key k1u" style="top: 90px; left: 270px;"></div><div id="key-3-31" title="+
+=" class="key smaller k1u" style="top: 90px; left: 315px;">+
+=</div><div id="key-3-32" title="!
+1" class="key smaller k1u" style="top: 90px; left: 360px;">!
+1</div><div id="key-3-33" title="@
+2" class="key smaller k1u" style="top: 90px; left: 405px;">@
+2</div><div id="key-3-34" title="#
+3" class="key smaller k1u" style="top: 90px; left: 450px;">#
+3</div><div id="key-3-35" title="Enter" class="key smaller k1u" style="top: 90px; left: 495px;">Enter</div><div id="key-3-36" title="▽" class="key k1u" style="top: 135px;">▽</div><div id="key-3-37" title="▽" class="key k1u" style="top: 135px; left: 45px;">▽</div><div id="key-3-38" title="▽" class="key k1u" style="top: 135px; left: 90px;">▽</div><div id="key-3-39" title="▽" class="key k1u" style="top: 135px; left: 135px;">▽</div><div id="key-3-40" title="▽" class="key k1u" style="top: 135px; left: 180px;">▽</div><div id="key-3-41" title="▽" class="key k2u" style="top: 135px; left: 225px;">▽</div><div id="key-3-42" title="한영" class="key smaller k1u" style="top: 135px; left: 315px;">한영</div><div id="key-3-43" title=")
+0" class="key smaller k1u" style="top: 135px; left: 360px;">)
+0</div><div id="key-3-44" title="&gt;
+." class="key smaller k1u" style="top: 135px; left: 405px;">&gt;
+.</div><div id="key-3-45" title="&lt;
+," class="key smaller k1u" style="top: 135px; left: 450px;">&lt;
+,</div><div id="key-3-46" title="▽" class="key k1u" style="top: 135px; left: 495px;">▽</div></div></div><div class="layer-output"><h3 class="layer-output-title"></h3><div class="print-keymap" style="--unit-width:1; --unit-height:1; --default-smaller-key-font-size:0.61rem; --default-key-font-size:0.85rem; --default-key-height:40px; --default-key-width:40px; --default-key-x-spacing:45px; --default-key-y-spacing:45px; width: 535px; height: 175px;"><div id="key-5-0" title="" class="key k1u"></div><div id="key-5-1" title="Reset" class="key smaller k1u" style="left: 45px;">Reset</div><div id="key-5-2" title="Debug" class="key smaller k1u" style="left: 90px;">Debug</div><div id="key-5-3" title="" class="key k1u" style="left: 135px;"></div><div id="key-5-4" title="" class="key k1u" style="left: 180px;"></div><div id="key-5-5" title="" class="key k1u" style="left: 225px;"></div><div id="key-5-6" title="" class="key k1u" style="left: 270px;"></div><div id="key-5-7" title="" class="key k1u" style="left: 315px;"></div><div id="key-5-8" title="" class="key k1u" style="left: 360px;"></div><div id="key-5-9" title="Power" class="key smaller k1u" style="left: 405px;">Power</div><div id="key-5-10" title="Sleep" class="key smaller k1u" style="left: 450px;">Sleep</div><div id="key-5-11" title="Wake" class="key smaller k1u" style="left: 495px;">Wake</div><div id="key-5-12" title="" class="key k1u" style="top: 45px;"></div><div id="key-5-13" title="RGB
+Toggle" class="key smaller k1u" style="top: 45px; left: 45px;">RGB
+Toggle</div><div id="key-5-14" title="RGB
+Mode +" class="key smaller k1u" style="top: 45px; left: 90px;">RGB
+Mode +</div><div id="key-5-15" title="RGB
+Mode T" class="key smaller k1u" style="top: 45px; left: 135px;">RGB
+Mode T</div><div id="key-5-16" title="" class="key k1u" style="top: 45px; left: 180px;"></div><div id="key-5-17" title="" class="key k1u" style="top: 45px; left: 225px;"></div><div id="key-5-18" title="Hue
++" class="key smaller k1u" style="top: 45px; left: 270px;">Hue
++</div><div id="key-5-19" title="Bright
++" class="key smaller k1u" style="top: 45px; left: 315px;">Bright
++</div><div id="key-5-20" title="Sat
++" class="key smaller k1u" style="top: 45px; left: 360px;">Sat
++</div><div id="key-5-21" title="Effect
++" class="key smaller k1u" style="top: 45px; left: 405px;">Effect
++</div><div id="key-5-22" title="" class="key k1u" style="top: 45px; left: 450px;"></div><div id="key-5-23" title="" class="key k1u" style="top: 45px; left: 495px;"></div><div id="key-5-24" title="" class="key k1u" style="top: 90px;"></div><div id="key-5-25" title="BL
+Toggle" class="key smaller k1u" style="top: 90px; left: 45px;">BL
+Toggle</div><div id="key-5-26" title="BL
+Cycle" class="key smaller k1u" style="top: 90px; left: 90px;">BL
+Cycle</div><div id="key-5-27" title="BL
+Breath" class="key smaller k1u" style="top: 90px; left: 135px;">BL
+Breath</div><div id="key-5-28" title="" class="key k1u" style="top: 90px; left: 180px;"></div><div id="key-5-29" title="" class="key k1u" style="top: 90px; left: 225px;"></div><div id="key-5-30" title="Hue
+-" class="key smaller k1u" style="top: 90px; left: 270px;">Hue
+-</div><div id="key-5-31" title="Bright
+-" class="key smaller k1u" style="top: 90px; left: 315px;">Bright
+-</div><div id="key-5-32" title="Sat
+-" class="key smaller k1u" style="top: 90px; left: 360px;">Sat
+-</div><div id="key-5-33" title="Effect
+-" class="key smaller k1u" style="top: 90px; left: 405px;">Effect
+-</div><div id="key-5-34" title="" class="key k1u" style="top: 90px; left: 450px;"></div><div id="key-5-35" title="" class="key k1u" style="top: 90px; left: 495px;"></div><div id="key-5-36" title="" class="key k1u" style="top: 135px;"></div><div id="key-5-37" title="" class="key k1u" style="top: 135px; left: 45px;"></div><div id="key-5-38" title="" class="key k1u" style="top: 135px; left: 90px;"></div><div id="key-5-39" title="" class="key k1u" style="top: 135px; left: 135px;"></div><div id="key-5-40" title="▽" class="key k1u" style="top: 135px; left: 180px;">▽</div><div id="key-5-41" title="" class="key k2u" style="top: 135px; left: 225px;"></div><div id="key-5-42" title="▽" class="key k1u" style="top: 135px; left: 315px;">▽</div><div id="key-5-43" title="" class="key k1u" style="top: 135px; left: 360px;"></div><div id="key-5-44" title="" class="key k1u" style="top: 135px; left: 405px;"></div><div id="key-5-45" title="" class="key k1u" style="top: 135px; left: 450px;"></div><div id="key-5-46" title="" class="key k1u" style="top: 135px; left: 495px;"></div></div></div></div>
+</body></html>
