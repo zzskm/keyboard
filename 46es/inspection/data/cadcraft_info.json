@@ -1,0 +1,202 @@
+{
+  "blockEditor": null,
+  "blocks": [
+    "5a9e0735e12f7a8b21eedb73ebc3197d79c09568_switch",
+    "A$C01c93d06",
+    "A$C146510a8",
+    "A$C150a3c56",
+    "A$C15477aa8",
+    "A$C1c7e889e",
+    "A$C2287755E",
+    "A$C23821ea3",
+    "A$C238e61d7",
+    "A$C23f8fade",
+    "A$C2543b4fc",
+    "A$C33C36A67",
+    "A$C341553a0",
+    "A$C3c346266",
+    "A$C412f97b7",
+    "A$C426b98fb",
+    "A$C42d62e5b",
+    "A$C44f9f883",
+    "A$C4C9B1BD2",
+    "A$C4F5016BB",
+    "A$C4f03201d",
+    "A$C50fe3d0c",
+    "A$C51b4441f",
+    "A$C51e82b17",
+    "A$C5999dfb7",
+    "A$C5a780888",
+    "A$C6060d3c5",
+    "A$C648ee7ae",
+    "A$C65f9ed69",
+    "A$C680eed8a",
+    "A$C6CBE70B8",
+    "A$C78a4690d",
+    "A$C8001c547",
+    "A$C8307c4f6",
+    "A$C87e97420",
+    "A$C888c7b29",
+    "A$C9213dc1f",
+    "A$C9429813f",
+    "A$C97e74a61",
+    "A$C9d43b471",
+    "A$C9e0e7486",
+    "A$Ca1db4028",
+    "A$Cbb29bf97",
+    "A$Cc34be332",
+    "A$Cc83483b7",
+    "A$Ccd1d3c8f",
+    "A$Cd48ab117",
+    "A$Cdadec755",
+    "A$Cdd23466a",
+    "A$Ce2f2a581",
+    "A$Ce3492ee8",
+    "A$Cede94767",
+    "A$Cee7719c8",
+    "A$Cee79e888",
+    "A$Cf1752ddd",
+    "A$Cf5c5a725",
+    "A$Cfaf52b89",
+    "A$Cff992276",
+    "PCB2x8"
+  ],
+  "counts": {
+    "Arc": 11,
+    "Circle": 19,
+    "Line": 40,
+    "MText": 6,
+    "Polyline": 153
+  },
+  "currentLayer": "0",
+  "dimStyles": [
+    "Standard",
+    "ISO-25",
+    "Annotative",
+    "주석"
+  ],
+  "dirty": true,
+  "entityCount": 229,
+  "extents": [
+    [
+      -76.12973756409154,
+      28.455630103147307
+    ],
+    [
+      308.3663282130092,
+      779.147513063568
+    ]
+  ],
+  "layers": [
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "0",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Defpoints",
+      "on": true
+    },
+    {
+      "color": "Color 30",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "보강판3t",
+      "on": true
+    },
+    {
+      "color": "Cyan",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "보강판2t",
+      "on": true
+    },
+    {
+      "color": "Magenta",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "4 하판 2T",
+      "on": true
+    },
+    {
+      "color": "Color 30",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "2 보강판 5T",
+      "on": true
+    },
+    {
+      "color": "Green",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "3 Middle",
+      "on": true
+    },
+    {
+      "color": "Color 122",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "6 Stand",
+      "on": true
+    },
+    {
+      "color": "Color 122",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "5 Nameplate",
+      "on": true
+    },
+    {
+      "color": "Color 102",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "기판1.5t",
+      "on": true
+    }
+  ],
+  "layouts": [
+    "Layout1",
+    "Layout2"
+  ],
+  "linetypes": [
+    "ByBlock",
+    "ByLayer",
+    "Continuous"
+  ],
+  "path": "D:/work/keyboard/46es/cad/46es_r2_keyboard.dwg",
+  "readNotes": [],
+  "selection": [],
+  "skipped": {
+    "count": 0,
+    "sections": {}
+  },
+  "space": "Model",
+  "textStyles": [
+    "Standard",
+    "Annotative"
+  ],
+  "title": "46es_r2_keyboard.dwg",
+  "undo": [],
+  "view": {
+    "center": [
+      116.11829532445881,
+      403.80157158335766
+    ],
+    "height": 825.7610712564629
+  }
+}
