@@ -1,0 +1,1246 @@
+{
+ "warnings": [],
+ "version": "AC1024",
+ "maint_byte": 63,
+ "codepage": 40,
+ "file_size": 2388706,
+ "file_id": "AcFssFcAJMB",
+ "section_page_amount": 272,
+ "pages": 272,
+ "gap_pages": 0,
+ "sections": {
+  "": {
+   "size": 0,
+   "pages": 0,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:FileDepList": {
+   "size": 586,
+   "pages": 1,
+   "compressed": 1,
+   "encrypted": 2
+  },
+  "AcDb:AppInfoHistory": {
+   "size": 1380,
+   "pages": 1,
+   "compressed": 1,
+   "encrypted": 0
+  },
+  "AcDb:AppInfo": {
+   "size": 674,
+   "pages": 1,
+   "compressed": 1,
+   "encrypted": 0
+  },
+  "AcDb:Preview": {
+   "size": 31151,
+   "pages": 1,
+   "compressed": 1,
+   "encrypted": 0
+  },
+  "AcDb:SummaryInfo": {
+   "size": 68,
+   "pages": 1,
+   "compressed": 1,
+   "encrypted": 0
+  },
+  "AcDb:RevHistory": {
+   "size": 16,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:AcDbObjects": {
+   "size": 7634673,
+   "pages": 258,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:ObjFreeSpace": {
+   "size": 89,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:Template": {
+   "size": 6,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:Handles": {
+   "size": 9587,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:Classes": {
+   "size": 3644,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:AuxHeader": {
+   "size": 123,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  },
+  "AcDb:Header": {
+   "size": 847,
+   "pages": 1,
+   "compressed": 2,
+   "encrypted": 0
+  }
+ },
+ "objects_in_map": 3698,
+ "classes": {
+  "500": {
+   "dxf": "ACDBDICTIONARYWDFLT",
+   "cpp": "AcDbDictionaryWithDefault",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 1
+  },
+  "501": {
+   "dxf": "ACDBPLACEHOLDER",
+   "cpp": "AcDbPlaceHolder",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 1
+  },
+  "502": {
+   "dxf": "LAYOUT",
+   "cpp": "AcDbLayout",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 3
+  },
+  "503": {
+   "dxf": "DICTIONARYVAR",
+   "cpp": "AcDbDictionaryVar",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 11
+  },
+  "504": {
+   "dxf": "TABLESTYLE",
+   "cpp": "AcDbTableStyle",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 1
+  },
+  "505": {
+   "dxf": "MATERIAL",
+   "cpp": "AcDbMaterial",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 3
+  },
+  "506": {
+   "dxf": "VISUALSTYLE",
+   "cpp": "AcDbVisualStyle",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 24
+  },
+  "507": {
+   "dxf": "SCALE",
+   "cpp": "AcDbScale",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 17
+  },
+  "508": {
+   "dxf": "MLEADERSTYLE",
+   "cpp": "AcDbMLeaderStyle",
+   "app": "ACDB_MLEADERSTYLE_CLASS",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 2
+  },
+  "509": {
+   "dxf": "CELLSTYLEMAP",
+   "cpp": "AcDbCellStyleMap",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "510": {
+   "dxf": "EXACXREFPANELOBJECT",
+   "cpp": "ExAcXREFPanelObject",
+   "app": "EXAC_ESW",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "511": {
+   "dxf": "NPOCOLLECTION",
+   "cpp": "AcDbImpNonPersistentObjectsCollection",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "512": {
+   "dxf": "LAYER_INDEX",
+   "cpp": "AcDbLayerIndex",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "513": {
+   "dxf": "SPATIAL_INDEX",
+   "cpp": "AcDbSpatialIndex",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "514": {
+   "dxf": "IDBUFFER",
+   "cpp": "AcDbIdBuffer",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "515": {
+   "dxf": "ACDBSECTIONVIEWSTYLE",
+   "cpp": "AcDbSectionViewStyle",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 3
+  },
+  "516": {
+   "dxf": "ACDBDETAILVIEWSTYLE",
+   "cpp": "AcDbDetailViewStyle",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 3
+  },
+  "517": {
+   "dxf": "SORTENTSTABLE",
+   "cpp": "AcDbSortentsTable",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 91
+  },
+  "518": {
+   "dxf": "DIMASSOC",
+   "cpp": "AcDbDimAssoc",
+   "app": "\"AcDbDimAssoc|Product Desc:     AcDim ARX App For Dimension|Company:          Autodesk, Inc.|WEB Address:      www.autodesk.com\"",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 4
+  },
+  "519": {
+   "dxf": "SOLID_BACKGROUND",
+   "cpp": "AcDbSolidBackground",
+   "app": "SCENEOE",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "520": {
+   "dxf": "ACDBASSOCNETWORK",
+   "cpp": "AcDbAssocNetwork",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "521": {
+   "dxf": "ACDBASSOCACTION",
+   "cpp": "AcDbAssocAction",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "522": {
+   "dxf": "ACDBASSOCDIAMETRICDIMACTIONBODY",
+   "cpp": "AcDbAssocDiametricDimActionBody",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "523": {
+   "dxf": "ACDBASSOCOSNAPPOINTREFACTIONPARAM",
+   "cpp": "AcDbAssocOsnapPointRefActionParam",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "524": {
+   "dxf": "ACDBASSOCEDGEACTIONPARAM",
+   "cpp": "AcDbAssocEdgeActionParam",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "525": {
+   "dxf": "ACDBASSOCPERSSUBENTMANAGER",
+   "cpp": "AcDbAssocPersSubentManager",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 1
+  },
+  "526": {
+   "dxf": "ACDBASSOCGEOMDEPENDENCY",
+   "cpp": "AcDbAssocGeomDependency",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "527": {
+   "dxf": "ACDBASSOCDEPENDENCY",
+   "cpp": "AcDbAssocDependency",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  },
+  "528": {
+   "dxf": "ACDBASSOC2DCONSTRAINTGROUP",
+   "cpp": "AcDbAssoc2dConstraintGroup",
+   "app": "ObjectDBX Classes",
+   "item_class_id": 499,
+   "entity": false,
+   "instances": 0
+  }
+ },
+ "object_parse_errors": 0,
+ "census": {
+  "LINE": 1384,
+  "LWPOLYLINE": 757,
+  "ARC": 654,
+  "CIRCLE": 325,
+  "DICTIONARY": 129,
+  "BLOCK_HEADER": 66,
+  "BLOCK": 66,
+  "ENDBLK": 66,
+  "SORTENTSTABLE": 55,
+  "XRECORD": 44,
+  "VISUALSTYLE": 24,
+  "SCALE": 17,
+  "MTEXT": 16,
+  "APPID": 13,
+  "POINT": 12,
+  "DICTIONARYVAR": 11,
+  "LAYER": 10,
+  "SOLID": 8,
+  "PROXY_OBJECT": 5,
+  "DIMSTYLE": 4,
+  "LTYPE": 3,
+  "LAYOUT": 3,
+  "MATERIAL": 3,
+  "INSERT": 3,
+  "STYLE": 2,
+  "MLEADERSTYLE": 2,
+  "BLOCK_CONTROL": 1,
+  "LAYER_CONTROL": 1,
+  "STYLE_CONTROL": 1,
+  "LTYPE_CONTROL": 1,
+  "VIEW_CONTROL": 1,
+  "UCS_CONTROL": 1,
+  "VPORT_CONTROL": 1,
+  "APPID_CONTROL": 1,
+  "DIMSTYLE_CONTROL": 1,
+  "ACDBDICTIONARYWDFLT": 1,
+  "PLACEHOLDER": 1,
+  "MLINESTYLE": 1,
+  "TABLESTYLE": 1,
+  "VPORT": 1,
+  "3DSOLID": 1,
+  "GROUP": 1
+ },
+ "entities_by_space": {
+  "model|ARC": 11,
+  "model|BLOCK": 1,
+  "model|CIRCLE": 19,
+  "model|ENDBLK": 1,
+  "model|LINE": 40,
+  "model|LWPOLYLINE": 153,
+  "model|MTEXT": 6,
+  "owned(block)|3DSOLID": 1,
+  "owned(block)|ARC": 643,
+  "owned(block)|BLOCK": 64,
+  "owned(block)|CIRCLE": 306,
+  "owned(block)|ENDBLK": 64,
+  "owned(block)|INSERT": 3,
+  "owned(block)|LINE": 1344,
+  "owned(block)|LWPOLYLINE": 604,
+  "owned(block)|MTEXT": 10,
+  "owned(block)|POINT": 12,
+  "owned(block)|SOLID": 8,
+  "paper|BLOCK": 1,
+  "paper|ENDBLK": 1
+ },
+ "layer_names_by_handle": {
+  "0x10": "0",
+  "0x433": "Defpoints",
+  "0x20e1": "보강판3t",
+  "0x20e2": "보강판2t",
+  "0x2b5d": "4 하판 2T",
+  "0x2b5f": "2 보강판 5T",
+  "0x3a34": "3 Middle",
+  "0x3a36": "6 Stand",
+  "0x3a4a": "5 Nameplate",
+  "0x6761": "기판1.5t"
+ },
+ "entity_layer_use": {
+  "model|0": 231,
+  "owned(block)|0": 1722,
+  "owned(block)|Defpoints": 12,
+  "owned(block)|보강판3t": 654,
+  "owned(block)|보강판2t": 618,
+  "owned(block)|6 Stand": 4,
+  "owned(block)|기판1.5t": 49,
+  "paper|0": 2
+ },
+ "block_names": {
+  "0x1f": "*Model_Space",
+  "0xd2": "*Paper_Space",
+  "0xd6": "*Paper_Space",
+  "0x281": "5a9e0735e12f7a8b21eedb73ebc3197d79c09568_switch",
+  "0x457": "A$C44f9f883",
+  "0x699": "A$C23821ea3",
+  "0x6a4": "A$Cc83483b7",
+  "0xd9b": "A$C9e0e7486",
+  "0xde3": "A$C412f97b7",
+  "0x20e5": "A$Cede94767",
+  "0x2f04": "A$C42d62e5b",
+  "0x3118": "A$C9429813f",
+  "0x31bb": "A$C01c93d06",
+  "0x3300": "A$C888c7b29",
+  "0x332f": "A$C648ee7ae",
+  "0x38bc": "A$C5a780888",
+  "0x39bc": "A$Cff992276",
+  "0x3c38": "A$C78a4690d",
+  "0x4802": "A$C9213dc1f",
+  "0x4c51": "PCB2x8",
+  "0x4d0b": "A$C97e74a61",
+  "0x4d4b": "A$C51b4441f",
+  "0x4f46": "A$Cbb29bf97",
+  "0x5105": "A$C87e97420",
+  "0x513e": "A$Ce3492ee8",
+  "0x5528": "A$C9d43b471",
+  "0x5819": "A$C50fe3d0c",
+  "0x6441": "A$C8001c547",
+  "0x66bd": "A$C426b98fb",
+  "0x66f8": "A$C23f8fade",
+  "0x6733": "A$Cfaf52b89",
+  "0x6931": "A$C2543b4fc",
+  "0x6dd5": "A$C150a3c56",
+  "0x7896": "A$Ce2f2a581",
+  "0x7a65": "A$C3c346266",
+  "0x7a91": "A$C238e61d7",
+  "0x7ac7": "A$C15477aa8",
+  "0x7c9e": "A$C4f03201d",
+  "0x7cc6": "A$Cc34be332",
+  "0x7ede": "A$Ccd1d3c8f",
+  "0x7ee8": "A$Cf1752ddd",
+  "0x7f12": "A$C146510a8",
+  "0x807d": "A$C5999dfb7",
+  "0x8089": "A$Ca1db4028",
+  "0x83de": "A$Cdadec755",
+  "0x8def": "A$C8307c4f6",
+  "0x8fa6": "A$Cdd23466a",
+  "0x90f2": "*D",
+  "0x910a": "*D",
+  "0x9335": "A$Cd48ab117",
+  "0x933b": "A$Cf5c5a725",
+  "0x94ed": "*D",
+  "0x9505": "*D",
+  "0x97c5": "A$C65f9ed69",
+  "0xa00b": "A$C680eed8a",
+  "0xa01b": "A$C1c7e889e",
+  "0xa02f": "A$C341553a0",
+  "0xacfa": "A$Cee7719c8",
+  "0xafd2": "A$C6060d3c5",
+  "0xb039": "A$C51e82b17",
+  "0xb55c": "A$Cee79e888",
+  "0xc115": "A$C2287755E",
+  "0xc2c2": "A$C33C36A67",
+  "0xc357": "A$C4F5016BB",
+  "0xc888": "A$C6CBE70B8",
+  "0xcbc9": "A$C4C9B1BD2"
+ },
+ "entities_per_block": {
+  "*Paper_Space@0xd6": {
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "5a9e0735e12f7a8b21eedb73ebc3197d79c09568_switch@0x281": {
+   "LINE": 228,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C44f9f883@0x457": {
+   "LINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C23821ea3@0x699": {
+   "LWPOLYLINE": 2,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cc83483b7@0x6a4": {
+   "CIRCLE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C9e0e7486@0xd9b": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C412f97b7@0xde3": {
+   "LINE": 8,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cede94767@0x20e5": {
+   "ARC": 597,
+   "LINE": 664,
+   "CIRCLE": 11,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C42d62e5b@0x2f04": {
+   "LINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C9429813f@0x3118": {
+   "CIRCLE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C01c93d06@0x31bb": {
+   "LWPOLYLINE": 1,
+   "CIRCLE": 9,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C888c7b29@0x3300": {
+   "LINE": 2,
+   "LWPOLYLINE": 40,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C648ee7ae@0x332f": {
+   "LINE": 2,
+   "LWPOLYLINE": 40,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C5a780888@0x38bc": {
+   "CIRCLE": 180,
+   "LWPOLYLINE": 2,
+   "LINE": 38,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cff992276@0x39bc": {
+   "MTEXT": 1,
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C78a4690d@0x3c38": {
+   "LINE": 6,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C9213dc1f@0x4802": {
+   "LINE": 6,
+   "LWPOLYLINE": 40,
+   "ARC": 4,
+   "CIRCLE": 9,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "PCB2x8@0x4c51": {
+   "BLOCK": 1,
+   "3DSOLID": 1,
+   "ENDBLK": 1
+  },
+  "A$C97e74a61@0x4d0b": {
+   "LINE": 6,
+   "LWPOLYLINE": 40,
+   "ARC": 4,
+   "CIRCLE": 9,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C51b4441f@0x4d4b": {
+   "INSERT": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cbb29bf97@0x4f46": {
+   "INSERT": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C87e97420@0x5105": {
+   "LINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Ce3492ee8@0x513e": {
+   "INSERT": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C9d43b471@0x5528": {
+   "LINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C50fe3d0c@0x5819": {
+   "LINE": 8,
+   "CIRCLE": 2,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C8001c547@0x6441": {
+   "LWPOLYLINE": 5,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C426b98fb@0x66bd": {
+   "ARC": 4,
+   "LINE": 4,
+   "LWPOLYLINE": 46,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C23f8fade@0x66f8": {
+   "ARC": 4,
+   "LINE": 4,
+   "LWPOLYLINE": 46,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cfaf52b89@0x6733": {
+   "CIRCLE": 4,
+   "LINE": 25,
+   "ARC": 5,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C2543b4fc@0x6931": {
+   "CIRCLE": 28,
+   "LWPOLYLINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C150a3c56@0x6dd5": {
+   "CIRCLE": 21,
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Ce2f2a581@0x7896": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C3c346266@0x7a65": {
+   "LWPOLYLINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C238e61d7@0x7a91": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C15477aa8@0x7ac7": {
+   "LWPOLYLINE": 1,
+   "LINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C4f03201d@0x7c9e": {
+   "LWPOLYLINE": 20,
+   "ARC": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cc34be332@0x7cc6": {
+   "LWPOLYLINE": 3,
+   "ARC": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Ccd1d3c8f@0x7ede": {
+   "LWPOLYLINE": 1,
+   "LINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cf1752ddd@0x7ee8": {
+   "LWPOLYLINE": 1,
+   "LINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C146510a8@0x7f12": {
+   "LWPOLYLINE": 1,
+   "LINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C5999dfb7@0x807d": {
+   "LWPOLYLINE": 1,
+   "LINE": 6,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Ca1db4028@0x8089": {
+   "LWPOLYLINE": 1,
+   "LINE": 6,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cdadec755@0x83de": {
+   "CIRCLE": 4,
+   "LINE": 37,
+   "ARC": 9,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C8307c4f6@0x8def": {
+   "LWPOLYLINE": 17,
+   "LINE": 68,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cdd23466a@0x8fa6": {
+   "LWPOLYLINE": 6,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "*D@0x90f2": {
+   "BLOCK": 1,
+   "ENDBLK": 1,
+   "LINE": 3,
+   "SOLID": 2,
+   "MTEXT": 1,
+   "POINT": 3
+  },
+  "*D@0x910a": {
+   "BLOCK": 1,
+   "ENDBLK": 1,
+   "LINE": 3,
+   "SOLID": 2,
+   "MTEXT": 1,
+   "POINT": 3
+  },
+  "A$Cd48ab117@0x9335": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cf5c5a725@0x933b": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "*D@0x94ed": {
+   "BLOCK": 1,
+   "ENDBLK": 1,
+   "LINE": 3,
+   "SOLID": 2,
+   "MTEXT": 1,
+   "POINT": 3
+  },
+  "*D@0x9505": {
+   "BLOCK": 1,
+   "ENDBLK": 1,
+   "LINE": 3,
+   "SOLID": 2,
+   "MTEXT": 1,
+   "POINT": 3
+  },
+  "A$C65f9ed69@0x97c5": {
+   "LWPOLYLINE": 54,
+   "LINE": 147,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C680eed8a@0xa00b": {
+   "CIRCLE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C1c7e889e@0xa01b": {
+   "CIRCLE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C341553a0@0xa02f": {
+   "CIRCLE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cee7719c8@0xacfa": {
+   "LWPOLYLINE": 3,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C6060d3c5@0xafd2": {
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C51e82b17@0xb039": {
+   "ARC": 1,
+   "LINE": 2,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$Cee79e888@0xb55c": {
+   "LWPOLYLINE": 9,
+   "CIRCLE": 6,
+   "LINE": 3,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C2287755E@0xc115": {
+   "LWPOLYLINE": 4,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C33C36A67@0xc2c2": {
+   "CIRCLE": 1,
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C4F5016BB@0xc357": {
+   "CIRCLE": 1,
+   "LWPOLYLINE": 1,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C6CBE70B8@0xc888": {
+   "LWPOLYLINE": 56,
+   "LINE": 10,
+   "ARC": 3,
+   "CIRCLE": 3,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  },
+  "A$C4C9B1BD2@0xcbc9": {
+   "MTEXT": 5,
+   "LWPOLYLINE": 146,
+   "LINE": 32,
+   "ARC": 10,
+   "CIRCLE": 13,
+   "BLOCK": 1,
+   "ENDBLK": 1
+  }
+ },
+ "orphan_dim_blocks": {
+  "0x90f2": {
+   "mtext": [
+    "19,05"
+   ],
+   "points": [
+    [
+     -1290.8162,
+     1351.1808,
+     0.0
+    ],
+    [
+     -1309.8662,
+     1351.1808,
+     0.0
+    ],
+    [
+     -1309.8662,
+     1338.7828,
+     0.0
+    ]
+   ]
+  },
+  "0x910a": {
+   "mtext": [
+    "23,85"
+   ],
+   "points": [
+    [
+     -1266.9846,
+     1351.1809,
+     0.0
+    ],
+    [
+     -1290.8346,
+     1351.1809,
+     0.0
+    ],
+    [
+     -1290.8346,
+     1338.7241,
+     0.0
+    ]
+   ]
+  },
+  "0x94ed": {
+   "mtext": [
+    "95,8"
+   ],
+   "points": [
+    [
+     -1195.5176,
+     1555.8074,
+     0.0
+    ],
+    [
+     -1195.5176,
+     1460.0074,
+     0.0
+    ],
+    [
+     -1164.5072,
+     1460.0074,
+     0.0
+    ]
+   ]
+  },
+  "0x9505": {
+   "mtext": [
+    "287"
+   ],
+   "points": [
+    [
+     -1480.5176,
+     1553.8074,
+     0.0
+    ],
+    [
+     -1193.5176,
+     1553.8074,
+     0.0
+    ],
+    [
+     -1193.5176,
+     1574.7474,
+     0.0
+    ]
+   ]
+  }
+ },
+ "model_space_arcs_circles": [
+  {
+   "h": "CA3C",
+   "type": "ARC",
+   "cx": 25.127754958611604,
+   "cy": 558.5601317058055,
+   "r": 3.5,
+   "a0": 3.141592653589793,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CA3F",
+   "type": "ARC",
+   "cx": 25.007754958611713,
+   "cy": 593.7401317058054,
+   "r": 2.25,
+   "a0": 4.71238898038469,
+   "a1": 1.5707963267948966
+  },
+  {
+   "h": "CA40",
+   "type": "ARC",
+   "cx": 304.44775495861154,
+   "cy": 593.9401317058054,
+   "r": 2.25,
+   "a0": 1.5707963267948966,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CA41",
+   "type": "CIRCLE",
+   "cx": 212.82775495861165,
+   "cy": 564.9601317058055,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CA42",
+   "type": "ARC",
+   "cx": 281.34775495861163,
+   "cy": 622.4101317058054,
+   "r": 2.25,
+   "a0": 4.262429590261201,
+   "a1": 0.5874515261539476
+  },
+  {
+   "h": "CA51",
+   "type": "ARC",
+   "cx": 46.777754958611695,
+   "cy": 622.2101317058055,
+   "r": 2.25,
+   "a0": 6.152890494686173,
+   "a1": 2.454678356657935
+  },
+  {
+   "h": "CA56",
+   "type": "CIRCLE",
+   "cx": 227.97855776337133,
+   "cy": 627.8078918460873,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CA57",
+   "type": "CIRCLE",
+   "cx": 236.90676099364669,
+   "cy": 627.8078918460873,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CA58",
+   "type": "CIRCLE",
+   "cx": 245.83496422392204,
+   "cy": 627.8078918460873,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CAAE",
+   "type": "ARC",
+   "cx": 24.390856053019434,
+   "cy": 422.5488151950732,
+   "r": 3.5,
+   "a0": 3.141592653589793,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CADF",
+   "type": "ARC",
+   "cx": 24.270856053019543,
+   "cy": 457.7288151950731,
+   "r": 2.25,
+   "a0": 4.71238898038469,
+   "a1": 1.5707963267948966
+  },
+  {
+   "h": "CAE0",
+   "type": "ARC",
+   "cx": 303.71085605301937,
+   "cy": 457.92881519507307,
+   "r": 2.25,
+   "a0": 1.5707963267948966,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CAE1",
+   "type": "CIRCLE",
+   "cx": 149.99085605301957,
+   "cy": 467.238815195073,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CAE2",
+   "type": "CIRCLE",
+   "cx": 212.09085605301948,
+   "cy": 428.9488151950732,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CAE3",
+   "type": "CIRCLE",
+   "cx": 280.61085605301946,
+   "cy": 486.3988151950731,
+   "r": 2.25,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CB36",
+   "type": "ARC",
+   "cx": 23.334237199758263,
+   "cy": 292.1069716024323,
+   "r": 3.5,
+   "a0": 3.141592653589793,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CB93",
+   "type": "ARC",
+   "cx": 25.466328213009092,
+   "cy": 31.955630103147314,
+   "r": 3.5,
+   "a0": 3.141592653589793,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CBC3",
+   "type": "CIRCLE",
+   "cx": 230.75422057191213,
+   "cy": 760.2348525739784,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CBC4",
+   "type": "CIRCLE",
+   "cx": 239.6824238021875,
+   "cy": 760.2348525739784,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CBC5",
+   "type": "CIRCLE",
+   "cx": 248.61062703246284,
+   "cy": 760.2348525739784,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CBC6",
+   "type": "CIRCLE",
+   "cx": 44.78208317413373,
+   "cy": 750.4975130635679,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CBC7",
+   "type": "CIRCLE",
+   "cx": 23.01208317413375,
+   "cy": 722.0275130635679,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CBC8",
+   "type": "CIRCLE",
+   "cx": 302.4520831741336,
+   "cy": 722.2275130635679,
+   "r": 1.0,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CCC9",
+   "type": "ARC",
+   "cx": 21.43231904378763,
+   "cy": 166.66074667661383,
+   "r": 3.5,
+   "a0": 3.141592653589793,
+   "a1": 4.71238898038469
+  },
+  {
+   "h": "CCE2",
+   "type": "CIRCLE",
+   "cx": 29.153828213009092,
+   "cy": 117.06813010314755,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CCEA",
+   "type": "CIRCLE",
+   "cx": 29.153828213009092,
+   "cy": 35.64313010314743,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CCF2",
+   "type": "CIRCLE",
+   "cx": 153.54058530682823,
+   "cy": 117.06813010314744,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CCFA",
+   "type": "CIRCLE",
+   "cx": 153.54058530682823,
+   "cy": 35.643130103147485,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CD02",
+   "type": "CIRCLE",
+   "cx": 301.17882821300896,
+   "cy": 35.64313010314754,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  },
+  {
+   "h": "CD0A",
+   "type": "CIRCLE",
+   "cx": 273.07949995770116,
+   "cy": 118.13028010314719,
+   "r": 1.5,
+   "a0": null,
+   "a1": null
+  }
+ ],
+ "proxy_object_classes": [
+  "ACDBSECTIONVIEWSTYLE",
+  "ACDBDETAILVIEWSTYLE",
+  "ACDBSECTIONVIEWSTYLE",
+  "ACDBDETAILVIEWSTYLE",
+  "ACDBASSOCPERSSUBENTMANAGER"
+ ],
+ "model_space_mtext": {
+  "0x475b": "{\\fGulim|b0|i0|c129|p50;투명압출판\\P1.}5T",
+  "0xa73b": "{\\fGulim|b0|i0|c129|p50;투명아크릴\\P}5T",
+  "0xac78": "{\\fGulim|b0|i0|c129|p50;투명아스텔\\P2}T",
+  "0xcba7": "{\\fGulim|b0|i0|c129|p50;투명아스텔\\P2}T",
+  "0xcbbc": "{\\fGulim|b0|i0|c129|p50;투명아크릴\\P}2T",
+  "0xccd5": "{\\fGulim|b0|i0|c129|p50;스모그투명아크릴\\P5}T"
+ }
+}
