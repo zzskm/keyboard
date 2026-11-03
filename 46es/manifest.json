@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "cad/46es_r2_keyboard.dwg",
+      "bytes": 2388706,
+      "sha256": "4a9b09d58479c65c1007e08c930c7736ffd1df6277d9e5dd6098c6ce5f88db59",
+      "git_blob_sha": "1145e65b7d172fc9201c5fdceef10fb408d72832"
+    },
+    {
+      "path": "docs/planning.md",
+      "bytes": 20657,
+      "sha256": "e223aac30e5ad0f45ade3e385a33915b4b05352e1bfdfc7538178a6cea219346",
+      "git_blob_sha": "d840e74cf17b3c1544ea98feeb57a28b8e7bc864"
+    },
+    {
+      "path": "firmware/46es_kbfirmware.json",
+      "bytes": 28385,
+      "sha256": "1b0dbb379cfec7261b49bc7074cef33837958754ebdd0528759a4f424e757951",
+      "git_blob_sha": "b07dfa1ad34a4c3dd112ea593fe03b9384338ec2"
+    },
+    {
+      "path": "images/46es_r2_keyboard_preview.png",
+      "bytes": 1630,
+      "sha256": "f4a91eb37004b1c2d11f9782eea6006e9f5971fce18b6905cce1d9a22a75315f",
+      "git_blob_sha": "157869f0ec95a340074e366581b355180037bfa9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1632,
+      "sha256": "b5f9136fb69de4515855b30c8fdcc1ad9046c7945109da771cc838f3da25abde",
+      "git_blob_sha": "76a3cefc809a94f4c5678576cda392c1cc331e21"
+    }
+  ]
+}
