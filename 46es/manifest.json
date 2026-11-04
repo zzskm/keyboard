@@ -163,10 +163,166 @@
       "git_blob_sha": "35a60d18c8e4f12a0bde5a70b48d573e3b245825"
     },
     {
+      "path": "inspection/switch_tester/README.md",
+      "bytes": 8557,
+      "sha256": "a2673906deccd32bcd4b3e632af4b19ae14d9ea3fb3d9d6b7734508715b87b8d",
+      "git_blob_sha": "8bd43f1f62f7ee8a750619c538951877f5384ed7"
+    },
+    {
+      "path": "inspection/switch_tester/render/fidget_bottom.png",
+      "bytes": 39600,
+      "sha256": "e9b0a098fbf5c32e87bd6187c598a0d0ea2263d82f42c895ee961a2088f1578b",
+      "git_blob_sha": "d861fac7e0605b2b37d34f5a82b5664748d24ede"
+    },
+    {
+      "path": "inspection/switch_tester/render/fidget_top.png",
+      "bytes": 136738,
+      "sha256": "1db07a55ebb7153059c9b7fedc6df57726dbb8c5b05ca1bd029e75d51c9f1d35",
+      "git_blob_sha": "7c7240fbccb56ffaef0f0f5c82a2f063f346d96a"
+    },
+    {
+      "path": "inspection/switch_tester/render/keychain_cell_iso.png",
+      "bytes": 76354,
+      "sha256": "fd9324afba37547dc7b5c7c8906c1fe2c78413a025d0bbf4bcb3e7caf0660f84",
+      "git_blob_sha": "1a5d82adaebf20250b1c8cef0e7948665800d12e"
+    },
+    {
+      "path": "inspection/switch_tester/render/keychain_cell_top.png",
+      "bytes": 80595,
+      "sha256": "9ff41aa3a71914cf346351e72da02cd14eb61cdbc73b3619246e43769ce56352",
+      "git_blob_sha": "7339322b1178a26512a36621e419dc6cc87ef9ca"
+    },
+    {
+      "path": "inspection/switch_tester/scripts/step_scan.py",
+      "bytes": 1171,
+      "sha256": "46bf90e299306fcb01190d60b829b7de7eddfeea4fb708943264f281b6a5b865",
+      "git_blob_sha": "eeb9e7ddd8b3f06f585fb8bd4c0ada1496a3b88e"
+    },
+    {
+      "path": "inspection/switch_tester/scripts/stl_cell.py",
+      "bytes": 1956,
+      "sha256": "07af58265792de0c3b7134e2bb2b0beca6f01a9b0398ff0e22a65c1f8ae66ad4",
+      "git_blob_sha": "19fd117f933a3986a4fabb151388c5f03f955a3b"
+    },
+    {
+      "path": "inspection/switch_tester/scripts/stl_quick.py",
+      "bytes": 1426,
+      "sha256": "16bb53bc155c537bc069be9936c562f9d15a390aac5c17831af2b07cf787a7cd",
+      "git_blob_sha": "9a193ab18cd1ab044814ad7450bad50eb84c45eb"
+    },
+    {
+      "path": "inspection/wilmore/README.md",
+      "bytes": 8737,
+      "sha256": "314c29d587dbd496d39e613dd86db59b23e376b2b4a8d61b8f22f3d152ead93d",
+      "git_blob_sha": "5e53f96d5a104aad56ac7d265fb2d375706f6e0a"
+    },
+    {
+      "path": "inspection/wilmore/render/compare_z-3.0_housing_vs_wilmore.png",
+      "bytes": 3563,
+      "sha256": "ab369cc37ea46f1f98200dadf657034f576d161ad119ff905b952deea0adb9fd",
+      "git_blob_sha": "bb2bd0e375dca7303eb7392e7f97c157ac39de2f"
+    },
+    {
+      "path": "inspection/wilmore/render/compare_z4.0_housing_vs_wilmore.png",
+      "bytes": 2827,
+      "sha256": "81a0330b5c0a87d94a6411247d25ca5f5b55f9ea244fd3f7b5345d37d444cd64",
+      "git_blob_sha": "520d55f686b19c756261ccbc8a40e08f9efbf3ad"
+    },
+    {
+      "path": "inspection/wilmore/render/wilmore_section_x450_pcbframe.png",
+      "bytes": 4650,
+      "sha256": "17f4c508bbc71629d0b45fde5380a3a72a39cc46974e9185f173d84644121d53",
+      "git_blob_sha": "1749516a8ec1080fee2f99d0c9009f8cba56b9a3"
+    },
+    {
+      "path": "inspection/wilmore/render/wilmore_section_z6_kbframe.png",
+      "bytes": 7653,
+      "sha256": "18448bf90e0704352120f775bc1a6ad93bbea3c80d239005a624400a4d106209",
+      "git_blob_sha": "dabc6c87e1cb2104af83f9cad539b6e58c01c2d1"
+    },
+    {
+      "path": "inspection/wilmore/scripts/compare.py",
+      "bytes": 2283,
+      "sha256": "ee9cbca127292de0ac8732b2288a064091bdf7f72aa0a7a1a85ca36e85900b60",
+      "git_blob_sha": "9afddce3aab98e450a3b79da59aed7768829e6f7"
+    },
+    {
+      "path": "inspection/wilmore/scripts/components.py",
+      "bytes": 815,
+      "sha256": "22d24b8c38ebd7f8c0363c38a3838cb18a64cbb46cb7d67f8dfa870fd770025e",
+      "git_blob_sha": "a0463db8f757acdd8b1097a1d93a034a91420501"
+    },
+    {
+      "path": "inspection/wilmore/scripts/corners.py",
+      "bytes": 1437,
+      "sha256": "d257577fb64a217734236e46705928e45487004660a3d2326416bb2706b73ed6",
+      "git_blob_sha": "755d76e67344820f6ea09ed48d003c45b7069da3"
+    },
+    {
+      "path": "inspection/wilmore/scripts/crossings.py",
+      "bytes": 864,
+      "sha256": "bf4f6b78af0289a3d6aa527c602bb7c5c82e68a6a8d7a183c2c33aaf596b90ed",
+      "git_blob_sha": "d070b2f3198122d214dd61e089f124eb0b51f2a8"
+    },
+    {
+      "path": "inspection/wilmore/scripts/frame2.py",
+      "bytes": 1678,
+      "sha256": "08fbae23907019ca1cfadb66de7ea566188fe04fffce52a797ccf3b4d816f18a",
+      "git_blob_sha": "cfcddd2f94c65f30003dd501f00fe3dc516e83e6"
+    },
+    {
+      "path": "inspection/wilmore/scripts/loops2.py",
+      "bytes": 3740,
+      "sha256": "42d78caa77705845d18a05cde4d7ff16b159f40df7b89c9d61bc5321d1d6df9a",
+      "git_blob_sha": "738d6f48f9b180e0793c74c7580c16f8f5ea7cda"
+    },
+    {
+      "path": "inspection/wilmore/scripts/profile.py",
+      "bytes": 1400,
+      "sha256": "935032c3eff714b0b81b777eedcd7d43d1dacc2823b4dfe483ac9b6634a030ff",
+      "git_blob_sha": "b9a3ccf1c2324b74a7128fc0d57117208eb89b9b"
+    },
+    {
+      "path": "inspection/wilmore/scripts/render.py",
+      "bytes": 4161,
+      "sha256": "48bdecaf5a1368b610425c76aa816b107f02779329df00eeb30cfd2e808fa3f1",
+      "git_blob_sha": "d3da124e04dc98b2ded5c37ad40fc9b0024b9c39"
+    },
+    {
+      "path": "inspection/wilmore/scripts/stl_overview.py",
+      "bytes": 2436,
+      "sha256": "e5e49fce380ce2087f96858dfa09cd52c333e77fad285cf145edc604cf9514e8",
+      "git_blob_sha": "b97e750c4be6b34f5bc6675b17523a6a920d4c1a"
+    },
+    {
+      "path": "inspection/wilmore/scripts/untilt.py",
+      "bytes": 1066,
+      "sha256": "a8b458f44beca5e3787968c100ded3bfe2c3a0baec072b171e11a65e8d65f769",
+      "git_blob_sha": "14e9a9e644ab0620a1eb685cc040dcc1d9b141ba"
+    },
+    {
+      "path": "inspection/wilmore/scripts/usb.py",
+      "bytes": 725,
+      "sha256": "5e07a2ea273ce323a538e7985b93608e36b3e6ef11faad644c843070863b4cec",
+      "git_blob_sha": "dfcfdafb7a6cf848ec6f551d7cfdeab3cff0a64c"
+    },
+    {
+      "path": "inspection/wilmore/scripts/vcross.py",
+      "bytes": 1367,
+      "sha256": "efb10695e2569ec214a28ebc9a00dd24e18bc3ee51a55214da5622e014407090",
+      "git_blob_sha": "d36586210f3db99bd166c1fb3052772fe08e0ef4"
+    },
+    {
+      "path": "inspection/wilmore/scripts/ysec.py",
+      "bytes": 1208,
+      "sha256": "3e5f119b02e002c1b973b83672d733f42533ae4f5c81802b003b22ddd360508d",
+      "git_blob_sha": "be409a7cc762cfcd12bb47e2e19a00ad64be06ab"
+    },
+    {
       "path": "model/46es_draft_sketches.sc",
-      "bytes": 91131,
-      "sha256": "86ce4ce0820b870d415c6f4bd96adb1e3254ac3d41cca09efc1b5218ce291e13",
-      "git_blob_sha": "b7477faf3b5c5da067226f01bf4e96e316faac05"
+      "bytes": 238174,
+      "sha256": "0e5bc79be97a4de3943a40f928241212b159c19188543ef808aeffb4a16d52bb",
+      "git_blob_sha": "e71ff171d39d84d58e6fd83e98b5271fdc4b9822"
     },
     {
       "path": "model/46es_draft_sketches_top.png",
@@ -175,22 +331,64 @@
       "git_blob_sha": "87228d027290ddfdface996aa3784f6460323e20"
     },
     {
+      "path": "model/46es_housing_ref_wilmore_iso.png",
+      "bytes": 102008,
+      "sha256": "713904f934e5c610613fe2d4b67e4b6bbc9f2f96fa50ffe397041d15ebc01f6a",
+      "git_blob_sha": "958264a54d8e16417f8f8827db5e18df139207c4"
+    },
+    {
       "path": "model/README.md",
-      "bytes": 5264,
-      "sha256": "5bb95ce4c75bf9696f78c981c15b7dab9b22c74f5e606dda1ca31d9b4284cbd5",
-      "git_blob_sha": "1332ac1b20c324cab6814ff723aba01de0041257"
+      "bytes": 8335,
+      "sha256": "c0a8190df7071c3b05f3a3dab1d346e277799b407f0e2c4677a5488c3ae8b2c8",
+      "git_blob_sha": "25b3caa62526b5d05fbfeb7209cef65d1ea1fd7e"
     },
     {
       "path": "model/measurements.csv",
-      "bytes": 7341,
-      "sha256": "454d0999e26ae42e8376fcc2d527b6c43d4b5dbc44f7fc426677f7236d2b6b5c",
-      "git_blob_sha": "538e7a7f3aa9328dfea713ada168c4da6de555af"
+      "bytes": 9909,
+      "sha256": "7aca7223d686855355cda7186a8fc90eff820d2a6e542f4489d30b5f095a72a3",
+      "git_blob_sha": "8e18604e6ce4bd9a3875a825d9345d3a19151e9c"
     },
     {
       "path": "model/parameters.csv",
-      "bytes": 8526,
-      "sha256": "3748d1ee5c515449afc42b5a4268b405c0b01e7ed565c8440fa63fa61b7ad597",
-      "git_blob_sha": "6c6884deda73328099fd8fb0bbb7c86ad52bd146"
+      "bytes": 11984,
+      "sha256": "2b9f8cd31d3dbbf1e22e0de5805bee8051b78ba2c0db12f892bf23d68adc701c",
+      "git_blob_sha": "97ec19ca0adcfaf373360a9bc56dab74c1c99ce3"
+    },
+    {
+      "path": "model/samples/46es_sw_hole_sample.sc",
+      "bytes": 987541,
+      "sha256": "db856be9deb2ca7a414ab66ac969a4b05920917b12fc72499115f45ae12efbe9",
+      "git_blob_sha": "151b9eed68208462a4f5559258b67757696d7cbf"
+    },
+    {
+      "path": "model/samples/46es_sw_hole_sample.step",
+      "bytes": 243239,
+      "sha256": "84060d30b32e49add1653a9c475a2a61e36d480c681498659a25c4756b2147bc",
+      "git_blob_sha": "fe8cec48447da067775a68309eb50355ef6a2567"
+    },
+    {
+      "path": "model/samples/46es_sw_hole_sample.stl",
+      "bytes": 162684,
+      "sha256": "4a1207d44724cbf89a89da2d19dc86f03cc0529a2204df3b5532eb7d492d826f",
+      "git_blob_sha": "0e0bedffab6b0de1a486cb44254645482f1a408b"
+    },
+    {
+      "path": "model/samples/46es_sw_hole_sample_bottom.png",
+      "bytes": 89880,
+      "sha256": "f62b725301321f7fc00fce563b4d869aeee758066c0ea50b4ec46eb68fb1ba25",
+      "git_blob_sha": "fefaa4a919e1d41be8f2abc4775e96fba641e734"
+    },
+    {
+      "path": "model/samples/46es_sw_hole_sample_top.png",
+      "bytes": 150012,
+      "sha256": "f4676a51fc2643f7c168b7d8a383d6479efe97d406bd1640fad1f02cb80027d3",
+      "git_blob_sha": "6b437c13371946bdfdf3a807ed1b40ba860a7b9e"
+    },
+    {
+      "path": "model/samples/README.md",
+      "bytes": 4412,
+      "sha256": "ff449f4bd6a80e8b0f22d533104c23bc2c11b25e711b2962d65608248357aef3",
+      "git_blob_sha": "7d4385717227c49feecc962516f124e368fa4a7a"
     },
     {
       "path": "tools/update_manifest.py",
