@@ -2,6 +2,8 @@
 
 작성일: 2026-11-03
 
+> **프로젝트 구분:** 46es는 실제 제작 중인 46키 non-split 키보드다. **46sp는 별도의 split keyboard 예시 도면**이며 46es의 원본이나 키 개수 검증 대상이 아니다. PSD60 결합·MCU·정비 설계 기준은 [assembly-revision.md](assembly-revision.md)에 정리한다.
+
 ## 1. 목적과 현재 상태
 
 현재 사용 중인 아크릴 버전의 키보드를 바탕으로, 배선과 결합 구조를 개선한 3D 프린팅 버전을 계획한다. 현재 단계는 전체 출력 발주 전 자료 수집 및 구조 검토 단계다.
@@ -10,7 +12,7 @@
 - 좌우 키 영역은 나뉘지만 하나의 하우징에 들어간다. 물리적으로 분리된 split 키보드 제작이 아니다.
 - PCB 없이 스위치 아래에서 직접 배선하는 구조다.
 - 현재 버전은 아크릴 부품을 조립하여 사용 중이다.
-- 스위치 plate는 5T를 기준으로 논의했다.
+- 기존 구조부의 Plate는 5T를 기준으로 논의했다. 3D 프린팅 리비전의 스위치 걸쇠 체결부는 국부적으로 약 1.5T를 유지하는 방안을 우선 시험한다. 전체 Plate를 1.5T로 확정한 것은 아니다.
 - 하우징은 **KPrepublic PSD60 Defender**다.
 - 기존 케이스 나사 중 일부로 체결했지만, 막대 형태 부품으로 위치를 억지로 맞춘 상태라는 사용자 설명이 있었다. 따라서 현재 체결 구멍을 정확한 기준 좌표로 그대로 복제하지 않는다.
 - 기존 결합에 육각 인서트/육각 스탠드오프를 사용하고 있다. 대화에서는 프레임–plate 연결에 육각 스탠드오프를 재사용하는 방향으로 정리했으며, 실제 부품 형식·규격은 추가 확인한다.
@@ -25,7 +27,7 @@
 
 - **Low profile 구성:** 측면에서 keycap과 plate 사이의 간격이 노출되는 형태.
 - **High profile 구성:** plate에 추가 파츠를 붙여 측면 간격 또는 스위치 주변을 가리는 형태.
-- **Plate:** 스위치를 지지하는 구조. 현재 도면에는 행별 판과 지지 부품이 펼쳐져 있다.
+- **Plate:** 스위치를 지지하는 구조. 46es의 조립 형상은 해당 DWG를 정밀 해석하거나 DXF/STEP으로 내보낸 뒤 확정한다. 펼쳐진 46sp 부품의 형상은 별도 참고 사례다.
 - **Cover:** 키 영역 주변과 중앙 등의 빈 공간을 덮는 파츠. 정확한 분할과 높이는 앞으로 설계한다.
 - **하부 마운트 프레임:** 케이스의 체결 위치와 사용자 정의 plate의 체결 위치를 연결하는 부품.
 
@@ -37,7 +39,7 @@
 PSD60 Defender 하우징
   └─ 하부 마운트 프레임: GH60 기준 위치로 케이스에 체결
        └─ 육각 스탠드오프
-            └─ 5T 스위치 plate 및 지지 구조
+            └─ 46es Plate 및 지지 구조 (5T 구조부 + 국부 약 1.5T 스냅 체결 시험)
                  └─ 별도 체결 cover
 ```
 
@@ -127,6 +129,8 @@ PSD60 Defender 하우징
 
 ### 46sp_plate_r3.dwg
 
+> **별도의 split keyboard 참고용 도면.** 아래의 홀 개수와 전개 형상은 46es 키 수 또는 설계 누락 판단에 사용하지 않는다.
+
 - 경로: `46sp_plate_r3.dwg`
 - 파일 확인 및 내장 미리보기 추출 완료.
 - DWG 기하 데이터를 직접 해석할 CAD 도구가 없어 실제 형상 검토는 DXF로 진행했다.
@@ -139,7 +143,7 @@ PSD60 Defender 하우징
 - ENTITIES: LWPOLYLINE 73개, MTEXT 2개.
 - 엔티티 레이어는 모두 `0`이다.
 - 행별 판, 탭/홈 결합으로 보이는 외곽과 지지 부품이 가공용으로 펼쳐져 있다.
-- 약 14 × 14mm 사각 개구부는 **45개로 집계**됐다. 사용자가 명시한 목표는 46키이므로, 나머지 1키의 처리 또는 도면 누락 여부는 미확인이다.
+- 이 **46sp 참고 도면**에서 약 14 × 14mm 사각 개구부 45개가 집계됐다. 이는 46es 목표 46키의 누락 증거가 아니다.
 - 이 파일에서 GH60 전체 외곽이나 케이스 체결용 원형 나사홀은 확인하지 못했다.
 - 폴리라인에 원호 bulge 값이 없어 이 도면에서 하우징 코너 R을 얻을 수 없다.
 - 행별 높이·각도와 조립 후 상대 위치는 펼친 배치 좌표만으로 확정할 수 없다. 사진 및 현물과 대조한다.
@@ -283,7 +287,6 @@ https://www.pc-100.com/mechanical-keyboard-features-parameters/igk60-mechanical-
 | PSD60 실제 체결 배치 | GH60 시험 프레임과 실물 대조 |
 | 케이스 지지대 | 높이, 상면 면적, 나사 규격·유효 깊이 |
 | Plate 조립 형상 | 각 행의 위치·높이·각도, 좌우 상대 위치 |
-| 46번째 키 | DXF 사각 홀 45개 집계와 목표 46키의 차이 |
 | 스위치 | 정확한 모델, 걸쇠 위치와 장착부 두께 |
 | 기존 육각 부품 | 스탠드오프/인서트 형식, 나사 규격, 길이 |
 | 배선 | 다이오드·핀·교차 배선의 점유 높이, 경로와 고정점 |
@@ -295,7 +298,7 @@ https://www.pc-100.com/mechanical-keyboard-features-parameters/igk60-mechanical-
 ## 10. 다음 작업 순서
 
 1. **현 버전 조립 형상 복원**
-   - 기존 DXF와 현물을 대조해 스위치 중심, 행별 높이·각도, plate 상면 위치를 정리한다.
+   - **46es 기존 DWG**를 DXF/STEP으로 변환하고 해당 현물과 대조해 스위치 중심, 행별 높이·각도, Plate 상면 위치를 정리한다. 46sp DXF와 혼용하지 않는다.
    - 유지할 타이핑 형상과 개선할 구조를 분리한다.
 2. **기준 좌표 설정**
    - GH60 체결 좌표를 하부 프레임의 기준으로 채택한다.
@@ -335,8 +338,21 @@ The user supplied 46es_r2_keyboard.dwg as an existing 3D-printing revision, not 
 - Layers 0-3 contain mappings; slots 4-15 are entirely KC_TRNS.
 - controller=1, diodeDirection=0, bootloaderSize=2 are tool-specific enum values. Their physical meaning has not been verified against the original generator.
 - All display rotations are zero. JSON display coordinates are not a mechanical drawing and do not encode the assembled plate curvature, height, or angles.
-- The JSON key count does not resolve the earlier 46sp DXF count of 45 square openings. Cross-revision correspondence remains unverified.
+- The earlier 46sp DXF is a separate split-keyboard example. Its 45 square openings are not a 46es defect or missing-key indicator.
 
 ### Uploaded scope
 
-This directory includes the accessible 46es DWG, original firmware JSON, embedded DWG preview, and planning notes. Earlier 46sp files, the assembled photograph, and The_Wedge.stl could not be read at their previous paths during upload preparation and are not bundled. Earlier analyses remain historical records. External reference-model redistribution rights have not been verified; links and measurement notes are retained instead.
+This directory includes the accessible 46es DWG, original firmware JSON, embedded DWG preview, and planning notes. The separate 46sp split-keyboard example files, the assembled photograph, and The_Wedge.stl could not be read at their previous paths during upload preparation and are not bundled. Earlier analyses remain historical records. External reference-model redistribution rights have not been verified; links and measurement notes are retained instead.
+
+## 13. 46es 리비전 결합·정비 요구사항 (2026-11-03)
+
+설계 기준 상세: [PSD60 체결·Pro Micro·점검성](assembly-revision.md). 본 절은 기존 조사 기록을 최신 결정과 연결한다.
+
+- **Mount**: PSD60 Defender의 GH60 포스트 → 개방형 Mount Frame → 스탠드오프 → 46es Switch Plate 순서. Top/Gasket Mount로 오인하지 않는다.
+- **체결**: 하우징↔Frame 체결과 Frame↔Plate 체결을 구분한다. Cover를 떼고 위에서 Plate 나사에 접근하는 구조를 목표로 한다.
+- **스위치**: 14×14 mm 홀과 약 1.5T 걸쇠 체결부는 출력 시험 후보. 5T 구조부는 유지하거나 보강 리브로 최적화한다. 키캡 스트로크 동안 Cover 간섭을 검증한다.
+- **MCU**: Pro Micro는 개별 교체 가능한 브래킷에 장착하고, Plate의 4×12 매트릭스(16선)와 착탈식 커넥터로 연결한다. USB는 하우징 개구에 고정되는 연장 구조를 우선 검토한다.
+- **정비**: USB 분리 → Cover 제거 → Plate 나사 제거 → 배선 커넥터 분리 → Plate 모듈 탈거. Frame 고정 나사는 Frame 교체 시에만 해체하는 것이 목표다.
+- **미검증**: PSD60 실제 내부 치수·포스트 XY/Z·나사 규격·USB 개구·코너 R, 46es CAD 조립 치수 및 출력 공차. CAD 확정 전 현물/시험 지그 확인이 필요하다.
+
+**이 문서는 설계 요구사항을 정리한 것이며 DWG 형상 변경이나 현물 검증 완료를 의미하지 않는다.**
