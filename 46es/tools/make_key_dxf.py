@@ -1,5 +1,8 @@
 """46es 키 위치 DXF 생성기 — r2 DWG P3 개구부 중심·회전각 → SolidCraft 스케치용 DXF.
 
+(2026-11-04 마지막: 모델이 쓰는 것은 `sq 14`(SK22)와 `sq 16.5`(SK24·SK25)뿐이다. `notch`·`cover`·`silhouette`는
+ 폐기된 안(걸쇠 노치 십자, 열 단위 창, 키 블록 실루엣 창)의 기록용. 커버 창은 tools/make_r2_cover_dxf.py가 만든다.)
+
 입력: inspection/data/features_by_panel.json 의 P3_astel2T.squares (46개, rx/ry = r2 판 좌하단 기준, rot = deg)
 출력(모두 GH60 기준점 좌표 = r2 좌표 − (dx, dy)):
   sq <side>      : 키마다 정사각형(스위치 홀·키 창 템플릿)
