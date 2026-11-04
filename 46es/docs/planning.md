@@ -27,7 +27,7 @@
 
 - **Low profile 구성:** 측면에서 keycap과 plate 사이의 간격이 노출되는 형태.
 - **High profile 구성:** plate에 추가 파츠를 붙여 측면 간격 또는 스위치 주변을 가리는 형태.
-- **Plate:** 스위치를 지지하는 구조. 46es의 조립 형상은 해당 DWG를 정밀 해석하거나 DXF/STEP으로 내보낸 뒤 확정한다. 펼쳐진 46sp 부품의 형상은 별도 참고 사례다.
+- **Plate:** 스위치를 지지하는 구조. 46es r2 DWG의 2D 형상은 [검사 보고서](../inspection/46es_r2_dwg_inspection.md)에서 해석해 DXF로 내보냈다. DWG에 Z·두께 정보가 없으므로 조립 형상(행별 높이·적층)은 현물 실측(M12·M21) 후 확정한다. 펼쳐진 46sp 부품의 형상은 별도 참고 사례다.
 - **Cover:** 키 영역 주변과 중앙 등의 빈 공간을 덮는 파츠. 정확한 분할과 높이는 앞으로 설계한다.
 - **하부 마운트 프레임:** 케이스의 체결 위치와 사용자 정의 plate의 체결 위치를 연결하는 부품.
 
@@ -298,7 +298,7 @@ https://www.pc-100.com/mechanical-keyboard-features-parameters/igk60-mechanical-
 ## 10. 다음 작업 순서
 
 1. **현 버전 조립 형상 복원**
-   - **46es 기존 DWG**를 DXF/STEP으로 변환하고 해당 현물과 대조해 스위치 중심, 행별 높이·각도, Plate 상면 위치를 정리한다. 46sp DXF와 혼용하지 않는다.
+   - **46es 기존 DWG**에서 추출한 2D 스위치 중심·회전각·외곽([검사 보고서](../inspection/46es_r2_dwg_inspection.md))을 현물과 대조하고(M12·M20), 행별 높이와 Plate 상면 위치를 실측한다(M21). 46sp DXF와 혼용하지 않는다.
    - 유지할 타이핑 형상과 개선할 구조를 분리한다.
 2. **기준 좌표 설정**
    - GH60 체결 좌표를 하부 프레임의 기준으로 채택한다.
@@ -329,6 +329,7 @@ https://www.pc-100.com/mechanical-keyboard-features-parameters/igk60-mechanical-
 The user supplied 46es_r2_keyboard.dwg as an existing 3D-printing revision, not a newly completed CAD design from this discussion.
 
 - DWG signature: AC1024. Embedded preview extracted; detailed geometry and dimensions have not been decoded. DXF/STEP export is needed for precise comparison.
+  - Update 2026-11-04: the 2D geometry has since been decoded and exported to DXF; see [the r2 DWG inspection report](../inspection/46es_r2_dwg_inspection.md). The drawing has no dimensions and no Z/thickness data, so a STEP export would not add assembly heights (measure them as M21).
 - Firmware JSON: 46 keys, 4 rows x 12 columns, 46 unique electrical matrix positions.
 - Populated positions per row: 12 / 12 / 11 / 11.
 - Unused matrix positions (zero-based): (2, 11), (3, 8).

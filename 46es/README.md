@@ -7,8 +7,10 @@ PSD60 Defender 하우징용 **46키 non-split hand-wired 키보드**의 기존 �
 - [전체 논의와 다음 버전 계획](docs/planning.md)
 - [PSD60 체결·Pro Micro·점검성 설계 기준](docs/assembly-revision.md)
 - [기존 3D 프린팅 리비전 DWG](cad/46es_r2_keyboard.dwg)
+- [r2 DWG 검사 보고서](inspection/46es_r2_dwg_inspection.md): 판별 형상, 체결 후보 좌표, 판독 손실·경고, 미확정 치수
+- [제작 모델 준비와 실측 시트](model/README.md): 매개변수, 실측 항목 M01–M21, 실측 후 재개 절차 (실측 대기)
 - [46키 펌웨어 설정 JSON](firmware/46es_kbfirmware.json)
-- [파일 체크섬과 크기](manifest.json)
+- [파일 체크섬과 크기](manifest.json): 커밋할 파일을 `git add`한 뒤 `python -I tools/update_manifest.py`로 갱신
 
 ![DWG 내장 미리보기 — 치수 확인용 아님](images/46es_r2_keyboard_preview.png)
 
@@ -20,6 +22,6 @@ Plate 코너는 모따기로 간섭을 피하고, cover는 R별 코너 샘플로
 
 ## 확인 범위
 
-펌웨어 JSON은 46키와 4×12 전기적 매트릭스를 확인했습니다. 실제 배선·동작 시험이나 빌드는 수행하지 않았습니다. DWG는 내장 미리보기만 확인했고 정밀 형상은 아직 읽지 못했습니다. GH60 체결 좌표와 Wedge의 R값은 PSD60 실물에서 검증하기 전의 참고값입니다.
+펌웨어 JSON은 46키와 4×12 전기적 매트릭스를 확인했습니다. 실제 배선·동작 시험이나 빌드는 수행하지 않았습니다. DWG r2의 2D 형상은 [검사 보고서](inspection/46es_r2_dwg_inspection.md)에서 읽었습니다. 도면에는 기입 치수와 Z(두께·높이) 정보가 없습니다. MText의 재료 표기(아크릴·압출판·아스텔 판재)는 "3D 프린팅 리비전"이라는 설명과 맞지 않아 확인이 필요합니다. DWG 값, GH60 체결 좌표, Wedge의 R값은 모두 PSD60 실물에서 검증하기 전의 참고값입니다.
 
-기존 46sp 아크릴 도면·사진과 Wedge STL은 이번 업로드에 포함되지 않았습니다. 해당 자료는 업로드 시 기존 로컬 경로에서 읽히지 않았으며, 앞선 분석 기록과 참고 링크는 계획 문서에 유지했습니다. 외부 모델의 재배포 권한은 확인하지 않았습니다.
+46sp(별도 split keyboard 예시)의 아크릴 도면, 조립 사진, Wedge STL은 이번 업로드에 포함되지 않았습니다. 해당 자료는 업로드 시 기존 로컬 경로에서 읽히지 않았으며, 앞선 분석 기록과 참고 링크는 계획 문서에 유지했습니다. 외부 모델의 재배포 권한은 확인하지 않았습니다.
