@@ -2,9 +2,9 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 2673,
-      "sha256": "ac0fe26510e3815500c8627f3edff4d192ff9d21fbd26a935f123d1980ee4020",
-      "git_blob_sha": "d4a3a0f6123d697b29ce98d14398081ff5da24c8"
+      "bytes": 2686,
+      "sha256": "26f46f857c9fd2a88e0467f467374552c9545b980399876f7aee519fd39cf3aa",
+      "git_blob_sha": "87fa4b500548a7ef3f4a13ac03a41ce05ea2a206"
     },
     {
       "path": "cad/46es_r2_keyboard.dwg",
@@ -14,15 +14,15 @@
     },
     {
       "path": "docs/assembly-revision.md",
-      "bytes": 9644,
-      "sha256": "7dd34e86e80191713b2169cd076e8f0b715207bca34733705d380a4e9778e503",
-      "git_blob_sha": "e1e7841bca192bd717311b55a00c371bb42aa67c"
+      "bytes": 9661,
+      "sha256": "e3d428bb6493c4504fa8e54ab4a234dd110c8f26c5725b5ef7f5a18e16dbec48",
+      "git_blob_sha": "5c5399ef9f29b3d6296af547d209e5a9c960ecaf"
     },
     {
       "path": "docs/planning.md",
-      "bytes": 23117,
-      "sha256": "1e4e2dcdab3b5cae83b296d1f1c572a05c54b5fafaec0f240c84f266a63a7e12",
-      "git_blob_sha": "777c45df81962830bb3d5c3d918724edf9b23d93"
+      "bytes": 23355,
+      "sha256": "3914c0c41d98f3afac2917943c3bc6fc87b6327800f17323417612add77f4567",
+      "git_blob_sha": "2050ffc08d52b0711b03d4b4e0d67b9103425afe"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
@@ -38,9 +38,9 @@
     },
     {
       "path": "inspection/46es_r2_dwg_inspection.md",
-      "bytes": 21999,
-      "sha256": "0867e5168dbc7b686c37bb4473c4bf185d93356b89541945bb2abf77942b0ac8",
-      "git_blob_sha": "5b5033a2d2fc88073efee11deba2447b44855d67"
+      "bytes": 22238,
+      "sha256": "110fc674d73b1c1de72912c860c93cd7d346b7c849ea270430c40a7947f238e4",
+      "git_blob_sha": "8681bb2cd175aea9d9f0968bdc7c5c4c747fef57"
     },
     {
       "path": "inspection/data/cadcraft_info.json",

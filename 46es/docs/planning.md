@@ -12,7 +12,7 @@
 - 좌우 키 영역은 나뉘지만 하나의 하우징에 들어간다. 물리적으로 분리된 split 키보드 제작이 아니다.
 - PCB 없이 스위치 아래에서 직접 배선하는 구조다.
 - 현재 버전은 아크릴 부품을 조립하여 사용 중이다.
-- 기존 구조부의 Plate는 5T를 기준으로 논의했다. 3D 프린팅 리비전의 스위치 걸쇠 체결부는 국부적으로 약 1.5T를 유지하는 방안을 우선 시험한다. 전체 Plate를 1.5T로 확정한 것은 아니다.
+- 기존 구조부의 Plate는 5T를 기준으로 논의했다. 새 3D 프린팅 버전의 스위치 걸쇠 체결부는 국부적으로 약 1.5T를 유지하는 방안을 우선 시험한다. 전체 Plate를 1.5T로 확정한 것은 아니다.
 - 하우징은 **KPrepublic PSD60 Defender**다.
 - 기존 케이스 나사 중 일부로 체결했지만, 막대 형태 부품으로 위치를 억지로 맞춘 상태라는 사용자 설명이 있었다. 따라서 현재 체결 구멍을 정확한 기준 좌표로 그대로 복제하지 않는다.
 - 기존 결합에 육각 인서트/육각 스탠드오프를 사용하고 있다. 대화에서는 프레임–plate 연결에 육각 스탠드오프를 재사용하는 방향으로 정리했으며, 실제 부품 형식·규격은 추가 확인한다.
@@ -324,9 +324,11 @@ https://www.pc-100.com/mechanical-keyboard-features-parameters/igk60-mechanical-
 
 
 
-## 12. Existing 3D-printed revision: 46es r2
+## 12. Existing acrylic revision: 46es r2
 
-The user supplied 46es_r2_keyboard.dwg as an existing 3D-printing revision, not a newly completed CAD design from this discussion.
+The user supplied 46es_r2_keyboard.dwg as an existing design file, not a newly completed CAD design from this discussion.
+
+> Correction 2026-11-04: this section first described the DWG as an existing 3D-printing revision. The user confirmed it is the design file of the **acrylic version**, which matches its MText sheet-material labels (acrylic, extruded plate, astel).
 
 - DWG signature: AC1024. Embedded preview extracted; detailed geometry and dimensions have not been decoded. DXF/STEP export is needed for precise comparison.
   - Update 2026-11-04: the 2D geometry has since been decoded and exported to DXF; see [the r2 DWG inspection report](../inspection/46es_r2_dwg_inspection.md). The drawing has no dimensions and no Z/thickness data, so a STEP export would not add assembly heights (measure them as M21).
