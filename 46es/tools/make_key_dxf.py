@@ -5,9 +5,12 @@
   sq <side>      : 키마다 정사각형(스위치 홀·키 창 템플릿)
   notch <hole> <relief> <len> : 키마다 걸쇠 노치 십자형 (가로 (hole+2·relief)×len ∪ 세로 len×(hole+2·relief))
   cover <keycap1u> <gap> <min_rail> : (구) 열 단위 창 + 단독 키 창. 2026-11-04 후반에 silhouette 로 대체
-  silhouette <cell> <close_r> <min_rail> : 키 블록 실루엣 창(좌·우 블록 2개). 키마다 cell 사각형(폭 u 키는
-                                      ENVELOPE_U/WIDTHS_U 의 u·pitch − (pitch − cell))을 합치고 반지름 close_r 닫힘으로 틈을 메운 뒤
-                                      가장자리 안쪽 min_rail 로 잘라 외곽선을 뽑는다. 블록 안에는 베젤이 없다
+  silhouette <cell> <close_r> <min_rail> <dx> <dy> <out> [fill_L] :
+                                      키 블록 실루엣 창(좌·우 블록 2개). 키마다 cell 사각형(폭 u 키는
+                                      ENVELOPE_U/WIDTHS_U 의 u·pitch − (pitch − cell))을 합치고, fill_L(기본 0)이 있으면 먼저
+                                      가로·세로 선분(길이 fill_L) 닫힘으로 그보다 좁은 틈·쐐기를 **직선으로** 메운 뒤(모서리 유지),
+                                      반지름 close_r 원판 닫힘으로 오목 모서리만 둥글린다. 마지막에 가장자리 안쪽 min_rail 로 잘라
+                                      외곽선을 뽑는다. 블록 안에는 베젤이 없다. (2026-11-04: R8 원판만 → fill_L 16 + close_r 0, 직각 계단)
 
 사용 예:
   python -I tools/make_key_dxf.py sq 14 0.693 0.667 out.dxf
@@ -197,10 +200,12 @@ def cover_polys(keys, cap1u, gap, min_rail, edge):
     return polys, cols, singles, notes
 
 
-def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1):
+def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1, fill_L=0.0):
     """키 블록 실루엣 창. 키마다 cell×(cell) (폭 u 키는 u·pitch − (pitch − cell)) 회전 사각형을 래스터로 합치고,
-    반지름 close_r 닫힘(팽창→침식)으로 좁은 틈·쐐기를 메운 뒤, 가장자리 안쪽 min_rail 사각형으로 잘라
-    연결 성분(보통 좌·우 블록 2개)마다 외곽선을 추출해 Douglas–Peucker 로 단순화한다. (numpy + scipy.ndimage)"""
+    fill_L > 0 이면 가로·세로 선분(길이 fill_L) 닫힘으로 그보다 좁은 틈·쐐기를 직선으로 메우고(계단 모서리는 그대로),
+    이어서 반지름 close_r 원판 닫힘(팽창→침식)으로 오목 모서리를 둥글린 뒤, 가장자리 안쪽 min_rail 사각형으로 잘라
+    연결 성분(보통 좌·우 블록 2개)마다 외곽선을 추출해 Douglas–Peucker 로 단순화한다. (numpy + scipy.ndimage)
+    fill_L = 0 이면 예전 방식(원판 닫힘만)과 같다."""
     import numpy as np
     from scipy import ndimage
 
@@ -220,9 +225,19 @@ def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1):
         E = ndimage.distance_transform_edt(D) > r
         return E[p:-p, p:-p]
 
+    def seg_closing(B):
+        # 가로 선분 닫힘 ∪ 세로 선분 닫힘: 길이 fill_L 보다 좁은 틈은 직선 변으로 메워지고 오목 모서리는 둥글지 않다.
+        if fill_L <= 0:
+            return B
+        n = int(round(fill_L / res)) | 1
+        p = n + 2
+        Bp = np.pad(B, p)
+        C = ndimage.binary_closing(Bp, np.ones((1, n), bool)) | ndimage.binary_closing(Bp, np.ones((n, 1), bool))
+        return C[p:-p, p:-p]
+
     U = np.zeros((len(ys), len(xs)), dtype=bool)
     for block in blocks:
-        Ub = closing(_raster_cells(block, cell, xs, ys, res))
+        Ub = closing(seg_closing(_raster_cells(block, cell, xs, ys, res)))
         Ub = ndimage.binary_fill_holes(Ub)  # 창 안의 베젤 섬 제거
         U |= Ub
     # 가장자리 안쪽 min_rail 로 자른다
@@ -370,11 +385,13 @@ def main(argv):
         dx, dy, out = float(argv[4]), float(argv[5]), argv[6]
         in_w, in_d, gap_c = 286.381, 95.934, 0.3
         edge = (-dx + gap_c, in_w - dx - gap_c, -dy + gap_c, in_d - dy - gap_c)
+        fill_L = float(argv[7]) if len(argv) > 7 else 0.0
         keys = load_keys(dx, dy)
-        polys, U, res = silhouette_polys(keys, cell, close_r, min_rail, edge)
+        polys, U, res = silhouette_polys(keys, cell, close_r, min_rail, edge, fill_L=fill_L)
         Path(out).write_text(dxf(polys, "REF_r2_cover_sil"), encoding="ascii")
         area = float(U.sum()) * res * res
-        print(f"{len(polys)} silhouette windows -> {out}; window area {area:.1f} mm2 (raster {res})")
+        print(f"{len(polys)} silhouette windows (fill_L {fill_L}, close_r {close_r}) -> {out}; "
+              f"window area {area:.1f} mm2 (raster {res})")
         for p in polys:
             xs_ = [q[0] for q in p]
             ys_ = [q[1] for q in p]
