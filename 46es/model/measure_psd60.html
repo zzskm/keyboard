@@ -7,124 +7,391 @@
 <meta name="description" content="46es 3D 프린팅 케이스용 PSD60 하우징 실측 M01–M21: 측정 위치 그림, 값 입력, JSON 내보내기 (오프라인 단일 파일)">
 <style>
 :root{
-  --bg:#f5f6f8; --card:#ffffff; --ink:#1d2430; --muted:#5d6675; --line:#d9dee6;
-  --accent:#2f6fde; --accent-ink:#ffffff; --ok:#2e9e5b; --warn:#d9822b; --p1:#d94a4a; --p2:#d9822b; --p3:#7a8594;
-  --field:#f9fafc; --mark:#e8f0ff; --svg-wall:#4a5565; --svg-dim:#2f6fde; --svg-post:#d9822b; --svg-usb:#2e9e5b; --svg-text:#1d2430;
+  --bg:#f2f4f7; --card:#ffffff; --ink:#17202b; --muted:#566170; --faint:#87909e; --line:#dde2e9; --line2:#c6cdd7;
+  --accent:#2563d9; --accent-ink:#ffffff; --accent-soft:#e8f0ff;
+  --ok:#1e8a4c; --ok-on:#ffffff; --ok-soft:#e2f4e9; --ok-ink:#11643a;
+  --warn:#b35f0c; --err:#c62f2f; --err-soft:#fde9e9;
+  --p1:#cf3f3f; --p2:#bf6f12; --p3:#667182;
+  --field:#fbfcfd; --hover:#f4f6f9;
+  --fig-bg:#ffffff; --fig-mat:#e6eaf0; --fig-wall:#495466; --fig-dim:#5677b6; --fig-post:#d97f24; --fig-post-f:rgba(217,127,36,.28);
+  --fig-usb:#2a9a58; --fig-usb-f:rgba(42,154,88,.22); --fig-ref:#8b94a2;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.07);
+  color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#14181f; --card:#1d232c; --ink:#e7ebf1; --muted:#9aa5b4; --line:#323b48;
-    --accent:#6a9cff; --accent-ink:#0d1320; --ok:#5ccb86; --warn:#f0a450; --p1:#ff7b7b; --p2:#f0a450; --p3:#8b96a6;
-    --field:#161b22; --mark:#22304a; --svg-wall:#c7cfdb; --svg-dim:#6a9cff; --svg-post:#f0a450; --svg-usb:#5ccb86; --svg-text:#e7ebf1;
+    --bg:#0f1318; --card:#181d24; --ink:#e6eaf0; --muted:#a0aab8; --faint:#768293; --line:#29313c; --line2:#38424f;
+    --accent:#6d9fff; --accent-ink:#0a1222; --accent-soft:#1c2840;
+    --ok:#4cc47f; --ok-on:#08160e; --ok-soft:#14291c; --ok-ink:#86e0ab;
+    --warn:#f0a450; --err:#ff8080; --err-soft:#3a1c1e;
+    --p1:#ff8a8a; --p2:#f0a450; --p3:#94a0b0;
+    --field:#12171d; --hover:#1f252e;
+    --fig-bg:#181d24; --fig-mat:#252d38; --fig-wall:#b9c3d0; --fig-dim:#86a0d6; --fig-post:#f0a450; --fig-post-f:rgba(240,164,80,.28);
+    --fig-usb:#55c98a; --fig-usb-f:rgba(85,201,138,.2); --fig-ref:#7a8595;
+    --shadow:none;
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#14181f; --card:#1d232c; --ink:#e7ebf1; --muted:#9aa5b4; --line:#323b48;
-  --accent:#6a9cff; --accent-ink:#0d1320; --ok:#5ccb86; --warn:#f0a450; --p1:#ff7b7b; --p2:#f0a450; --p3:#8b96a6;
-  --field:#161b22; --mark:#22304a; --svg-wall:#c7cfdb; --svg-dim:#6a9cff; --svg-post:#f0a450; --svg-usb:#5ccb86; --svg-text:#e7ebf1;
+  --bg:#0f1318; --card:#181d24; --ink:#e6eaf0; --muted:#a0aab8; --faint:#768293; --line:#29313c; --line2:#38424f;
+  --accent:#6d9fff; --accent-ink:#0a1222; --accent-soft:#1c2840;
+  --ok:#4cc47f; --ok-on:#08160e; --ok-soft:#14291c; --ok-ink:#86e0ab;
+  --warn:#f0a450; --err:#ff8080; --err-soft:#3a1c1e;
+  --p1:#ff8a8a; --p2:#f0a450; --p3:#94a0b0;
+  --field:#12171d; --hover:#1f252e;
+  --fig-bg:#181d24; --fig-mat:#252d38; --fig-wall:#b9c3d0; --fig-dim:#86a0d6; --fig-post:#f0a450; --fig-post-f:rgba(240,164,80,.28);
+  --fig-usb:#55c98a; --fig-usb-f:rgba(85,201,138,.2); --fig-ref:#7a8595;
+  --shadow:none;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",Roboto,sans-serif;padding:0 16px 80px}
-header{max-width:1100px;margin:0 auto;padding:20px 0 8px}
-h1{font-size:22px;margin:0 0 4px}
-h2{font-size:17px;margin:28px 0 10px}
-.sub{color:var(--muted);font-size:14px;margin:0}
-main{max-width:1100px;margin:0 auto}
-.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.bar .prog{flex:1;min-width:160px;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
-.bar .prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
-.bar .cnt{font-size:13px;color:var(--muted);white-space:nowrap}
-button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer}
-button.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-button:active{transform:translateY(1px)}
-.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.filters button[aria-pressed="true"]{background:var(--mark);border-color:var(--accent)}
-.grid{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px;scroll-margin-top:70px}
-.card.hl{outline:2px solid var(--accent)}
-.card.done{border-color:var(--ok)}
-.card header{padding:0;margin:0 0 6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
-.id{font-weight:700;font-family:ui-monospace,Consolas,monospace}
-.pr{font-size:11px;padding:1px 6px;border-radius:10px;color:#fff;background:var(--p3)}
-.pr.p1{background:var(--p1)} .pr.p2{background:var(--p2)}
-.title{font-weight:600}
-.meta{font-size:13px;color:var(--muted);margin:2px 0 8px}
-.meta b{color:var(--ink);font-weight:600}
-.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.f label{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
-.f input,.f textarea,.note textarea{width:100%;font:inherit;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink)}
-.f input:focus,.note textarea:focus{outline:2px solid var(--accent);border-color:transparent}
-.f .cand{font-size:11px;color:var(--muted);margin-top:2px}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+code,.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,"D2Coding",monospace;font-size:.9em}
+button{font:inherit;color:inherit}
+.wrap{max-width:1440px;margin:0 auto;padding:0 16px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- 상단 고정 막대 ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+@supports (backdrop-filter:blur(8px)){.topbar{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.3) blur(8px)}}
+.tb-row{display:flex;align-items:center;gap:14px;padding:10px 0 8px}
+.brand{margin:0;font-size:16px;line-height:1.25;white-space:nowrap}
+.brand small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.brand .short{display:none}
+.prog{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.track{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:flex;min-width:40px}
+.track i{display:block;height:100%;transition:width .25s}
+#progDone{background:var(--ok)} #progPart{background:var(--accent);opacity:.5}
+.cnt{font-size:13px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cnt b{color:var(--ink);font-size:14px}
+.btn{border:1px solid var(--line2);background:var(--card);padding:8px 14px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--hover)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:8px}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.btn.danger{color:var(--err);border-color:color-mix(in srgb,var(--err) 40%,var(--line2))}
+.btn.danger:hover{background:var(--err-soft)}
+.strip{display:flex;gap:4px;overflow-x:auto;padding:0 0 10px;scrollbar-width:thin}
+.sc{flex:0 0 auto;width:46px;border:1px solid var(--line2);background:var(--card);border-radius:7px;padding:3px 0;font:600 12px/1.35 ui-monospace,"Cascadia Mono",Consolas,monospace;cursor:pointer;color:var(--faint)}
+.sc.p1{color:var(--ink)}
+.sc:hover{border-color:var(--accent)}
+.sc.part{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.sc.done{border-color:var(--ok);background:var(--ok);color:var(--ok-on)}
+.sc.skip{border-style:dashed;background:transparent;color:var(--faint)}
+.sc.cur{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
+
+/* ---------- 안내 ---------- */
+.intro{padding:16px 0 0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 46px;position:relative;font-size:13.5px;color:var(--muted);box-shadow:var(--shadow)}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:12px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:13px;display:grid;place-items:center}
+.steps b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:1px}
+.notes{font-size:13px;color:var(--muted);margin:10px 2px 0}
+
+/* ---------- 배치 ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding-top:16px;padding-bottom:96px}
+.figs,.main{min-width:0}
+@media (min-width:1100px){
+  .layout{grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);align-items:start;gap:20px}
+  .figs{grid-column:2;grid-row:1;position:sticky;top:calc(var(--barH,96px) + 12px);max-height:calc(100vh - var(--barH,96px) - 20px);overflow:auto;padding-bottom:4px}
+  .main{grid-column:1;grid-row:1}
+}
+
+/* ---------- 그림 ---------- */
+.figcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;box-shadow:var(--shadow);scroll-margin-top:calc(var(--barH,96px) + 12px);transition:box-shadow .2s}
+.figcard+.figcard{margin-top:12px}
+.figcard.flash{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
+.fighead{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap;margin:0 2px 6px}
+.fighead h2{font-size:15px;margin:0}
+.fighead span{font-size:12.5px;color:var(--muted)}
+.figscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.swipe{display:none;font-size:12px;color:var(--faint);margin:4px 2px 0}
+@media (max-width:600px){.swipe{display:block}}
+.fig{display:block;width:100%;height:auto;min-width:560px;margin:0 auto;user-select:none;-webkit-user-select:none}
+.fig text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+.fig .outer{fill:var(--fig-mat);stroke:var(--fig-wall);stroke-width:1;stroke-dasharray:5 4}
+.fig .cav{fill:var(--fig-bg);stroke:var(--fig-wall);stroke-width:1.6}
+.fig .mat{fill:var(--fig-mat);stroke:var(--fig-wall);stroke-width:1.5;stroke-linejoin:round}
+.fig .post{fill:var(--fig-post-f);stroke:var(--fig-post);stroke-width:1.3}
+.fig .usb{fill:var(--fig-usb-f);stroke:var(--fig-usb);stroke-width:1.3}
+.fig .ref{fill:none;stroke:var(--fig-ref);stroke-width:1;stroke-dasharray:4 3}
+.fig .reft{fill:var(--muted);font-size:12.5px}
+.fig .plab{fill:var(--muted);font-size:12.5px;font-weight:700}
+.fig .orient{fill:var(--faint);font-size:12.5px;font-weight:700}
+.fig .g{color:var(--fig-dim);transition:opacity .15s}
+.fig .g .ln{stroke:currentColor;stroke-width:1.25;fill:none}
+.fig .g .ex{stroke:currentColor;stroke-width:.8;fill:none;opacity:.75}
+.fig .g .dash{stroke-dasharray:5 3}
+.fig .g .ah{fill:currentColor;stroke:none}
+.fig .g .mk{fill:none;stroke:currentColor;stroke-width:1.8}
+.fig .g text{fill:currentColor;font-size:12.5px;font-weight:700}
+.fig .g.detail{display:none}
+.fig .g.on{color:var(--accent)}
+.fig .g.on.detail{display:inline}
+.fig .g.on .ln{stroke-width:1.9}
+.fig .g.off{opacity:.14}
+.fig .g.soft{opacity:.32}
+.fig .g.key .ln{stroke-width:2.8}
+.fig .g.key .mk{stroke-width:2.8}
+.fig .badge{cursor:pointer}
+.fig .badge rect{fill:var(--fig-bg);stroke:var(--fig-dim);stroke-width:1.3}
+.fig .badge text{fill:var(--fig-dim);font-size:13px;font-weight:700}
+.fig .badge .lead{stroke:var(--fig-dim);stroke-width:1;fill:none}
+.fig .badge .ldot{fill:var(--fig-dim)}
+.fig .badge.done rect{fill:var(--ok-soft);stroke:var(--ok)}
+.fig .badge.done text{fill:var(--ok-ink)}
+.fig .badge.done .lead{stroke:var(--ok)} .fig .badge.done .ldot{fill:var(--ok)}
+.fig .badge.on rect{fill:var(--accent);stroke:var(--accent)}
+.fig .badge.on text{fill:var(--accent-ink)}
+.fig .badge.on .lead{stroke:var(--accent);stroke-width:1.5} .fig .badge.on .ldot{fill:var(--accent)}
+.fig .badge.off{opacity:.3}
+.fig .badge:hover rect,.fig .badge:focus-visible rect{stroke-width:2.4}
+.fig .badge:focus{outline:none}
+.figinfo{margin-top:12px;border-radius:10px;padding:8px 10px 8px 12px;font-size:13.5px;min-height:44px;display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;background:var(--accent-soft)}
+.figinfo.idle{background:transparent;border:1px dashed var(--line2);color:var(--muted);display:block;padding-top:11px}
+.fi-id{font:700 13px ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--accent-ink);background:var(--accent);border-radius:6px;padding:1px 7px}
+.fi-t{font-weight:700}
+.fi-k{color:var(--ink)}
+.fi-k small{color:var(--muted);font-size:12.5px;margin-left:4px}
+.fi-none{color:var(--muted);font-size:12.5px}
+.fi-sp{flex:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;margin:10px 2px 0;padding:0;font-size:12.5px;color:var(--muted)}
+.legend li{display:flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:18px;height:11px;border-radius:2px;flex:0 0 auto}
+.sw.wall{border:1.5px solid var(--fig-wall);background:var(--fig-mat)}
+.sw.post{width:11px;border-radius:50%;background:var(--fig-post-f);border:1.5px solid var(--fig-post)}
+.sw.usb{background:var(--fig-usb-f);border:1.5px solid var(--fig-usb)}
+.sw.dim{height:0;border-top:2px solid var(--fig-dim);border-radius:0}
+.sw.ref{height:0;border-top:1.5px dashed var(--fig-ref);border-radius:0}
+.sw.badge{width:auto;height:auto;font:700 10.5px/1.4 ui-monospace,Consolas,monospace;padding:0 4px;border:1.3px solid var(--fig-dim);color:var(--fig-dim);border-radius:4px}
+.sw.badge.done{border-color:var(--ok);color:var(--ok-ink);background:var(--ok-soft)}
+.figfoot{font-size:12px;color:var(--faint);margin:8px 2px 0}
+
+.sheet-bar{display:none}
+.backdrop{position:fixed;inset:0;background:rgba(10,14,20,.45);z-index:39;display:none}
+.backdrop.show{display:block}
+@media (max-width:1099px){
+  .figs.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;max-height:84vh;overflow:auto;overscroll-behavior:contain;background:var(--bg);border-radius:16px 16px 0 0;padding:0 12px 16px;box-shadow:0 -10px 30px rgba(0,0,0,.28)}
+  .figs.sheet .sheet-bar{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2;background:var(--bg);padding:10px 2px 8px;font-size:15px}
+  .figs.sheet .figfoot{display:none}
+}
+
+/* ---------- 카드 목록 ---------- */
+.main-head{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;margin:0 0 10px}
+.main-head h2{font-size:17px;margin:0}
+.seg{display:inline-flex;flex-wrap:wrap;gap:2px;background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:5px 10px;border-radius:7px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.seg .n{font-weight:500;font-size:12px;opacity:.8;margin-left:3px;font-variant-numeric:tabular-nums}
+#cards{display:grid;gap:14px}
+.empty{display:none;text-align:center;color:var(--muted);padding:28px 12px;border:1px dashed var(--line2);border-radius:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px 12px;box-shadow:var(--shadow);scroll-margin-top:calc(var(--barH,96px) + 14px);position:relative;transition:border-color .15s,box-shadow .2s}
+.card::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:transparent}
+.card.part::before{background:var(--accent)}
+.card.done::before{background:var(--ok)}
+.card.act{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.card.flash{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
+.card.skip .ct{color:var(--muted)}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 12px}
+.ch-t{display:flex;gap:10px;align-items:baseline;min-width:0}
+.cid{font:700 15px/1.35 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--accent);flex:0 0 auto}
+.ct{margin:0;font-size:16.5px;line-height:1.4;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12px;line-height:1.5;padding:1px 8px;border-radius:99px;border:1px solid var(--line);background:var(--hover);color:var(--muted);font-weight:600;white-space:nowrap}
+.tag.p1{color:var(--p1);background:color-mix(in srgb,var(--p1) 9%,var(--card));border-color:color-mix(in srgb,var(--p1) 35%,var(--card))}
+.tag.p2{color:var(--p2);background:color-mix(in srgb,var(--p2) 9%,var(--card));border-color:color-mix(in srgb,var(--p2) 35%,var(--card))}
+.tag.p3{color:var(--p3)}
+.tag.st.part{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--card))}
+.tag.st.done{color:var(--ok-ink);background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 40%,var(--card))}
+.tag.st.skip{border-style:dashed}
+.meta{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 12px;margin:12px 0 0;font-size:13.5px}
+.meta dt{color:var(--faint);font-weight:600}
+.meta dd{margin:0;color:var(--muted);min-width:0}
+.pc{display:inline-block;background:var(--hover);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin:1px 4px 1px 0;font-size:12px;color:var(--ink);overflow-wrap:anywhere}
+.how{margin:12px 0 0;border-left:3px solid var(--accent);background:var(--hover);border-radius:0 10px 10px 0;padding:8px 12px 9px}
+.how summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--accent);list-style:none}
+.how summary::-webkit-details-marker{display:none}
+.how summary::before{content:"▾";display:inline-block;width:14px}
+.how:not([open]) summary::before{content:"▸"}
+.how p{margin:4px 0 0;font-size:14px;line-height:1.7}
+.grp{margin-top:14px}
+.gt{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px 12px}
+.f{min-width:0}
 .f.wide{grid-column:1/-1}
-.agg{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
-.agg b{color:var(--ink)}
-.note{margin-top:8px}
-.note textarea{min-height:44px;resize:vertical}
-.foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12px;color:var(--muted)}
-.skip{opacity:.75}
-details{margin-top:6px} summary{cursor:pointer;color:var(--accent);font-size:13px}
-.svgwrap{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;overflow:auto}
-svg{display:block;width:100%;height:auto}
-svg text{font:11px -apple-system,"Segoe UI","Malgun Gothic",sans-serif;fill:var(--svg-text)}
-svg .wall{fill:none;stroke:var(--svg-wall);stroke-width:1.2}
-svg .outer{fill:none;stroke:var(--svg-wall);stroke-width:.8;stroke-dasharray:4 3}
-svg .dim{stroke:var(--svg-dim);stroke-width:.9;fill:none}
-svg .dimt{fill:var(--svg-dim);font-weight:600;cursor:pointer}
-svg .post{fill:var(--svg-post);fill-opacity:.35;stroke:var(--svg-post)}
-svg .usb{fill:var(--svg-usb);fill-opacity:.35;stroke:var(--svg-usb)}
-svg .ghost{fill:none;stroke:var(--muted);stroke-width:.6;stroke-dasharray:2 2}
-svg .lab{cursor:pointer}
-.out{margin-top:10px}
-.out textarea{width:100%;min-height:220px;font:12px ui-monospace,Consolas,monospace;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
-.hint{font-size:13px;color:var(--muted)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
-.toast.show{opacity:1}
-kbd{font:12px ui-monospace,Consolas,monospace;background:var(--mark);padding:1px 5px;border-radius:4px}
+.fl{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-bottom:4px;font-size:13px;min-height:20px}
+.fl label{font-weight:600;min-width:0}
+.dl{font-size:12px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
+.dl.warn{color:var(--warn);font-weight:600}
+.dl.err{color:var(--err);font-weight:600}
+.figbtn .lbl-s{display:none}
+.inp{position:relative}
+.inp input{width:100%;min-width:0;font:inherit;font-size:16px;line-height:1.3;padding:8px 42px 8px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--field);color:var(--ink);font-variant-numeric:tabular-nums;scroll-margin:calc(var(--barH,96px) + 56px) 0 96px}
+.inp.txt input{padding-right:10px}
+.inp .u{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12.5px;color:var(--faint);pointer-events:none}
+.inp input::placeholder{color:var(--faint);opacity:.8}
+.inp input:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line2))}
+.inp input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);background:var(--card)}
+.inp input.has{background:var(--card);border-color:color-mix(in srgb,var(--ok) 50%,var(--line2))}
+.inp input.bad{border-color:var(--err);background:var(--err-soft)}
+.pm{font:11.5px/1.4 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--faint);margin-top:4px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font-size:12.5px;border:1px dashed var(--line2);background:transparent;border-radius:99px;padding:2px 10px;cursor:pointer;color:var(--muted)}
+.chip:hover{border-color:var(--accent);color:var(--accent);border-style:solid}
+.mxw{overflow-x:auto}
+.mx{width:100%;border-collapse:separate;border-spacing:0 4px;table-layout:fixed;margin:-4px 0}
+.mx th{font-size:12.5px;font-weight:700;color:var(--muted);text-align:left;padding:0 6px 0 0;vertical-align:top}
+.mx thead th{padding-bottom:0;line-height:1.3;vertical-align:bottom}
+.mx th:first-child{width:74px}
+.mx tbody th{padding-top:9px;white-space:nowrap;color:var(--ink);font-size:13px}
+.mx td{padding:0 0 0 6px;vertical-align:top}
+.mx td:first-of-type{padding-left:0}
+.mx .inp input{padding-top:6px;padding-bottom:6px}
+.mx .dl{display:block;min-height:15px;font-size:11.5px;line-height:15px;margin-top:1px}
+.mxnote{font-size:12px;color:var(--faint);margin-top:2px}
+.agg{margin-top:12px;display:grid;gap:6px}
+.agg:empty{display:none}
+.ag{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;background:var(--hover);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px}
+.ag.has{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 35%,var(--line))}
+.ag .ap{font-size:12.5px;font-weight:600;color:var(--muted);overflow-wrap:anywhere}
+.ag .av{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.ag .av small{font-size:12px;font-weight:500;color:var(--muted);margin-left:2px}
+.ag .av.nil{color:var(--faint);font-weight:500}
+.ag .ar{color:var(--muted);font-size:12.5px}
+.note{display:block;margin-top:12px}
+.note span{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.note textarea{width:100%;min-height:44px;resize:vertical;font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--field);color:var(--ink)}
+.note textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);background:var(--card)}
+.cf{display:flex;justify-content:flex-end;margin-top:6px;font-size:12.5px;color:var(--faint);min-height:18px}
+
+/* ---------- 내보내기 ---------- */
+.export{margin-top:22px}
+.export h2{font-size:17px;margin:0 0 4px}
+.xdesc{font-size:13.5px;color:var(--muted);margin:4px 0 0}
+.xrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.xstat{font-size:13px;color:var(--muted)}
+.export textarea{width:100%;min-height:160px;max-height:420px;font:12.5px/1.5 ui-monospace,"Cascadia Mono",Consolas,monospace;padding:10px;border:1px solid var(--line2);border-radius:10px;background:var(--field);color:var(--ink);resize:vertical}
+.imp{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.imp summary{cursor:pointer;font-weight:700;font-size:14px}
+.imp textarea{min-height:110px;margin-top:8px}
+.danger{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px);z-index:30;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ---------- 좁은 화면 ---------- */
+@media (max-width:720px){
+  .steps{grid-template-columns:1fr}
+  .steps li{padding:8px 12px 8px 44px}
+  .steps li::before{top:9px}
+}
+@media (max-width:600px){
+  .tb-row{gap:10px}
+  .brand{font-size:15px}
+  .brand .long,.brand small{display:none}
+  .brand .short{display:inline}
+  .cnt .cp{display:none}
+  .card{padding:14px 14px 10px}
+  .ct{font-size:15.5px}
+  .fields{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .mx th:first-child{width:62px}
+  .figbtn .lbl{display:none}
+  .figbtn .lbl-s{display:inline}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <h1>PSD60 실측 도우미 <span class="sub">46es · M01–M21</span></h1>
-  <p class="sub">측정 위치는 그림의 파란 표시를, 값은 아래 카드에 적는다. 입력은 이 브라우저에 자동 저장된다. 끝나면 <b>JSON 내보내기</b>로 만든 텍스트를 Claude Code 세션에 붙여넣으면 <code>parameters.csv</code>·<code>.sc</code>에 반영한다. 단위는 mm(각도는 °). 여러 곳을 잰 항목은 칸마다 따로 적고, 아래 집계(최소·평균)가 매개변수 후보가 된다.</p>
-</header>
-<main>
-  <div class="bar">
-    <div class="prog"><i id="prog"></i></div>
-    <span class="cnt" id="cnt">0 / 0 항목</span>
-    <button id="btnJson" class="pri">JSON 내보내기</button>
-    <button id="btnTop">그림으로</button>
+<div class="topbar" id="topbar">
+  <div class="wrap">
+    <div class="tb-row">
+      <h1 class="brand"><span class="long">PSD60 실측 도우미</span><span class="short">PSD60 실측</span><small>46es · M01–M21</small></h1>
+      <div class="prog"><div class="track" aria-hidden="true"><i id="progDone"></i><i id="progPart"></i></div><span class="cnt" id="cnt"></span></div>
+      <button type="button" class="btn pri" id="btnExport" title="JSON을 클립보드에 복사">JSON 내보내기</button>
+    </div>
+    <nav class="strip" id="strip" aria-label="측정 항목 바로가기"></nav>
   </div>
+</div>
 
-  <h2 id="figs">측정 위치</h2>
-  <div class="svgwrap" id="svgTop"></div>
-  <p class="hint">위: 하우징 내부 평면(위가 뒤쪽, GH60 PCB 기준점이 원점). 치수선 라벨을 누르면 해당 카드로 이동한다. 치수는 현재 후보값(Wilmore STL 추정·PSD60 아님)이라 실물과 다를 수 있다.</p>
-  <div class="svgwrap" id="svgSide" style="margin-top:10px"></div>
-  <p class="hint">아래: 앞↔뒤 단면(왼쪽이 앞). 바닥→지지대 상면, 지지대 상면→앞/뒤 테두리 상단(M05), 외형 높이·경사(M04), 벽 두께(M06), USB 개구부 높이(M16).</p>
+<div class="wrap">
+  <section class="intro">
+    <ol class="steps">
+      <li><b>그림에서 위치 확인</b>그림의 M 라벨을 누르면 해당 카드로 간다. 칸을 누르면 그 위치가 그림에 강조된다.</li>
+      <li><b>카드에 값 입력</b>이 브라우저에 자동 저장된다. Enter로 다음 칸, Shift+Enter로 이전 칸.</li>
+      <li><b>JSON 내보내기</b>복사한 텍스트를 Claude Code 세션에 그대로 붙여넣으면 <code>parameters.csv</code>·<code>.sc</code>에 반영한다.</li>
+    </ol>
+    <p class="notes">단위는 mm(각도는 °). 여러 곳을 재는 항목은 칸마다 따로 적으면 아래 집계(최소·평균·최대)가 매개변수 후보가 된다. 칸의 회색 숫자는 후보값(Wilmore STL 추정, PSD60 아님)이다.</p>
+  </section>
 
-  <h2>측정 항목</h2>
-  <div class="filters" id="filters">
-    <button data-f="all" aria-pressed="true">전체</button>
-    <button data-f="1" aria-pressed="false">우선순위 1</button>
-    <button data-f="2" aria-pressed="false">우선순위 2·3</button>
-    <button data-f="todo" aria-pressed="false">미입력만</button>
+  <div class="layout">
+    <aside class="figs" id="figs" aria-label="측정 위치 그림">
+      <div class="sheet-bar"><b>측정 위치</b><button type="button" class="btn sm" id="sheetClose">닫기 ✕</button></div>
+      <div class="figcard" id="figTop">
+        <div class="fighead"><h2>내부 평면</h2><span>위에서 본 모습 · 위쪽이 뒤(USB 쪽)</span></div>
+        <div class="figscroll" id="svgTop"></div>
+        <p class="swipe">← 그림을 옆으로 밀어서 본다</p>
+      </div>
+      <div class="figcard" id="figSide">
+        <div class="fighead"><h2>앞↔뒤 단면</h2><span>옆에서 자른 모습 · 왼쪽이 앞 · 높이는 지지대 상면 = 0 기준</span></div>
+        <div class="figscroll" id="svgSide"></div>
+      </div>
+      <div class="figinfo idle" id="figInfo" aria-live="polite"></div>
+      <ul class="legend">
+        <li><span class="sw wall"></span>벽·바닥(실선 = 내벽, 점선 = 외형)</li>
+        <li><span class="sw post"></span>체결 지지대 H01–H06</li>
+        <li><span class="sw usb"></span>USB 개구부</li>
+        <li><span class="sw dim"></span>측정 치수</li>
+        <li><span class="sw ref"></span>기준선 · GH60 원점</li>
+        <li><span class="sw badge">M01</span>누르면 카드로 <span class="sw badge done">M01</span>완료</li>
+      </ul>
+      <p class="figfoot">그림은 개략도이며 치수 위치·후보값은 Wilmore STL 추정(PSD60 아님)이라 실물과 다를 수 있다.</p>
+    </aside>
+
+    <main class="main">
+      <div class="main-head">
+        <h2>측정 항목</h2>
+        <div class="seg" id="filters" role="group" aria-label="항목 거르기">
+          <button type="button" data-f="all" aria-pressed="true">전체<span class="n" id="fn-all"></span></button>
+          <button type="button" data-f="1" aria-pressed="false">우선 1<span class="n" id="fn-1"></span></button>
+          <button type="button" data-f="2" aria-pressed="false">우선 2·3<span class="n" id="fn-2"></span></button>
+          <button type="button" data-f="todo" aria-pressed="false">미완료<span class="n" id="fn-todo"></span></button>
+        </div>
+      </div>
+      <div id="cards"></div>
+      <p class="empty" id="empty">이 조건에 맞는 항목이 없다.</p>
+
+      <section class="card export" id="export">
+        <h2>JSON 내보내기</h2>
+        <p class="xdesc">칸별 값·메모·측정일과, 바로 매개변수가 되는 값(<code>params</code>)이 들어 있다. Claude Code 세션에는 <b>전체를 그대로</b> 붙여넣는다.</p>
+        <div class="xrow">
+          <button type="button" class="btn pri" id="btnCopy">JSON 복사</button>
+          <button type="button" class="btn" id="btnDl">파일로 저장</button>
+          <span class="xstat" id="xstat"></span>
+        </div>
+        <textarea id="json" readonly spellcheck="false" aria-label="내보낼 JSON"></textarea>
+        <details class="imp">
+          <summary>가져오기 — 다른 기기나 이전에 내보낸 JSON 불러오기</summary>
+          <p class="xdesc">JSON을 붙여넣거나 파일을 고른다. 같은 칸은 가져온 값으로 덮어쓰고, JSON에 없는 칸은 그대로 둔다.</p>
+          <textarea id="jsonIn" spellcheck="false" placeholder="여기에 JSON을 붙여넣는다" aria-label="가져올 JSON"></textarea>
+          <div class="xrow">
+            <button type="button" class="btn" id="btnImport">붙여넣은 JSON 가져오기</button>
+            <label class="btn">파일 열기<input type="file" id="fileIn" accept=".json,application/json" hidden></label>
+          </div>
+        </details>
+        <div class="danger">
+          <span>입력은 이 브라우저에만 저장된다. 다른 기기로 옮길 때는 JSON을 쓴다.</span>
+          <button type="button" class="btn danger" id="btnReset">모두 지우기</button>
+        </div>
+      </section>
+    </main>
   </div>
-  <div class="grid" id="cards"></div>
-
-  <h2 id="export">내보내기 · 가져오기</h2>
-  <div class="row">
-    <button id="btnJson2" class="pri">JSON 만들기</button>
-    <button id="btnCopy">클립보드 복사</button>
-    <button id="btnDl">파일로 저장</button>
-    <button id="btnImport">붙여넣은 JSON 가져오기</button>
-    <button id="btnReset">모두 지우기</button>
-  </div>
-  <p class="hint">JSON에는 칸별 값·메모·측정일과, 바로 매개변수가 되는 값(<code>params</code>)이 들어 있다. 세션에 붙여넣을 때는 전체를 그대로 붙여넣는다. 가져오기는 아래 칸에 JSON을 붙여넣고 버튼을 누른다.</p>
-  <div class="out"><textarea id="json" spellcheck="false" placeholder="여기에 JSON이 만들어진다 / 가져올 JSON을 붙여넣는다"></textarea></div>
-</main>
-<div class="toast" id="toast"></div>
+</div>
+<div class="backdrop" id="backdrop"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ---------- 현재 후보값(모델과 같은 숫자; 그림·placeholder용) ----------
@@ -255,143 +522,351 @@ const ITEMS = [
           {k:'sup_to_P2',l:'지지대 상면→P2 상면',c:''},{k:'order',l:'적층 순서·P0 포함 여부',t:'text',c:''}]},
 ];
 
-// ---------- 상태 ----------
+// ---------- 입력 칸 묶음(화면 배치만; 저장·JSON 키와 무관) ----------
+const HS=Object.keys(C.H);
+const LAYOUT={
+ M01:[{mx:{rows:['앞','중','뒤'],cols:['지지대 높이','테두리 바로 아래'],keys:[['front_post','front_rim'],['mid_post','mid_rim'],['back_post','back_rim']]}},{keys:['r2_gap']}],
+ M02:[{mx:{rows:['좌','중','우'],cols:['지지대 높이','테두리 바로 아래'],keys:[['left_post','left_rim'],['mid_post','mid_rim'],['right_post','right_rim']]}},{keys:['r2_gap']}],
+ M03:[{mx:{rows:['앞-왼쪽','앞-오른쪽','뒤-왼쪽','뒤-오른쪽'],cols:['코너 R','r2 판 코너 틈'],keys:[['r_FL','gap_FL'],['r_FR','gap_FR'],['r_BL','gap_BL'],['r_BR','gap_BR']]}}],
+ M05:[{title:'바닥 → 지지대 상면 (지지대 6곳)',keys:HS.map(h=>'sup_'+h),short:Object.fromEntries(HS.map(h=>['sup_'+h,h]))},
+      {title:'지지대 상면 → 테두리 상단 · 턱',keys:['rim_F','rim_B','lip'],short:{rim_F:'앞 테두리 상단',rim_B:'뒤 테두리 상단'}}],
+ M06:[{mx:{rows:['왼쪽 벽','오른쪽 벽','앞 벽','뒤 벽'],cols:['상단 (테두리)','하단 (지지대 높이)'],keys:[['L_top','L_bot'],['R_top','R_bot'],['F_top','F_bot'],['B_top','B_bot']]}}],
+ M08:[{mx:{title:'내벽 → 구멍 중심',rows:HS,cols:['좌벽 → 중심 (X)','앞벽 → 중심 (Y)'],keys:HS.map(h=>[h+'_x',h+'_y'])}},
+      {title:'중심 간 거리',keys:['d_H05_H06','d_H01_H04','d_H02_H03','d_H01_H05','d_H04_H06','d_H01_H02']},{keys:['jig']}],
+ M10:[{title:'보스 외경 (2방향 중 큰 값)',keys:HS.map(h=>h+'_D'),short:Object.fromEntries(HS.map(h=>[h+'_D',h]))},{keys:['top']}],
+};
+
+// ---------- 상태(저장 키·구조는 이전 버전과 같다) ----------
 const KEY='46es_psd60_measure_v1';
 let S={};
 try{ S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ S={}; }
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }; // 현지 날짜
 function val(id,k){ const it=S[id]; return it&&it.f?it.f[k]:undefined; }
-function setVal(id,k,v){ S[id]=S[id]||{f:{},note:'',date:''}; if(v===''||v===undefined) delete S[id].f[k]; else S[id].f[k]=v; S[id].date=today(); save(); refresh(id); }
+function setVal(id,k,v){ S[id]=S[id]||{f:{},note:'',date:''}; S[id].f=S[id].f||{}; if(v===''||v===undefined) delete S[id].f[k]; else S[id].f[k]=v; S[id].date=today(); save(); refresh(id); }
 function filledCount(it){ return it.fields.filter(f=>{const v=val(it.id,f.k); return v!==undefined&&v!=='';}).length; }
 function numVals(id,keys){ return keys.map(k=>val(id,k)).filter(v=>typeof v==='number'&&isFinite(v)); }
 function aggValue(it,a){ const vs=numVals(it.id,a.keys); if(!vs.length) return null;
   if(a.fn==='min') return Math.min(...vs); if(a.fn==='max') return Math.max(...vs); return vs.reduce((s,v)=>s+v,0)/vs.length; }
 const fmt=v=>Math.round(v*1000)/1000;
 
-// ---------- 카드 ----------
-const cards=document.getElementById('cards');
+const $=id=>document.getElementById(id);
+const ITEM=Object.fromEntries(ITEMS.map(it=>[it.id,it]));
+const COUNTED=ITEMS.filter(it=>!it.skip);
+const fieldOf=(id,k)=>ITEM[id].fields.find(f=>f.k===k);
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const smooth=()=>matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+const WIDE=matchMedia('(min-width:1100px)');
+// 완료 기준은 이전과 같다: 숫자 칸의 절반 이상(최소 1칸). 실측 생략 항목은 진행률에서 뺀다.
+function stOf(it){ const n=filledCount(it); if(it.skip) return {n,s:'skip'};
+  const need=Math.min(it.fields.length,Math.max(1,Math.ceil(it.fields.filter(f=>f.t!=='text').length*0.5)));
+  return {n,s:n===0?'todo':(n>=need?'done':'part')}; }
+const ST_TXT={todo:'미입력',part:'진행 중',done:'완료',skip:'실측 생략'};
+function parseNum(raw){ const v=raw.trim().replace(/[−–]/g,'-').replace(',','.'); if(v==='') return '';
+  const n=parseFloat(v); return (isFinite(n)&&/^[-+]?\d*\.?\d*$/.test(v))?n:v; }
+function deltaTxt(f,v,short){
+  if(v===undefined||v===''||f.t==='text') return ['',''];
+  if(typeof v!=='number') return ['숫자로 읽지 못함','err'];
+  if(typeof f.c!=='number') return ['',''];
+  const d=v-f.c, big=Math.abs(d)>Math.max(0.1*Math.abs(f.c),0.5);
+  const s=(d>0?'+':d<0?'−':'±')+fmt(Math.abs(d));
+  return [(short?'Δ ':'후보 대비 ')+s+(big?' · 차이 큼':''), big?'warn':''];
+}
+
+// ---------- 카드 ----------
+const cards=$('cards');
+let FIG_HAS=new Set();
+function inputHtml(it,f,inMx){
+  const id=`${it.id}_${f.k}`, txt=f.t==='text', unit=txt?'':(f.u||'mm');
+  const hasC=f.c!==''&&f.c!==undefined;
+  const ph=txt?(hasC?'선택하거나 직접 입력':''):(hasC?(inMx?String(f.c):'후보 '+f.c):'');
+  const im=txt?'':((typeof f.c==='number'&&f.c<0)?'inputmode="text"':'inputmode="decimal"'); // 음수 후보 칸은 − 입력이 되는 자판
+  return `<div class="inp${txt?' txt':''}"><input id="${id}" data-id="${it.id}" data-k="${f.k}" data-t="${f.t||'num'}" type="text" ${im} placeholder="${esc(ph)}" autocomplete="off" spellcheck="false"${inMx?` aria-label="${esc(f.l)}"`:''}${hasC&&!txt?` title="후보 ${esc(f.c)} ${esc(unit)}"`:''}>${unit?`<span class="u">${esc(unit)}</span>`:''}</div>`;
+}
+function fieldHtml(it,f,short){
+  const id=`${it.id}_${f.k}`, txt=f.t==='text';
+  const chips=(txt&&f.c)?`<div class="chips">${String(f.c).split(' / ').map(o=>`<button type="button" class="chip" data-for="${id}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`:'';
+  return `<div class="f${txt?' wide':''}"><div class="fl"><label for="${id}">${esc(short||f.l)}</label><span class="dl" id="dl-${id}"></span></div>
+    ${inputHtml(it,f,false)}${chips}${f.p?`<div class="pm">→ ${esc(f.p)}</div>`:''}</div>`;
+}
+function groupsHtml(it){
+  const lay=LAYOUT[it.id]||[{keys:it.fields.map(f=>f.k)}];
+  const byK=Object.fromEntries(it.fields.map(f=>[f.k,f])); const used=new Set(); let h='';
+  for(const g of lay){
+    if(g.mx){ const {rows,cols,keys,title}=g.mx; keys.flat().forEach(k=>used.add(k));
+      h+=`<div class="grp">${title?`<div class="gt">${esc(title)}</div>`:''}<div class="mxw"><table class="mx"><thead><tr><th></th>${cols.map(c=>`<th scope="col">${esc(c)}</th>`).join('')}</tr></thead><tbody>`+
+        rows.map((r,i)=>`<tr><th scope="row">${esc(r)}</th>${keys[i].map(k=>`<td>${inputHtml(it,byK[k],true)}<span class="dl" id="dl-${it.id}_${k}" data-short="1"></span></td>`).join('')}</tr>`).join('')+
+        `</tbody></table></div><div class="mxnote">회색 숫자 = 후보값</div></div>`;
+    } else { g.keys.forEach(k=>used.add(k));
+      h+=`<div class="grp">${g.title?`<div class="gt">${esc(g.title)}</div>`:''}<div class="fields">${g.keys.map(k=>fieldHtml(it,byK[k],g.short&&g.short[k])).join('')}</div></div>`; }
+  }
+  const rest=it.fields.filter(f=>!used.has(f.k));
+  if(rest.length) h+=`<div class="grp"><div class="fields">${rest.map(f=>fieldHtml(it,f)).join('')}</div></div>`;
+  return h;
+}
+function cardHtml(it){
+  const params=it.params.split(/,\s*/).map(p=>`<code class="pc">${esc(p)}</code>`).join('');
+  return `<header class="ch"><div class="ch-t"><span class="cid">${it.id}</span><h3 class="ct">${esc(it.t)}</h3></div>
+      ${FIG_HAS.has(it.id)?`<button type="button" class="btn sm figbtn" data-fig="${it.id}" title="그림에서 측정 위치 보기">◎<span class="lbl">그림 위치</span><span class="lbl-s">그림</span></button>`:''}</header>
+    <div class="tags"><span class="tag">${esc(it.cat)}</span><span class="tag p${it.pr}">우선 ${it.pr}</span><span class="tag st" id="st-${it.id}"></span></div>
+    <dl class="meta"><dt>도구</dt><dd>${esc(it.tool)}</dd><dt>정밀도</dt><dd>${esc(it.acc)}</dd><dt>매개변수</dt><dd>${params}</dd></dl>
+    <details class="how" open><summary>측정 방법</summary><p>${esc(it.how)}</p></details>
+    ${groupsHtml(it)}
+    <div class="agg" id="agg-${it.id}"></div>
+    <label class="note"><span>메모</span><textarea data-note="${it.id}" rows="2" placeholder="사진 파일명 ${it.id}_*.jpg, 특이사항"></textarea></label>
+    <footer class="cf"><span id="dt-${it.id}"></span></footer>`;
+}
+function markField(inp){
+  const {id,k}=inp.dataset, f=fieldOf(id,k), v=val(id,k);
+  const has=v!==undefined&&v!=='', bad=has&&f.t!=='text'&&typeof v!=='number';
+  inp.classList.toggle('has',has&&!bad); inp.classList.toggle('bad',bad); inp.setAttribute('aria-invalid',bad?'true':'false');
+  const dl=$('dl-'+inp.id); if(dl){ const [t,c]=deltaTxt(f,v,dl.dataset.short==='1'); dl.textContent=t; dl.className='dl'+(c?' '+c:''); dl.title=t; }
+}
 function build(){
   cards.innerHTML='';
-  for(const it of ITEMS){
-    const el=document.createElement('article'); el.className='card'+(it.skip?' skip':''); el.id='card-'+it.id; el.dataset.pr=it.pr;
-    el.innerHTML=`<header><span class="id">${it.id}</span><span class="pr p${it.pr}">우선순위 ${it.pr}</span><span class="title">${esc(it.t)}</span></header>
-      <div class="meta"><b>${esc(it.cat)}</b> · 도구 ${esc(it.tool)} · 정밀도 ${esc(it.acc)}<br>매개변수: <code>${esc(it.params)}</code></div>
-      <details open><summary>측정 방법</summary><div class="hint">${esc(it.how)}</div></details>
-      <div class="fields">${it.fields.map(f=>`<div class="f${f.t==='text'?' wide':''}"><label for="${it.id}_${f.k}">${esc(f.l)}${f.t==='text'?'':' ('+(f.u||'mm')+')'}</label>
-        <input id="${it.id}_${f.k}" data-id="${it.id}" data-k="${f.k}" data-t="${f.t||'num'}" ${f.t==='text'?'type="text"':'type="text" inputmode="decimal"'} placeholder="${esc(f.c===''?'':'후보 '+f.c)}" autocomplete="off">
-        ${f.p?`<div class="cand">→ <code>${esc(f.p)}</code></div>`:''}</div>`).join('')}</div>
-      <div class="agg" id="agg-${it.id}"></div>
-      <div class="note"><textarea data-note="${it.id}" placeholder="메모(사진 파일명 M${it.id.slice(1)}_*.jpg, 특이사항)"></textarea></div>
-      <div class="foot"><span id="st-${it.id}"></span><span id="dt-${it.id}"></span></div>`;
-    cards.appendChild(el);
-  }
-  cards.querySelectorAll('input').forEach(inp=>{
-    const {id,k,t}=inp.dataset; const v=val(id,k); if(v!==undefined) inp.value=v;
-    inp.addEventListener('input',()=>{ let v=inp.value.trim(); if(t==='num'){ v=v.replace(',','.'); const n=parseFloat(v); setVal(id,k,v===''?'':(isFinite(n)&&/^[-+]?\d*\.?\d*$/.test(v)?n:v)); } else setVal(id,k,v); });
-  });
-  cards.querySelectorAll('textarea[data-note]').forEach(ta=>{ const id=ta.dataset.note; ta.value=(S[id]&&S[id].note)||'';
-    ta.addEventListener('input',()=>{ S[id]=S[id]||{f:{},note:'',date:''}; S[id].note=ta.value; S[id].date=today(); save(); refresh(id); }); });
-  ITEMS.forEach(it=>refresh(it.id)); applyFilter();
+  for(const it of ITEMS){ const el=document.createElement('article'); el.className='card'+(it.skip?' skip':''); el.id='card-'+it.id; el.dataset.id=it.id; el.innerHTML=cardHtml(it); cards.appendChild(el); }
+  cards.querySelectorAll('input[data-k]').forEach(inp=>{ const v=val(inp.dataset.id,inp.dataset.k); if(v!==undefined) inp.value=v; markField(inp); });
+  cards.querySelectorAll('textarea[data-note]').forEach(ta=>{ const s=S[ta.dataset.note]; ta.value=(s&&s.note)||''; });
+  ITEMS.forEach(it=>refresh(it.id,true)); updateProgress(); applyFilter(); paint(); updateJson();
 }
-function refresh(id){
-  const it=ITEMS.find(x=>x.id===id); const n=filledCount(it); const el=document.getElementById('card-'+id);
-  el.classList.toggle('done', n>0 && (it.skip || n>=Math.min(it.fields.length, Math.max(1,Math.ceil(it.fields.filter(f=>f.t!=='text').length*0.5)))));
-  document.getElementById('st-'+id).textContent=`${n} / ${it.fields.length} 칸`;
-  document.getElementById('dt-'+id).textContent=(S[id]&&S[id].date)?('측정일 '+S[id].date):'';
-  const ag=document.getElementById('agg-'+id); ag.innerHTML='';
-  (it.agg||[]).forEach(a=>{ const v=aggValue(it,a); const vs=numVals(id,a.keys);
-    ag.innerHTML+=`<span>${esc(a.p)} = <b>${v===null?'—':fmt(v)}</b> (${a.fn==='min'?'최소':a.fn==='max'?'최대':'평균'}${vs.length?`, ${vs.length}개, ${fmt(Math.min(...vs))}~${fmt(Math.max(...vs))}`:''})</span>`; });
-  const done=ITEMS.filter(x=>document.getElementById('card-'+x.id).classList.contains('done')).length;
-  document.getElementById('prog').style.width=(100*done/ITEMS.length)+'%';
-  document.getElementById('cnt').textContent=`${done} / ${ITEMS.length} 항목`;
+function refresh(id,quiet){
+  const it=ITEM[id], {n,s}=stOf(it), L=it.fields.length, el=$('card-'+id);
+  el.classList.toggle('done',s==='done'); el.classList.toggle('part',s==='part');
+  const t=$('st-'+id); t.className='tag st '+s; t.textContent=s==='skip'?(n?`${ST_TXT.skip} · ${n}/${L}칸`:ST_TXT.skip):`${ST_TXT[s]} · ${n}/${L}칸`;
+  $('dt-'+id).textContent=(S[id]&&S[id].date)?'측정일 '+S[id].date:'';
+  $('agg-'+id).innerHTML=(it.agg||[]).map(a=>{ const vs=numVals(id,a.keys), v=aggValue(it,a), fn=a.fn==='min'?'최소':a.fn==='max'?'최대':'평균';
+    const lo=vs.length?Math.min(...vs):0, hi=vs.length?Math.max(...vs):0;
+    return `<div class="ag${v===null?'':' has'}"><span class="ap">${esc(a.p)}</span><span class="av${v===null?' nil':''}">${v===null?'—':fmt(v)+'<small>mm</small>'}</span>`+
+      `<span class="ar">${fn} · ${vs.length}/${a.keys.length}곳 입력${vs.length>1?` · 범위 ${fmt(lo)}–${fmt(hi)} (차 ${fmt(hi-lo)})`:''}</span></div>`; }).join('');
+  const sc=STRIP[id]; sc.className='sc '+s+(it.pr===1?' p1':'')+(ACT.id===id?' cur':'');
+  sc.title=`${id} ${it.t} · 우선 ${it.pr} · ${ST_TXT[s]} ${n}/${L}칸`; sc.setAttribute('aria-label',sc.title);
+  document.querySelectorAll(`.fig .badge[data-m="${id}"]`).forEach(b=>b.classList.toggle('done',s==='done'));
+  if(!quiet){ updateProgress(); scheduleJson(); }
+}
+function updateProgress(){
+  let d=0,p=0; for(const it of COUNTED){ const {s}=stOf(it); if(s==='done') d++; else if(s==='part') p++; }
+  const N=COUNTED.length; $('progDone').style.width=(100*d/N)+'%'; $('progPart').style.width=(100*p/N)+'%';
+  $('cnt').innerHTML=`<b>${d}</b> / ${N} 완료${p?`<span class="cp"> · 진행 중 ${p}</span>`:''}`;
+  $('fn-all').textContent=ITEMS.length; $('fn-1').textContent=ITEMS.filter(i=>i.pr===1).length; $('fn-2').textContent=ITEMS.filter(i=>i.pr>=2).length;
+  $('fn-todo').textContent=COUNTED.filter(i=>stOf(i).s!=='done').length;
 }
 let FILTER='all';
-function applyFilter(){
-  ITEMS.forEach(it=>{ const el=document.getElementById('card-'+it.id); let show=true;
-    if(FILTER==='1') show=it.pr===1; else if(FILTER==='2') show=it.pr>=2; else if(FILTER==='todo') show=!el.classList.contains('done');
-    el.style.display=show?'':'none'; });
+function applyFilter(){ let shown=0;
+  ITEMS.forEach(it=>{ const s=stOf(it).s; let show=true;
+    if(FILTER==='1') show=it.pr===1; else if(FILTER==='2') show=it.pr>=2; else if(FILTER==='todo') show=s!=='done'&&s!=='skip';
+    $('card-'+it.id).style.display=show?'':'none'; if(show) shown++; });
+  $('empty').style.display=shown?'none':'block';
 }
-document.getElementById('filters').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; FILTER=b.dataset.f;
-  document.querySelectorAll('#filters button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); applyFilter(); });
+function setFilter(f){ FILTER=f; document.querySelectorAll('#filters button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.f===f?'true':'false')); applyFilter(); }
+$('filters').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) setFilter(b.dataset.f); });
+
+cards.addEventListener('input',e=>{ const t=e.target;
+  if(t.matches('input[data-k]')){ const {id,k}=t.dataset; setVal(id,k,t.dataset.t==='num'?parseNum(t.value):t.value.trim()); markField(t); }
+  else if(t.matches('textarea[data-note]')){ const id=t.dataset.note; S[id]=S[id]||{f:{},note:'',date:''}; S[id].note=t.value; S[id].date=today(); save(); refresh(id); }
+});
+cards.addEventListener('focusin',e=>{ const c=e.target.closest('.card'); if(!c) return; const id=c.dataset.id, t=e.target;
+  if(t.matches('input[data-k]')) setActive(id,t.dataset.k); else if(ACT.id!==id||t.matches('textarea')) setActive(id,null); }); // 버튼으로 옮겨 가도 고른 칸은 유지
+cards.addEventListener('pointerdown',e=>{ const c=e.target.closest('.card'); if(c&&!e.target.closest('input,textarea,button,summary')) setActive(c.dataset.id,null); });
+cards.addEventListener('click',e=>{
+  const ch=e.target.closest('.chip'); if(ch){ const inp=$(ch.dataset.for); inp.value=ch.dataset.v; inp.dispatchEvent(new Event('input',{bubbles:true})); inp.focus(); return; }
+  const fb=e.target.closest('.figbtn'); if(fb) showInFig(fb.dataset.fig);
+});
+cards.addEventListener('keydown',e=>{ const t=e.target;
+  if(e.key!=='Enter'||e.isComposing||e.keyCode===229||!t.matches('input[data-k]')) return;
+  e.preventDefault(); const list=[...cards.querySelectorAll('input[data-k]')].filter(i=>i.offsetParent!==null);
+  const nx=list[list.indexOf(t)+(e.shiftKey?-1:1)]; if(nx){ nx.focus(); nx.select(); } else t.blur();
+});
+
+// ---------- 항목 띠(상단) ----------
+const STRIP={};
+function buildStrip(){ const st=$('strip'); st.innerHTML='';
+  for(const it of ITEMS){ const b=document.createElement('button'); b.type='button'; b.className='sc'; b.textContent=it.id; b.dataset.id=it.id; st.appendChild(b); STRIP[it.id]=b; }
+  st.addEventListener('click',e=>{ const b=e.target.closest('.sc'); if(b) goto(b.dataset.id); });
+}
+
+// ---------- 선택 상태(카드 ↔ 그림) ----------
+let ACT={id:null,k:null}, PREV=null;
+function setActive(id,k){ PREV=null; if(ACT.id===id&&ACT.k===k) return; ACT={id,k}; paint(); }
+function setPrev(m){ if(PREV===m) return; PREV=m; paint(); }
+function paint(){
+  const id=PREV||ACT.id, k=PREV?null:ACT.k;
+  const gs=[...document.querySelectorAll('.fig .g')];
+  const keysOf=e=>(e.dataset.k||'').split(' ');
+  const anyKey=!!(id&&k)&&gs.some(e=>e.dataset.m===id&&keysOf(e).includes(k));
+  gs.forEach(e=>{ const on=!!id&&e.dataset.m===id, key=on&&anyKey&&keysOf(e).includes(k);
+    e.classList.toggle('on',on); e.classList.toggle('off',!!id&&!on); e.classList.toggle('key',key); e.classList.toggle('soft',on&&anyKey&&!key);
+    if(key) e.parentNode.appendChild(e); });
+  document.querySelectorAll('.fig .badge').forEach(b=>{ const on=!!id&&b.dataset.m===id; b.classList.toggle('on',on); b.classList.toggle('off',!!id&&!on); });
+  if(!PREV){ document.querySelectorAll('.card.act').forEach(c=>c.classList.remove('act')); if(ACT.id&&$('card-'+ACT.id)) $('card-'+ACT.id).classList.add('act');
+    for(const m in STRIP) STRIP[m].classList.toggle('cur',m===ACT.id); centerFig(); }
+  figInfo(id,k);
+}
+function figInfo(id,k){
+  const box=$('figInfo');
+  if(!id){ box.className='figinfo idle'; box.innerHTML='그림의 <b>M 라벨</b>을 누르면 해당 카드로 간다. 카드의 칸을 누르면 그 위치가 여기에 강조된다.'; return; }
+  const it=ITEM[id], f=k?fieldOf(id,k):null; box.className='figinfo';
+  const cand=f&&f.c!==''&&f.c!==undefined&&f.t!=='text'?`<small>후보 ${esc(f.c)} ${esc(f.u||'mm')}</small>`:'';
+  box.innerHTML=`<span class="fi-id">${id}</span><span class="fi-t">${esc(it.t)}</span>${f?`<span class="fi-k">→ ${esc(f.l)}${cand}</span>`:''}`+
+    `${FIG_HAS.has(id)?'':'<span class="fi-none">(그림에 표시하는 위치 없음)</span>'}<span class="fi-sp"></span>`+
+    `${WIDE.matches?'':`<button type="button" class="btn ghost sm" data-go="${id}">카드로 ↓</button>`}<button type="button" class="btn ghost sm" data-clear="1">전체 보기</button>`;
+}
+$('figInfo').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.clear) setActive(null,null); else if(b.dataset.go) goto(b.dataset.go); });
+function flash(el,cls){ el.classList.add(cls||'flash'); setTimeout(()=>el.classList.remove(cls||'flash'),1300); }
+function goto(id){ const el=$('card-'+id); if(!el) return; closeSheet(); if(el.style.display==='none') setFilter('all');
+  el.scrollIntoView({behavior:smooth(),block:'start'}); flash(el); setActive(id,null); }
+function showInFig(id){ setActive(id,ACT.id===id?ACT.k:null);
+  const hosts=[...document.querySelectorAll('.figcard')].filter(fc=>fc.querySelector(`[data-m="${id}"]`)); if(!hosts.length) return;
+  if(!WIDE.matches){ openSheet(); requestAnimationFrame(()=>{ centerFig(true); hosts[0].scrollIntoView({block:'nearest'}); }); }
+  else hosts[0].scrollIntoView({behavior:smooth(),block:'nearest'});
+  hosts.forEach(h=>flash(h)); }
+// 좁은 화면: 카드의 ◎ 버튼은 그림을 아래 시트로 띄운다(자리 표시를 넣어 본문 위치가 움직이지 않게 한다)
+let PH=null;
+function openSheet(){ const a=$('figs'); if(a.classList.contains('sheet')) return; PH=document.createElement('div'); PH.style.height=a.offsetHeight+'px';
+  a.parentNode.insertBefore(PH,a); a.classList.add('sheet'); a.scrollTop=0; $('backdrop').classList.add('show'); }
+function closeSheet(){ const a=$('figs'); if(!a.classList.contains('sheet')) return; a.classList.remove('sheet'); if(PH){ PH.remove(); PH=null; } $('backdrop').classList.remove('show'); }
+$('sheetClose').onclick=closeSheet; $('backdrop').onclick=closeSheet;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
+// 좁은 화면에서 그림이 옆으로 넘칠 때 선택한 위치가 보이게 가로 스크롤을 맞춘다
+function centerFig(now){ if(WIDE.matches) return; const id=ACT.id; if(!id) return;
+  document.querySelectorAll('.figscroll').forEach(sc=>{ const svg=sc.querySelector('svg'); if(!svg||svg.clientWidth<=sc.clientWidth+1) return;
+    const t=svg.querySelector('.g.key')||svg.querySelector(`.badge[data-m="${id}"]`)||svg.querySelector('.g.on'); if(!t) return;
+    let bb; try{ bb=t.getBBox(); }catch(e){ return; } if(!bb.width&&!bb.height) return;
+    const k=svg.clientWidth/svg.viewBox.baseVal.width, x0=bb.x*k, x1=(bb.x+bb.width)*k;
+    const left=(x1-x0)>sc.clientWidth*0.8 ? x1-sc.clientWidth+40 : (x0+x1)/2-sc.clientWidth/2; // 긴 치수선은 끝(구멍·벽) 쪽을 보인다
+    sc.scrollTo({left:Math.max(0,left),behavior:now?'auto':smooth()}); }); }
 
 // ---------- 그림 ----------
 const NS='http://www.w3.org/2000/svg';
-function mk(tag,attrs,text){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!==undefined) e.textContent=text; return e; }
-function goto(id){ const el=document.getElementById('card-'+id); if(!el) return; FILTER='all'; applyFilter(); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),1600); }
-function dimH(g,x1,x2,y,label,id,off){ // 가로 치수선(SVG 좌표)
-  g.appendChild(mk('path',{class:'dim',d:`M${x1} ${y}H${x2} M${x1} ${y-2}V${y+2} M${x2} ${y-2}V${y+2}`}));
-  const t=mk('text',{class:'dimt',x:(x1+x2)/2,y:y+(off||-2),'text-anchor':'middle'},label); t.addEventListener('click',()=>goto(id)); g.appendChild(t);
+function mk(tag,attrs,parent,text){ const e=document.createElementNS(NS,tag); for(const k in attrs) if(attrs[k]!==undefined) e.setAttribute(k,attrs[k]); if(text!==undefined) e.textContent=text; if(parent) parent.appendChild(e); return e; }
+const r2=v=>Math.round(v*100)/100;
+const BADGES=[];
+// mm 좌표(x 오른쪽, y 위쪽) → px. 글자 크기가 실제 화면 크기와 비슷하도록 viewBox를 px 단위로 잡는다.
+function makeFig(host,{x0,x1,y0,y1,s,label}){
+  const W=Math.round((x1-x0)*s), H=Math.round((y1-y0)*s);
+  const svg=mk('svg',{viewBox:`0 0 ${W} ${H}`,width:W,height:H,class:'fig',role:'group','aria-label':label,style:`max-width:${W}px`});
+  const F={svg,s,X:x=>r2((x-x0)*s),Y:y=>r2((y1-y)*s)};
+  F.geo=mk('g',{},svg); F.dims=mk('g',{},svg); F.labs=mk('g',{},svg); F.bad=mk('g',{},svg);
+  host.appendChild(svg);
+  svg.addEventListener('click',e=>{ const b=e.target.closest('.badge'); if(b) goto(b.dataset.m); });
+  svg.addEventListener('keydown',e=>{ const b=e.target.closest('.badge'); if(b&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); goto(b.dataset.m); } });
+  svg.addEventListener('mouseover',e=>{ const b=e.target.closest('.badge'); setPrev(b?b.dataset.m:null); });
+  svg.addEventListener('mouseleave',()=>setPrev(null));
+  return F;
 }
-function dimV(g,y1,y2,x,label,id,off){
-  g.appendChild(mk('path',{class:'dim',d:`M${x} ${y1}V${y2} M${x-2} ${y1}H${x+2} M${x-2} ${y2}H${x+2}`}));
-  const t=mk('text',{class:'dimt',x:x+(off||3),y:(y1+y2)/2+4},label); t.addEventListener('click',()=>goto(id)); g.appendChild(t);
+function grp(F,m,k,detail){ return mk('g',{class:'g'+(detail?' detail':''),'data-m':m,'data-k':k||''},F.dims); }
+function head(x,y,ux,uy){ const L=6.5,w=2.6,bx=x-ux*L,by=y-uy*L; return `M${r2(x)} ${r2(y)}L${r2(bx-uy*w)} ${r2(by+ux*w)}L${r2(bx+uy*w)} ${r2(by-ux*w)}Z`; }
+function dim(F,g,xa,ya,xb,yb,cls){ // 양쪽 화살표 치수선(mm 좌표). 짧으면 화살표를 바깥에 둔다
+  const x1=F.X(xa),y1=F.Y(ya),x2=F.X(xb),y2=F.Y(yb), len=Math.hypot(x2-x1,y2-y1)||1, ux=(x2-x1)/len, uy=(y2-y1)/len, c='ln'+(cls?' '+cls:'');
+  if(len>=18){ mk('path',{class:c,d:`M${x1} ${y1}L${x2} ${y2}`},g); mk('path',{class:'ah',d:head(x1,y1,-ux,-uy)+head(x2,y2,ux,uy)},g); }
+  else { const e=10; mk('path',{class:c,d:`M${r2(x1-ux*e)} ${r2(y1-uy*e)}L${r2(x2+ux*e)} ${r2(y2+uy*e)}`},g); mk('path',{class:'ah',d:head(x1,y1,ux,uy)+head(x2,y2,-ux,-uy)},g); }
 }
+function ex(F,g,xa,ya,xb,yb,cls){ mk('path',{class:'ex'+(cls?' '+cls:''),d:`M${F.X(xa)} ${F.Y(ya)}L${F.X(xb)} ${F.Y(yb)}`},g); }
+function tx(F,parent,x,y,s,anchor,cls,dy){ return mk('text',{class:cls,x:F.X(x),y:r2(F.Y(y)+(dy===undefined?4:dy)),'text-anchor':anchor||'start'},parent,s); }
+function badge(F,m,x,y,label,lead){
+  const g=mk('g',{class:'badge','data-m':m,tabindex:'0',role:'button','aria-label':`${m} ${ITEM[m].t} — 카드로 이동`},F.bad), cx=F.X(x), cy=F.Y(y);
+  if(lead){ const lx=F.X(lead[0]),ly=F.Y(lead[1]); mk('path',{class:'lead',d:`M${cx} ${cy}L${lx} ${ly}`},g); mk('circle',{class:'ldot',cx:lx,cy:ly,r:2.4},g); }
+  const r=mk('rect',{x:cx-18,y:r2(cy-10),width:36,height:20,rx:6},g); const t=mk('text',{x:cx,y:r2(cy+4.6),'text-anchor':'middle'},g,label);
+  mk('title',{},g,`${m} ${ITEM[m].t}`); BADGES.push({r,t,cx});
+}
+function layoutBadges(){ for(const b of BADGES){ let w=36; try{ w=Math.max(34,b.t.getComputedTextLength()+16); }catch(e){} b.r.setAttribute('x',r2(b.cx-w/2)); b.r.setAttribute('width',r2(w)); } }
+
+// 내벽 좌표: u = 좌벽에서 오른쪽, v = 앞벽에서 뒤쪽 (GH60 좌표 + dx/dy)
+const W0=C.inW, D0=C.inD;
+const U=x=>x+C.dx, V=y=>y+C.dy;
+const HP=Object.fromEntries(HS.map(h=>[h,[U(C.H[h][0]),V(C.H[h][1])]]));
+const OUT={l:U(C.outL),r:U(C.outL)+C.outW,f:V(C.outF),b:V(C.outB)};
+const USB={u:U(C.usbX),w:C.usbW};
+
 function drawTop(){
-  const m=22, W=C.inW, D=C.inD; const X=x=>m+(x+C.dx), Y=y=>m+(D-(y+C.dy)); // GH60 → SVG (Y 뒤집음), 내벽 좌하단이 (m,m+D)
-  const svg=mk('svg',{viewBox:`0 0 ${W+2*m+70} ${D+2*m+10}`,role:'img','aria-label':'PSD60 내부 평면, 측정 위치'});
-  // 외형(참고)
-  svg.appendChild(mk('rect',{class:'outer',x:X(C.outL),y:Y(C.outB),width:C.outW,height:C.outB-C.outF,rx:5}));
-  // 내벽
-  svg.appendChild(mk('rect',{class:'wall',x:m,y:m,width:W,height:D,rx:C.inR}));
-  // GH60 원점 표시
-  svg.appendChild(mk('path',{class:'ghost',d:`M${X(0)} ${Y(-3)}V${Y(8)} M${X(-3)} ${Y(0)}H${X(8)}`}));
-  const o=mk('text',{class:'lab',x:X(1),y:Y(1)-1},'GH60 원점'); o.addEventListener('click',()=>goto('M07')); svg.appendChild(o);
-  // 기둥 + 라벨
-  for(const h in C.H){ const [x,y]=C.H[h]; svg.appendChild(mk('circle',{class:'post',cx:X(x),cy:Y(y),r:C.postD/2+0.6}));
-    const t=mk('text',{class:'lab',x:X(x)+4,y:Y(y)+(y>50?-4:9)},h); t.addEventListener('click',()=>goto('M08')); svg.appendChild(t); }
-  // USB 개구부(뒤 벽)
-  svg.appendChild(mk('rect',{class:'usb',x:X(C.usbX-C.usbW/2),y:Y(D-C.dy)-4,width:C.usbW,height:8}));
-  const u=mk('text',{class:'dimt',x:X(C.usbX),y:Y(D-C.dy)-6,'text-anchor':'middle'},'M16 USB'); u.addEventListener('click',()=>goto('M16')); svg.appendChild(u);
-  // M01 폭 (앞·중·뒤)
-  dimH(svg,m,m+W,Y(6),'M01 폭(앞)','M01'); dimH(svg,m,m+W,Y(D/2-C.dy),'M01 폭(중)','M01'); dimH(svg,m,m+W,Y(D-8),'M01 폭(뒤)','M01');
-  // M02 깊이 (좌·중·우)
-  dimV(svg,m,m+D,X(60),'M02 깊이(좌)','M02'); dimV(svg,m,m+D,X(160),'M02 깊이(중)','M02'); dimV(svg,m,m+D,X(230),'M02 깊이(우)','M02');
-  // M03 코너
-  [[m+1,m+8,'M03 R'],[m+W-1,m+8,'M03 R'],[m+1,m+D-3,'M03 R'],[m+W-1,m+D-3,'M03 R']].forEach(([x,y,l],i)=>{ const t=mk('text',{class:'dimt',x:x,y:y,'text-anchor':i%2?'end':'start'},l); t.addEventListener('click',()=>goto('M03')); svg.appendChild(t); });
-  // M07 오프셋(좌벽→원점, 앞벽→원점) 확대 표시
-  const t7=mk('text',{class:'dimt',x:X(10),y:Y(-7)},'M07 dx·dy = 벽→원점 (M08에서 역산)'); t7.addEventListener('click',()=>goto('M07')); svg.appendChild(t7);
-  // M08 예: H03 벽 거리
-  dimH(svg,m,X(C.H.H03[0]),Y(C.H.H03[1])+10,'M08 좌벽→H03','M08',9); dimV(svg,Y(C.H.H03[1]),m+D,X(C.H.H03[0])+8,'M08 앞벽→H03','M08',4);
-  // M10 기둥 외경
-  const t10=mk('text',{class:'dimt',x:X(C.H.H02[0])+6,y:Y(C.H.H02[1])+12},'M10 기둥 외경 ×6'); t10.addEventListener('click',()=>goto('M10')); svg.appendChild(t10);
-  // 범례
-  const lg=mk('text',{x:m,y:D+2*m+4},'실선: 내벽(Wilmore 후보값) · 점선: 외형(참고) · 주황: 체결 기둥 H01–H06 · 초록: USB 개구부. 위가 뒤쪽(사용자 반대편).'); svg.appendChild(lg);
-  document.getElementById('svgTop').appendChild(svg);
+  const F=makeFig($('svgTop'),{x0:-26,x1:312,y0:-37,y1:121,s:2,label:'PSD60 내부 평면 — 측정 위치'}); const {X,Y,s}=F;
+  // 형상
+  mk('rect',{class:'outer',x:X(OUT.l),y:Y(OUT.b),width:r2((OUT.r-OUT.l)*s),height:r2((OUT.b-OUT.f)*s),rx:10},F.geo);
+  mk('rect',{class:'cav',x:X(0),y:Y(D0),width:r2(W0*s),height:r2(D0*s),rx:r2(C.inR*s)},F.geo);
+  mk('rect',{class:'usb',x:X(USB.u-USB.w/2),y:Y(OUT.b),width:r2(USB.w*s),height:r2((OUT.b-D0)*s)},F.geo);
+  const ox=U(0), oy=V(0);
+  mk('path',{class:'ref',d:`M${X(ox)} ${Y(oy-4)}V${Y(oy+10)}M${X(ox-4)} ${Y(oy)}H${X(ox+10)}`},F.geo);
+  for(const h of HS){ const [u,v]=HP[h]; mk('circle',{class:'post',cx:X(u),cy:Y(v),r:r2(C.postD/2*s)},F.geo); }
+  const right={H01:1,H02:1,H05:1};
+  for(const h of HS){ const [u,v]=HP[h]; tx(F,F.labs,u+(right[h]?5:-5),v,h,right[h]?'start':'end','plab',-3); } // 중심선 위: 구멍 중심을 지나는 치수선과 안 겹친다
+  tx(F,F.labs,OUT.r,113,'뒤 (USB 쪽) ↑','end','orient',0);
+  tx(F,F.labs,OUT.r,-33,'앞 (사용자 쪽) ↓','end','orient',0);
+  // M01 내측 폭: 앞·중·뒤
+  [[20,'앞','front_post front_rim'],[56,'중','mid_post mid_rim'],[80,'뒤','back_post back_rim']].forEach(([v,l,k])=>{
+    dim(F,grp(F,'M01',k),0,v,W0,v); tx(F,grp(F,'M01',k,true),45,v,l,'middle',undefined,-5); });
+  badge(F,'M01',100,56,'M01');
+  // M02 내측 깊이: 좌·중·우
+  [[60,'좌','left_post left_rim'],[155,'중','mid_post mid_rim'],[235,'우','right_post right_rim']].forEach(([u,l,k])=>{
+    dim(F,grp(F,'M02',k),u,0,u,D0); tx(F,grp(F,'M02',k,true),u+2.5,90,l,'start'); });
+  badge(F,'M02',155,38,'M02');
+  // M03 코너 R
+  [['FL',0,0,1,1],['FR',W0,0,-1,1],['BL',0,D0,1,-1],['BR',W0,D0,-1,-1]].forEach(([c,u,v,su,sv])=>{
+    const g=grp(F,'M03',`r_${c} gap_${c}`,true), a=C.inR*(1-Math.SQRT1_2);
+    mk('circle',{class:'mk',cx:X(u+su*a),cy:Y(v+sv*a),r:11},g); });
+  badge(F,'M03',270,89,'M03',[W0-0.75,D0-0.75]);
+  // M04 외형 폭·깊이
+  const g4=grp(F,'M04','out_W'); dim(F,g4,OUT.l,-21.5,OUT.r,-21.5); ex(F,g4,OUT.l,OUT.f-1,OUT.l,-24); ex(F,g4,OUT.r,OUT.f-1,OUT.r,-24);
+  const g4d=grp(F,'M04','out_D',true); dim(F,g4d,OUT.r+6,OUT.f,OUT.r+6,OUT.b); ex(F,g4d,OUT.r+1,OUT.f,OUT.r+8,OUT.f); ex(F,g4d,OUT.r+1,OUT.b,OUT.r+8,OUT.b);
+  badge(F,'M04',143,-21.5,'M04');
+  // M06 벽 두께(평면에서 보이는 네 벽)
+  dim(F,grp(F,'M06','L_top L_bot',true),OUT.l,48,0,48); dim(F,grp(F,'M06','R_top R_bot',true),W0,48,OUT.r,48);
+  dim(F,grp(F,'M06','F_top F_bot',true),100,OUT.f,100,0); dim(F,grp(F,'M06','B_top B_bot',true),100,D0,100,OUT.b);
+  // M07 GH60 원점 오프셋
+  const g7=grp(F,'M07','dx dy',true); mk('circle',{class:'mk',cx:X(ox),cy:Y(oy),r:7},g7);
+  tx(F,g7,ox+3,-7.5,`dx ${C.dx} · dy ${C.dy} — M08 값에서 역산`,'start');
+  badge(F,'M07',16,9,'M07',[ox,oy]);
+  // M08 체결 구멍 중심 거리
+  for(const h of HS){ const [u,v]=HP[h]; dim(F,grp(F,'M08',h+'_x',true),0,v,u,v); dim(F,grp(F,'M08',h+'_y',true),u,0,u,v); }
+  [['H05','H06'],['H01','H04'],['H02','H03'],['H01','H05'],['H04','H06'],['H01','H02']].forEach(([a,b])=>
+    dim(F,grp(F,'M08',`d_${a}_${b}`,true),HP[a][0],HP[a][1],HP[b][0],HP[b][1],'dash'));
+  badge(F,'M08',206,10,'M08',[HP.H03[0]+2.5,HP.H03[1]]);
+  // M10 보스 외경
+  for(const h of HS){ const [u,v]=HP[h]; mk('circle',{class:'mk',cx:X(u),cy:Y(v),r:8.5},grp(F,'M10',h+'_D top',true)); }
+  badge(F,'M10',129,37,'M10',[HP.H02[0],HP.H02[1]-2.5]);
+  // M16 USB 개구부(평면)
+  const gx=grp(F,'M16','X',true); dim(F,gx,0,D0-5,USB.u,D0-5); ex(F,gx,USB.u,D0-7,USB.u,D0);
+  dim(F,grp(F,'M16','W',true),USB.u-USB.w/2,(D0+OUT.b)/2,USB.u+USB.w/2,(D0+OUT.b)/2);
+  dim(F,grp(F,'M16','wall',true),USB.u+9,D0,USB.u+9,OUT.b);
+  badge(F,'M16',USB.u,111,'M16 USB',[USB.u,OUT.b]);
 }
 function drawSide(){
-  // YZ 단면: 가로 = Y(앞→뒤), 세로 = Z (지지대 상면 = 0)
-  const m=26, sc=1.6; const D=C.inD; const Yv=y=>m+(y+C.dy)*sc, Z=z=>m+40+(14-z)*sc; // Z 위쪽이 +
-  const svg=mk('svg',{viewBox:`0 0 ${(C.outB-C.outF)*sc+2*m+90} ${(14-C.botB+8)*sc+2*m}`,role:'img','aria-label':'PSD60 앞뒤 단면, 높이 측정 위치'});
-  // 외형 윤곽(참고): 바닥은 앞 -7.6, 뒤 -12.0 (경사 포함, 단순화)
-  const outer=`M${Yv(C.outF-C.dy)} ${Z(C.botF)} L${Yv(C.outF-C.dy)} ${Z(C.rimF-C.chZ)} L${Yv(C.outF-C.dy+C.chY)} ${Z(C.rimF)} L${Yv(-C.dy)} ${Z(C.rimF)} L${Yv(-C.dy)} ${Z(-C.supportH)} L${Yv(D-C.dy)} ${Z(-C.supportH)} L${Yv(D-C.dy)} ${Z(C.rimB)} L${Yv(C.outB-C.dy)} ${Z(C.rimB)} L${Yv(C.outB-C.dy)} ${Z(C.botB)} Z`;
-  svg.appendChild(mk('path',{class:'wall',d:outer}));
-  // 지지대(기둥) 2개 예시
-  [C.H.H03[1],C.H.H01[1]].forEach(y=>svg.appendChild(mk('rect',{class:'post',x:Yv(y)-C.postD/2*sc,y:Z(0),width:C.postD*sc,height:C.supportH*sc})));
-  // USB 개구부(뒤 벽)
-  svg.appendChild(mk('rect',{class:'usb',x:Yv(D-C.dy)-1,y:Z(C.usbZ+C.usbH/2),width:(C.outB-D)*sc+2,height:C.usbH*sc}));
-  // 치수: M05
-  dimV(svg,Z(0),Z(-C.supportH),Yv(C.H.H03[1])+14,'M05 바닥→지지대 상면 ×6','M05');
-  dimV(svg,Z(C.rimF),Z(0),Yv(-C.dy)-10,'M05 지지대→앞 테두리','M05',-108);
-  dimV(svg,Z(C.rimB),Z(0),Yv(D-C.dy)+12,'M05 지지대→뒤 테두리','M05');
-  // 커버 베젤 밑면 참고선 (지지대 +13)
-  svg.appendChild(mk('path',{class:'ghost',d:`M${Yv(-C.dy)} ${Z(13)}H${Yv(D-C.dy)}`}));
-  svg.appendChild(mk('text',{x:Yv(30),y:Z(13)-2},'참고: 커버 베젤 밑면 = 지지대 +13 (테두리보다 높아야 손톱이 들어감)'));
-  // M04 외형 높이
-  dimV(svg,Z(C.rimF),Z(C.botF),Yv(C.outF-C.dy)-4,'M04 앞 높이','M04',-62);
-  dimV(svg,Z(C.rimB),Z(C.botB),Yv(C.outB-C.dy)+4,'M04 뒤 높이','M04');
-  dimH(svg,Yv(C.outF-C.dy),Yv(C.outB-C.dy),Z(C.botB)+12,'M04 외형 깊이 (폭·경사도 함께)','M04',10);
-  // M06 벽 두께
-  dimH(svg,Yv(D-C.dy),Yv(C.outB-C.dy),Z(C.rimB)-6,'M06 벽','M06');
-  // M16
-  const t16=mk('text',{class:'dimt',x:Yv(D-C.dy)+14,y:Z(C.usbZ)+4},'M16 USB 개구부 중심 높이·폭·높이'); t16.addEventListener('click',()=>goto('M16')); svg.appendChild(t16);
-  // 축 라벨
-  svg.appendChild(mk('text',{x:Yv(-C.dy),y:Z(-C.supportH)+14},'앞')); svg.appendChild(mk('text',{x:Yv(D-C.dy)-6,y:Z(-C.supportH)+14},'뒤'));
-  document.getElementById('svgSide').appendChild(svg);
+  // 가로 = v(앞→뒤), 세로 = Z(지지대 상면 = 0, 위가 +)
+  const F=makeFig($('svgSide'),{x0:-37,x1:125,y0:-19.5,y1:20.5,s:4.2,label:'PSD60 앞뒤 단면 — 높이 측정 위치'}); const {X,Y,s}=F;
+  const fv=OUT.f, bv=OUT.b, chV=OUT.f+C.chY, uz0=C.usbZ-C.usbH/2, uz1=C.usbZ+C.usbH/2;
+  mk('path',{class:'mat',d:`M${X(fv)} ${Y(C.botF)}L${X(fv)} ${Y(C.rimF-C.chZ)}L${X(chV)} ${Y(C.rimF)}L${X(0)} ${Y(C.rimF)}L${X(0)} ${Y(-C.supportH)}L${X(D0)} ${Y(-C.supportH)}L${X(D0)} ${Y(C.rimB)}L${X(bv)} ${Y(C.rimB)}L${X(bv)} ${Y(C.botB)}Z`},F.geo);
+  mk('rect',{class:'usb',x:X(D0),y:Y(uz1),width:r2((bv-D0)*s),height:r2(C.usbH*s)},F.geo);
+  [HP.H03[1],HP.H01[1]].forEach(v=>mk('rect',{class:'post',x:X(v-C.postD/2),y:Y(0),width:r2(C.postD*s),height:r2(C.supportH*s)},F.geo));
+  mk('path',{class:'ref',d:`M${X(0)} ${Y(0)}H${X(D0)}`},F.geo); tx(F,F.labs,36,0,'지지대 상면 = 높이 0','start','reft',-4);
+  mk('path',{class:'ref',d:`M${X(0)} ${Y(13)}H${X(D0)}`},F.geo); tx(F,F.labs,30,13,'커버 베젤 밑면 = 지지대 +13','start','reft',-4);
+  tx(F,F.labs,-36,17,'← 앞','start','orient',0); tx(F,F.labs,124,17,'뒤 →','end','orient',0);
+  // M05 내부 높이
+  const supK=HS.map(h=>'sup_'+h).join(' ');
+  dim(F,grp(F,'M05',supK),15.8,-C.supportH,15.8,0); tx(F,grp(F,'M05',supK,true),17.8,-3.1,'바닥→지지대 ×6','start');
+  dim(F,grp(F,'M05','rim_F'),3.5,0,3.5,C.rimF); tx(F,grp(F,'M05','rim_F',true),5.5,10.2,'앞 테두리','start');
+  dim(F,grp(F,'M05','rim_B'),D0-3.5,0,D0-3.5,C.rimB); tx(F,grp(F,'M05','rim_B',true),D0-5.5,10.2,'뒤 테두리','end');
+  badge(F,'M05',12,6.3,'M05',[3.5,6.3]);
+  // M04 외형 높이·깊이·경사
+  const gF=grp(F,'M04','H_front'); dim(F,gF,-18.5,C.botF,-18.5,C.rimF); ex(F,gF,fv-1,C.botF,-20.5,C.botF); ex(F,gF,chV-1,C.rimF,-20.5,C.rimF);
+  tx(F,grp(F,'M04','H_front',true),-20.5,2.3,'앞 높이','end');
+  const gB=grp(F,'M04','H_back'); dim(F,gB,bv+4,C.botB,bv+4,C.rimB); ex(F,gB,bv+1,C.botB,bv+6,C.botB); ex(F,gB,bv+1,C.rimB,bv+6,C.rimB);
+  tx(F,grp(F,'M04','H_back',true),bv+6,2.3,'뒤 높이','start');
+  const gD=grp(F,'M04','out_D'); dim(F,gD,fv,-16,bv,-16); ex(F,gD,fv,C.botF-1,fv,-17.8); ex(F,gD,bv,C.botB-1,bv,-17.8);
+  const gT=grp(F,'M04','tilt',true), R=28, ang=Math.atan2(C.botF-C.botB,bv-fv);
+  ex(F,gT,fv,C.botF,fv+R+4,C.botF,'dash');
+  mk('path',{class:'ln',d:`M${X(fv+R)} ${Y(C.botF)}A${R*s} ${R*s} 0 0 1 ${X(fv+R*Math.cos(ang))} ${Y(C.botF-R*Math.sin(ang))}`},gT);
+  tx(F,gT,fv+2,-12.4,'경사','start');
+  badge(F,'M04',44,-16,'M04');
+  // M06 벽 두께(단면에서 보이는 앞·뒤 벽)
+  dim(F,grp(F,'M06','F_top',true),fv,4,0,4); dim(F,grp(F,'M06','F_bot',true),fv,-3.5,0,-3.5);
+  dim(F,grp(F,'M06','B_top',true),D0,8.5,bv,8.5); dim(F,grp(F,'M06','B_bot',true),D0,3.6,bv,3.6);
+  badge(F,'M06',(D0+bv)/2,16.8,'M06',[(D0+bv)/2,C.rimB]);
+  // M16 USB 개구부(단면)
+  const gz=grp(F,'M16','Z',true); ex(F,gz,D0,C.usbZ,bv,C.usbZ,'dash'); dim(F,gz,(D0+bv)/2,0,(D0+bv)/2,C.usbZ);
+  dim(F,grp(F,'M16','H',true),D0-1.8,uz0,D0-1.8,uz1);
+  dim(F,grp(F,'M16','wall',true),D0,uz1+1.3,bv,uz1+1.3);
+  badge(F,'M16',84,-3.1,'M16 USB',[D0,C.usbZ]);
 }
 
-// ---------- JSON ----------
+// ---------- JSON(형식은 이전 버전과 같다) ----------
 function compile(){
   const out={schema:'46es-psd60-measurements/1',exported_at:new Date().toISOString(),units:'mm (각도 °)',note:'Claude Code 세션에 그대로 붙여넣으면 parameters.csv/.sc에 반영. params는 칸 값에서 바로 만든 후보(집계 규칙 포함)이며 최종 채택값은 검토 후 정한다.',items:{},params:{}};
   for(const it of ITEMS){ const s=S[it.id]; if(!s) continue; const f={}; let any=false;
@@ -401,20 +876,34 @@ function compile(){
     if(any||(s.note&&s.note.trim())) out.items[it.id]={title:it.t,fields:f,note:s.note||'',date:s.date||''}; }
   return out;
 }
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
-function makeJson(){ const txt=JSON.stringify(compile(),null,2); document.getElementById('json').value=txt; document.getElementById('export').scrollIntoView({behavior:'smooth'}); return txt; }
-document.getElementById('btnJson').onclick=document.getElementById('btnJson2').onclick=()=>{ makeJson(); toast('JSON을 만들었다'); };
-document.getElementById('btnCopy').onclick=async()=>{ const txt=document.getElementById('json').value||makeJson(); try{ await navigator.clipboard.writeText(txt); toast('복사했다'); }catch(e){ document.getElementById('json').select(); toast('Ctrl+C로 복사'); } };
-document.getElementById('btnDl').onclick=()=>{ const txt=document.getElementById('json').value||makeJson(); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download='psd60_measurements_'+today().replace(/-/g,'')+'.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
-document.getElementById('btnImport').onclick=()=>{ try{ const j=JSON.parse(document.getElementById('json').value); if(!j.items) throw 0; let n=0;
-    for(const id in j.items){ const it=ITEMS.find(x=>x.id===id); if(!it) continue; S[id]=S[id]||{f:{},note:'',date:''}; const fs=j.items[id].fields||{};
+let jt=0; function scheduleJson(){ clearTimeout(jt); jt=setTimeout(updateJson,150); }
+function updateJson(){ const j=compile(), txt=JSON.stringify(j,null,2); $('json').value=txt;
+  const ni=Object.keys(j.items).length, nf=Object.values(j.items).reduce((s,x)=>s+Object.keys(x.fields).length,0), np=Object.keys(j.params).length;
+  $('xstat').textContent=ni?`항목 ${ni}개 · 칸 ${nf}개 · 매개변수 후보 ${np}개`:'아직 입력한 값이 없다'; return txt; }
+let tt=0; function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+async function copyJson(){ const txt=updateJson();
+  try{ await navigator.clipboard.writeText(txt); toast('JSON을 복사했다 — Claude Code 세션에 붙여넣는다'); return; }catch(e){}
+  const ta=$('json'); ta.focus(); ta.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+  if(ok) toast('JSON을 복사했다 — Claude Code 세션에 붙여넣는다'); else { $('export').scrollIntoView({behavior:smooth(),block:'start'}); toast('복사하지 못했다 — 선택된 텍스트를 Ctrl+C로 복사'); } }
+$('btnExport').onclick=copyJson; $('btnCopy').onclick=copyJson;
+$('btnDl').onclick=()=>{ const txt=updateJson(); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download='psd60_measurements_'+today().replace(/-/g,'')+'.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+function importText(txt){ try{ const j=JSON.parse(txt); if(!j||!j.items) throw 0; let n=0;
+    for(const id in j.items){ const it=ITEM[id]; if(!it) continue; S[id]=S[id]||{f:{},note:'',date:''}; S[id].f=S[id].f||{}; const fs=j.items[id].fields||{};
       for(const k in fs){ const v=fs[k]&&fs[k].value!==undefined?fs[k].value:fs[k]; if(v!==undefined&&v!==''){ S[id].f[k]=v; n++; } }
       if(j.items[id].note) S[id].note=j.items[id].note; if(j.items[id].date) S[id].date=j.items[id].date; }
-    save(); build(); toast(n+'칸을 가져왔다'); }catch(e){ toast('JSON을 읽지 못했다'); } };
-document.getElementById('btnReset').onclick=()=>{ if(confirm('입력한 값을 모두 지울까?')){ S={}; save(); build(); document.getElementById('json').value=''; } };
-document.getElementById('btnTop').onclick=()=>document.getElementById('figs').scrollIntoView({behavior:'smooth'});
+    save(); build(); $('jsonIn').value=''; toast(n+'칸을 가져왔다'); }catch(e){ toast('JSON을 읽지 못했다'); } }
+$('btnImport').onclick=()=>importText($('jsonIn').value);
+$('fileIn').onchange=e=>{ const f=e.target.files[0]; if(!f) return; f.text().then(importText); e.target.value=''; };
+$('btnReset').onclick=()=>{ if(confirm('입력한 값과 메모를 모두 지울까? 되돌릴 수 없다.')){ S={}; save(); build(); toast('모두 지웠다'); } };
 
-build(); drawTop(); drawSide();
+// ---------- 시작 ----------
+function syncBar(){ document.documentElement.style.setProperty('--barH',$('topbar').offsetHeight+'px'); }
+if(window.ResizeObserver) new ResizeObserver(syncBar).observe($('topbar')); syncBar();
+WIDE.addEventListener&&WIDE.addEventListener('change',()=>{ closeSheet(); paint(); });
+buildStrip(); drawTop(); drawSide();
+FIG_HAS=new Set([...document.querySelectorAll('.fig [data-m]')].map(e=>e.dataset.m));
+layoutBadges(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(layoutBadges);
+build();
 </script>
 </body>
 </html>
