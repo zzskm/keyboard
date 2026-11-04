@@ -506,9 +506,9 @@
     },
     {
       "path": "model/measure_psd60.html",
-      "bytes": 39249,
-      "sha256": "8d98bc46384dfa4e3ba19a71452a999d8c33b2517cedd6e0006f661efb52f66b",
-      "git_blob_sha": "35d0fc1b230600207f3a155b5f134d7bc213c1c9"
+      "bytes": 75761,
+      "sha256": "881dc1eb9e7ac367383269d176edb8404e0584016250899f7d0730f8da15f762",
+      "git_blob_sha": "9b9c9e73c4eb851307fc152d42b0d4fbe2fb29a2"
     },
     {
       "path": "model/measurements.csv",
