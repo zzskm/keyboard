@@ -1,16 +1,28 @@
 {
   "files": [
     {
+      "path": "README.md",
+      "bytes": 2673,
+      "sha256": "ac0fe26510e3815500c8627f3edff4d192ff9d21fbd26a935f123d1980ee4020",
+      "git_blob_sha": "d4a3a0f6123d697b29ce98d14398081ff5da24c8"
+    },
+    {
       "path": "cad/46es_r2_keyboard.dwg",
       "bytes": 2388706,
       "sha256": "4a9b09d58479c65c1007e08c930c7736ffd1df6277d9e5dd6098c6ce5f88db59",
       "git_blob_sha": "1145e65b7d172fc9201c5fdceef10fb408d72832"
     },
     {
+      "path": "docs/assembly-revision.md",
+      "bytes": 9644,
+      "sha256": "7dd34e86e80191713b2169cd076e8f0b715207bca34733705d380a4e9778e503",
+      "git_blob_sha": "e1e7841bca192bd717311b55a00c371bb42aa67c"
+    },
+    {
       "path": "docs/planning.md",
-      "bytes": 22613,
-      "sha256": "cb325268934c4d1f76424a008ebd26e2c8bb1fb26c16c4eca9428e543a7e9ce2",
-      "git_blob_sha": "bc9772259acb5d26fbdd3c5af51e8668c753a1ea"
+      "bytes": 23117,
+      "sha256": "1e4e2dcdab3b5cae83b296d1f1c572a05c54b5fafaec0f240c84f266a63a7e12",
+      "git_blob_sha": "777c45df81962830bb3d5c3d918724edf9b23d93"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
@@ -25,16 +37,166 @@
       "git_blob_sha": "157869f0ec95a340074e366581b355180037bfa9"
     },
     {
-      "path": "README.md",
-      "bytes": 2024,
-      "sha256": "3b975f40565c8d51b3ebbf24cdd4c43c8647eed9a1be4fed4e77ae9b74f8f974",
-      "git_blob_sha": "c8e27e99bd37bb7cc8aed8830f48a59c02339522"
+      "path": "inspection/46es_r2_dwg_inspection.md",
+      "bytes": 21999,
+      "sha256": "0867e5168dbc7b686c37bb4473c4bf185d93356b89541945bb2abf77942b0ac8",
+      "git_blob_sha": "5b5033a2d2fc88073efee11deba2447b44855d67"
     },
     {
-      "path": "docs/assembly-revision.md",
-      "bytes": 7786,
-      "sha256": "e072d7754c2db7c6494470d45e291710c2380297be68b229c9b50e903595226a",
-      "git_blob_sha": "bb77fea4ce269841c3390b4327f2cee64c5be40d"
+      "path": "inspection/data/cadcraft_info.json",
+      "bytes": 3738,
+      "sha256": "e84dc4702164bda0c72944bcee80a95feae2fb6389822d3baf420c1d285c80fe",
+      "git_blob_sha": "3a852354bb835cb01a1f9f5db39401a00118a5ad"
+    },
+    {
+      "path": "inspection/data/cadcraft_modelspace_entities.json",
+      "bytes": 136114,
+      "sha256": "ac0f059d36b07e51ce6473caf1751d83a82eeed2ff257fe7956f2f72faa20409",
+      "git_blob_sha": "f00b7ce3401dd34eb3074218fe74c4e9e5a082fd"
+    },
+    {
+      "path": "inspection/data/dwg_object_census.json",
+      "bytes": 22501,
+      "sha256": "535973ceeae9ab176285d391dc528cbaa4f203131610a5b394f27a0fda3f1ce7",
+      "git_blob_sha": "ef3d9c803f9cf9808fc38539d3fcf3159fdbe952"
+    },
+    {
+      "path": "inspection/data/features_by_panel.json",
+      "bytes": 47257,
+      "sha256": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
+      "git_blob_sha": "3425253c046882a80509e2a75900cb1491a309ce"
+    },
+    {
+      "path": "inspection/data/geom_loops_panels.json",
+      "bytes": 40984,
+      "sha256": "48763e9f0bf7022f9f3c7858872873d66919d1eff8cb50831ecfad639fe233d8",
+      "git_blob_sha": "6e9ee1f19997f6f64e4152f3898fc5637d2f1b12"
+    },
+    {
+      "path": "inspection/derived/46es_r2_keyboard_modelspace.dxf",
+      "bytes": 220830,
+      "sha256": "d296aaf030502081db69682aec95fd16daadfec3e862dd89185c4655f24417bf",
+      "git_blob_sha": "54d78945d597a3bb19a754c64b4f9339ecd18eaa"
+    },
+    {
+      "path": "inspection/derived/REF_r2_P2_plate_gh60.dxf",
+      "bytes": 20129,
+      "sha256": "b5fbf0f57c6dcaabc83a22eee1bb7deca2f8ff07139543f8d9d67dd4cf5c09c3",
+      "git_blob_sha": "a4d949e80002f6bc35667b5975390c64587a9fdc"
+    },
+    {
+      "path": "inspection/render/overview.png",
+      "bytes": 141906,
+      "sha256": "258d230214bd440271dbac9dab43887f37912d0d853ae140f052eb4afa379210",
+      "git_blob_sha": "2bf4970d576043fa5c0a7a54f73e08d6514ee51a"
+    },
+    {
+      "path": "inspection/render/p0_top_2T.png",
+      "bytes": 44612,
+      "sha256": "b120b0ced48958ebbb680b83da4402e81f7f93c1053db63fce29f125b8c8b6de",
+      "git_blob_sha": "adb751ff61405acd0b800dc6915327e601ff70ea"
+    },
+    {
+      "path": "inspection/render/p1_acryl_5T.png",
+      "bytes": 71029,
+      "sha256": "4e7b046f110733642856c0c56372f1219ef293b0b5700bbc479689b6bcbf6ede",
+      "git_blob_sha": "59581b7a2dade1566f78f9f7afeb2392255c8e35"
+    },
+    {
+      "path": "inspection/render/p2_plate_1p5T.png",
+      "bytes": 164740,
+      "sha256": "fb5d832d64889031159e2a0896049a352a9912a901b431c56b4f96409fd5d718",
+      "git_blob_sha": "4b8a6c7cb70977af600acff2e939640befd84fa1"
+    },
+    {
+      "path": "inspection/render/p3_astel_2T.png",
+      "bytes": 178978,
+      "sha256": "1ac28aca12d00eeddbacada47997c071c3e8af62194deddeb89d9682c99e9e80",
+      "git_blob_sha": "d5b4bdc8fd8998e13c3813e84d25029d6f135ff2"
+    },
+    {
+      "path": "inspection/render/p4_smoke_5T.png",
+      "bytes": 98701,
+      "sha256": "7b79db50979ff3a4a3e82204559d959cec1c955ab8ab318d4db254c8d5662f92",
+      "git_blob_sha": "95ba9b2395b2f2f7c2b75842ce78896559fe572e"
+    },
+    {
+      "path": "inspection/render/p5_astel_2T_b.png",
+      "bytes": 81065,
+      "sha256": "b8da007cf7ac4225b833e4729341fc84f03230420d1f836f194b9400fff91028",
+      "git_blob_sha": "c5a42f274f01d54f339199165e103eeb8a4f8f3c"
+    },
+    {
+      "path": "inspection/scripts/analyze_geom.py",
+      "bytes": 10554,
+      "sha256": "bf901ce03720c2a69ad879f226fc79dde4cc9c8175cba1827c573fff5fde73a8",
+      "git_blob_sha": "4a3b189013115989ea2e94feed396ecf1abc20ef"
+    },
+    {
+      "path": "inspection/scripts/analyze_switches.py",
+      "bytes": 7469,
+      "sha256": "761a32c5ba6770b4b1e75c03e11c02d55141af3b12a6c0bf686c0bc03c4400ea",
+      "git_blob_sha": "1b5b002bfc614a7c2b635fc4ce7795a0385a7aa9"
+    },
+    {
+      "path": "inspection/scripts/dwg_census.py",
+      "bytes": 17223,
+      "sha256": "e972d761413bf713aafa8f7f97ecba8ee426d6d7921ee4412e87fc7fc7baa79b",
+      "git_blob_sha": "87a45bb2fc2bfae6bb6594b643eea244c2b98850"
+    },
+    {
+      "path": "inspection/scripts/dwg_extra.py",
+      "bytes": 1778,
+      "sha256": "f029cc6c615f940dfa1d1bd56d136706fae416dbb22e1c65063e79cc4d361867",
+      "git_blob_sha": "717eb5be144a3dd8376c35da7ad33382ca4fb6e2"
+    },
+    {
+      "path": "inspection/scripts/dwg_thickness.py",
+      "bytes": 3304,
+      "sha256": "d0abe3ffe1ef74a335d49cb5056d961f93662998fb6f7ad9441d2338350f58d1",
+      "git_blob_sha": "753ca6689bc2626ff70daf65ce0f98cabc274f6e"
+    },
+    {
+      "path": "inspection/scripts/panel_to_dxf.py",
+      "bytes": 2672,
+      "sha256": "e16dabe7af4fd892af87bac81d9aaa079ec3d4bf460f25e8f1944c9964ac08ef",
+      "git_blob_sha": "35a60d18c8e4f12a0bde5a70b48d573e3b245825"
+    },
+    {
+      "path": "model/46es_draft_sketches.sc",
+      "bytes": 91131,
+      "sha256": "86ce4ce0820b870d415c6f4bd96adb1e3254ac3d41cca09efc1b5218ce291e13",
+      "git_blob_sha": "b7477faf3b5c5da067226f01bf4e96e316faac05"
+    },
+    {
+      "path": "model/46es_draft_sketches_top.png",
+      "bytes": 60258,
+      "sha256": "25b523f616104101a7c5dabbd791e6e25d3bea449de4e914414e15758a7bf9a5",
+      "git_blob_sha": "87228d027290ddfdface996aa3784f6460323e20"
+    },
+    {
+      "path": "model/README.md",
+      "bytes": 5264,
+      "sha256": "5bb95ce4c75bf9696f78c981c15b7dab9b22c74f5e606dda1ca31d9b4284cbd5",
+      "git_blob_sha": "1332ac1b20c324cab6814ff723aba01de0041257"
+    },
+    {
+      "path": "model/measurements.csv",
+      "bytes": 7341,
+      "sha256": "454d0999e26ae42e8376fcc2d527b6c43d4b5dbc44f7fc426677f7236d2b6b5c",
+      "git_blob_sha": "538e7a7f3aa9328dfea713ada168c4da6de555af"
+    },
+    {
+      "path": "model/parameters.csv",
+      "bytes": 8526,
+      "sha256": "3748d1ee5c515449afc42b5a4268b405c0b01e7ed565c8440fa63fa61b7ad597",
+      "git_blob_sha": "6c6884deda73328099fd8fb0bbb7c86ad52bd146"
+    },
+    {
+      "path": "tools/update_manifest.py",
+      "bytes": 3088,
+      "sha256": "d185189cc28b681beb1ca2b47baa637af2cbfb542e0e7f90282bdb7bd889ffaa",
+      "git_blob_sha": "9fb78937a172ff2831253002ba1a7689a2bf97c7"
     }
   ]
 }
