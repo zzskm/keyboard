@@ -8,9 +8,9 @@
     },
     {
       "path": "docs/planning.md",
-      "bytes": 20657,
-      "sha256": "e223aac30e5ad0f45ade3e385a33915b4b05352e1bfdfc7538178a6cea219346",
-      "git_blob_sha": "d840e74cf17b3c1544ea98feeb57a28b8e7bc864"
+      "bytes": 22613,
+      "sha256": "cb325268934c4d1f76424a008ebd26e2c8bb1fb26c16c4eca9428e543a7e9ce2",
+      "git_blob_sha": "bc9772259acb5d26fbdd3c5af51e8668c753a1ea"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
@@ -26,9 +26,15 @@
     },
     {
       "path": "README.md",
-      "bytes": 1632,
-      "sha256": "b5f9136fb69de4515855b30c8fdcc1ad9046c7945109da771cc838f3da25abde",
-      "git_blob_sha": "76a3cefc809a94f4c5678576cda392c1cc331e21"
+      "bytes": 2024,
+      "sha256": "3b975f40565c8d51b3ebbf24cdd4c43c8647eed9a1be4fed4e77ae9b74f8f974",
+      "git_blob_sha": "c8e27e99bd37bb7cc8aed8830f48a59c02339522"
+    },
+    {
+      "path": "docs/assembly-revision.md",
+      "bytes": 7786,
+      "sha256": "e072d7754c2db7c6494470d45e291710c2380297be68b229c9b50e903595226a",
+      "git_blob_sha": "bb77fea4ce269841c3390b4327f2cee64c5be40d"
     }
   ]
 }
