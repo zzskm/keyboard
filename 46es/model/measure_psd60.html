@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSD60 실측 도우미</title>
+<meta name="description" content="46es 3D 프린팅 케이스용 PSD60 하우징 실측 M01–M21: 측정 위치 그림, 값 입력, JSON 내보내기 (오프라인 단일 파일)">
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#1d2430; --muted:#5d6675; --line:#d9dee6;
+  --accent:#2f6fde; --accent-ink:#ffffff; --ok:#2e9e5b; --warn:#d9822b; --p1:#d94a4a; --p2:#d9822b; --p3:#7a8594;
+  --field:#f9fafc; --mark:#e8f0ff; --svg-wall:#4a5565; --svg-dim:#2f6fde; --svg-post:#d9822b; --svg-usb:#2e9e5b; --svg-text:#1d2430;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181f; --card:#1d232c; --ink:#e7ebf1; --muted:#9aa5b4; --line:#323b48;
+    --accent:#6a9cff; --accent-ink:#0d1320; --ok:#5ccb86; --warn:#f0a450; --p1:#ff7b7b; --p2:#f0a450; --p3:#8b96a6;
+    --field:#161b22; --mark:#22304a; --svg-wall:#c7cfdb; --svg-dim:#6a9cff; --svg-post:#f0a450; --svg-usb:#5ccb86; --svg-text:#e7ebf1;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181f; --card:#1d232c; --ink:#e7ebf1; --muted:#9aa5b4; --line:#323b48;
+  --accent:#6a9cff; --accent-ink:#0d1320; --ok:#5ccb86; --warn:#f0a450; --p1:#ff7b7b; --p2:#f0a450; --p3:#8b96a6;
+  --field:#161b22; --mark:#22304a; --svg-wall:#c7cfdb; --svg-dim:#6a9cff; --svg-post:#f0a450; --svg-usb:#5ccb86; --svg-text:#e7ebf1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",Roboto,sans-serif;padding:0 16px 80px}
+header{max-width:1100px;margin:0 auto;padding:20px 0 8px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:17px;margin:28px 0 10px}
+.sub{color:var(--muted);font-size:14px;margin:0}
+main{max-width:1100px;margin:0 auto}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar .prog{flex:1;min-width:160px;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar .prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
+.bar .cnt{font-size:13px;color:var(--muted);white-space:nowrap}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer}
+button.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:active{transform:translateY(1px)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.filters button[aria-pressed="true"]{background:var(--mark);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px;scroll-margin-top:70px}
+.card.hl{outline:2px solid var(--accent)}
+.card.done{border-color:var(--ok)}
+.card header{padding:0;margin:0 0 6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.id{font-weight:700;font-family:ui-monospace,Consolas,monospace}
+.pr{font-size:11px;padding:1px 6px;border-radius:10px;color:#fff;background:var(--p3)}
+.pr.p1{background:var(--p1)} .pr.p2{background:var(--p2)}
+.title{font-weight:600}
+.meta{font-size:13px;color:var(--muted);margin:2px 0 8px}
+.meta b{color:var(--ink);font-weight:600}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.f label{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.f input,.f textarea,.note textarea{width:100%;font:inherit;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink)}
+.f input:focus,.note textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+.f .cand{font-size:11px;color:var(--muted);margin-top:2px}
+.f.wide{grid-column:1/-1}
+.agg{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.agg b{color:var(--ink)}
+.note{margin-top:8px}
+.note textarea{min-height:44px;resize:vertical}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12px;color:var(--muted)}
+.skip{opacity:.75}
+details{margin-top:6px} summary{cursor:pointer;color:var(--accent);font-size:13px}
+.svgwrap{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;overflow:auto}
+svg{display:block;width:100%;height:auto}
+svg text{font:11px -apple-system,"Segoe UI","Malgun Gothic",sans-serif;fill:var(--svg-text)}
+svg .wall{fill:none;stroke:var(--svg-wall);stroke-width:1.2}
+svg .outer{fill:none;stroke:var(--svg-wall);stroke-width:.8;stroke-dasharray:4 3}
+svg .dim{stroke:var(--svg-dim);stroke-width:.9;fill:none}
+svg .dimt{fill:var(--svg-dim);font-weight:600;cursor:pointer}
+svg .post{fill:var(--svg-post);fill-opacity:.35;stroke:var(--svg-post)}
+svg .usb{fill:var(--svg-usb);fill-opacity:.35;stroke:var(--svg-usb)}
+svg .ghost{fill:none;stroke:var(--muted);stroke-width:.6;stroke-dasharray:2 2}
+svg .lab{cursor:pointer}
+.out{margin-top:10px}
+.out textarea{width:100%;min-height:220px;font:12px ui-monospace,Consolas,monospace;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.hint{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+kbd{font:12px ui-monospace,Consolas,monospace;background:var(--mark);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>PSD60 실측 도우미 <span class="sub">46es · M01–M21</span></h1>
+  <p class="sub">측정 위치는 그림의 파란 표시를, 값은 아래 카드에 적는다. 입력은 이 브라우저에 자동 저장된다. 끝나면 <b>JSON 내보내기</b>로 만든 텍스트를 Claude Code 세션에 붙여넣으면 <code>parameters.csv</code>·<code>.sc</code>에 반영한다. 단위는 mm(각도는 °). 여러 곳을 잰 항목은 칸마다 따로 적고, 아래 집계(최소·평균)가 매개변수 후보가 된다.</p>
+</header>
+<main>
+  <div class="bar">
+    <div class="prog"><i id="prog"></i></div>
+    <span class="cnt" id="cnt">0 / 0 항목</span>
+    <button id="btnJson" class="pri">JSON 내보내기</button>
+    <button id="btnTop">그림으로</button>
+  </div>
+
+  <h2 id="figs">측정 위치</h2>
+  <div class="svgwrap" id="svgTop"></div>
+  <p class="hint">위: 하우징 내부 평면(위가 뒤쪽, GH60 PCB 기준점이 원점). 치수선 라벨을 누르면 해당 카드로 이동한다. 치수는 현재 후보값(Wilmore STL 추정·PSD60 아님)이라 실물과 다를 수 있다.</p>
+  <div class="svgwrap" id="svgSide" style="margin-top:10px"></div>
+  <p class="hint">아래: 앞↔뒤 단면(왼쪽이 앞). 바닥→지지대 상면, 지지대 상면→앞/뒤 테두리 상단(M05), 외형 높이·경사(M04), 벽 두께(M06), USB 개구부 높이(M16).</p>
+
+  <h2>측정 항목</h2>
+  <div class="filters" id="filters">
+    <button data-f="all" aria-pressed="true">전체</button>
+    <button data-f="1" aria-pressed="false">우선순위 1</button>
+    <button data-f="2" aria-pressed="false">우선순위 2·3</button>
+    <button data-f="todo" aria-pressed="false">미입력만</button>
+  </div>
+  <div class="grid" id="cards"></div>
+
+  <h2 id="export">내보내기 · 가져오기</h2>
+  <div class="row">
+    <button id="btnJson2" class="pri">JSON 만들기</button>
+    <button id="btnCopy">클립보드 복사</button>
+    <button id="btnDl">파일로 저장</button>
+    <button id="btnImport">붙여넣은 JSON 가져오기</button>
+    <button id="btnReset">모두 지우기</button>
+  </div>
+  <p class="hint">JSON에는 칸별 값·메모·측정일과, 바로 매개변수가 되는 값(<code>params</code>)이 들어 있다. 세션에 붙여넣을 때는 전체를 그대로 붙여넣는다. 가져오기는 아래 칸에 JSON을 붙여넣고 버튼을 누른다.</p>
+  <div class="out"><textarea id="json" spellcheck="false" placeholder="여기에 JSON이 만들어진다 / 가져올 JSON을 붙여넣는다"></textarea></div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- 현재 후보값(모델과 같은 숫자; 그림·placeholder용) ----------
+const C = {
+  inW:286.381, inD:95.934, inR:2.5, dx:0.693, dy:0.667,
+  supportH:6.196, rimF:12.173, rimB:11.891,
+  usbX:18.713, usbW:11.217, usbH:7.137, usbZ:-1.533,
+  outL:-13.953, outW:312.904, outF:-15.302, outB:102.411, botF:-7.581, botB:-12.025, chY:7.949, chZ:5.347,
+  postD:5.0,
+  H:{H01:[25.1993,66.6992],H02:[128.2,47.6],H03:[190.4994,9.3993],H04:[260.0499,66.6992],H05:[3.70934,38.0988],H06:[281.29076,38.0988]}
+};
+const r1=v=>Math.round(v*100)/100;
+const dist=(a,b)=>r1(Math.hypot(C.H[a][0]-C.H[b][0],C.H[a][1]-C.H[b][1]));
+
+// ---------- 항목 정의 ----------
+// field: {k, l(라벨), u(단위, 기본 mm), t('num'|'text'), p(직접 매개변수), c(후보값)}
+// agg: {p(매개변수), fn('min'|'mean'|'max'), keys:[...]} — 집계로 매개변수 후보를 만든다
+const ITEMS = [
+ {id:'M01',pr:1,cat:'PSD60 내부',t:'내측 폭 (좌↔우 내벽)',
+  how:'앞·중·뒤 3곳 × 2레벨(지지대 상면 높이 / 테두리 바로 아래)로 잰다. 레벨 차이가 있으면 구배다. r2 판을 끼운 채 좌우 틈을 필러 게이지로 재면 간접 확인이 된다.',
+  tool:'캘리퍼 내경조(300mm급) · 필러 게이지', acc:'±0.05', params:'TBD_case_in_W',
+  fields:[{k:'front_post',l:'앞 · 지지대 높이',c:C.inW},{k:'mid_post',l:'중 · 지지대 높이',c:C.inW},{k:'back_post',l:'뒤 · 지지대 높이',c:C.inW},
+          {k:'front_rim',l:'앞 · 테두리 아래',c:C.inW},{k:'mid_rim',l:'중 · 테두리 아래',c:C.inW},{k:'back_rim',l:'뒤 · 테두리 아래',c:C.inW},
+          {k:'r2_gap',l:'r2 판 끼움 시 좌우 틈 합',c:'',u:'mm'}],
+  agg:[{p:'TBD_case_in_W',fn:'min',keys:['front_post','mid_post','back_post','front_rim','mid_rim','back_rim']}]},
+ {id:'M02',pr:1,cat:'PSD60 내부',t:'내측 깊이 (앞↔뒤 내벽)',
+  how:'좌·중·우 3곳 × 2레벨. r2 판 끼움 상태의 앞뒤 틈도 병행.',
+  tool:'캘리퍼 내경조 · 필러 게이지', acc:'±0.05', params:'TBD_case_in_D',
+  fields:[{k:'left_post',l:'좌 · 지지대 높이',c:C.inD},{k:'mid_post',l:'중 · 지지대 높이',c:C.inD},{k:'right_post',l:'우 · 지지대 높이',c:C.inD},
+          {k:'left_rim',l:'좌 · 테두리 아래',c:C.inD},{k:'mid_rim',l:'중 · 테두리 아래',c:C.inD},{k:'right_rim',l:'우 · 테두리 아래',c:C.inD},
+          {k:'r2_gap',l:'r2 판 끼움 시 앞뒤 틈 합',c:''}],
+  agg:[{p:'TBD_case_in_D',fn:'min',keys:['left_post','mid_post','right_post','left_rim','mid_rim','right_rim']}]},
+ {id:'M03',pr:1,cat:'PSD60 내부',t:'내측 코너 R (4코너)',
+  how:'R 게이지 대조, 또는 코너 본뜨기(종이 전사·점토) 후 스캔. r2 판(R3.5) 끼움 시 코너 틈도 적는다. 사용자 관찰: R3.5 판에서 코너 유격 → R<3.5 예상.',
+  tool:'R 게이지 · 스캐너 · 필러 게이지', acc:'±0.25', params:'TBD_case_in_R, TBD_plate_C, TBD_frame_C, TBD_cover_R',
+  fields:[{k:'r_FL',l:'R 앞-왼쪽',c:C.inR},{k:'r_FR',l:'R 앞-오른쪽',c:C.inR},{k:'r_BL',l:'R 뒤-왼쪽',c:C.inR},{k:'r_BR',l:'R 뒤-오른쪽',c:C.inR},
+          {k:'gap_FL',l:'r2 판 코너 틈 앞-왼쪽',c:''},{k:'gap_FR',l:'틈 앞-오른쪽',c:''},{k:'gap_BL',l:'틈 뒤-왼쪽',c:''},{k:'gap_BR',l:'틈 뒤-오른쪽',c:''}],
+  agg:[{p:'TBD_case_in_R',fn:'mean',keys:['r_FL','r_FR','r_BL','r_BR']}]},
+ {id:'M04',pr:3,cat:'PSD60 외곽',t:'외형 폭·깊이·앞 높이·뒤 높이·경사',
+  how:'평면 위에서 잰다. 높이는 바닥면에서 앞/뒤 테두리 상단까지.',
+  tool:'캘리퍼 · 하이트 게이지 · 각도기', acc:'±0.1 / ±0.2°', params:'TBD_case_out_W, TBD_case_out_D, TBD_case_H_front, TBD_case_H_back, TBD_case_tilt',
+  fields:[{k:'out_W',l:'외형 폭',c:320,p:'TBD_case_out_W'},{k:'out_D',l:'외형 깊이',c:115,p:'TBD_case_out_D'},{k:'H_front',l:'앞 높이',c:21,p:'TBD_case_H_front'},
+          {k:'H_back',l:'뒤 높이',c:32,p:'TBD_case_H_back'},{k:'tilt',l:'경사',u:'°',c:6,p:'TBD_case_tilt'}]},
+ {id:'M05',pr:1,cat:'PSD60 내부',t:'내부 높이: 바닥→지지대 상면, 지지대→테두리 상단, 턱·언더컷',
+  how:'지지대 6곳 각각 바닥에서 상면까지(편차 확인). 지지대 상면에서 앞/뒤 테두리 상단까지. 테두리 안쪽에 턱이나 언더컷이 있으면 적는다. 커버 베젤 밑면(지지대 +13)이 테두리보다 높아야 손톱으로 들어 뗄 수 있다.',
+  tool:'캘리퍼 뎁스 바 · 깊이 게이지', acc:'±0.1', params:'TBD_support_H, TBD_support_to_rim_F, TBD_support_to_rim_B, TBD_standoff_H, TBD_cover_H',
+  fields:[{k:'sup_H01',l:'바닥→지지대 H01',c:C.supportH},{k:'sup_H02',l:'H02',c:C.supportH},{k:'sup_H03',l:'H03',c:C.supportH},
+          {k:'sup_H04',l:'H04',c:C.supportH},{k:'sup_H05',l:'H05',c:C.supportH},{k:'sup_H06',l:'H06',c:C.supportH},
+          {k:'rim_F',l:'지지대→앞 테두리 상단',c:C.rimF,p:'TBD_support_to_rim_F'},{k:'rim_B',l:'지지대→뒤 테두리 상단',c:C.rimB,p:'TBD_support_to_rim_B'},
+          {k:'lip',l:'테두리 턱·언더컷 유무/치수',t:'text',c:'없음(수직벽)'}],
+  agg:[{p:'TBD_support_H',fn:'mean',keys:['sup_H01','sup_H02','sup_H03','sup_H04','sup_H05','sup_H06']}]},
+ {id:'M06',pr:2,cat:'PSD60 내부',t:'벽 두께 · 내벽 수직도',
+  how:'네 벽 각각 상단(테두리)과 하단(지지대 높이) 두께. 상·하 차이가 구배.',
+  tool:'캘리퍼', acc:'±0.1', params:'TBD_plate_gap, TBD_cover_gap',
+  fields:[{k:'L_top',l:'왼쪽 벽 상단',c:''},{k:'L_bot',l:'왼쪽 벽 하단',c:''},{k:'R_top',l:'오른쪽 상단',c:''},{k:'R_bot',l:'오른쪽 하단',c:''},
+          {k:'F_top',l:'앞 상단',c:''},{k:'F_bot',l:'앞 하단',c:''},{k:'B_top',l:'뒤 상단',c:''},{k:'B_bot',l:'뒤 하단',c:''}]},
+ {id:'M07',pr:1,cat:'기준 좌표',t:'내측 좌벽·앞벽 → GH60 PCB 기준점 오프셋',
+  how:'직접 잴 수 없다. M08에서 잰 체결점 중심의 벽 거리에서 역산한다: dx = (좌벽→H03 중심) − 190.50, dy = (앞벽→H03 중심) − 9.40 (H04로도 확인: 260.05 / 66.70). 계산값을 적는다.',
+  tool:'계산', acc:'±0.05', params:'TBD_pcb0_dx, TBD_pcb0_dy',
+  fields:[{k:'dx',l:'dx (좌벽→기준점)',c:C.dx,p:'TBD_pcb0_dx'},{k:'dy',l:'dy (앞벽→기준점)',c:C.dy,p:'TBD_pcb0_dy'}]},
+ {id:'M08',pr:1,cat:'체결',t:'체결 구멍 6곳: 내벽 기준 중심 거리, 중심 간 거리',
+  how:'얇은 GH60 좌표 시험 프레임(A 단계)이 억지 없이 들어가는지 먼저 본다. 각 구멍은 구멍 가장자리까지 거리 ± 반지름으로 중심 거리를 낸다(대안: 전사용 나사). 좌벽·앞벽 기준.',
+  tool:'캘리퍼 · 시험 프레임 · 전사용 나사', acc:'±0.1', params:'CAND_H01_X … CAND_H06_Y (= 값 − dx / − dy)',
+  fields:[].concat(...Object.keys(C.H).map(h=>[{k:h+'_x',l:h+' 좌벽→중심',c:r1(C.H[h][0]+C.dx)},{k:h+'_y',l:h+' 앞벽→중심',c:r1(C.H[h][1]+C.dy)}]),
+          [{k:'d_H05_H06',l:'H05–H06',c:dist('H05','H06')},{k:'d_H01_H04',l:'H01–H04',c:dist('H01','H04')},{k:'d_H02_H03',l:'H02–H03',c:dist('H02','H03')},
+           {k:'d_H01_H05',l:'H01–H05',c:dist('H01','H05')},{k:'d_H04_H06',l:'H04–H06',c:dist('H04','H06')},{k:'d_H01_H02',l:'H01–H02',c:dist('H01','H02')},
+           {k:'jig',l:'시험 프레임 끼움 결과',t:'text',c:'억지 없음 / 어느 구멍이 어긋남'}])},
+ {id:'M09',pr:1,cat:'체결',t:'케이스 나사 규격, 나사산 유효 깊이',
+  how:'기존 나사 실측 + 피치 게이지. 유효 깊이는 뎁스 바. 6곳이 같은지.',
+  tool:'피치 게이지 · 캘리퍼', acc:'—', params:'TBD_case_screw_D, TBD_case_screw_clr',
+  fields:[{k:'D',l:'호칭경',c:2,p:'TBD_case_screw_D'},{k:'pitch',l:'피치',c:0.4},{k:'len',l:'길이',c:''},{k:'head_D',l:'머리 지름',c:''},{k:'head_H',l:'머리 높이',c:''},
+          {k:'depth',l:'나사산 유효 깊이',c:''},{k:'same',l:'6곳 동일 여부',t:'text',c:'동일'}]},
+ {id:'M10',pr:1,cat:'체결',t:'케이스 지지대(보스) 외경·높이 (6곳)',
+  how:'보스마다 외경을 2방향으로 재고 큰 값을 적는다. 높이는 M05와 같은 값이면 비워도 된다. r2 회피 Ø4.5와 Wilmore 기둥 Ø5.0이 맞지 않아 실물 확인이 필요하다.',
+  tool:'캘리퍼', acc:'±0.1', params:'TBD_case_boss_clr_D (= 최대 외경 + 여유)',
+  fields:[].concat(...Object.keys(C.H).map(h=>[{k:h+'_D',l:h+' 외경',c:C.postD}]),[{k:'top',l:'상면 형상(평면/홈/턱)',t:'text',c:'평면'}]),
+  agg:[{p:'보스 외경 최대(TBD_case_boss_clr_D 산출용)',fn:'max',keys:Object.keys(C.H).map(h=>h+'_D')}]},
+ {id:'M11',pr:1,cat:'스위치 홀',t:'스위치 홀 크기 — 실측 생략 결정',
+  how:'사용자 결정(2026-11-04): 기존 아크릴 홀은 재지 않는다(레이저 커프 공차 ≠ FDM 공차). r2 DWG 14.0을 출발값으로 쓰고 B 단계 쿠폰(M18)으로 정한다. 참고로 재고 싶으면 아래에.',
+  tool:'—', acc:'—', params:'TBD_sw_hole', skip:true,
+  fields:[{k:'acrylic',l:'(선택) 아크릴 홀 실측',c:14.0}]},
+ {id:'M12',pr:1,cat:'스위치 배치',t:'실제 키 간격·각도',
+  how:'키캡을 빼고 스위치 하우징 외곽 기준으로 인접 중심 거리를 잰다(열 방향·행 방향·엄지 키). 회전각은 상면 사진/스캔으로. r2 DWG와 대조(46sp는 다른 키보드).',
+  tool:'캘리퍼 · 평판 스캐너', acc:'±0.1 / ±0.5°', params:'TBD_sw_pitch (+ SK21 배치)',
+  fields:[{k:'pitch_col',l:'열 방향 중심거리',c:19.05,p:'TBD_sw_pitch'},{k:'pitch_row',l:'행 방향 중심거리',c:19.05},{k:'pitch_thumb',l:'엄지 키 중심거리',c:''},
+          {k:'angles',l:'회전각 메모 (r2: ±3/5/6/7/9/11°)',t:'text',c:''}]},
+ {id:'M13',pr:1,cat:'스탠드오프',t:'기존 육각 스탠드오프 형식·규격',
+  how:'암-암/암-수/인서트 형식, 나사 규격, 맞변(AF), 길이, 수량. 커버 자석이 plate 나사머리를 당기므로 나사 재질(탄소강인지)도 적는다.',
+  tool:'캘리퍼', acc:'±0.05', params:'TBD_so_AF, TBD_so_screw_D, TBD_standoff_H',
+  fields:[{k:'type',l:'형식',t:'text',c:'암-암 육각'},{k:'screw',l:'나사 호칭경',c:3,p:'TBD_so_screw_D'},{k:'AF',l:'맞변 AF',c:4.7,p:'TBD_so_AF'},
+          {k:'len',l:'길이',c:''},{k:'count',l:'수량',u:'개',c:6},{k:'material',l:'나사 재질(자석 붙는지)',t:'text',c:'탄소강 흑색 / 스테인리스'}]},
+ {id:'M14',pr:1,cat:'배선',t:'배선 공간 (현 버전)',
+  how:'plate 하면에서 배선·다이오드 최하단까지, 스위치 핀 돌출, 교차 배선 두께. 모델은 스탠드오프 5 가정에서 핀 끝↔프레임 상면 여유 1.7뿐이다.',
+  tool:'캘리퍼 뎁스 바', acc:'±0.2', params:'TBD_standoff_H',
+  fields:[{k:'wire_low',l:'plate 하면→배선 최하단',c:''},{k:'pin',l:'스위치 핀 돌출(하우징 바닥 기준)',c:3.3},{k:'cross',l:'교차 배선 점유 두께',c:''},{k:'route',l:'경로·고정점 메모',t:'text',c:''}]},
+ {id:'M15',pr:1,cat:'컨트롤러',t:'컨트롤러 보드 종류·치수·USB 커넥터',
+  how:'L×W×H(부품 포함, 헤더 제외), USB 커넥터 종류와 위치(보드 끝 기준). 모델은 Pro Micro 33×18×4, 커넥터가 −X 끝 중앙, 핀헤더 없이 직접 납땜을 가정한다. plate 아랫면 브래킷에 끼운다(부품면 아래).',
+  tool:'캘리퍼', acc:'±0.1', params:'TBD_ctrl_L, TBD_ctrl_W, TBD_ctrl_H',
+  fields:[{k:'board',l:'보드 종류',t:'text',c:'Pro Micro (ATmega32U4)'},{k:'L',l:'길이 L',c:33,p:'TBD_ctrl_L'},{k:'W',l:'폭 W',c:18,p:'TBD_ctrl_W'},{k:'H',l:'전체 높이(PCB+부품)',c:4,p:'TBD_ctrl_H'},
+          {k:'pcb_T',l:'PCB 두께',c:1.6},{k:'usb',l:'USB 커넥터 종류',t:'text',c:'Micro-B / USB-C'},{k:'usb_h',l:'커넥터 높이(PCB면 위)',c:3.2},{k:'header',l:'핀헤더 유무',t:'text',c:'없음'}]},
+ {id:'M16',pr:1,cat:'USB 간섭',t:'PSD60 USB 개구부, 연장 케이블 플러그',
+  how:'개구부 중심 X(내측 좌벽 기준), 중심 높이(지지대 상면 기준, 아래가 −), 폭, 높이, 벽 두께. 쓸 연장 케이블의 Pro Micro 쪽 플러그 오버몰드 폭·높이·길이와 패널 커넥터 하우징 크기.',
+  tool:'캘리퍼', acc:'±0.1', params:'TBD_usb_X/W/Z/H, TBD_usb_plug_W/H/L, TBD_usb_outlet_W/H/D',
+  fields:[{k:'X',l:'개구부 중심 X (좌벽 기준)',c:r1(C.usbX+C.dx),p:'TBD_usb_X (= 값 − dx)'},{k:'Z',l:'중심 높이 (지지대 기준)',c:C.usbZ,p:'TBD_usb_Z'},{k:'W',l:'개구부 폭',c:C.usbW,p:'TBD_usb_W'},{k:'H',l:'개구부 높이',c:C.usbH,p:'TBD_usb_H'},
+          {k:'wall',l:'개구부 벽 두께',c:7.1},{k:'plug_W',l:'플러그 폭',c:12,p:'TBD_usb_plug_W'},{k:'plug_H',l:'플러그 높이',c:7,p:'TBD_usb_plug_H'},{k:'plug_L',l:'플러그+굽힘 길이',c:25,p:'TBD_usb_plug_L'},
+          {k:'out_W',l:'패널 커넥터 폭',c:12,p:'TBD_usb_outlet_W'},{k:'out_H',l:'패널 커넥터 높이',c:8,p:'TBD_usb_outlet_H'},{k:'out_D',l:'패널 커넥터 깊이',c:12,p:'TBD_usb_outlet_D'},{k:'kind',l:'커넥터 종류·암수',t:'text',c:''}]},
+ {id:'M17',pr:2,cat:'키캡·커버',t:'키캡 하단 폭·깊이, 눌림 간격',
+  how:'1u/1.25u/2u/2.25u 키캡 하단 폭과 깊이. 눌렀을 때 키캡 하단↔plate 상면 간격(모델 약 3).',
+  tool:'캘리퍼', acc:'±0.1', params:'TBD_keycap_W, TBD_keycap_gap',
+  fields:[{k:'w1',l:'1u 하단 폭',c:18,p:'TBD_keycap_W'},{k:'d1',l:'1u 하단 깊이',c:18},{k:'w125',l:'1.25u 폭',c:22.8},{k:'w2',l:'2u 폭',c:37.1},{k:'w225',l:'2.25u 폭',c:41.9},{k:'press',l:'눌림 상태 하단↔plate',c:3,p:'TBD_keycap_gap'}]},
+ {id:'M18',pr:2,cat:'출력 보정',t:'출력 샘플 결과 (홀·여유·간격)',
+  how:'최종과 같은 업체·재료·방향으로 뽑은 쿠폰 결과. 스위치가 적당히 끼는 홀 크기, M2 구멍 여유, 커버 보스 Ø5.6/카운터보어 Ø6 끼움(여유 0.1/0.2/0.3 중 적합).',
+  tool:'시험 출력 · 캘리퍼', acc:'—', params:'TBD_sw_hole, TBD_so_clr, TBD_case_screw_clr, TBD_frame_gap, TBD_plate_gap, TBD_cover_gap, TBD_cover_boss_clr',
+  fields:[{k:'hole',l:'적합 홀 크기',c:14.0,p:'TBD_sw_hole'},{k:'boss_clr',l:'보스 끼움 적합 여유',c:0.2,p:'TBD_cover_boss_clr'},{k:'screw_clr',l:'나사 구멍 여유',c:0.3},{k:'material',l:'재료·업체',t:'text',c:'FDM PLA-P · JLC3DP'},{k:'notes',l:'메모',t:'text',c:''}]},
+ {id:'M19',pr:1,cat:'스위치',t:'스위치 걸쇠·플랜지 (Gateron KS-3 Milky Yellow)',
+  how:'걸쇠 위치(플랜지 아래 거리)·폭, 상단 플랜지 크기, 장착부 허용 plate 두께. 상부 하우징 폭(모델 15.6, 개구 16.5).',
+  tool:'캘리퍼 · 데이터시트', acc:'±0.05', params:'TBD_sw_ledge_T, TBD_sw_relief_W',
+  fields:[{k:'model',l:'모델명',t:'text',c:'Gateron KS-3 Milky Yellow'},{k:'upper_W',l:'상부 하우징 폭',c:15.6},{k:'latch_pos',l:'걸쇠 위치(플랜지 아래)',c:''},{k:'latch_W',l:'걸쇠 폭',c:''},{k:'flange',l:'플랜지 크기',c:''},{k:'plate_T',l:'허용 plate 두께',c:1.5}]},
+ {id:'M20',pr:1,cat:'배치 대조',t:'현물 키 수·위치 vs r2 P2',
+  how:'사진 + 키별 대조. 수량은 46으로 확인됨, 위치는 미확정.',
+  tool:'육안 · 사진', acc:'—', params:'N_KEYS',
+  fields:[{k:'count',l:'키 수',u:'개',c:46,p:'N_KEYS'},{k:'match',l:'위치 일치 여부·차이',t:'text',c:''}]},
+ {id:'M21',pr:1,cat:'r2 적층(Z)',t:'r2 판별 실제 두께, 적층 순서, 전체 높이',
+  how:'P0 링 2T · P1 5T · P2 1.5T · P3 2T · P4 5T · P5 2T 각각(가능하면 3곳 평균). 전체 적층 높이, 하우징 장착 시 지지대 상면→각 판 상면.',
+  tool:'캘리퍼 · 마이크로미터 · 뎁스 바', acc:'±0.05', params:'REF_r2_T_P0 … P5, REF_r2_stack_T, TBD_standoff_H',
+  fields:[{k:'P0',l:'P0 링',c:2,p:'REF_r2_T_P0'},{k:'P1',l:'P1 중간 프레임',c:5,p:'REF_r2_T_P1'},{k:'P2',l:'P2 plate',c:1.5,p:'REF_r2_T_P2'},{k:'P3',l:'P3 upper plate',c:2,p:'REF_r2_T_P3'},
+          {k:'P4',l:'P4 cover',c:5,p:'REF_r2_T_P4'},{k:'P5',l:'P5 upper cover',c:2,p:'REF_r2_T_P5'},{k:'stack',l:'전체 적층 높이',c:17.5,p:'REF_r2_stack_T'},
+          {k:'sup_to_P2',l:'지지대 상면→P2 상면',c:''},{k:'order',l:'적층 순서·P0 포함 여부',t:'text',c:''}]},
+];
+
+// ---------- 상태 ----------
+const KEY='46es_psd60_measure_v1';
+let S={};
+try{ S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ S={}; }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+const today=()=>new Date().toISOString().slice(0,10);
+function val(id,k){ const it=S[id]; return it&&it.f?it.f[k]:undefined; }
+function setVal(id,k,v){ S[id]=S[id]||{f:{},note:'',date:''}; if(v===''||v===undefined) delete S[id].f[k]; else S[id].f[k]=v; S[id].date=today(); save(); refresh(id); }
+function filledCount(it){ return it.fields.filter(f=>{const v=val(it.id,f.k); return v!==undefined&&v!=='';}).length; }
+function numVals(id,keys){ return keys.map(k=>val(id,k)).filter(v=>typeof v==='number'&&isFinite(v)); }
+function aggValue(it,a){ const vs=numVals(it.id,a.keys); if(!vs.length) return null;
+  if(a.fn==='min') return Math.min(...vs); if(a.fn==='max') return Math.max(...vs); return vs.reduce((s,v)=>s+v,0)/vs.length; }
+const fmt=v=>Math.round(v*1000)/1000;
+
+// ---------- 카드 ----------
+const cards=document.getElementById('cards');
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function build(){
+  cards.innerHTML='';
+  for(const it of ITEMS){
+    const el=document.createElement('article'); el.className='card'+(it.skip?' skip':''); el.id='card-'+it.id; el.dataset.pr=it.pr;
+    el.innerHTML=`<header><span class="id">${it.id}</span><span class="pr p${it.pr}">우선순위 ${it.pr}</span><span class="title">${esc(it.t)}</span></header>
+      <div class="meta"><b>${esc(it.cat)}</b> · 도구 ${esc(it.tool)} · 정밀도 ${esc(it.acc)}<br>매개변수: <code>${esc(it.params)}</code></div>
+      <details open><summary>측정 방법</summary><div class="hint">${esc(it.how)}</div></details>
+      <div class="fields">${it.fields.map(f=>`<div class="f${f.t==='text'?' wide':''}"><label for="${it.id}_${f.k}">${esc(f.l)}${f.t==='text'?'':' ('+(f.u||'mm')+')'}</label>
+        <input id="${it.id}_${f.k}" data-id="${it.id}" data-k="${f.k}" data-t="${f.t||'num'}" ${f.t==='text'?'type="text"':'type="text" inputmode="decimal"'} placeholder="${esc(f.c===''?'':'후보 '+f.c)}" autocomplete="off">
+        ${f.p?`<div class="cand">→ <code>${esc(f.p)}</code></div>`:''}</div>`).join('')}</div>
+      <div class="agg" id="agg-${it.id}"></div>
+      <div class="note"><textarea data-note="${it.id}" placeholder="메모(사진 파일명 M${it.id.slice(1)}_*.jpg, 특이사항)"></textarea></div>
+      <div class="foot"><span id="st-${it.id}"></span><span id="dt-${it.id}"></span></div>`;
+    cards.appendChild(el);
+  }
+  cards.querySelectorAll('input').forEach(inp=>{
+    const {id,k,t}=inp.dataset; const v=val(id,k); if(v!==undefined) inp.value=v;
+    inp.addEventListener('input',()=>{ let v=inp.value.trim(); if(t==='num'){ v=v.replace(',','.'); const n=parseFloat(v); setVal(id,k,v===''?'':(isFinite(n)&&/^[-+]?\d*\.?\d*$/.test(v)?n:v)); } else setVal(id,k,v); });
+  });
+  cards.querySelectorAll('textarea[data-note]').forEach(ta=>{ const id=ta.dataset.note; ta.value=(S[id]&&S[id].note)||'';
+    ta.addEventListener('input',()=>{ S[id]=S[id]||{f:{},note:'',date:''}; S[id].note=ta.value; S[id].date=today(); save(); refresh(id); }); });
+  ITEMS.forEach(it=>refresh(it.id)); applyFilter();
+}
+function refresh(id){
+  const it=ITEMS.find(x=>x.id===id); const n=filledCount(it); const el=document.getElementById('card-'+id);
+  el.classList.toggle('done', n>0 && (it.skip || n>=Math.min(it.fields.length, Math.max(1,Math.ceil(it.fields.filter(f=>f.t!=='text').length*0.5)))));
+  document.getElementById('st-'+id).textContent=`${n} / ${it.fields.length} 칸`;
+  document.getElementById('dt-'+id).textContent=(S[id]&&S[id].date)?('측정일 '+S[id].date):'';
+  const ag=document.getElementById('agg-'+id); ag.innerHTML='';
+  (it.agg||[]).forEach(a=>{ const v=aggValue(it,a); const vs=numVals(id,a.keys);
+    ag.innerHTML+=`<span>${esc(a.p)} = <b>${v===null?'—':fmt(v)}</b> (${a.fn==='min'?'최소':a.fn==='max'?'최대':'평균'}${vs.length?`, ${vs.length}개, ${fmt(Math.min(...vs))}~${fmt(Math.max(...vs))}`:''})</span>`; });
+  const done=ITEMS.filter(x=>document.getElementById('card-'+x.id).classList.contains('done')).length;
+  document.getElementById('prog').style.width=(100*done/ITEMS.length)+'%';
+  document.getElementById('cnt').textContent=`${done} / ${ITEMS.length} 항목`;
+}
+let FILTER='all';
+function applyFilter(){
+  ITEMS.forEach(it=>{ const el=document.getElementById('card-'+it.id); let show=true;
+    if(FILTER==='1') show=it.pr===1; else if(FILTER==='2') show=it.pr>=2; else if(FILTER==='todo') show=!el.classList.contains('done');
+    el.style.display=show?'':'none'; });
+}
+document.getElementById('filters').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; FILTER=b.dataset.f;
+  document.querySelectorAll('#filters button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); applyFilter(); });
+
+// ---------- 그림 ----------
+const NS='http://www.w3.org/2000/svg';
+function mk(tag,attrs,text){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!==undefined) e.textContent=text; return e; }
+function goto(id){ const el=document.getElementById('card-'+id); if(!el) return; FILTER='all'; applyFilter(); el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),1600); }
+function dimH(g,x1,x2,y,label,id,off){ // 가로 치수선(SVG 좌표)
+  g.appendChild(mk('path',{class:'dim',d:`M${x1} ${y}H${x2} M${x1} ${y-2}V${y+2} M${x2} ${y-2}V${y+2}`}));
+  const t=mk('text',{class:'dimt',x:(x1+x2)/2,y:y+(off||-2),'text-anchor':'middle'},label); t.addEventListener('click',()=>goto(id)); g.appendChild(t);
+}
+function dimV(g,y1,y2,x,label,id,off){
+  g.appendChild(mk('path',{class:'dim',d:`M${x} ${y1}V${y2} M${x-2} ${y1}H${x+2} M${x-2} ${y2}H${x+2}`}));
+  const t=mk('text',{class:'dimt',x:x+(off||3),y:(y1+y2)/2+4},label); t.addEventListener('click',()=>goto(id)); g.appendChild(t);
+}
+function drawTop(){
+  const m=22, W=C.inW, D=C.inD; const X=x=>m+(x+C.dx), Y=y=>m+(D-(y+C.dy)); // GH60 → SVG (Y 뒤집음), 내벽 좌하단이 (m,m+D)
+  const svg=mk('svg',{viewBox:`0 0 ${W+2*m+70} ${D+2*m+10}`,role:'img','aria-label':'PSD60 내부 평면, 측정 위치'});
+  // 외형(참고)
+  svg.appendChild(mk('rect',{class:'outer',x:X(C.outL),y:Y(C.outB),width:C.outW,height:C.outB-C.outF,rx:5}));
+  // 내벽
+  svg.appendChild(mk('rect',{class:'wall',x:m,y:m,width:W,height:D,rx:C.inR}));
+  // GH60 원점 표시
+  svg.appendChild(mk('path',{class:'ghost',d:`M${X(0)} ${Y(-3)}V${Y(8)} M${X(-3)} ${Y(0)}H${X(8)}`}));
+  const o=mk('text',{class:'lab',x:X(1),y:Y(1)-1},'GH60 원점'); o.addEventListener('click',()=>goto('M07')); svg.appendChild(o);
+  // 기둥 + 라벨
+  for(const h in C.H){ const [x,y]=C.H[h]; svg.appendChild(mk('circle',{class:'post',cx:X(x),cy:Y(y),r:C.postD/2+0.6}));
+    const t=mk('text',{class:'lab',x:X(x)+4,y:Y(y)+(y>50?-4:9)},h); t.addEventListener('click',()=>goto('M08')); svg.appendChild(t); }
+  // USB 개구부(뒤 벽)
+  svg.appendChild(mk('rect',{class:'usb',x:X(C.usbX-C.usbW/2),y:Y(D-C.dy)-4,width:C.usbW,height:8}));
+  const u=mk('text',{class:'dimt',x:X(C.usbX),y:Y(D-C.dy)-6,'text-anchor':'middle'},'M16 USB'); u.addEventListener('click',()=>goto('M16')); svg.appendChild(u);
+  // M01 폭 (앞·중·뒤)
+  dimH(svg,m,m+W,Y(6),'M01 폭(앞)','M01'); dimH(svg,m,m+W,Y(D/2-C.dy),'M01 폭(중)','M01'); dimH(svg,m,m+W,Y(D-8),'M01 폭(뒤)','M01');
+  // M02 깊이 (좌·중·우)
+  dimV(svg,m,m+D,X(60),'M02 깊이(좌)','M02'); dimV(svg,m,m+D,X(160),'M02 깊이(중)','M02'); dimV(svg,m,m+D,X(230),'M02 깊이(우)','M02');
+  // M03 코너
+  [[m+1,m+8,'M03 R'],[m+W-1,m+8,'M03 R'],[m+1,m+D-3,'M03 R'],[m+W-1,m+D-3,'M03 R']].forEach(([x,y,l],i)=>{ const t=mk('text',{class:'dimt',x:x,y:y,'text-anchor':i%2?'end':'start'},l); t.addEventListener('click',()=>goto('M03')); svg.appendChild(t); });
+  // M07 오프셋(좌벽→원점, 앞벽→원점) 확대 표시
+  const t7=mk('text',{class:'dimt',x:X(10),y:Y(-7)},'M07 dx·dy = 벽→원점 (M08에서 역산)'); t7.addEventListener('click',()=>goto('M07')); svg.appendChild(t7);
+  // M08 예: H03 벽 거리
+  dimH(svg,m,X(C.H.H03[0]),Y(C.H.H03[1])+10,'M08 좌벽→H03','M08',9); dimV(svg,Y(C.H.H03[1]),m+D,X(C.H.H03[0])+8,'M08 앞벽→H03','M08',4);
+  // M10 기둥 외경
+  const t10=mk('text',{class:'dimt',x:X(C.H.H02[0])+6,y:Y(C.H.H02[1])+12},'M10 기둥 외경 ×6'); t10.addEventListener('click',()=>goto('M10')); svg.appendChild(t10);
+  // 범례
+  const lg=mk('text',{x:m,y:D+2*m+4},'실선: 내벽(Wilmore 후보값) · 점선: 외형(참고) · 주황: 체결 기둥 H01–H06 · 초록: USB 개구부. 위가 뒤쪽(사용자 반대편).'); svg.appendChild(lg);
+  document.getElementById('svgTop').appendChild(svg);
+}
+function drawSide(){
+  // YZ 단면: 가로 = Y(앞→뒤), 세로 = Z (지지대 상면 = 0)
+  const m=26, sc=1.6; const D=C.inD; const Yv=y=>m+(y+C.dy)*sc, Z=z=>m+40+(14-z)*sc; // Z 위쪽이 +
+  const svg=mk('svg',{viewBox:`0 0 ${(C.outB-C.outF)*sc+2*m+90} ${(14-C.botB+8)*sc+2*m}`,role:'img','aria-label':'PSD60 앞뒤 단면, 높이 측정 위치'});
+  // 외형 윤곽(참고): 바닥은 앞 -7.6, 뒤 -12.0 (경사 포함, 단순화)
+  const outer=`M${Yv(C.outF-C.dy)} ${Z(C.botF)} L${Yv(C.outF-C.dy)} ${Z(C.rimF-C.chZ)} L${Yv(C.outF-C.dy+C.chY)} ${Z(C.rimF)} L${Yv(-C.dy)} ${Z(C.rimF)} L${Yv(-C.dy)} ${Z(-C.supportH)} L${Yv(D-C.dy)} ${Z(-C.supportH)} L${Yv(D-C.dy)} ${Z(C.rimB)} L${Yv(C.outB-C.dy)} ${Z(C.rimB)} L${Yv(C.outB-C.dy)} ${Z(C.botB)} Z`;
+  svg.appendChild(mk('path',{class:'wall',d:outer}));
+  // 지지대(기둥) 2개 예시
+  [C.H.H03[1],C.H.H01[1]].forEach(y=>svg.appendChild(mk('rect',{class:'post',x:Yv(y)-C.postD/2*sc,y:Z(0),width:C.postD*sc,height:C.supportH*sc})));
+  // USB 개구부(뒤 벽)
+  svg.appendChild(mk('rect',{class:'usb',x:Yv(D-C.dy)-1,y:Z(C.usbZ+C.usbH/2),width:(C.outB-D)*sc+2,height:C.usbH*sc}));
+  // 치수: M05
+  dimV(svg,Z(0),Z(-C.supportH),Yv(C.H.H03[1])+14,'M05 바닥→지지대 상면 ×6','M05');
+  dimV(svg,Z(C.rimF),Z(0),Yv(-C.dy)-10,'M05 지지대→앞 테두리','M05',-108);
+  dimV(svg,Z(C.rimB),Z(0),Yv(D-C.dy)+12,'M05 지지대→뒤 테두리','M05');
+  // 커버 베젤 밑면 참고선 (지지대 +13)
+  svg.appendChild(mk('path',{class:'ghost',d:`M${Yv(-C.dy)} ${Z(13)}H${Yv(D-C.dy)}`}));
+  svg.appendChild(mk('text',{x:Yv(30),y:Z(13)-2},'참고: 커버 베젤 밑면 = 지지대 +13 (테두리보다 높아야 손톱이 들어감)'));
+  // M04 외형 높이
+  dimV(svg,Z(C.rimF),Z(C.botF),Yv(C.outF-C.dy)-4,'M04 앞 높이','M04',-62);
+  dimV(svg,Z(C.rimB),Z(C.botB),Yv(C.outB-C.dy)+4,'M04 뒤 높이','M04');
+  dimH(svg,Yv(C.outF-C.dy),Yv(C.outB-C.dy),Z(C.botB)+12,'M04 외형 깊이 (폭·경사도 함께)','M04',10);
+  // M06 벽 두께
+  dimH(svg,Yv(D-C.dy),Yv(C.outB-C.dy),Z(C.rimB)-6,'M06 벽','M06');
+  // M16
+  const t16=mk('text',{class:'dimt',x:Yv(D-C.dy)+14,y:Z(C.usbZ)+4},'M16 USB 개구부 중심 높이·폭·높이'); t16.addEventListener('click',()=>goto('M16')); svg.appendChild(t16);
+  // 축 라벨
+  svg.appendChild(mk('text',{x:Yv(-C.dy),y:Z(-C.supportH)+14},'앞')); svg.appendChild(mk('text',{x:Yv(D-C.dy)-6,y:Z(-C.supportH)+14},'뒤'));
+  document.getElementById('svgSide').appendChild(svg);
+}
+
+// ---------- JSON ----------
+function compile(){
+  const out={schema:'46es-psd60-measurements/1',exported_at:new Date().toISOString(),units:'mm (각도 °)',note:'Claude Code 세션에 그대로 붙여넣으면 parameters.csv/.sc에 반영. params는 칸 값에서 바로 만든 후보(집계 규칙 포함)이며 최종 채택값은 검토 후 정한다.',items:{},params:{}};
+  for(const it of ITEMS){ const s=S[it.id]; if(!s) continue; const f={}; let any=false;
+    for(const fd of it.fields){ const v=s.f&&s.f[fd.k]; if(v!==undefined&&v!==''){ f[fd.k]={label:fd.l,value:v,unit:fd.t==='text'?undefined:(fd.u||'mm'),param:fd.p||undefined}; any=true;
+        if(fd.p&&typeof v==='number'&&!/[ (=]/.test(fd.p)) out.params[fd.p]={value:v,source:it.id+'.'+fd.k}; } }
+    (it.agg||[]).forEach(a=>{ const v=aggValue(it,a); if(v!==null&&!/[ (=]/.test(a.p)) out.params[a.p]={value:fmt(v),source:it.id,rule:a.fn+'('+a.keys.join(',')+')'}; });
+    if(any||(s.note&&s.note.trim())) out.items[it.id]={title:it.t,fields:f,note:s.note||'',date:s.date||''}; }
+  return out;
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+function makeJson(){ const txt=JSON.stringify(compile(),null,2); document.getElementById('json').value=txt; document.getElementById('export').scrollIntoView({behavior:'smooth'}); return txt; }
+document.getElementById('btnJson').onclick=document.getElementById('btnJson2').onclick=()=>{ makeJson(); toast('JSON을 만들었다'); };
+document.getElementById('btnCopy').onclick=async()=>{ const txt=document.getElementById('json').value||makeJson(); try{ await navigator.clipboard.writeText(txt); toast('복사했다'); }catch(e){ document.getElementById('json').select(); toast('Ctrl+C로 복사'); } };
+document.getElementById('btnDl').onclick=()=>{ const txt=document.getElementById('json').value||makeJson(); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download='psd60_measurements_'+today().replace(/-/g,'')+'.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+document.getElementById('btnImport').onclick=()=>{ try{ const j=JSON.parse(document.getElementById('json').value); if(!j.items) throw 0; let n=0;
+    for(const id in j.items){ const it=ITEMS.find(x=>x.id===id); if(!it) continue; S[id]=S[id]||{f:{},note:'',date:''}; const fs=j.items[id].fields||{};
+      for(const k in fs){ const v=fs[k]&&fs[k].value!==undefined?fs[k].value:fs[k]; if(v!==undefined&&v!==''){ S[id].f[k]=v; n++; } }
+      if(j.items[id].note) S[id].note=j.items[id].note; if(j.items[id].date) S[id].date=j.items[id].date; }
+    save(); build(); toast(n+'칸을 가져왔다'); }catch(e){ toast('JSON을 읽지 못했다'); } };
+document.getElementById('btnReset').onclick=()=>{ if(confirm('입력한 값을 모두 지울까?')){ S={}; save(); build(); document.getElementById('json').value=''; } };
+document.getElementById('btnTop').onclick=()=>document.getElementById('figs').scrollIntoView({behavior:'smooth'});
+
+build(); drawTop(); drawSide();
+</script>
+</body>
+</html>
