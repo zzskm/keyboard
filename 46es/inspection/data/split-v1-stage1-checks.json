@@ -1,0 +1,12 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"completed\": 2,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"boolean_ms\": 154.137,\n      \"budget_exceeded\": false,\n      \"budget_s\": 15.0,\n      \"checked\": 4,\n      \"count\": 0,\n      \"interferences\": [],\n      \"ms\": 726.621,\n      \"pairs_candidate\": 3,\n      \"pairs_cleared\": 1,\n      \"pairs_intersected\": 2,\n      \"pairs_not_checked\": 0,\n      \"skipped_pairs\": 0,\n      \"slowest\": [\n        {\n          \"a\": \"PLATE_L_SPLIT_V1\",\n          \"b\": \"STANDOFF_SO2_REF\",\n          \"boolean_ms\": 90.273,\n          \"ms\": 598.591,\n          \"tessellate_ms\": 0.0\n        },\n        {\n          \"a\": \"STANDOFF_SO2_REF\",\n          \"b\": \"MOUNT_L_SPLIT_V1\",\n          \"boolean_ms\": 63.864,\n          \"ms\": 228.827,\n          \"tessellate_ms\": 0.0\n        }\n      ],\n      \"tessellate_ms\": 0.0,\n      \"threads\": 2,\n      \"truncated\": false,\n      \"unchecked\": []\n    },\n    {\n      \"bytes\": 6431832,\n      \"name\": \"46es_mount_split_v1\",\n      \"path\": \"E:\\\\Work\\\\keyboard\\\\46es\\\\model\\\\46es_mount_split_v1.sc\"\n    }\n  ]\n}"
+    },
+    {
+      "type": "text",
+      "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+    }
+  ]
+}

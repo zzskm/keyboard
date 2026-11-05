@@ -1,0 +1,13 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"applied\": [],\n  \"completed\": 7,\n  \"failed\": {\n    \"command\": \"sketch.move\",\n    \"error\": \"invalid parameters for `sketch.move`: fixed or projected geometry cannot move\",\n    \"index\": 7\n  },\n  \"not_run\": [\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17\n  ],\n  \"ok\": false,\n  \"results\": [\n    {\n      \"feature\": 157,\n      \"recomputed\": 189,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 162,\n      \"recomputed\": 184,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 234,\n      \"recomputed\": 112,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 235,\n      \"recomputed\": 111,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 237,\n      \"recomputed\": 109,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 364,\n      \"recomputed\": 2,\n      \"restored\": 0\n    },\n    {\n      \"name\": \"SK_CTRL_GATE_NUT\",\n      \"sketch\": 238\n    }\n  ],\n  \"rolled_back\": true,\n  \"undone\": 7\n}"
+    },
+    {
+      "type": "text",
+      "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+    }
+  ],
+  "isError": true
+}

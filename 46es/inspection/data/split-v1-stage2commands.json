@@ -1,0 +1,292 @@
+[
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "TBD_ctrl_Y",
+      "value": "13.064485 mm"
+    }
+  },
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "TBD_so_AF",
+      "value": "5 mm"
+    }
+  },
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "TBD_so_pocket_D",
+      "value": "1 mm"
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO1_M3_UPPER",
+      "set": {
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO1_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO1_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO1_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO2_M3_UPPER",
+      "set": {
+        "base": [
+          6.494000000000001,
+          87.945,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO2_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO2_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO2_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO3_M3_UPPER",
+      "set": {
+        "base": [
+          130.881,
+          87.945,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO3_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO3_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO3_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO4_M3_UPPER",
+      "set": {
+        "base": [
+          250.42,
+          89.007,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO4_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO4_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO4_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO5_M3_UPPER",
+      "set": {
+        "base": [
+          278.519,
+          6.5200000000000005,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO5_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO5_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO5_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO6_M3_UPPER",
+      "set": {
+        "base": [
+          130.881,
+          6.5200000000000005,
+          5.5
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO6_M3_UPPER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO6_M3_LOWER",
+      "set": {
+        "height": "5"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "REF_SO6_M3_LOWER_HEAD_JOIN",
+      "set": {
+        "radius": "2.85",
+        "height": "1.65"
+      }
+    }
+  },
+  {
+    "command": "inspect.measure",
+    "params": {
+      "bodies": [
+        "MOUNT_L_SPLIT_V1",
+        "MOUNT_R_SPLIT_V1",
+        "STANDOFF_SO3_REF",
+        "CTRL_KEEPOUT_TBD"
+      ]
+    }
+  }
+]

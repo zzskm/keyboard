@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "bodies": 105,
+  "features": 401,
+  "sketches": 60,
+  "unchanged_common_BReps": 103,
+  "volume_prediction_residual_mm3": {
+    "L": -0.005119423843098048,
+    "R": -0.01031732886985992
+  },
+  "parts": [
+    {
+      "name": "PLATE_L_SPLIT_V1",
+      "volume_mm3": 38045.573775028315,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.00014718643020684505
+    },
+    {
+      "name": "PLATE_R_SPLIT_V1",
+      "volume_mm3": 40776.595122945386,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 7.112816298257905e-05
+    },
+    {
+      "name": "CTRL_BRACKET_SPLIT_V1",
+      "volume_mm3": 1415.5932157416835,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 9.660267207814587e-05
+    },
+    {
+      "name": "PLATE_SPINE_V1",
+      "volume_mm3": 1766.3222632433692,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.00021199878568106906
+    },
+    {
+      "name": "CTRL_GATE_SPLIT_V1",
+      "volume_mm3": 186.4739481136728,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 5.540223340570637e-05
+    },
+    {
+      "name": "MOUNT_L_PAIR_V3",
+      "volume_mm3": 2563.9013892767766,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.0002883406384695887
+    },
+    {
+      "name": "MOUNT_H02_SO3_MIN_V2",
+      "volume_mm3": 1409.1682393048177,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.00011150325254348444
+    },
+    {
+      "name": "MOUNT_H03_SO6_MIN_V2",
+      "volume_mm3": 1616.0925691061718,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.0002470991649290034
+    },
+    {
+      "name": "MOUNT_R_PAIR_V3",
+      "volume_mm3": 2337.1176357197405,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "mesh_relative_volume_error": 0.00023216324403838877
+    }
+  ]
+}

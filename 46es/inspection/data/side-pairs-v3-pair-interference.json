@@ -1,0 +1,19 @@
+{
+  "boolean_ms": 0,
+  "budget_exceeded": false,
+  "budget_s": 10,
+  "checked": 2,
+  "count": 0,
+  "interferences": [],
+  "ms": 2.689,
+  "pairs_candidate": 0,
+  "pairs_cleared": 0,
+  "pairs_intersected": 0,
+  "pairs_not_checked": 0,
+  "skipped_pairs": 0,
+  "slowest": [],
+  "tessellate_ms": 0,
+  "threads": 0,
+  "truncated": false,
+  "unchecked": []
+}
