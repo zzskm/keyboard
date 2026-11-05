@@ -1,3 +1,7 @@
 # Python bytecode created by local read-only inspection scripts
 __pycache__/
 *.py[cod]
+
+# guide generator: render cache and local output
+guide/.cache/
+guide/out/

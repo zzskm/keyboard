@@ -2,9 +2,9 @@
   "files": [
     {
       "path": ".gitignore",
-      "bytes": 87,
-      "sha256": "a13c575098cb4835630e0ed7597d955ccd5f59b81fb858ce0ef1c232be219f2d",
-      "git_blob_sha": "0a538289bd9badbfd257302594079f8a608eea0c"
+      "bytes": 162,
+      "sha256": "6fe73f46d59469920065aa768b09b6247a578c18ebce3888a157fd616e653480",
+      "git_blob_sha": "f5e31039755af3f3e7f8a601f917468540677a34"
     },
     {
       "path": "README.md",
@@ -89,6 +89,36 @@
       "bytes": 28385,
       "sha256": "1b0dbb379cfec7261b49bc7074cef33837958754ebdd0528759a4f424e757951",
       "git_blob_sha": "b07dfa1ad34a4c3dd112ea593fe03b9384338ec2"
+    },
+    {
+      "path": "guide/README.md",
+      "bytes": 3844,
+      "sha256": "c6e96e614f289c324edb04f111b4addf9e4e746118d3b9ec76df131369a4f5a0",
+      "git_blob_sha": "a2965d66da062a07f0ed19fe1e6cd6fbf212f4e8"
+    },
+    {
+      "path": "guide/assets/guide.css",
+      "bytes": 10710,
+      "sha256": "db38b1ee510622f4afed3b22bdee47e792e477eb9719f0e0b63f6ee1af536c2f",
+      "git_blob_sha": "7a1cb7a245b339163341ae21fc1fb9eeb051a570"
+    },
+    {
+      "path": "guide/assets/guide.js",
+      "bytes": 2677,
+      "sha256": "5091daf2272a4debb084ecdcefdbc20247a46da9fbe308e6bc065fd798ec6912",
+      "git_blob_sha": "016fde5732259689c8dbf9fe5ccb66ffb2e55d43"
+    },
+    {
+      "path": "guide/build_guide.py",
+      "bytes": 25073,
+      "sha256": "6fd53a7ba980ff17f43594f7915fca4dc407422beb5099213e70c1b8ea644be9",
+      "git_blob_sha": "20f7c5df29bc30c5f2dce191b91fd6117bd11c52"
+    },
+    {
+      "path": "guide/guide_v3.json",
+      "bytes": 48231,
+      "sha256": "3a2abd84f1d3602a64eb409699e441d7bd85faecc6fecfee3b5d78f698bddf80",
+      "git_blob_sha": "bfda91917da223bc6263a20f69810d6ea8816457"
     },
     {
       "path": "images/46es_r2_keyboard_preview.png",
