@@ -853,6 +853,24 @@
       "git_blob_sha": "f21e1fc4dce6b3db63bbde61a2a6447368919561"
     },
     {
+      "path": "model/46es_v2_mount_fastening_detail.png",
+      "bytes": 392474,
+      "sha256": "4699d06d9db59e889676a79a0912ae72237c45fe2a5828d075ba91e4ae165c92",
+      "git_blob_sha": "96403469b49f48b61905c7c530c68e50543f3a4e"
+    },
+    {
+      "path": "model/46es_v2_mount_fastening_underside.png",
+      "bytes": 337056,
+      "sha256": "8638848928ab91c379642fac358b3f1353e037500707cb5a7b1919f078cf5722",
+      "git_blob_sha": "8672c0642066bd043ade6975b5a3b21a47cd7fff"
+    },
+    {
+      "path": "model/46es_v2_plate_underside.png",
+      "bytes": 339646,
+      "sha256": "0c72ec95456a08416dcccef3ee7d23c220e496d6c0384a80fa4de29d41a0a256",
+      "git_blob_sha": "949383340222bb1d864e90fa518872376f6033d4"
+    },
+    {
       "path": "model/README.md",
       "bytes": 35828,
       "sha256": "33c10354824b8a18c6b6ba6723efddb5616555f30f242c3469293f98b4bdadc6",
