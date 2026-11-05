@@ -1,5 +1,20 @@
 # 46es 분할 모델 — 새 세션 인계
 
+## 최신 재개 지점 — 좌우 병합 mount v3 (2026-11-05 KST)
+
+최신 보고서: `E:\Work\keyboard\46es\docs\side-pairs-v3-2026-11-05.md`.
+최신 모델: `E:\Work\keyboard\46es\model\46es_mount_side_pairs_v3.sc`.
+
+- 사용자 요청으로 v2 왼쪽2개(H05–SO1/H01–SO2)→MOUNT_L_PAIR_V3, 오른쪽2개(H06–SO5/H04–SO4)→MOUNT_R_PAIR_V3. 중앙2개는 유지. Mount4개/출력9개.
+- 새 연결부8×3mm, 각 케이스 축에서3.7mm 물러나 구멍을 피함. 모든 기존 체결 구멍·USB1.019mm 여유·H02 shim0.05mm 유지.
+- 105바디/401피처/60스케치 dof0/오류0/원본 경고1/dirty=false.9출력 부품 모두 shell1/STL 연결1/비정상edge0. 공통103바디 exact BRep 동일.
+- 변경 관련207쌍 검사 완료, 겹침0/미검사0. 공통103바디의 기존 검증 승계. 대용 하우징↔가정 나사 H02/H03/H06 수치 중첩3쌍은 유지. 실제 부품 검증으로 취급하지 않음.
+- CSV187행 `parameters_side_pairs_v3.csv`, STEP/STL REVIEW_ONLY. 새 연결 폭·끝 거리 파라미터 시험 오류0/복원true. 실제 강도·포스트 간격/높이·배선/키캡/소재 시험과 제작 승인·발주 보류.
+- v3 SHA256 04538a672f0160896743c1e6d94a44cd301591da00abbb18146be4245bd8d4b0. 원본/v1/v2 해시 보존. 저장된 모델에서 이어가며 초기/단계 로그 재실행 금지.
+- Git main/cb34705 clean에서 시작. 이전 원격 저장 지시를 이어 커밋·푸시. reset/checkout/기존 변경 삭제 금지.
+
+이하 v2/v1 인계는 이전 안의 감사 기록이다.
+
 ## 최신 재개 지점 — 최소 mount v2 (2026-11-05 KST)
 
 사용자가 케이스 둘레 띠를 없애고 더 작은 mount로 분할하도록 요청했다.
