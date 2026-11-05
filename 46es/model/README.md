@@ -1,5 +1,17 @@
 # 46es 3D 프린팅 케이스 — 제작 모델 준비 (실측 대기)
 
+## 좌우 병합 mount v3 — 2026-11-05 최신
+
+[46es_mount_side_pairs_v3.sc](46es_mount_side_pairs_v3.sc)에서 왼쪽 앞/뒤2개와
+오른쪽 앞/뒤2개를 각각1개로 병합했다. **Mount4개(좌/우 각1+중앙2), 전체 출력9개**다.
+105바디·401피처·60스케치 dof0·오류0. 출력9부품 모두 native shell1/STL 연결1.
+Plate·키·높이·중앙 mount·spine·controller·cover는 유지했다. v2는 이전 안으로 보존한다.
+
+[보고서·국부 시험안](../docs/side-pairs-v3-2026-11-05.md), [CSV](parameters_side_pairs_v3.csv),
+[검토 STEP](46es_mount_side_pairs_v3_REVIEW_ONLY.step), [STL9개](review_side_pairs_v3/README.md),
+[mount 상면](46es_mount_side_pairs_v3_top_review.png), [하면 체결](46es_mount_side_pairs_v3_underside_review.png).
+실부품·배선·재료·강도 시험이 남아 있으며 제작 승인/발주는 없다.
+
 ## 최소 mount v2 — 2026-11-05 최신
 
 [46es_mount_minimal_v2.sc](46es_mount_minimal_v2.sc)는 케이스 둘레 띠를 제거하고
