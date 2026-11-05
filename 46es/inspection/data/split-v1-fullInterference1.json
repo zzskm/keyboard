@@ -1,0 +1,267 @@
+{
+  "boolean_ms": 19379.559,
+  "budget_exceeded": true,
+  "budget_s": 20,
+  "checked": 111,
+  "count": 0,
+  "interferences": [],
+  "ms": 20017.61,
+  "pairs_candidate": 399,
+  "pairs_cleared": 179,
+  "pairs_intersected": 220,
+  "pairs_not_checked": 38,
+  "skipped_pairs": 0,
+  "slowest": [
+    {
+      "a": "PLATE_L_SPLIT_V1",
+      "b": "PLATE_R_SPLIT_V1",
+      "boolean_ms": 134.18,
+      "ms": 675.553,
+      "tessellate_ms": 0
+    },
+    {
+      "a": "MOUNT_R_SPLIT_V1",
+      "b": "MOUNT_L_SPLIT_V1",
+      "boolean_ms": 127.409,
+      "ms": 662.211,
+      "tessellate_ms": 86.767
+    },
+    {
+      "a": "PLATE_R_SPLIT_V1",
+      "b": "COVER_R_DRAFT_TBD",
+      "boolean_ms": 226.354,
+      "ms": 650.081,
+      "tessellate_ms": 0
+    },
+    {
+      "a": "PLATE_R_SPLIT_V1",
+      "b": "PLATE_SPINE_V1",
+      "boolean_ms": 132.981,
+      "ms": 595.079,
+      "tessellate_ms": 82.223
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "PLATE_R_SPLIT_V1",
+      "boolean_ms": 135.699,
+      "ms": 592.089,
+      "tessellate_ms": 0
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "MOUNT_R_SPLIT_V1",
+      "boolean_ms": 173.795,
+      "ms": 582.235,
+      "tessellate_ms": 0
+    },
+    {
+      "a": "PLATE_R_SPLIT_V1",
+      "b": "COVER_T_DRAFT_TBD",
+      "boolean_ms": 180.09,
+      "ms": 578.586,
+      "tessellate_ms": 0
+    },
+    {
+      "a": "PLATE_R_SPLIT_V1",
+      "b": "REF_SO4_M3_UPPER",
+      "boolean_ms": 128.527,
+      "ms": 562.659,
+      "tessellate_ms": 0
+    }
+  ],
+  "tessellate_ms": 395.501,
+  "threads": 4,
+  "truncated": false,
+  "unchecked": [
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "USB_OUTLET_TBD",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H01_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H02_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H03_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H04_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H05_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_HOUSING_WILMORE_NOT_PSD60",
+      "b": "REF_CASE_H06_M2",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "CTRL_KEEPOUT_TBD",
+      "b": "CTRL_GATE_SPLIT_V1",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_T_DRAFT_TBD",
+      "b": "REF_SO3_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_T_DRAFT_TBD",
+      "b": "REF_SO6_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_L_DRAFT_TBD",
+      "b": "REF_SO1_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_L_DRAFT_TBD",
+      "b": "REF_SO2_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_R_DRAFT_TBD",
+      "b": "REF_SO4_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "COVER_R_DRAFT_TBD",
+      "b": "REF_SO5_MAGNET",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO1_REF",
+      "b": "REF_SO1_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO1_REF",
+      "b": "REF_SO1_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO2_REF",
+      "b": "REF_SO2_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO2_REF",
+      "b": "REF_SO2_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO3_REF",
+      "b": "REF_SO3_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO3_REF",
+      "b": "REF_SO3_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO4_REF",
+      "b": "REF_SO4_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO4_REF",
+      "b": "REF_SO4_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO5_REF",
+      "b": "REF_SO5_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO5_REF",
+      "b": "REF_SO5_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO6_REF",
+      "b": "REF_SO6_M3_UPPER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "STANDOFF_SO6_REF",
+      "b": "REF_SO6_M3_LOWER",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "CTRL_GATE_SPLIT_V1",
+      "b": "REF_M2_GATE_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_1",
+      "b": "REF_M2_PLATE_1_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_2",
+      "b": "REF_M2_PLATE_2_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_3",
+      "b": "REF_M2_PLATE_3_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_4",
+      "b": "REF_M2_PLATE_4_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_5",
+      "b": "REF_M2_PLATE_5_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_PLATE_6",
+      "b": "REF_M2_PLATE_6_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_LAP_1",
+      "b": "REF_M2_LAP_1_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_LAP_2",
+      "b": "REF_M2_LAP_2_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_LAP_3",
+      "b": "REF_M2_LAP_3_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_LAP_4",
+      "b": "REF_M2_LAP_4_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    },
+    {
+      "a": "REF_M2_GATE",
+      "b": "REF_M2_GATE_NUT",
+      "reason": "not checked: the time budget of 20 s ran out (budget_s)"
+    }
+  ]
+}

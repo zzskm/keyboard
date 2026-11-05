@@ -1,0 +1,12 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"completed\": 2,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"feature\": 238,\n      \"recomputed\": 108,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 317,\n      \"recomputed\": 49,\n      \"restored\": 0\n    }\n  ]\n}"
+    },
+    {
+      "type": "text",
+      "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+    }
+  ]
+}

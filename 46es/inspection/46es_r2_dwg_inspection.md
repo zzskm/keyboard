@@ -240,7 +240,7 @@ r2와 신규 계획은 구조가 다르다. r2는 판재 6층 적층이고 스�
 | `model/parameters.csv` | 매개변수 83개 (SolidCraft `parameters.import` 형식) |
 | `model/measurements.csv` | 실측 시트 M01–M21 |
 | `model/46es_draft_sketches.sc` | SolidCraft 디자인: 매개변수와 2D 스케치 5개만. 바디·STL 없음 |
-| `model/46es_draft_sketches_top.png` | 초안 스케치 위에서 본 모습 |
+| `model/README.md` | 현행 모델과 최신 렌더 안내. 초기 스케치 스크린샷은 후속 정리에서 삭제 |
 
 ### 재현
 

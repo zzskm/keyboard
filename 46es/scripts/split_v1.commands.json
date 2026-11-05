@@ -1,0 +1,5261 @@
+{
+  "note": "Replay against unchanged source model; only successful commands, including initial reference hardware assumptions. Proposed 6mm standoff update was rolled back and is NOT included.",
+  "commands": [
+    {
+      "command": "timeline.suppress",
+      "params": {
+        "features": [
+          "CTRL_RAIL_F",
+          "CTRL_RAIL_B",
+          "CTRL_STOP",
+          "CTRL_LIP_F_LOW",
+          "CTRL_LIP_F_UP",
+          "CTRL_LIP_B_LOW",
+          "CTRL_LIP_B_UP"
+        ],
+        "suppressed": true
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_plate_gap",
+        "expression": "0.5 mm",
+        "comment": "[candidate] 0.4..0.6 mm; split assembly gap; not print tolerance"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_center_X",
+        "expression": "REF_SO_dX6 - TBD_pcb0_dx",
+        "comment": "[fixed layout] 130.881 mm; retain original key coordinates"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_bracket_T",
+        "expression": "1.5 mm",
+        "comment": "[candidate] bracket roof thickness; hardware and FDM sample required"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_bracket_gap",
+        "expression": "0.3 mm",
+        "comment": "[candidate] roof-to-plate gap away from mounting pads"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_M2_clear_D",
+        "expression": "2.4 mm",
+        "comment": "[candidate] M2 clearance hole; actual hardware unconfirmed"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_M2_head_D",
+        "expression": "4.4 mm",
+        "comment": "[assumed envelope] M2 head diameter; hardware unconfirmed"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_SPLIT_ROOF_V1",
+        "body_name": "CTRL_BRACKET_SPLIT_V1",
+        "length": "TBD_ctrl_railB_L",
+        "width": "TBD_ctrl_W + 2*TBD_ctrl_clr + 2*TBD_ctrl_rail_T",
+        "height": "split_bracket_T",
+        "corner": [
+          "split_center_X - TBD_ctrl_railB_L/2",
+          "TBD_ctrl_Y - TBD_ctrl_clr - TBD_ctrl_rail_T",
+          "TBD_frame_T + TBD_standoff_H - split_bracket_gap - split_bracket_T"
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X - TBD_ctrl_clr",
+          "TBD_ctrl_Y - TBD_ctrl_clr - TBD_ctrl_rail_T",
+          "TBD_ctrl_pcb_Z - TBD_ctrl_lip_T"
+        ],
+        "height": "TBD_frame_T + TBD_standoff_H - split_bracket_gap - (TBD_ctrl_pcb_Z - TBD_ctrl_lip_T)",
+        "length": "TBD_ctrl_L + 2*TBD_ctrl_clr + TBD_ctrl_rail_T",
+        "operation": "join",
+        "width": "TBD_ctrl_rail_T",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_RAIL_F_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X + TBD_ctrl_L/2 - TBD_ctrl_railB_L/2",
+          "TBD_ctrl_Y + TBD_ctrl_W + TBD_ctrl_clr",
+          "TBD_ctrl_pcb_Z - TBD_ctrl_lip_T"
+        ],
+        "height": "TBD_frame_T + TBD_standoff_H - split_bracket_gap - (TBD_ctrl_pcb_Z - TBD_ctrl_lip_T)",
+        "length": "TBD_ctrl_railB_L",
+        "operation": "join",
+        "width": "TBD_ctrl_rail_T",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_RAIL_B_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X + TBD_ctrl_L + TBD_ctrl_clr",
+          "TBD_ctrl_Y - TBD_ctrl_clr - TBD_ctrl_rail_T",
+          "TBD_ctrl_pcb_Z - TBD_ctrl_lip_T"
+        ],
+        "height": "TBD_frame_T + TBD_standoff_H - split_bracket_gap - (TBD_ctrl_pcb_Z - TBD_ctrl_lip_T)",
+        "length": "TBD_ctrl_rail_T",
+        "operation": "join",
+        "width": "TBD_ctrl_stop_L",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_STOP_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X - TBD_ctrl_clr",
+          "TBD_ctrl_Y - TBD_ctrl_clr",
+          "TBD_ctrl_pcb_Z - TBD_ctrl_lip_T"
+        ],
+        "height": "TBD_ctrl_lip_T",
+        "length": "TBD_ctrl_L + 2*TBD_ctrl_clr",
+        "operation": "join",
+        "width": "TBD_ctrl_lip_W",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_LIP_F_LOW_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X - TBD_ctrl_clr",
+          "TBD_ctrl_Y - TBD_ctrl_clr",
+          "TBD_ctrl_pcb_Z + REF_ctrl_pcb_T + TBD_ctrl_clr"
+        ],
+        "height": "TBD_ctrl_lip_T",
+        "length": "TBD_ctrl_L + 2*TBD_ctrl_clr",
+        "operation": "join",
+        "width": "TBD_ctrl_lip_W",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_LIP_F_UP_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X + TBD_ctrl_L/2 - TBD_ctrl_railB_L/2",
+          "TBD_ctrl_Y + TBD_ctrl_W + TBD_ctrl_clr - TBD_ctrl_lip_W",
+          "TBD_ctrl_pcb_Z - TBD_ctrl_lip_T"
+        ],
+        "height": "TBD_ctrl_lip_T",
+        "length": "TBD_ctrl_railB_L",
+        "operation": "join",
+        "width": "TBD_ctrl_lip_W",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_LIP_B_LOW_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "corner": [
+          "TBD_ctrl_X + TBD_ctrl_L/2 - TBD_ctrl_railB_L/2",
+          "TBD_ctrl_Y + TBD_ctrl_W + TBD_ctrl_clr - TBD_ctrl_lip_W",
+          "TBD_ctrl_pcb_Z + REF_ctrl_pcb_T + TBD_ctrl_clr"
+        ],
+        "height": "TBD_ctrl_lip_T",
+        "length": "TBD_ctrl_railB_L",
+        "operation": "join",
+        "width": "TBD_ctrl_lip_W",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ],
+        "name": "CTRL_LIP_B_UP_SPLIT_V1"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_MOUNT_1_BOSS",
+        "length": 6,
+        "width": 6,
+        "height": 3.6,
+        "corner": [
+          122,
+          14,
+          4.4
+        ],
+        "operation": "join",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "CTRL_MOUNT_1_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 10,
+        "base": [
+          125,
+          17,
+          3.5
+        ],
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1",
+          "PLATE_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "CTRL_MOUNT_1_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.6,
+        "base": [
+          125,
+          17,
+          11.4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 4.4,
+        "name": "CTRL_MOUNT_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "125+4.4/sqrt(3)*cos(0 deg)",
+            "17+4.4/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(60 deg)",
+            "17+4.4/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(120 deg)",
+            "17+4.4/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(180 deg)",
+            "17+4.4/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(240 deg)",
+            "17+4.4/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(300 deg)",
+            "17+4.4/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "CTRL_MOUNT_1_NUT_SK",
+        "name": "CTRL_MOUNT_1_NUT_POCKET",
+        "distance": 1.8,
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_MOUNT_2_BOSS",
+        "length": 6,
+        "width": 6,
+        "height": 3.6,
+        "corner": [
+          122,
+          22,
+          4.4
+        ],
+        "operation": "join",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "CTRL_MOUNT_2_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 10,
+        "base": [
+          125,
+          25,
+          3.5
+        ],
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1",
+          "PLATE_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "CTRL_MOUNT_2_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.6,
+        "base": [
+          125,
+          25,
+          11.4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 4.4,
+        "name": "CTRL_MOUNT_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "125+4.4/sqrt(3)*cos(0 deg)",
+            "25+4.4/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(60 deg)",
+            "25+4.4/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(120 deg)",
+            "25+4.4/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(180 deg)",
+            "25+4.4/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(240 deg)",
+            "25+4.4/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "125+4.4/sqrt(3)*cos(300 deg)",
+            "25+4.4/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "CTRL_MOUNT_2_NUT_SK",
+        "name": "CTRL_MOUNT_2_NUT_POCKET",
+        "distance": 1.8,
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.edit",
+      "params": {
+        "sketch": "CTRL_MOUNT_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "sketch.edit",
+      "params": {
+        "sketch": "CTRL_MOUNT_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_SO_bypass",
+        "expression": "6 mm",
+        "comment": "[candidate] SO3/SO6 seam detour in +X; fixed original outline"
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 7,
+        "name": "SK_SPLIT_PLATE_SEAM_V1"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "split_center_X + split_SO_bypass",
+            "-2 mm"
+          ],
+          [
+            "split_center_X + split_SO_bypass",
+            "11 mm"
+          ],
+          [
+            "split_center_X",
+            "16 mm"
+          ],
+          [
+            "split_center_X",
+            "82.5 mm"
+          ],
+          [
+            "split_center_X + split_SO_bypass",
+            "83.5 mm"
+          ],
+          [
+            "split_center_X + split_SO_bypass",
+            "97 mm"
+          ]
+        ],
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SK_SPLIT_PLATE_SEAM_V1",
+        "name": "PLATE_SEAM_CUT_V1",
+        "distance": 7,
+        "operation": "cut",
+        "targets": [
+          "PLATE_DRAFT_TBD"
+        ],
+        "thin": true,
+        "thickness": "split_plate_gap",
+        "side": "center"
+      }
+    },
+    {
+      "command": "body.rename",
+      "params": {
+        "body": "PLATE_DRAFT_TBD",
+        "name": "PLATE_L_SPLIT_V1"
+      }
+    },
+    {
+      "command": "body.rename",
+      "params": {
+        "body": "PLATE_DRAFT_TBD (1)",
+        "name": "PLATE_R_SPLIT_V1"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_spine_W",
+        "expression": "4 mm",
+        "comment": "[candidate] 3.8..4.2 mm; central stem width"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_spine_bottom_Z",
+        "expression": "4 mm",
+        "comment": "[candidate] stem underside; tune with mount support/shim"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_spine_seat_D",
+        "expression": "0.5 mm",
+        "comment": "[candidate] plate underside pocket depth"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_fit_X",
+        "expression": "0.15 mm",
+        "comment": "[candidate] front locating recess side clearance; sample required"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_fit_rear_Y",
+        "expression": "0.4 mm",
+        "comment": "[candidate] rear locating recess lengthwise clearance"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_nut_AF",
+        "expression": "4.4 mm",
+        "comment": "[candidate] M2 hex nut pocket AF, assumed metal nut AF4.0"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_nut_depth",
+        "expression": "1.8 mm",
+        "comment": "[candidate] pocket for assumed M2 nut thickness1.6"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "SPINE_STEM_V1",
+        "body_name": "PLATE_SPINE_V1",
+        "length": "split_spine_W",
+        "width": 41,
+        "height": "8 + split_spine_seat_D - split_spine_bottom_Z",
+        "corner": [
+          "split_center_X - split_spine_W/2",
+          42,
+          "split_spine_bottom_Z"
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "SPINE_FRONT_PAD",
+        "length": 18,
+        "width": 8,
+        "height": "3 + split_spine_seat_D",
+        "corner": [
+          "split_center_X - 9",
+          38,
+          5
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "SPINE_REAR_PAD",
+        "length": 30,
+        "width": 8,
+        "height": "3 + split_spine_seat_D",
+        "corner": [
+          "split_center_X - 15",
+          79,
+          5
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 3,
+        "name": "SK_SPINE_SWITCH_GUARD_1"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            103.25533828024227,
+            43.138860540007535
+          ],
+          [
+            121.41544117402405,
+            39.60889412554139
+          ],
+          [
+            124.9454075884902,
+            57.76899701932316
+          ],
+          [
+            106.78530469470842,
+            61.298963433789304
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SK_SPINE_SWITCH_GUARD_1",
+        "name": "SPINE_TRIM_SWITCH_1",
+        "distance": 7,
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 3,
+        "name": "SK_SPINE_SWITCH_GUARD_23"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            140.34754741313074,
+            39.60889412554141
+          ],
+          [
+            158.5076503069125,
+            43.138860540007514
+          ],
+          [
+            154.97768389244638,
+            61.29896343378928
+          ],
+          [
+            136.81758099866462,
+            57.76899701932318
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SK_SPINE_SWITCH_GUARD_23",
+        "name": "SPINE_TRIM_SWITCH_23",
+        "distance": 7,
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_SO3_RELIEF",
+        "diameter": 6.8,
+        "height": 6,
+        "base": [
+          "split_center_X",
+          "REF_SO_dY3 - TBD_pcb0_dy",
+          3
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_SPINE_STEM_SEAT",
+        "length": "split_spine_W + 2*split_fit_X",
+        "width": 41,
+        "height": "split_spine_seat_D",
+        "corner": [
+          "split_center_X - split_spine_W/2 - split_fit_X",
+          42,
+          8
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_SPINE_FRONT_SEAT",
+        "length": "18 + 2*split_fit_X",
+        "width": "8 + 2*split_fit_X",
+        "height": "split_spine_seat_D",
+        "corner": [
+          "split_center_X - 9 - split_fit_X",
+          "38 - split_fit_X",
+          8
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_SPINE_REAR_SEAT",
+        "length": "30 + 2*split_fit_X",
+        "width": "8 + 2*split_fit_rear_Y",
+        "height": "split_spine_seat_D",
+        "corner": [
+          "split_center_X - 15 - split_fit_X",
+          "79 - split_fit_rear_Y",
+          8
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_1_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 10,
+        "base": [
+          126.381,
+          42,
+          4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1",
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_1_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.6,
+        "base": [
+          126.381,
+          42,
+          11.4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5,
+        "name": "SPINE_M2_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "126.381+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_1_NUT_SK",
+        "name": "SPINE_M2_1_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_2_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 10,
+        "base": [
+          135.381,
+          42,
+          4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1",
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_2_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.6,
+        "base": [
+          135.381,
+          42,
+          11.4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5,
+        "name": "SPINE_M2_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "135.381+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "42+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_2_NUT_SK",
+        "name": "SPINE_M2_2_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 8,
+        "name": "SPINE_M2_3_CLEAR_SK"
+      }
+    },
+    {
+      "command": "sketch.slot.center_to_center",
+      "params": {
+        "p0": [
+          121.881,
+          82.6
+        ],
+        "p1": [
+          121.881,
+          83.4
+        ],
+        "width": 2.4
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "a1",
+          "a2"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_3_CLEAR_SK",
+        "name": "SPINE_M2_3_CLEAR",
+        "distance": 6,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 11.4,
+        "name": "SPINE_M2_3_HEAD_SK"
+      }
+    },
+    {
+      "command": "sketch.slot.center_to_center",
+      "params": {
+        "p0": [
+          121.881,
+          82.6
+        ],
+        "p1": [
+          121.881,
+          83.4
+        ],
+        "width": 4.4
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "a1",
+          "a2"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_3_HEAD_SK",
+        "name": "SPINE_M2_3_HEAD",
+        "distance": 2.6,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_3_SPINE_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 5,
+        "base": [
+          121.881,
+          83,
+          4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5,
+        "name": "SPINE_M2_3_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "121.881+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_3_NUT_SK",
+        "name": "SPINE_M2_3_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 8,
+        "name": "SPINE_M2_4_CLEAR_SK"
+      }
+    },
+    {
+      "command": "sketch.slot.center_to_center",
+      "params": {
+        "p0": [
+          142.881,
+          82.6
+        ],
+        "p1": [
+          142.881,
+          83.4
+        ],
+        "width": 2.4
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "a1",
+          "a2"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_4_CLEAR_SK",
+        "name": "SPINE_M2_4_CLEAR",
+        "distance": 6,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 11.4,
+        "name": "SPINE_M2_4_HEAD_SK"
+      }
+    },
+    {
+      "command": "sketch.slot.center_to_center",
+      "params": {
+        "p0": [
+          142.881,
+          82.6
+        ],
+        "p1": [
+          142.881,
+          83.4
+        ],
+        "width": 4.4
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "a1",
+          "a2"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_4_HEAD_SK",
+        "name": "SPINE_M2_4_HEAD",
+        "distance": 2.6,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "SPINE_M2_4_SPINE_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 5,
+        "base": [
+          142.881,
+          83,
+          4
+        ],
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5,
+        "name": "SPINE_M2_4_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "142.881+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "83+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SPINE_M2_4_NUT_SK",
+        "name": "SPINE_M2_4_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "PLATE_SPINE_V1"
+        ]
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_H05_adjust",
+        "expression": "0.9 mm",
+        "comment": "[candidate] H05 X arc-center adjustment ±0.9; M2 axis approx ±1.1 incl clearance"
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "name": "d343",
+        "expression": "2*split_H05_adjust"
+      }
+    },
+    {
+      "command": "parameters.change",
+      "params": {
+        "name": "d345",
+        "expression": "CAND_H05_X - split_H05_adjust"
+      }
+    },
+    {
+      "command": "timeline.suppress",
+      "params": {
+        "feature": "CASE_ADJUST_HEADS_TBD",
+        "suppressed": true
+      }
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "name": "CASE_HEADS_EXCEPT_H05_SPLIT_V1",
+        "sketch": "SK13_CASE_ADJUST_HEADS_TBD",
+        "profiles": [
+          0,
+          1,
+          2,
+          3,
+          5
+        ],
+        "distance": "TBD_case_head_H",
+        "operation": "cut",
+        "targets": [
+          "FRAME_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "solid.split_body",
+      "params": {
+        "name": "MOUNT_SPLIT_X100_V1",
+        "body": "FRAME_DRAFT_TBD",
+        "plane": {
+          "origin": [
+            100,
+            0,
+            0
+          ],
+          "normal": [
+            1,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "command": "body.rename",
+      "params": {
+        "body": "FRAME_DRAFT_TBD",
+        "name": "MOUNT_R_SPLIT_V1"
+      }
+    },
+    {
+      "command": "body.rename",
+      "params": {
+        "body": "FRAME_DRAFT_TBD (1)",
+        "name": "MOUNT_L_SPLIT_V1"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_mount_overlap",
+        "expression": "20 mm",
+        "comment": "[candidate] 18..22 mm lap length; centered on nominal X100"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_mount_lap_T",
+        "expression": "3 mm",
+        "comment": "[candidate] 3 mm tongue thickness below Z0"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_mount_lap_gap",
+        "expression": "0.2 mm",
+        "comment": "[candidate] 0.15..0.3 mm upper butt clearance"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_support_Y",
+        "expression": "56 mm",
+        "comment": "[candidate] H02 rear support; do not move over case screw"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_support_gap",
+        "expression": "0.05 mm",
+        "comment": "[assembly target] 0..0.1 mm after shim; not as-printed accuracy"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_support_size",
+        "expression": "6 mm",
+        "comment": "[candidate] mount support footprint6x6"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_FRONT_L_STEP",
+        "length": "split_mount_overlap/2 + 1",
+        "width": 10,
+        "height": 5,
+        "corner": [
+          "100 - split_mount_overlap/2",
+          -0.367,
+          -0.1
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_FRONT_R_LAP",
+        "length": "split_mount_overlap - split_mount_lap_gap",
+        "width": 10,
+        "height": 3,
+        "corner": [
+          "100 - split_mount_overlap/2 + split_mount_lap_gap",
+          -0.367,
+          0
+        ],
+        "operation": "join",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_FRONT_L_TONGUE",
+        "length": "split_mount_overlap + 10",
+        "width": 10,
+        "height": "split_mount_lap_T",
+        "corner": [
+          "100 - split_mount_overlap/2 - 10",
+          -0.367,
+          "-split_mount_lap_T"
+        ],
+        "operation": "join",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_REAR_L_STEP",
+        "length": "split_mount_overlap/2 + 1",
+        "width": 10,
+        "height": 5,
+        "corner": [
+          "100 - split_mount_overlap/2",
+          84.967,
+          -0.1
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_REAR_R_LAP",
+        "length": "split_mount_overlap - split_mount_lap_gap",
+        "width": 10,
+        "height": 3,
+        "corner": [
+          "100 - split_mount_overlap/2 + split_mount_lap_gap",
+          84.967,
+          0
+        ],
+        "operation": "join",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_REAR_L_TONGUE",
+        "length": "split_mount_overlap + 10",
+        "width": 10,
+        "height": "split_mount_lap_T",
+        "corner": [
+          "100 - split_mount_overlap/2 - 10",
+          84.967,
+          "-split_mount_lap_T"
+        ],
+        "operation": "join",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_H02_SPINE_SUPPORT",
+        "length": "split_support_size",
+        "width": "split_support_size",
+        "height": "split_spine_bottom_Z - split_support_gap - TBD_frame_T",
+        "corner": [
+          "split_center_X - split_support_size/2",
+          "split_support_Y - split_support_size/2",
+          "TBD_frame_T"
+        ],
+        "operation": "join",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_1_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 8,
+        "base": [
+          95,
+          4.633,
+          -4
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1",
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_1_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.3,
+        "base": [
+          95,
+          4.633,
+          1.7
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": "-split_mount_lap_T",
+        "name": "MOUNT_LAP_M2_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "95+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "MOUNT_LAP_M2_1_NUT_SK",
+        "name": "MOUNT_LAP_M2_1_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_2_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 8,
+        "base": [
+          105,
+          4.633,
+          -4
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1",
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_2_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.3,
+        "base": [
+          105,
+          4.633,
+          1.7
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": "-split_mount_lap_T",
+        "name": "MOUNT_LAP_M2_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "105+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "4.633+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "MOUNT_LAP_M2_2_NUT_SK",
+        "name": "MOUNT_LAP_M2_2_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_3_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 8,
+        "base": [
+          95,
+          89.967,
+          -4
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1",
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_3_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.3,
+        "base": [
+          95,
+          89.967,
+          1.7
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": "-split_mount_lap_T",
+        "name": "MOUNT_LAP_M2_3_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "95+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "95+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "MOUNT_LAP_M2_3_NUT_SK",
+        "name": "MOUNT_LAP_M2_3_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_4_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 8,
+        "base": [
+          105,
+          89.967,
+          -4
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1",
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "MOUNT_LAP_M2_4_HEAD",
+        "diameter": "split_M2_head_D",
+        "height": 2.3,
+        "base": [
+          105,
+          89.967,
+          1.7
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": "-split_mount_lap_T",
+        "name": "MOUNT_LAP_M2_4_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "105+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "105+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "89.967+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "MOUNT_LAP_M2_4_NUT_SK",
+        "name": "MOUNT_LAP_M2_4_NUT",
+        "distance": "split_nut_depth",
+        "operation": "cut",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_flange_W",
+        "expression": "2 mm",
+        "comment": "[candidate] interrupted perimeter flange width; switch guards required"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_flange_H",
+        "expression": "3 mm",
+        "comment": "[candidate] underside flange depth, Z5..8 at default; mount top3"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_L_SIDE",
+        "length": "split_flange_W",
+        "width": 71,
+        "height": "split_flange_H",
+        "corner": [
+          -0.393,
+          10,
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_R_SIDE",
+        "length": "split_flange_W",
+        "width": 70,
+        "height": "split_flange_H",
+        "corner": [
+          "285.388 - split_flange_W",
+          12,
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_L_FRONT",
+        "length": 105,
+        "width": "split_flange_W",
+        "height": "split_flange_H",
+        "corner": [
+          15,
+          -0.367,
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_R_FRONT",
+        "length": 128,
+        "width": "split_flange_W",
+        "height": "split_flange_H",
+        "corner": [
+          140,
+          -0.367,
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_L_REAR",
+        "length": 90,
+        "width": "split_flange_W",
+        "height": "split_flange_H",
+        "corner": [
+          30,
+          "94.967 - split_flange_W",
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_R_REAR_A",
+        "length": 96,
+        "width": "split_flange_W",
+        "height": "split_flange_H",
+        "corner": [
+          142,
+          "94.967 - split_flange_W",
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_FLANGE_R_REAR_B",
+        "length": 13,
+        "width": "split_flange_W",
+        "height": "split_flange_H",
+        "corner": [
+          260,
+          "94.967 - split_flange_W",
+          "8 - split_flange_H"
+        ],
+        "operation": "join",
+        "targets": [
+          "PLATE_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_GATE_MOUNT_EAR",
+        "length": 5.919,
+        "width": 5.5,
+        "height": 1.6,
+        "corner": [
+          114.081,
+          5.764485,
+          4.4
+        ],
+        "operation": "join",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_GATE_CAP",
+        "body_name": "CTRL_GATE_SPLIT_V1",
+        "length": 7.419,
+        "width": 5.5,
+        "height": 1.8,
+        "corner": [
+          112.581,
+          5.764485,
+          6.2
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_GATE_STOP_FINGER",
+        "length": 1.5,
+        "width": 4,
+        "height": 6,
+        "corner": [
+          112.581,
+          11.264485,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "CTRL_GATE_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "CTRL_GATE_M2_CLEAR",
+        "diameter": "split_M2_clear_D",
+        "height": 5,
+        "base": [
+          116.5,
+          8.514485,
+          4
+        ],
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1",
+          "CTRL_GATE_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 6.2,
+        "name": "SK_CTRL_GATE_NUT"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(0 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(0 deg)"
+          ],
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(60 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(60 deg)"
+          ],
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(120 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(120 deg)"
+          ],
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(180 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(180 deg)"
+          ],
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(240 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(240 deg)"
+          ],
+          [
+            "116.5+split_nut_AF/sqrt(3)*cos(300 deg)",
+            "8.514485+split_nut_AF/sqrt(3)*sin(300 deg)"
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "SK_CTRL_GATE_NUT",
+        "name": "CTRL_GATE_NUT_POCKET",
+        "distance": 1.6,
+        "operation": "cut",
+        "targets": [
+          "CTRL_GATE_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_CTRL_GATE_RELIEF",
+        "length": 2.1,
+        "width": 4.6,
+        "height": 1.6,
+        "corner": [
+          112.281,
+          10.964485,
+          1.7
+        ],
+        "operation": "cut",
+        "targets": [
+          "MOUNT_R_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "browser.visibility",
+      "params": {
+        "visible": false,
+        "items": [
+          "REF_HOUSING_WILMORE_NOT_PSD60",
+          "COVER_L_DRAFT_TBD",
+          "COVER_T_DRAFT_TBD",
+          "COVER_R_DRAFT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "browser.visibility",
+      "params": {
+        "visible": false,
+        "folder": "sketches"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "CTRL_ROOF_WIRING_WINDOW",
+        "length": 9,
+        "width": 14,
+        "height": 2.5,
+        "corner": [
+          129.5,
+          15,
+          5.9
+        ],
+        "operation": "cut",
+        "targets": [
+          "CTRL_BRACKET_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "name": "REF_SWITCH_LOWER_PINS_BOUND_ASSUMED",
+        "sketch": "SK22_PLATE_HOLES_REF_r2_NOT_FOR_PRODUCTION",
+        "distance": 6.3,
+        "start_offset": -3.3,
+        "operation": "new",
+        "body_name": "REF_SW_ASSUMED_01"
+      }
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "name": "REF_SWITCH_LATCH_BOUND_ASSUMED",
+        "sketch": "SK25_PLATE_LOWER_RELIEF_REF_r2_NOT_FOR_PRODUCTION",
+        "distance": 1.5,
+        "operation": "join",
+        "targets": [
+          "REF_SW_ASSUMED_01",
+          "REF_SW_ASSUMED_01 (2)",
+          "REF_SW_ASSUMED_01 (3)",
+          "REF_SW_ASSUMED_01 (4)",
+          "REF_SW_ASSUMED_01 (5)",
+          "REF_SW_ASSUMED_01 (6)",
+          "REF_SW_ASSUMED_01 (7)",
+          "REF_SW_ASSUMED_01 (8)",
+          "REF_SW_ASSUMED_01 (9)",
+          "REF_SW_ASSUMED_01 (10)",
+          "REF_SW_ASSUMED_01 (11)",
+          "REF_SW_ASSUMED_01 (12)",
+          "REF_SW_ASSUMED_01 (13)",
+          "REF_SW_ASSUMED_01 (14)",
+          "REF_SW_ASSUMED_01 (15)",
+          "REF_SW_ASSUMED_01 (16)",
+          "REF_SW_ASSUMED_01 (17)",
+          "REF_SW_ASSUMED_01 (18)",
+          "REF_SW_ASSUMED_01 (19)",
+          "REF_SW_ASSUMED_01 (20)",
+          "REF_SW_ASSUMED_01 (21)",
+          "REF_SW_ASSUMED_01 (22)",
+          "REF_SW_ASSUMED_01 (23)",
+          "REF_SW_ASSUMED_01 (24)",
+          "REF_SW_ASSUMED_01 (25)",
+          "REF_SW_ASSUMED_01 (26)",
+          "REF_SW_ASSUMED_01 (27)",
+          "REF_SW_ASSUMED_01 (28)",
+          "REF_SW_ASSUMED_01 (29)",
+          "REF_SW_ASSUMED_01 (30)",
+          "REF_SW_ASSUMED_01 (31)",
+          "REF_SW_ASSUMED_01 (32)",
+          "REF_SW_ASSUMED_01 (33)",
+          "REF_SW_ASSUMED_01 (34)",
+          "REF_SW_ASSUMED_01 (35)",
+          "REF_SW_ASSUMED_01 (36)",
+          "REF_SW_ASSUMED_01 (37)",
+          "REF_SW_ASSUMED_01 (38)",
+          "REF_SW_ASSUMED_01 (39)",
+          "REF_SW_ASSUMED_01 (40)",
+          "REF_SW_ASSUMED_01 (41)",
+          "REF_SW_ASSUMED_01 (42)",
+          "REF_SW_ASSUMED_01 (43)",
+          "REF_SW_ASSUMED_01 (44)",
+          "REF_SW_ASSUMED_01 (45)",
+          "REF_SW_ASSUMED_01 (46)"
+        ]
+      }
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "name": "REF_SWITCH_UPPER_BOUND_ASSUMED",
+        "sketch": "SK24_PLATE_UPPER_OPENINGS_REF_r2_P3_NOT_FOR_PRODUCTION",
+        "distance": 3.6,
+        "start_offset": -2,
+        "operation": "join",
+        "targets": [
+          "REF_SW_ASSUMED_01",
+          "REF_SW_ASSUMED_01 (2)",
+          "REF_SW_ASSUMED_01 (3)",
+          "REF_SW_ASSUMED_01 (4)",
+          "REF_SW_ASSUMED_01 (5)",
+          "REF_SW_ASSUMED_01 (6)",
+          "REF_SW_ASSUMED_01 (7)",
+          "REF_SW_ASSUMED_01 (8)",
+          "REF_SW_ASSUMED_01 (9)",
+          "REF_SW_ASSUMED_01 (10)",
+          "REF_SW_ASSUMED_01 (11)",
+          "REF_SW_ASSUMED_01 (12)",
+          "REF_SW_ASSUMED_01 (13)",
+          "REF_SW_ASSUMED_01 (14)",
+          "REF_SW_ASSUMED_01 (15)",
+          "REF_SW_ASSUMED_01 (16)",
+          "REF_SW_ASSUMED_01 (17)",
+          "REF_SW_ASSUMED_01 (18)",
+          "REF_SW_ASSUMED_01 (19)",
+          "REF_SW_ASSUMED_01 (20)",
+          "REF_SW_ASSUMED_01 (21)",
+          "REF_SW_ASSUMED_01 (22)",
+          "REF_SW_ASSUMED_01 (23)",
+          "REF_SW_ASSUMED_01 (24)",
+          "REF_SW_ASSUMED_01 (25)",
+          "REF_SW_ASSUMED_01 (26)",
+          "REF_SW_ASSUMED_01 (27)",
+          "REF_SW_ASSUMED_01 (28)",
+          "REF_SW_ASSUMED_01 (29)",
+          "REF_SW_ASSUMED_01 (30)",
+          "REF_SW_ASSUMED_01 (31)",
+          "REF_SW_ASSUMED_01 (32)",
+          "REF_SW_ASSUMED_01 (33)",
+          "REF_SW_ASSUMED_01 (34)",
+          "REF_SW_ASSUMED_01 (35)",
+          "REF_SW_ASSUMED_01 (36)",
+          "REF_SW_ASSUMED_01 (37)",
+          "REF_SW_ASSUMED_01 (38)",
+          "REF_SW_ASSUMED_01 (39)",
+          "REF_SW_ASSUMED_01 (40)",
+          "REF_SW_ASSUMED_01 (41)",
+          "REF_SW_ASSUMED_01 (42)",
+          "REF_SW_ASSUMED_01 (43)",
+          "REF_SW_ASSUMED_01 (44)",
+          "REF_SW_ASSUMED_01 (45)",
+          "REF_SW_ASSUMED_01 (46)"
+        ]
+      }
+    },
+    {
+      "command": "appearance.assign",
+      "params": {
+        "bodies": [
+          "REF_SW_ASSUMED_01",
+          "REF_SW_ASSUMED_01 (2)",
+          "REF_SW_ASSUMED_01 (3)",
+          "REF_SW_ASSUMED_01 (4)",
+          "REF_SW_ASSUMED_01 (5)",
+          "REF_SW_ASSUMED_01 (6)",
+          "REF_SW_ASSUMED_01 (7)",
+          "REF_SW_ASSUMED_01 (8)",
+          "REF_SW_ASSUMED_01 (9)",
+          "REF_SW_ASSUMED_01 (10)",
+          "REF_SW_ASSUMED_01 (11)",
+          "REF_SW_ASSUMED_01 (12)",
+          "REF_SW_ASSUMED_01 (13)",
+          "REF_SW_ASSUMED_01 (14)",
+          "REF_SW_ASSUMED_01 (15)",
+          "REF_SW_ASSUMED_01 (16)",
+          "REF_SW_ASSUMED_01 (17)",
+          "REF_SW_ASSUMED_01 (18)",
+          "REF_SW_ASSUMED_01 (19)",
+          "REF_SW_ASSUMED_01 (20)",
+          "REF_SW_ASSUMED_01 (21)",
+          "REF_SW_ASSUMED_01 (22)",
+          "REF_SW_ASSUMED_01 (23)",
+          "REF_SW_ASSUMED_01 (24)",
+          "REF_SW_ASSUMED_01 (25)",
+          "REF_SW_ASSUMED_01 (26)",
+          "REF_SW_ASSUMED_01 (27)",
+          "REF_SW_ASSUMED_01 (28)",
+          "REF_SW_ASSUMED_01 (29)",
+          "REF_SW_ASSUMED_01 (30)",
+          "REF_SW_ASSUMED_01 (31)",
+          "REF_SW_ASSUMED_01 (32)",
+          "REF_SW_ASSUMED_01 (33)",
+          "REF_SW_ASSUMED_01 (34)",
+          "REF_SW_ASSUMED_01 (35)",
+          "REF_SW_ASSUMED_01 (36)",
+          "REF_SW_ASSUMED_01 (37)",
+          "REF_SW_ASSUMED_01 (38)",
+          "REF_SW_ASSUMED_01 (39)",
+          "REF_SW_ASSUMED_01 (40)",
+          "REF_SW_ASSUMED_01 (41)",
+          "REF_SW_ASSUMED_01 (42)",
+          "REF_SW_ASSUMED_01 (43)",
+          "REF_SW_ASSUMED_01 (44)",
+          "REF_SW_ASSUMED_01 (45)",
+          "REF_SW_ASSUMED_01 (46)"
+        ],
+        "color": "#B09065",
+        "opacity": 0.25
+      }
+    },
+    {
+      "command": "browser.visibility",
+      "params": {
+        "items": [
+          "REF_SW_ASSUMED_01",
+          "REF_SW_ASSUMED_01 (2)",
+          "REF_SW_ASSUMED_01 (3)",
+          "REF_SW_ASSUMED_01 (4)",
+          "REF_SW_ASSUMED_01 (5)",
+          "REF_SW_ASSUMED_01 (6)",
+          "REF_SW_ASSUMED_01 (7)",
+          "REF_SW_ASSUMED_01 (8)",
+          "REF_SW_ASSUMED_01 (9)",
+          "REF_SW_ASSUMED_01 (10)",
+          "REF_SW_ASSUMED_01 (11)",
+          "REF_SW_ASSUMED_01 (12)",
+          "REF_SW_ASSUMED_01 (13)",
+          "REF_SW_ASSUMED_01 (14)",
+          "REF_SW_ASSUMED_01 (15)",
+          "REF_SW_ASSUMED_01 (16)",
+          "REF_SW_ASSUMED_01 (17)",
+          "REF_SW_ASSUMED_01 (18)",
+          "REF_SW_ASSUMED_01 (19)",
+          "REF_SW_ASSUMED_01 (20)",
+          "REF_SW_ASSUMED_01 (21)",
+          "REF_SW_ASSUMED_01 (22)",
+          "REF_SW_ASSUMED_01 (23)",
+          "REF_SW_ASSUMED_01 (24)",
+          "REF_SW_ASSUMED_01 (25)",
+          "REF_SW_ASSUMED_01 (26)",
+          "REF_SW_ASSUMED_01 (27)",
+          "REF_SW_ASSUMED_01 (28)",
+          "REF_SW_ASSUMED_01 (29)",
+          "REF_SW_ASSUMED_01 (30)",
+          "REF_SW_ASSUMED_01 (31)",
+          "REF_SW_ASSUMED_01 (32)",
+          "REF_SW_ASSUMED_01 (33)",
+          "REF_SW_ASSUMED_01 (34)",
+          "REF_SW_ASSUMED_01 (35)",
+          "REF_SW_ASSUMED_01 (36)",
+          "REF_SW_ASSUMED_01 (37)",
+          "REF_SW_ASSUMED_01 (38)",
+          "REF_SW_ASSUMED_01 (39)",
+          "REF_SW_ASSUMED_01 (40)",
+          "REF_SW_ASSUMED_01 (41)",
+          "REF_SW_ASSUMED_01 (42)",
+          "REF_SW_ASSUMED_01 (43)",
+          "REF_SW_ASSUMED_01 (44)",
+          "REF_SW_ASSUMED_01 (45)",
+          "REF_SW_ASSUMED_01 (46)"
+        ],
+        "visible": false
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_1",
+        "body_name": "REF_M2_PLATE_1",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          125,
+          17,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_1_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          125,
+          17,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_1_WASHER",
+        "body_name": "REF_M2_PLATE_1_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          125,
+          17,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_1_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          125,
+          17,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_1_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 4.6,
+        "name": "REF_M2_PLATE_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            127.3094010767585,
+            17
+          ],
+          [
+            126.15470053837925,
+            19
+          ],
+          [
+            123.84529946162075,
+            19
+          ],
+          [
+            122.6905989232415,
+            17
+          ],
+          [
+            123.84529946162074,
+            15
+          ],
+          [
+            126.15470053837925,
+            15
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_1_NUT_SK",
+        "name": "REF_M2_PLATE_1_NUT_HEX",
+        "body_name": "REF_M2_PLATE_1_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_1_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          125,
+          17,
+          4.3999999999999995
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_1_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_2",
+        "body_name": "REF_M2_PLATE_2",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          125,
+          25,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_2_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          125,
+          25,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_2_WASHER",
+        "body_name": "REF_M2_PLATE_2_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          125,
+          25,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_2_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          125,
+          25,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_2_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 4.6,
+        "name": "REF_M2_PLATE_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            127.3094010767585,
+            25
+          ],
+          [
+            126.15470053837925,
+            27
+          ],
+          [
+            123.84529946162075,
+            27
+          ],
+          [
+            122.6905989232415,
+            25
+          ],
+          [
+            123.84529946162074,
+            23
+          ],
+          [
+            126.15470053837925,
+            23
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_2_NUT_SK",
+        "name": "REF_M2_PLATE_2_NUT_HEX",
+        "body_name": "REF_M2_PLATE_2_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_2_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          125,
+          25,
+          4.3999999999999995
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_2_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_3",
+        "body_name": "REF_M2_PLATE_3",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          126.381,
+          42,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_3_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          126.381,
+          42,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_3"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_3_WASHER",
+        "body_name": "REF_M2_PLATE_3_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          126.381,
+          42,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_3_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          126.381,
+          42,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_3_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5.2,
+        "name": "REF_M2_PLATE_3_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            128.6904010767585,
+            42
+          ],
+          [
+            127.53570053837925,
+            44
+          ],
+          [
+            125.22629946162075,
+            44
+          ],
+          [
+            124.0715989232415,
+            42
+          ],
+          [
+            125.22629946162074,
+            40
+          ],
+          [
+            127.53570053837925,
+            40
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_3_NUT_SK",
+        "name": "REF_M2_PLATE_3_NUT_HEX",
+        "body_name": "REF_M2_PLATE_3_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_3_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          126.381,
+          42,
+          5
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_3_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_4",
+        "body_name": "REF_M2_PLATE_4",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          135.381,
+          42,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_4_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          135.381,
+          42,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_4"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_4_WASHER",
+        "body_name": "REF_M2_PLATE_4_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          135.381,
+          42,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_4_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          135.381,
+          42,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_4_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5.2,
+        "name": "REF_M2_PLATE_4_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            137.6904010767585,
+            42
+          ],
+          [
+            136.53570053837925,
+            44
+          ],
+          [
+            134.22629946162075,
+            44
+          ],
+          [
+            133.0715989232415,
+            42
+          ],
+          [
+            134.22629946162075,
+            40
+          ],
+          [
+            136.53570053837925,
+            40
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_4_NUT_SK",
+        "name": "REF_M2_PLATE_4_NUT_HEX",
+        "body_name": "REF_M2_PLATE_4_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_4_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          135.381,
+          42,
+          5
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_4_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_5",
+        "body_name": "REF_M2_PLATE_5",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          121.881,
+          83,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_5_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          121.881,
+          83,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_5"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_5_WASHER",
+        "body_name": "REF_M2_PLATE_5_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          121.881,
+          83,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_5_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          121.881,
+          83,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_5_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5.2,
+        "name": "REF_M2_PLATE_5_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            124.1904010767585,
+            83
+          ],
+          [
+            123.03570053837925,
+            85
+          ],
+          [
+            120.72629946162075,
+            85
+          ],
+          [
+            119.5715989232415,
+            83
+          ],
+          [
+            120.72629946162074,
+            81
+          ],
+          [
+            123.03570053837925,
+            81
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_5_NUT_SK",
+        "name": "REF_M2_PLATE_5_NUT_HEX",
+        "body_name": "REF_M2_PLATE_5_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_5_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          121.881,
+          83,
+          5
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_5_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_6",
+        "body_name": "REF_M2_PLATE_6",
+        "diameter": 2,
+        "height": 7,
+        "base": [
+          142.881,
+          83,
+          4.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_6_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          142.881,
+          83,
+          11.6
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_PLATE_6"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_6_WASHER",
+        "body_name": "REF_M2_PLATE_6_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          142.881,
+          83,
+          11.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_6_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          142.881,
+          83,
+          11.3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_6_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 5.2,
+        "name": "REF_M2_PLATE_6_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            145.1904010767585,
+            83
+          ],
+          [
+            144.03570053837925,
+            85
+          ],
+          [
+            141.72629946162075,
+            85
+          ],
+          [
+            140.5715989232415,
+            83
+          ],
+          [
+            141.72629946162075,
+            81
+          ],
+          [
+            144.03570053837925,
+            81
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_PLATE_6_NUT_SK",
+        "name": "REF_M2_PLATE_6_NUT_HEX",
+        "body_name": "REF_M2_PLATE_6_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_PLATE_6_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          142.881,
+          83,
+          5
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_PLATE_6_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_1",
+        "body_name": "REF_M2_LAP_1",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          95,
+          4.633,
+          -3.1
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_1_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          95,
+          4.633,
+          1.9
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_LAP_1"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_1_WASHER",
+        "body_name": "REF_M2_LAP_1_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          95,
+          4.633,
+          1.7
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_1_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          95,
+          4.633,
+          1.6
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_1_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": -2.8,
+        "name": "REF_M2_LAP_1_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            97.3094010767585,
+            4.633
+          ],
+          [
+            96.15470053837925,
+            6.633
+          ],
+          [
+            93.84529946162075,
+            6.633000000000001
+          ],
+          [
+            92.6905989232415,
+            4.633
+          ],
+          [
+            93.84529946162074,
+            2.6330000000000005
+          ],
+          [
+            96.15470053837925,
+            2.633
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_LAP_1_NUT_SK",
+        "name": "REF_M2_LAP_1_NUT_HEX",
+        "body_name": "REF_M2_LAP_1_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_1_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          95,
+          4.633,
+          -3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_1_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_2",
+        "body_name": "REF_M2_LAP_2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          105,
+          4.633,
+          -3.1
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_2_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          105,
+          4.633,
+          1.9
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_LAP_2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_2_WASHER",
+        "body_name": "REF_M2_LAP_2_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          105,
+          4.633,
+          1.7
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_2_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          105,
+          4.633,
+          1.6
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_2_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": -2.8,
+        "name": "REF_M2_LAP_2_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            107.3094010767585,
+            4.633
+          ],
+          [
+            106.15470053837925,
+            6.633
+          ],
+          [
+            103.84529946162075,
+            6.633000000000001
+          ],
+          [
+            102.6905989232415,
+            4.633
+          ],
+          [
+            103.84529946162074,
+            2.6330000000000005
+          ],
+          [
+            106.15470053837925,
+            2.633
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_LAP_2_NUT_SK",
+        "name": "REF_M2_LAP_2_NUT_HEX",
+        "body_name": "REF_M2_LAP_2_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_2_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          105,
+          4.633,
+          -3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_2_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_3",
+        "body_name": "REF_M2_LAP_3",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          95,
+          89.967,
+          -3.1
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_3_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          95,
+          89.967,
+          1.9
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_LAP_3"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_3_WASHER",
+        "body_name": "REF_M2_LAP_3_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          95,
+          89.967,
+          1.7
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_3_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          95,
+          89.967,
+          1.6
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_3_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": -2.8,
+        "name": "REF_M2_LAP_3_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            97.3094010767585,
+            89.967
+          ],
+          [
+            96.15470053837925,
+            91.967
+          ],
+          [
+            93.84529946162075,
+            91.967
+          ],
+          [
+            92.6905989232415,
+            89.967
+          ],
+          [
+            93.84529946162074,
+            87.967
+          ],
+          [
+            96.15470053837925,
+            87.967
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_LAP_3_NUT_SK",
+        "name": "REF_M2_LAP_3_NUT_HEX",
+        "body_name": "REF_M2_LAP_3_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_3_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          95,
+          89.967,
+          -3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_3_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_4",
+        "body_name": "REF_M2_LAP_4",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          105,
+          89.967,
+          -3.1
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_4_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          105,
+          89.967,
+          1.9
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_LAP_4"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_4_WASHER",
+        "body_name": "REF_M2_LAP_4_WASHER",
+        "diameter": 4,
+        "height": 0.2,
+        "base": [
+          105,
+          89.967,
+          1.7
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_4_WASHER_BORE",
+        "diameter": 2.2,
+        "height": 0.4,
+        "base": [
+          105,
+          89.967,
+          1.6
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_4_WASHER"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": -2.8,
+        "name": "REF_M2_LAP_4_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            107.3094010767585,
+            89.967
+          ],
+          [
+            106.15470053837925,
+            91.967
+          ],
+          [
+            103.84529946162075,
+            91.967
+          ],
+          [
+            102.6905989232415,
+            89.967
+          ],
+          [
+            103.84529946162074,
+            87.967
+          ],
+          [
+            106.15470053837925,
+            87.967
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_LAP_4_NUT_SK",
+        "name": "REF_M2_LAP_4_NUT_HEX",
+        "body_name": "REF_M2_LAP_4_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_LAP_4_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          105,
+          89.967,
+          -3
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_LAP_4_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_GATE",
+        "body_name": "REF_M2_GATE",
+        "diameter": 2,
+        "height": 3.5,
+        "base": [
+          116.5,
+          8.514485,
+          4.4
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_GATE_HEAD_JOIN",
+        "diameter": 4,
+        "height": 1.3,
+        "base": [
+          116.5,
+          8.514485,
+          3.1
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_M2_GATE"
+        ]
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "plane": "XY",
+        "offset": 6.2,
+        "name": "REF_M2_GATE_NUT_SK"
+      }
+    },
+    {
+      "command": "sketch.line",
+      "params": {
+        "points": [
+          [
+            118.8094010767585,
+            8.514485
+          ],
+          [
+            117.65470053837925,
+            10.514485
+          ],
+          [
+            115.34529946162075,
+            10.514485
+          ],
+          [
+            114.1905989232415,
+            8.514485
+          ],
+          [
+            115.34529946162074,
+            6.5144850000000005
+          ],
+          [
+            117.65470053837925,
+            6.5144850000000005
+          ]
+        ],
+        "closed": true,
+        "infer": false
+      }
+    },
+    {
+      "command": "sketch.constraint.fix",
+      "params": {
+        "entities": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "fixed": true
+      }
+    },
+    {
+      "command": "sketch.solve",
+      "params": {}
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "sketch": "REF_M2_GATE_NUT_SK",
+        "name": "REF_M2_GATE_NUT_HEX",
+        "body_name": "REF_M2_GATE_NUT",
+        "distance": 1.6,
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_M2_GATE_NUT_THREAD_VOID",
+        "diameter": 2,
+        "height": 2,
+        "base": [
+          116.5,
+          8.514485,
+          6
+        ],
+        "operation": "cut",
+        "targets": [
+          "REF_M2_GATE_NUT"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO1_M3_UPPER",
+        "body_name": "REF_SO1_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO1_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO1_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO1_M3_LOWER",
+        "body_name": "REF_SO1_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO1_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO1_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO1_MAGNET",
+        "body_name": "REF_SO1_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          6.494000000000001,
+          6.5200000000000005,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO2_M3_UPPER",
+        "body_name": "REF_SO2_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          6.494000000000001,
+          87.945,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO2_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          6.494000000000001,
+          87.945,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO2_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO2_M3_LOWER",
+        "body_name": "REF_SO2_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          6.494000000000001,
+          87.945,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO2_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          6.494000000000001,
+          87.945,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO2_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO2_MAGNET",
+        "body_name": "REF_SO2_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          6.494000000000001,
+          87.945,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO3_M3_UPPER",
+        "body_name": "REF_SO3_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          130.881,
+          87.945,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO3_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          130.881,
+          87.945,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO3_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO3_M3_LOWER",
+        "body_name": "REF_SO3_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          130.881,
+          87.945,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO3_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          130.881,
+          87.945,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO3_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO3_MAGNET",
+        "body_name": "REF_SO3_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          130.881,
+          87.945,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO4_M3_UPPER",
+        "body_name": "REF_SO4_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          250.42,
+          89.007,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO4_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          250.42,
+          89.007,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO4_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO4_M3_LOWER",
+        "body_name": "REF_SO4_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          250.42,
+          89.007,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO4_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          250.42,
+          89.007,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO4_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO4_MAGNET",
+        "body_name": "REF_SO4_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          250.42,
+          89.007,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO5_M3_UPPER",
+        "body_name": "REF_SO5_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          278.519,
+          6.5200000000000005,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO5_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          278.519,
+          6.5200000000000005,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO5_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO5_M3_LOWER",
+        "body_name": "REF_SO5_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          278.519,
+          6.5200000000000005,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO5_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          278.519,
+          6.5200000000000005,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO5_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO5_MAGNET",
+        "body_name": "REF_SO5_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          278.519,
+          6.5200000000000005,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO6_M3_UPPER",
+        "body_name": "REF_SO6_M3_UPPER",
+        "diameter": 3,
+        "height": 5,
+        "base": [
+          130.881,
+          6.5200000000000005,
+          4.5
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO6_M3_UPPER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          130.881,
+          6.5200000000000005,
+          9.5
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO6_M3_UPPER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO6_M3_LOWER",
+        "body_name": "REF_SO6_M3_LOWER",
+        "diameter": 3,
+        "height": 4,
+        "base": [
+          130.881,
+          6.5200000000000005,
+          0
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO6_M3_LOWER_HEAD_JOIN",
+        "diameter": 5.5,
+        "height": 1.65,
+        "base": [
+          130.881,
+          6.5200000000000005,
+          -1.65
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_SO6_M3_LOWER"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_SO6_MAGNET",
+        "body_name": "REF_SO6_MAGNET",
+        "diameter": 4,
+        "height": 2,
+        "base": [
+          130.881,
+          6.5200000000000005,
+          11.6
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H01_M2",
+        "body_name": "REF_CASE_H01_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          25.1993,
+          66.6992,
+          -3
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H01_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          25.1993,
+          66.6992,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H01_M2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H02_M2",
+        "body_name": "REF_CASE_H02_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          128.2,
+          47.6,
+          -3
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H02_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          128.2,
+          47.6,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H02_M2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H03_M2",
+        "body_name": "REF_CASE_H03_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          190.4994,
+          9.3993,
+          -3
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H03_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          190.4994,
+          9.3993,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H03_M2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H04_M2",
+        "body_name": "REF_CASE_H04_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          260.0499,
+          66.6992,
+          -3
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H04_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          260.0499,
+          66.6992,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H04_M2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H05_M2",
+        "body_name": "REF_CASE_H05_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          3.70934,
+          38.0988,
+          -2
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H05_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          3.70934,
+          38.0988,
+          3
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H05_M2"
+        ]
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H06_M2",
+        "body_name": "REF_CASE_H06_M2",
+        "diameter": 2,
+        "height": 5,
+        "base": [
+          281.29076,
+          38.0988,
+          -3
+        ],
+        "operation": "new"
+      }
+    },
+    {
+      "command": "solid.cylinder",
+      "params": {
+        "name": "REF_CASE_H06_M2_HEAD_JOIN",
+        "diameter": 3.8,
+        "height": 1.3,
+        "base": [
+          281.29076,
+          38.0988,
+          2
+        ],
+        "operation": "join",
+        "targets": [
+          "REF_CASE_H06_M2"
+        ]
+      }
+    },
+    {
+      "command": "appearance.assign",
+      "params": {
+        "bodies": [
+          "REF_M2_PLATE_1",
+          "REF_M2_PLATE_1_WASHER",
+          "REF_M2_PLATE_1_NUT",
+          "REF_M2_PLATE_2",
+          "REF_M2_PLATE_2_WASHER",
+          "REF_M2_PLATE_2_NUT",
+          "REF_M2_PLATE_3",
+          "REF_M2_PLATE_3_WASHER",
+          "REF_M2_PLATE_3_NUT",
+          "REF_M2_PLATE_4",
+          "REF_M2_PLATE_4_WASHER",
+          "REF_M2_PLATE_4_NUT",
+          "REF_M2_PLATE_5",
+          "REF_M2_PLATE_5_WASHER",
+          "REF_M2_PLATE_5_NUT",
+          "REF_M2_PLATE_6",
+          "REF_M2_PLATE_6_WASHER",
+          "REF_M2_PLATE_6_NUT",
+          "REF_M2_LAP_1",
+          "REF_M2_LAP_1_WASHER",
+          "REF_M2_LAP_1_NUT",
+          "REF_M2_LAP_2",
+          "REF_M2_LAP_2_WASHER",
+          "REF_M2_LAP_2_NUT",
+          "REF_M2_LAP_3",
+          "REF_M2_LAP_3_WASHER",
+          "REF_M2_LAP_3_NUT",
+          "REF_M2_LAP_4",
+          "REF_M2_LAP_4_WASHER",
+          "REF_M2_LAP_4_NUT",
+          "REF_M2_GATE",
+          "REF_M2_GATE_NUT",
+          "REF_SO1_M3_UPPER",
+          "REF_SO1_M3_LOWER",
+          "REF_SO1_MAGNET",
+          "REF_SO2_M3_UPPER",
+          "REF_SO2_M3_LOWER",
+          "REF_SO2_MAGNET",
+          "REF_SO3_M3_UPPER",
+          "REF_SO3_M3_LOWER",
+          "REF_SO3_MAGNET",
+          "REF_SO4_M3_UPPER",
+          "REF_SO4_M3_LOWER",
+          "REF_SO4_MAGNET",
+          "REF_SO5_M3_UPPER",
+          "REF_SO5_M3_LOWER",
+          "REF_SO5_MAGNET",
+          "REF_SO6_M3_UPPER",
+          "REF_SO6_M3_LOWER",
+          "REF_SO6_MAGNET",
+          "REF_CASE_H01_M2",
+          "REF_CASE_H02_M2",
+          "REF_CASE_H03_M2",
+          "REF_CASE_H04_M2",
+          "REF_CASE_H05_M2",
+          "REF_CASE_H06_M2"
+        ],
+        "color": "#91A0B3",
+        "opacity": 0.6
+      }
+    },
+    {
+      "command": "browser.visibility",
+      "params": {
+        "items": [
+          "REF_M2_PLATE_1",
+          "REF_M2_PLATE_1_WASHER",
+          "REF_M2_PLATE_1_NUT",
+          "REF_M2_PLATE_2",
+          "REF_M2_PLATE_2_WASHER",
+          "REF_M2_PLATE_2_NUT",
+          "REF_M2_PLATE_3",
+          "REF_M2_PLATE_3_WASHER",
+          "REF_M2_PLATE_3_NUT",
+          "REF_M2_PLATE_4",
+          "REF_M2_PLATE_4_WASHER",
+          "REF_M2_PLATE_4_NUT",
+          "REF_M2_PLATE_5",
+          "REF_M2_PLATE_5_WASHER",
+          "REF_M2_PLATE_5_NUT",
+          "REF_M2_PLATE_6",
+          "REF_M2_PLATE_6_WASHER",
+          "REF_M2_PLATE_6_NUT",
+          "REF_M2_LAP_1",
+          "REF_M2_LAP_1_WASHER",
+          "REF_M2_LAP_1_NUT",
+          "REF_M2_LAP_2",
+          "REF_M2_LAP_2_WASHER",
+          "REF_M2_LAP_2_NUT",
+          "REF_M2_LAP_3",
+          "REF_M2_LAP_3_WASHER",
+          "REF_M2_LAP_3_NUT",
+          "REF_M2_LAP_4",
+          "REF_M2_LAP_4_WASHER",
+          "REF_M2_LAP_4_NUT",
+          "REF_M2_GATE",
+          "REF_M2_GATE_NUT",
+          "REF_SO1_M3_UPPER",
+          "REF_SO1_M3_LOWER",
+          "REF_SO1_MAGNET",
+          "REF_SO2_M3_UPPER",
+          "REF_SO2_M3_LOWER",
+          "REF_SO2_MAGNET",
+          "REF_SO3_M3_UPPER",
+          "REF_SO3_M3_LOWER",
+          "REF_SO3_MAGNET",
+          "REF_SO4_M3_UPPER",
+          "REF_SO4_M3_LOWER",
+          "REF_SO4_MAGNET",
+          "REF_SO5_M3_UPPER",
+          "REF_SO5_M3_LOWER",
+          "REF_SO5_MAGNET",
+          "REF_SO6_M3_UPPER",
+          "REF_SO6_M3_LOWER",
+          "REF_SO6_MAGNET",
+          "REF_CASE_H01_M2",
+          "REF_CASE_H02_M2",
+          "REF_CASE_H03_M2",
+          "REF_CASE_H04_M2",
+          "REF_CASE_H05_M2",
+          "REF_CASE_H06_M2"
+        ],
+        "visible": false
+      }
+    }
+  ]
+}
