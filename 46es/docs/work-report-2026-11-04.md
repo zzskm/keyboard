@@ -33,7 +33,7 @@
 - 높이 2개는 **가정값**이다: `REF_draft_standoff_H = 5`, `REF_draft_cover_H = 8`. `TBD_standoff_H`·`TBD_cover_H`가 이를 참조하므로 실측(M05·M14·M17) 후 식만 숫자로 바꾸면 된다.
 - 스위치 홀·키 창은 r2 DWG P3 개구부 46개의 중심·회전각을 DXF(`inspection/derived/REF_r2_keys_sq14_gh60.dxf`, `sq20`)로 넣은 고정 스케치(SK22·SK32)다. 매개변수를 따르지 않으며 현물 대조(M12·M20) 전까지 참고값이다.
 - 검증: 프레임 81,444.7 = SK10 면적 × 3, plate 90,796.8 = SK20 면적 × 5 − 44 × 14² × 5(템플릿 홀 2개가 실제 키와 일치해 중복), 스탠드오프 693.7, 커버 28,123.1 mm³.
-- 렌더: `model/46es_draft_parts_iso.png`, `model/46es_draft_parts_section_x142.png`.
+- 당시 중간 렌더는 후속 파일 정리에서 삭제했다. 현재 형상 이미지는 [model/README.md](../model/README.md)의 최신 렌더를 참조한다.
 
 ### 초안에서 드러난 점
 

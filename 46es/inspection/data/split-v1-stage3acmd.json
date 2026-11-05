@@ -1,0 +1,110 @@
+[
+  {
+    "command": "parameters.add",
+    "params": {
+      "name": "split_M2_plate_seat_Z",
+      "expression": "10.2 mm",
+      "comment": "[candidate] NBK SSH-M2-6, no washer; tip Z4.2"
+    }
+  },
+  {
+    "command": "parameters.add",
+    "params": {
+      "name": "split_gate_ear_Z",
+      "expression": "4.8 mm",
+      "comment": "[candidate] M2x5 low head below, 0.7 nominal clearance to mount top"
+    }
+  },
+  {
+    "command": "parameters.add",
+    "params": {
+      "name": "split_gate_cap_Z",
+      "expression": "6.4 mm"
+    }
+  },
+  {
+    "command": "parameters.add",
+    "params": {
+      "name": "split_gate_cap_H",
+      "expression": "3.2 mm",
+      "comment": "[candidate] nut pocket floor7.8, bottom bearing1.4"
+    }
+  },
+  {
+    "command": "parameters.add",
+    "params": {
+      "name": "split_gate_nut_Z",
+      "expression": "7.8 mm"
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_MOUNT_1_HEAD",
+      "set": {
+        "base": [
+          125,
+          17,
+          "split_M2_plate_seat_Z"
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_MOUNT_2_HEAD",
+      "set": {
+        "base": [
+          125,
+          25,
+          "split_M2_plate_seat_Z"
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "SPINE_M2_1_HEAD",
+      "set": {
+        "base": [
+          126.381,
+          42,
+          "split_M2_plate_seat_Z"
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "SPINE_M2_2_HEAD",
+      "set": {
+        "base": [
+          135.381,
+          42,
+          "split_M2_plate_seat_Z"
+        ],
+        "height": "4"
+      }
+    }
+  },
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "d477",
+      "value": "split_M2_plate_seat_Z"
+    }
+  },
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "d486",
+      "value": "split_M2_plate_seat_Z"
+    }
+  }
+]

@@ -1,0 +1,126 @@
+[
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "d486",
+      "value": "2.6 mm"
+    }
+  },
+  {
+    "command": "set_parameter",
+    "params": {
+      "name": "d485",
+      "value": "split_M2_plate_seat_Z"
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_GATE_MOUNT_EAR",
+      "set": {
+        "corner": [
+          114.081,
+          5.764485,
+          "split_gate_ear_Z"
+        ]
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_GATE_CAP",
+      "set": {
+        "corner": [
+          112.581,
+          5.764485,
+          "split_gate_cap_Z"
+        ],
+        "height": "split_gate_cap_H"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_GATE_STOP_FINGER",
+      "set": {
+        "height": "split_gate_cap_Z+split_gate_cap_H-2"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "SK_CTRL_GATE_NUT",
+      "set": {
+        "plane.distance": "split_gate_nut_Z"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_GATE_NUT_POCKET",
+      "set": {
+        "extent.distance": "1.8"
+      }
+    }
+  },
+  {
+    "command": "timeline.edit",
+    "params": {
+      "feature": "CTRL_GATE_M2_CLEAR",
+      "set": {
+        "height": "7"
+      }
+    }
+  },
+  {
+    "command": "solid.box",
+    "params": {
+      "name": "PLATE_CTRL_GATE_CAP_RELIEF_V1",
+      "corner": [
+        112.381,
+        5.564485,
+        7.8
+      ],
+      "length": 7.819,
+      "width": 5.9,
+      "height": 2.2,
+      "operation": "cut",
+      "targets": [
+        "PLATE_L_SPLIT_V1"
+      ]
+    }
+  },
+  {
+    "command": "solid.box",
+    "params": {
+      "name": "PLATE_CTRL_GATE_FINGER_RELIEF_V1",
+      "corner": [
+        112.381,
+        11.464485,
+        7.8
+      ],
+      "length": 1.9,
+      "width": 4,
+      "height": 2.2,
+      "operation": "cut",
+      "targets": [
+        "PLATE_L_SPLIT_V1"
+      ]
+    }
+  },
+  {
+    "command": "inspect.measure",
+    "params": {
+      "bodies": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1"
+      ]
+    }
+  }
+]

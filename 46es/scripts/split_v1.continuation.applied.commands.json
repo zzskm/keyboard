@@ -1,0 +1,1168 @@
+{
+  "warning": "ALREADY APPLIED. Audit reference only; never run on the modified model. Initial split commands are a separate reference. Metadata-only comment updates and visual checks are in the saved document/report.",
+  "baseline_sha256": "fc6ba4d6ecb1065e5fd66d06b5d9bc253d7ea1f27e0572135f02ae759cbb8b22",
+  "commands": [
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_usb_bridge_W",
+        "expression": "4 mm",
+        "comment": "[candidate 2026-11-05] Inboard U bypass width; preserves entire USB notch, verify local print"
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_L_USB_BYPASS_CROSSBAR_V1",
+        "corner": [
+          5.607,
+          "TBD_case_in_D-TBD_pcb0_dy-TBD_frame_gap-TBD_usb_keepout_D-split_usb_bridge_W",
+          0
+        ],
+        "length": "TBD_usb_X+(TBD_usb_outlet_W+2*TBD_usb_glue)/2+split_usb_bridge_W-5.607",
+        "width": "split_usb_bridge_W",
+        "height": "TBD_frame_T",
+        "operation": "join",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "MOUNT_L_USB_BYPASS_LEG_V1",
+        "corner": [
+          "TBD_usb_X+(TBD_usb_outlet_W+2*TBD_usb_glue)/2",
+          "TBD_case_in_D-TBD_pcb0_dy-TBD_frame_gap-TBD_usb_keepout_D",
+          0
+        ],
+        "length": "split_usb_bridge_W",
+        "width": "TBD_usb_keepout_D-TBD_frame_rib_W+2",
+        "height": "TBD_frame_T",
+        "operation": "join",
+        "targets": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "inspect.measure",
+      "params": {
+        "bodies": [
+          "MOUNT_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "TBD_ctrl_Y",
+        "value": "13.064485 mm"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "TBD_so_AF",
+        "value": "5 mm"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "TBD_so_pocket_D",
+        "value": "1 mm"
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO1_M3_UPPER",
+        "set": {
+          "base": [
+            6.494000000000001,
+            6.5200000000000005,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO1_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO1_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO1_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO2_M3_UPPER",
+        "set": {
+          "base": [
+            6.494000000000001,
+            87.945,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO2_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO2_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO2_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO3_M3_UPPER",
+        "set": {
+          "base": [
+            130.881,
+            87.945,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO3_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO3_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO3_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO4_M3_UPPER",
+        "set": {
+          "base": [
+            250.42,
+            89.007,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO4_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO4_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO4_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO5_M3_UPPER",
+        "set": {
+          "base": [
+            278.519,
+            6.5200000000000005,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO5_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO5_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO5_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO6_M3_UPPER",
+        "set": {
+          "base": [
+            130.881,
+            6.5200000000000005,
+            5.5
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO6_M3_UPPER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO6_M3_LOWER",
+        "set": {
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_SO6_M3_LOWER_HEAD_JOIN",
+        "set": {
+          "radius": "2.85",
+          "height": "1.65"
+        }
+      }
+    },
+    {
+      "command": "inspect.measure",
+      "params": {
+        "bodies": [
+          "MOUNT_L_SPLIT_V1",
+          "MOUNT_R_SPLIT_V1",
+          "STANDOFF_SO3_REF",
+          "CTRL_KEEPOUT_TBD"
+        ]
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_M2_plate_seat_Z",
+        "expression": "10.2 mm",
+        "comment": "[candidate] NBK SSH-M2-6, no washer; tip Z4.2"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_gate_ear_Z",
+        "expression": "4.8 mm",
+        "comment": "[candidate] M2x5 low head below, 0.7 nominal clearance to mount top"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_gate_cap_Z",
+        "expression": "6.4 mm"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_gate_cap_H",
+        "expression": "3.2 mm",
+        "comment": "[candidate] nut pocket floor7.8, bottom bearing1.4"
+      }
+    },
+    {
+      "command": "parameters.add",
+      "params": {
+        "name": "split_gate_nut_Z",
+        "expression": "7.8 mm"
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_MOUNT_1_HEAD",
+        "set": {
+          "base": [
+            125,
+            17,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_MOUNT_2_HEAD",
+        "set": {
+          "base": [
+            125,
+            25,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "SPINE_M2_1_HEAD",
+        "set": {
+          "base": [
+            126.381,
+            42,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "SPINE_M2_2_HEAD",
+        "set": {
+          "base": [
+            135.381,
+            42,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "4"
+        }
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "d477",
+        "value": "split_M2_plate_seat_Z"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "d486",
+        "value": "split_M2_plate_seat_Z"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "d486",
+        "value": "2.6 mm"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "d485",
+        "value": "split_M2_plate_seat_Z"
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_MOUNT_EAR",
+        "set": {
+          "corner": [
+            114.081,
+            5.764485,
+            "split_gate_ear_Z"
+          ]
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_CAP",
+        "set": {
+          "corner": [
+            112.581,
+            5.764485,
+            "split_gate_cap_Z"
+          ],
+          "height": "split_gate_cap_H"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_STOP_FINGER",
+        "set": {
+          "height": "split_gate_cap_Z+split_gate_cap_H-2"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "SK_CTRL_GATE_NUT",
+        "set": {
+          "plane.distance": "split_gate_nut_Z"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_NUT_POCKET",
+        "set": {
+          "extent.distance": "1.8"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_M2_CLEAR",
+        "set": {
+          "height": "7"
+        }
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_CTRL_GATE_CAP_RELIEF_V1",
+        "corner": [
+          112.381,
+          5.564485,
+          7.8
+        ],
+        "length": 7.819,
+        "width": 5.9,
+        "height": 2.2,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "solid.box",
+      "params": {
+        "name": "PLATE_CTRL_GATE_FINGER_RELIEF_V1",
+        "corner": [
+          112.381,
+          11.464485,
+          7.8
+        ],
+        "length": 1.9,
+        "width": 4,
+        "height": 2.2,
+        "operation": "cut",
+        "targets": [
+          "PLATE_L_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "inspect.measure",
+      "params": {
+        "bodies": [
+          "PLATE_L_SPLIT_V1",
+          "PLATE_R_SPLIT_V1",
+          "CTRL_BRACKET_SPLIT_V1",
+          "CTRL_GATE_SPLIT_V1"
+        ]
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_1",
+        "set": {
+          "base": [
+            125,
+            17,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_1_HEAD_JOIN",
+        "set": {
+          "base": [
+            125,
+            17,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_2",
+        "set": {
+          "base": [
+            125,
+            25,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_2_HEAD_JOIN",
+        "set": {
+          "base": [
+            125,
+            25,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_3",
+        "set": {
+          "base": [
+            126.381,
+            42,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_3_HEAD_JOIN",
+        "set": {
+          "base": [
+            126.381,
+            42,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_4",
+        "set": {
+          "base": [
+            135.381,
+            42,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_4_HEAD_JOIN",
+        "set": {
+          "base": [
+            135.381,
+            42,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_5",
+        "set": {
+          "base": [
+            121.881,
+            83,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_5_HEAD_JOIN",
+        "set": {
+          "base": [
+            121.881,
+            83,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_6",
+        "set": {
+          "base": [
+            142.881,
+            83,
+            "split_M2_plate_seat_Z-6"
+          ],
+          "height": "6"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_PLATE_6_HEAD_JOIN",
+        "set": {
+          "base": [
+            142.881,
+            83,
+            "split_M2_plate_seat_Z"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_1",
+        "set": {
+          "base": [
+            95,
+            4.633,
+            -3.3
+          ],
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_1_HEAD_JOIN",
+        "set": {
+          "base": [
+            95,
+            4.633,
+            1.7
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_2",
+        "set": {
+          "base": [
+            105,
+            4.633,
+            -3.3
+          ],
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_2_HEAD_JOIN",
+        "set": {
+          "base": [
+            105,
+            4.633,
+            1.7
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_3",
+        "set": {
+          "base": [
+            95,
+            89.967,
+            -3.3
+          ],
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_3_HEAD_JOIN",
+        "set": {
+          "base": [
+            95,
+            89.967,
+            1.7
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_4",
+        "set": {
+          "base": [
+            105,
+            89.967,
+            -3.3
+          ],
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_LAP_4_HEAD_JOIN",
+        "set": {
+          "base": [
+            105,
+            89.967,
+            1.7
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.suppress",
+      "params": {
+        "features": [
+          "REF_M2_PLATE_1_WASHER",
+          "REF_M2_PLATE_1_WASHER_BORE",
+          "REF_M2_PLATE_2_WASHER",
+          "REF_M2_PLATE_2_WASHER_BORE",
+          "REF_M2_PLATE_3_WASHER",
+          "REF_M2_PLATE_3_WASHER_BORE",
+          "REF_M2_PLATE_4_WASHER",
+          "REF_M2_PLATE_4_WASHER_BORE",
+          "REF_M2_PLATE_5_WASHER",
+          "REF_M2_PLATE_5_WASHER_BORE",
+          "REF_M2_PLATE_6_WASHER",
+          "REF_M2_PLATE_6_WASHER_BORE",
+          "REF_M2_LAP_1_WASHER",
+          "REF_M2_LAP_1_WASHER_BORE",
+          "REF_M2_LAP_2_WASHER",
+          "REF_M2_LAP_2_WASHER_BORE",
+          "REF_M2_LAP_3_WASHER",
+          "REF_M2_LAP_3_WASHER_BORE",
+          "REF_M2_LAP_4_WASHER",
+          "REF_M2_LAP_4_WASHER_BORE"
+        ],
+        "suppressed": true
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE",
+        "set": {
+          "base": [
+            116.5,
+            8.514485,
+            "split_gate_ear_Z"
+          ],
+          "height": "5"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_HEAD_JOIN",
+        "set": {
+          "base": [
+            116.5,
+            8.514485,
+            "split_gate_ear_Z-1.1"
+          ],
+          "height": "1.1"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_NUT_SK",
+        "set": {
+          "plane.distance": "split_gate_nut_Z"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_NUT_THREAD_VOID",
+        "set": {
+          "base": [
+            116.5,
+            8.514485,
+            "split_gate_nut_Z-0.2"
+          ],
+          "height": "2"
+        }
+      }
+    },
+    {
+      "command": "inspect.measure",
+      "params": {
+        "bodies": [
+          "REF_M2_GATE",
+          "REF_M2_GATE_NUT",
+          "REF_M2_PLATE_1",
+          "REF_M2_PLATE_3",
+          "REF_M2_LAP_1"
+        ]
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "SK_CTRL_GATE_NUT",
+        "set": {
+          "plane": {
+            "type": "offset",
+            "base": {
+              "type": "custom",
+              "plane": {
+                "origin": [
+                  0,
+                  -0.75,
+                  0
+                ],
+                "x_dir": [
+                  1,
+                  0,
+                  0
+                ],
+                "y_dir": [
+                  0,
+                  1,
+                  0
+                ]
+              }
+            },
+            "distance": "split_gate_nut_Z"
+          }
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_NUT_SK",
+        "set": {
+          "plane": {
+            "type": "offset",
+            "base": {
+              "type": "custom",
+              "plane": {
+                "origin": [
+                  0,
+                  -0.75,
+                  0
+                ],
+                "x_dir": [
+                  1,
+                  0,
+                  0
+                ],
+                "y_dir": [
+                  0,
+                  1,
+                  0
+                ]
+              }
+            },
+            "distance": "split_gate_nut_Z"
+          }
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_MOUNT_1_BOSS",
+        "set": {
+          "corner": [
+            121,
+            13,
+            4.4
+          ],
+          "length": "8",
+          "width": "8"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_MOUNT_2_BOSS",
+        "set": {
+          "corner": [
+            121,
+            21,
+            4.4
+          ],
+          "length": "8",
+          "width": "8"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_MOUNT_EAR",
+        "set": {
+          "corner": [
+            113.5,
+            4.264485,
+            "split_gate_ear_Z"
+          ],
+          "length": "7",
+          "width": "7"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_CAP",
+        "set": {
+          "corner": [
+            112.581,
+            4.264485,
+            "split_gate_cap_Z"
+          ],
+          "length": "7.919",
+          "width": "7"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "CTRL_GATE_M2_CLEAR",
+        "set": {
+          "base": [
+            116.5,
+            7.764485,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "PLATE_CTRL_GATE_CAP_RELIEF_V1",
+        "set": {
+          "corner": [
+            112.381,
+            4.064485,
+            7.8
+          ],
+          "length": "8.319",
+          "width": "7.4"
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE",
+        "set": {
+          "base": [
+            116.5,
+            7.764485,
+            "split_gate_ear_Z"
+          ]
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_HEAD_JOIN",
+        "set": {
+          "base": [
+            116.5,
+            7.764485,
+            "split_gate_ear_Z-1.1"
+          ]
+        }
+      }
+    },
+    {
+      "command": "timeline.edit",
+      "params": {
+        "feature": "REF_M2_GATE_NUT_THREAD_VOID",
+        "set": {
+          "base": [
+            116.5,
+            7.764485,
+            "split_gate_nut_Z-0.2"
+          ]
+        }
+      }
+    },
+    {
+      "command": "inspect.measure",
+      "params": {
+        "bodies": [
+          "PLATE_L_SPLIT_V1",
+          "CTRL_BRACKET_SPLIT_V1",
+          "CTRL_GATE_SPLIT_V1",
+          "REF_M2_GATE",
+          "REF_M2_GATE_NUT"
+        ]
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "split_gate_cap_Z",
+        "value": "split_gate_ear_Z+1.6 mm"
+      }
+    },
+    {
+      "command": "set_parameter",
+      "params": {
+        "name": "split_gate_nut_Z",
+        "value": "split_gate_cap_Z+1.4 mm"
+      }
+    }
+  ]
+}
