@@ -1,0 +1,202 @@
+{
+  "groups": [
+    [
+      "CTRL_KEEPOUT_TBD",
+      "CTRL_GATE_SPLIT_V1",
+      "REF_M2_GATE_NUT",
+      "REF_M2_GATE"
+    ],
+    [
+      "COVER_L_DRAFT_TBD",
+      "COVER_T_DRAFT_TBD",
+      "COVER_R_DRAFT_TBD",
+      "REF_SO1_MAGNET",
+      "REF_SO2_MAGNET",
+      "REF_SO3_MAGNET",
+      "REF_SO4_MAGNET",
+      "REF_SO5_MAGNET",
+      "REF_SO6_MAGNET"
+    ],
+    [
+      "REF_M2_PLATE_1",
+      "REF_M2_PLATE_1_NUT",
+      "REF_M2_PLATE_2",
+      "REF_M2_PLATE_2_NUT",
+      "REF_M2_PLATE_3",
+      "REF_M2_PLATE_3_NUT",
+      "REF_M2_PLATE_4",
+      "REF_M2_PLATE_4_NUT",
+      "REF_M2_PLATE_5",
+      "REF_M2_PLATE_5_NUT",
+      "REF_M2_PLATE_6",
+      "REF_M2_PLATE_6_NUT"
+    ]
+  ],
+  "results": [
+    {
+      "boolean_ms": 507.575,
+      "budget_exceeded": false,
+      "budget_s": 12,
+      "checked": 4,
+      "count": 0,
+      "interferences": [],
+      "ms": 893.452,
+      "pairs_candidate": 4,
+      "pairs_cleared": 1,
+      "pairs_intersected": 3,
+      "pairs_not_checked": 0,
+      "skipped_pairs": 0,
+      "slowest": [
+        {
+          "a": "REF_M2_GATE",
+          "b": "REF_M2_GATE_NUT",
+          "boolean_ms": 481.777,
+          "ms": 885.397,
+          "tessellate_ms": 309.664
+        },
+        {
+          "a": "CTRL_GATE_SPLIT_V1",
+          "b": "REF_M2_GATE_NUT",
+          "boolean_ms": 16.872,
+          "ms": 38.571,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "CTRL_KEEPOUT_TBD",
+          "b": "CTRL_GATE_SPLIT_V1",
+          "boolean_ms": 8.927,
+          "ms": 21.75,
+          "tessellate_ms": 0
+        }
+      ],
+      "tessellate_ms": 309.664,
+      "threads": 3,
+      "truncated": false,
+      "unchecked": []
+    },
+    {
+      "boolean_ms": 371.801,
+      "budget_exceeded": false,
+      "budget_s": 12,
+      "checked": 9,
+      "count": 0,
+      "interferences": [],
+      "ms": 245.659,
+      "pairs_candidate": 8,
+      "pairs_cleared": 2,
+      "pairs_intersected": 6,
+      "pairs_not_checked": 0,
+      "skipped_pairs": 0,
+      "slowest": [
+        {
+          "a": "COVER_R_DRAFT_TBD",
+          "b": "REF_SO5_MAGNET",
+          "boolean_ms": 73.811,
+          "ms": 133.043,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "COVER_L_DRAFT_TBD",
+          "b": "REF_SO1_MAGNET",
+          "boolean_ms": 73.491,
+          "ms": 132.523,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "COVER_R_DRAFT_TBD",
+          "b": "REF_SO4_MAGNET",
+          "boolean_ms": 69.314,
+          "ms": 130.821,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "COVER_L_DRAFT_TBD",
+          "b": "REF_SO2_MAGNET",
+          "boolean_ms": 64.54,
+          "ms": 125.052,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "COVER_T_DRAFT_TBD",
+          "b": "REF_SO3_MAGNET",
+          "boolean_ms": 48.565,
+          "ms": 103.168,
+          "tessellate_ms": 0
+        },
+        {
+          "a": "COVER_T_DRAFT_TBD",
+          "b": "REF_SO6_MAGNET",
+          "boolean_ms": 42.081,
+          "ms": 96.912,
+          "tessellate_ms": 0
+        }
+      ],
+      "tessellate_ms": 0,
+      "threads": 4,
+      "truncated": false,
+      "unchecked": []
+    },
+    {
+      "boolean_ms": 3542.161,
+      "budget_exceeded": false,
+      "budget_s": 12,
+      "checked": 12,
+      "count": 0,
+      "interferences": [],
+      "ms": 2362.988,
+      "pairs_candidate": 6,
+      "pairs_cleared": 0,
+      "pairs_intersected": 6,
+      "pairs_not_checked": 0,
+      "skipped_pairs": 0,
+      "slowest": [
+        {
+          "a": "REF_M2_PLATE_3",
+          "b": "REF_M2_PLATE_3_NUT",
+          "boolean_ms": 601.652,
+          "ms": 1409.08,
+          "tessellate_ms": 682.202
+        },
+        {
+          "a": "REF_M2_PLATE_4",
+          "b": "REF_M2_PLATE_4_NUT",
+          "boolean_ms": 630.915,
+          "ms": 1407.98,
+          "tessellate_ms": 657.942
+        },
+        {
+          "a": "REF_M2_PLATE_1",
+          "b": "REF_M2_PLATE_1_NUT",
+          "boolean_ms": 591.57,
+          "ms": 1350.688,
+          "tessellate_ms": 627.778
+        },
+        {
+          "a": "REF_M2_PLATE_2",
+          "b": "REF_M2_PLATE_2_NUT",
+          "boolean_ms": 688.183,
+          "ms": 1303.265,
+          "tessellate_ms": 494.353
+        },
+        {
+          "a": "REF_M2_PLATE_5",
+          "b": "REF_M2_PLATE_5_NUT",
+          "boolean_ms": 510.649,
+          "ms": 1010.434,
+          "tessellate_ms": 401.367
+        },
+        {
+          "a": "REF_M2_PLATE_6",
+          "b": "REF_M2_PLATE_6_NUT",
+          "boolean_ms": 519.193,
+          "ms": 1001.017,
+          "tessellate_ms": 362.917
+        }
+      ],
+      "tessellate_ms": 3226.559,
+      "threads": 4,
+      "truncated": false,
+      "unchecked": []
+    }
+  ]
+}

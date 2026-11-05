@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "bodies": 107,
+  "features": 395,
+  "sketches": 58,
+  "exactly_preserved_common_bodies": 101,
+  "parts": [
+    {
+      "name": "PLATE_L_SPLIT_V1",
+      "volume_mm3": 38045.573775028315,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.00014718643020684505
+    },
+    {
+      "name": "PLATE_R_SPLIT_V1",
+      "volume_mm3": 40776.595122945386,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 7.112816298257905e-05
+    },
+    {
+      "name": "CTRL_BRACKET_SPLIT_V1",
+      "volume_mm3": 1415.5932157416835,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 9.660267207814587e-05
+    },
+    {
+      "name": "PLATE_SPINE_V1",
+      "volume_mm3": 1766.3222632433692,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.00021199878568106906
+    },
+    {
+      "name": "CTRL_GATE_SPLIT_V1",
+      "volume_mm3": 186.4739481136728,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 5.540223340570637e-05
+    },
+    {
+      "name": "MOUNT_H05_SO1_MIN_V2",
+      "volume_mm3": 943.2001999085501,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.00020262807018560418
+    },
+    {
+      "name": "MOUNT_H01_SO2_MIN_V2",
+      "volume_mm3": 981.2264902974675,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.0003019055244527743
+    },
+    {
+      "name": "MOUNT_H02_SO3_MIN_V2",
+      "volume_mm3": 1409.1682393048177,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.00011150325254348444
+    },
+    {
+      "name": "MOUNT_H03_SO6_MIN_V2",
+      "volume_mm3": 1616.0925691061718,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.0002470991649290034
+    },
+    {
+      "name": "MOUNT_H04_SO4_MIN_V2",
+      "volume_mm3": 768.878658736161,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.000231752988793914
+    },
+    {
+      "name": "MOUNT_H06_SO5_MIN_V2",
+      "volume_mm3": 927.0610283406289,
+      "shells": 1,
+      "mesh_components": 1,
+      "bad_edges": 0,
+      "stl_relative_volume_error": 0.00017142603511210275
+    }
+  ]
+}
