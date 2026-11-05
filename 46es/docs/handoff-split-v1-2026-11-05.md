@@ -1,5 +1,24 @@
 # 46es 분할 모델 — 새 세션 인계
 
+## 최신 재개 지점 — 최소 mount v2 (2026-11-05 KST)
+
+사용자가 케이스 둘레 띠를 없애고 더 작은 mount로 분할하도록 요청했다.
+현재는 `E:\Work\keyboard\46es\docs\minimal-mount-v2-2026-11-05.md`를 먼저 읽는다.
+
+- 최신 모델: `E:\Work\keyboard\46es\model\46es_mount_minimal_v2.sc`. 저장된 v1에서 파생, 원본/v1 둘 다 보존.
+- Mount는 H05–SO1/H01–SO2/H02–SO3/H03–SO6/H04–SO4/H06–SO5의6개 독립 어댑터. 둘레 띠·mount lap·볼트4개/너트4개 삭제. 사용자 최신 요청에 따라 이전 mount2분할 조건을6분할로 변경.
+- Mount 부피22891.9137→6645.6272mm³,70.9695% 감소. 최장X69.818mm. H02 shim 받침과0.05mm 간격 유지.
+- SO2–H01은 USB를 피해 꺾었다. 최종 USB 가정 점유와1.0189999mm 여유, 중첩0. SO6–H03는 controller 앞쪽 경로.
+- 107바디/395피처/58스케치 dof0/오류0/원본 경고1/dirty=false. 출력11부품 모두 native shell1/STL 연결1/비정상edge0.
+- v1과 공통101바디의 exact BRep 및 SK22/SK24/SK25/SK34 동일. Plate 외곽·46키·높이·자석·controller·spine 유지.
+- 전체 미평가 쌍0, 의도하지 않은 출력 부품 중첩0. 대용 하우징↔가정 나사 H02/H03/H06의 미세 수치 중첩은 보고서에 분리 기록. 실부품 검증이 아니다.
+- 새 fixed mask/web14스케치는 현재 후보 좌표다. 기존 CSV185행이 이 고정 좌표 전체를 구동하지 않는다. 기준좌표 변경 시 함께 수정·검증.
+- 새 CSV `parameters_minimal_v2.csv`, STEP `46es_mount_minimal_v2_REVIEW_ONLY.step`, STL `model/review_minimal_v2/`11개. 모두 검토용. 긴 앞쪽 어댑터 강성·체결 마찰·실제 USB/배선·키캡/소재 시험은 남아 있고 제작 승인·발주 없음.
+- 원본 SHA256 e9c99ca1f38d741c7c0c6ae34efc56b172f9cb2bf38860c2bd277a28ba43b232, v1 3ccfcea5cbddedf776c15c14f75efd3fe7eca30d2ff2f1ad769be1cda712681e 보존. v2 299517072bfc4f0328225dccab76dec0515674e09dba6a22020ad86670b5374d.
+- Git은 main/f068f80, clean에서 시작했다. 이전 사용자 지시의 원격 저장 흐름을 이어 커밋·푸시한다. reset/checkout/기존 변경 삭제 금지. 초기 재현 명령·이번 적용 로그를 이미 수정된 모델에 재실행하지 않는다.
+
+이하 split v1과 최초 인계는 이전 안의 감사 기록이다.
+
 ## 최신 재개 지점 — 후속 구현·검증 완료 (2026-11-05 KST)
 
 아래 원 인계의335피처/121바디/왼쪽mount shells2/하드웨어 미반영 상태는 과거 기록이다.

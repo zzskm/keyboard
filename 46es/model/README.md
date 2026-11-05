@@ -1,5 +1,17 @@
 # 46es 3D 프린팅 케이스 — 제작 모델 준비 (실측 대기)
 
+## 최소 mount v2 — 2026-11-05 최신
+
+[46es_mount_minimal_v2.sc](46es_mount_minimal_v2.sc)는 케이스 둘레 띠를 제거하고
+케이스 체결점↔plate 지지점을 연결하는 **6개 독립 mount**로 바꾼 최신 검토안이다.
+Mount 부피70.97% 감소, 최장X69.818mm. Plate/키 배열·높이·spine·cover 자석·controller는 유지했다.
+전체107바디·395피처·58스케치 dof0·오류0. 출력11부품 모두 shell1/STL 연결1.
+
+[변경 보고서·조립/국부 시험안](../docs/minimal-mount-v2-2026-11-05.md),
+[별도 CSV](parameters_minimal_v2.csv), [검토 STEP](46es_mount_minimal_v2_REVIEW_ONLY.step),
+[STL11개](review_minimal_v2/README.md), [mount 상면](46es_mount_minimal_v2_top_review.png)을 참조한다.
+실제 재료·부품·배선·강도 검증은 남아 있고 제작 승인/발주는 없다. 아래 split v1과 원본은 이전 안으로 보존한다.
+
 ## 분할 변형 최신 상태 — 2026-11-05
 
 별도 [46es_mount_split_v1.sc](46es_mount_split_v1.sc)에서 이어서 수정했다.

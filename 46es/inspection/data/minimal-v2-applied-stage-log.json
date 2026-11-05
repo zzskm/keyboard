@@ -1,0 +1,1572 @@
+{
+  "warning": "Already applied. Audit only. Continue from saved v2; do not replay on it.",
+  "commands": [
+    {
+      "phase": 0,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H05_SO1_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H05_SO1_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              6.494,
+              6.52,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H05_SO1_MIN_V2_WEB",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                2.5094617731970335,
+                6.168638193387679
+              ],
+              [
+                -0.27519822680296624,
+                37.74743819338768
+              ],
+              [
+                7.693878226802966,
+                38.450161806612314
+              ],
+              [
+                10.478538226802966,
+                6.87136180661232
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H05_SO1_MIN_V2_WEB_EXTRUDE",
+            "sketch": "MASK_MOUNT_H05_SO1_MIN_V2_WEB",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H05_SO1_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H05_SO1_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              3.70934,
+              38.0988,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H05_SO1_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H05_SO1_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H05_SO1_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H05_SO1_MIN_V2",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                2.1844521020806367,
+                9.854336053180422
+              ],
+              [
+                0.04981144431343054,
+                34.06174033359493
+              ],
+              [
+                8.018887897919363,
+                34.76446394681957
+              ],
+              [
+                10.15352855568657,
+                10.557059666405063
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H05_SO1_MIN_V2_EXTRUDE",
+            "sketch": "WEB_MOUNT_H05_SO1_MIN_V2",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H05_SO1_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H05_SO1_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 16,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"feature\": 372,\n      \"ms\": 1.4567,\n      \"name\": \"MASK_MOUNT_H05_SO1_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H05_SO1_MIN_V2_WEB\",\n      \"projected\": null,\n      \"sketch\": 373\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 373\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 374,\n      \"ms\": 30.4688,\n      \"name\": \"MASK_MOUNT_H05_SO1_MIN_V2_WEB_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 375,\n      \"ms\": 41.1434,\n      \"name\": \"MASK_MOUNT_H05_SO1_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 376,\n      \"ms\": 341.3367,\n      \"name\": \"Combine1\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H05_SO1_MIN_V2\",\n      \"projected\": null,\n      \"sketch\": 377\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 377\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H05_SO1_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 378,\n      \"ms\": 98.3155,\n      \"name\": \"WEB_MOUNT_H05_SO1_MIN_V2_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 1006.04391136403,\n          \"bbox\": {\n            \"max\": [\n              11.693999837033997,\n              43.29879435514215,\n              3.0000000000000013\n            ],\n            \"min\": [\n              -0.393000000000006,\n              1.3200069960184955,\n              0.0\n            ]\n          },\n          \"center_of_mass\": [\n            5.0939050548955525,\n            22.07209087258041,\n            1.482850693204502\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 68,\n          \"face_types\": {\n            \"cylinder\": 8,\n            \"plane\": 18\n          },\n          \"faces\": 26,\n          \"kernel\": {\n            \"edges\": 97,\n            \"faces\": 36,\n            \"shells\": 1,\n            \"vertices\": 64\n          },\n          \"mass_g\": 1.2167282578820295,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H05_SO1_MIN_V2\",\n          \"vertices\": 46,\n          \"volume_mm3\": 943.2001999085501\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 1006.04391136403,\n        \"edges\": 68,\n        \"faces\": 26,\n        \"mass_g\": 1.2167282578820295,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 46,\n        \"volume_mm3\": 943.2001999085501\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": 1,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H01_SO2_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H01_SO2_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              6.494,
+              87.945,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H01_SO2_MIN_V2_WEB_0",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                9.496223532407958,
+                90.58822792461336
+              ],
+              [
+                28.20152353240796,
+                69.34242792461338
+              ],
+              [
+                22.19707646759204,
+                64.05597207538663
+              ],
+              [
+                3.491776467592041,
+                85.30177207538662
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H01_SO2_MIN_V2_WEB_0_EXTRUDE",
+            "sketch": "MASK_MOUNT_H01_SO2_MIN_V2_WEB_0",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H01_SO2_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H01_SO2_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              25.1993,
+              66.6992,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H01_SO2_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H01_SO2_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H01_SO2_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H01_SO2_MIN_V2_0",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                11.941209362675322,
+                87.811171157136
+              ],
+              [
+                25.756537702140598,
+                72.11948469209074
+              ],
+              [
+                19.752090637324677,
+                66.833028842864
+              ],
+              [
+                5.936762297859405,
+                82.52471530790926
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H01_SO2_MIN_V2_0_EXTRUDE",
+            "sketch": "WEB_MOUNT_H01_SO2_MIN_V2_0",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H01_SO2_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H01_SO2_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 16,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"feature\": 379,\n      \"ms\": 2.0931,\n      \"name\": \"MASK_MOUNT_H01_SO2_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H01_SO2_MIN_V2_WEB_0\",\n      \"projected\": null,\n      \"sketch\": 380\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 380\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 381,\n      \"ms\": 32.5482,\n      \"name\": \"MASK_MOUNT_H01_SO2_MIN_V2_WEB_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 382,\n      \"ms\": 44.7609,\n      \"name\": \"MASK_MOUNT_H01_SO2_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"created_bodies\": [\n        \"MOUNT_H01_SO2_MIN_V2 (2)\",\n        \"MOUNT_H01_SO2_MIN_V2 (1)\"\n      ],\n      \"feature\": 383,\n      \"ms\": 344.05980000000005,\n      \"name\": \"Combine2\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H01_SO2_MIN_V2_0\",\n      \"projected\": null,\n      \"sketch\": 384\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 384\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 385,\n      \"ms\": 84.1165,\n      \"name\": \"WEB_MOUNT_H01_SO2_MIN_V2_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 727.2197873271929,\n          \"bbox\": {\n            \"max\": [\n              30.19919165196179,\n              87.811171157136,\n              3.0000000000000013\n            ],\n            \"min\": [\n              5.936762297859394,\n              61.69938461884126,\n              0.0\n            ]\n          },\n          \"center_of_mass\": [\n            18.349979818673162,\n            74.44573446240025,\n            1.478409453419863\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 45,\n          \"face_types\": {\n            \"cylinder\": 6,\n            \"plane\": 12\n          },\n          \"faces\": 18,\n          \"kernel\": {\n            \"edges\": 61,\n            \"faces\": 24,\n            \"shells\": 1,\n            \"vertices\": 40\n          },\n          \"mass_g\": 0.8771330304315741,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H01_SO2_MIN_V2\",\n          \"vertices\": 30,\n          \"volume_mm3\": 679.9480856058714\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 727.2197873271929,\n        \"edges\": 45,\n        \"faces\": 18,\n        \"mass_g\": 0.8771330304315741,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 30,\n        \"volume_mm3\": 679.9480856058714\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": 2,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H02_SO3_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H02_SO3_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              130.881,
+              87.945,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H02_SO3_MIN_V2_WEB_0",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                135.8699968061081,
+                87.6134719187712
+              ],
+              [
+                133.1889968061081,
+                47.268471918771205
+              ],
+              [
+                123.2110031938919,
+                47.9315280812288
+              ],
+              [
+                125.89200319389191,
+                88.27652808122879
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H02_SO3_MIN_V2_WEB_0_EXTRUDE",
+            "sketch": "MASK_MOUNT_H02_SO3_MIN_V2_WEB_0",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H02_SO3_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H02_SO3_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              128.2,
+              47.6,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H02_SO3_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.box",
+          "params": {
+            "name": "MASK_MOUNT_H02_SO3_MIN_V2_SHIM_SUPPORT",
+            "corner": [
+              127.881,
+              53,
+              -0.05
+            ],
+            "length": 6,
+            "width": 6,
+            "height": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H02_SO3_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H02_SO3_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H02_SO3_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H02_SO3_MIN_V2_0",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                135.6246660259988,
+                83.92161428225121
+              ],
+              [
+                133.4343275862174,
+                50.960329555291196
+              ],
+              [
+                123.4563339740012,
+                51.62338571774879
+              ],
+              [
+                125.64667241378261,
+                84.5846704447088
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H02_SO3_MIN_V2_0_EXTRUDE",
+            "sketch": "WEB_MOUNT_H02_SO3_MIN_V2_0",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H02_SO3_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H02_SO3_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 17,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"feature\": 386,\n      \"ms\": 1.4154,\n      \"name\": \"MASK_MOUNT_H02_SO3_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H02_SO3_MIN_V2_WEB_0\",\n      \"projected\": null,\n      \"sketch\": 387\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 387\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 388,\n      \"ms\": 27.8534,\n      \"name\": \"MASK_MOUNT_H02_SO3_MIN_V2_WEB_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 389,\n      \"ms\": 33.9297,\n      \"name\": \"MASK_MOUNT_H02_SO3_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 390,\n      \"ms\": 21.098499999999998,\n      \"name\": \"MASK_MOUNT_H02_SO3_MIN_V2_SHIM_SUPPORT\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 391,\n      \"ms\": 1553.6238999999998,\n      \"name\": \"Combine3\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"warning\": \"Boolean retry: tool displacement 4.373597e-4 mm, rotation 2.000000e-6 rad\"\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H02_SO3_MIN_V2_0\",\n      \"projected\": null,\n      \"sketch\": 392\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 392\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H02_SO3_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 393,\n      \"ms\": 730.3395,\n      \"name\": \"WEB_MOUNT_H02_SO3_MIN_V2_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": \"Boolean retry: tool displacement 9.707748e-5 mm, rotation 2.000000e-6 rad\"\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 1397.3740515620204,\n          \"bbox\": {\n            \"max\": [\n              136.08128857667884,\n              93.14482060985135,\n              3.95\n            ],\n            \"min\": [\n              123.19999997765125,\n              42.400011937729055,\n              -0.00008400552886614202\n            ]\n          },\n          \"center_of_mass\": [\n            129.54836488810835,\n            67.45143069501079,\n            1.5260085671068704\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 108,\n          \"face_types\": {\n            \"cylinder\": 9,\n            \"plane\": 32\n          },\n          \"faces\": 41,\n          \"kernel\": {\n            \"edges\": 118,\n            \"faces\": 44,\n            \"shells\": 1,\n            \"vertices\": 78\n          },\n          \"mass_g\": 1.8178485598174827,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H02_SO3_MIN_V2\",\n          \"vertices\": 72,\n          \"volume_mm3\": 1409.184930091072\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 1397.3740515620204,\n        \"edges\": 108,\n        \"faces\": 41,\n        \"mass_g\": 1.8178485598174827,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 72,\n        \"volume_mm3\": 1409.184930091072\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": 3,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H03_SO6_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              130.881,
+              6.52,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_0",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                130.881,
+                10.52
+              ],
+              [
+                155,
+                10.52
+              ],
+              [
+                155,
+                2.5199999999999996
+              ],
+              [
+                130.881,
+                2.5199999999999996
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_0_EXTRUDE",
+            "sketch": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_0",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_1",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                154.6766282665332,
+                10.506907413270927
+              ],
+              [
+                190.17602826653322,
+                13.386207413270927
+              ],
+              [
+                190.8227717334668,
+                5.412392586729072
+              ],
+              [
+                155.3233717334668,
+                2.5330925867290714
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_1_EXTRUDE",
+            "sketch": "MASK_MOUNT_H03_SO6_MIN_V2_WEB_1",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H03_SO6_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              190.4994,
+              9.3993,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H03_SO6_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H03_SO6_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H03_SO6_MIN_V2_0",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                134.581,
+                10.52
+              ],
+              [
+                155,
+                10.52
+              ],
+              [
+                155,
+                2.5199999999999996
+              ],
+              [
+                134.581,
+                2.5199999999999996
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H03_SO6_MIN_V2_0_EXTRUDE",
+            "sketch": "WEB_MOUNT_H03_SO6_MIN_V2_0",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H03_SO6_MIN_V2_1",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                154.6766282665332,
+                10.506907413270927
+              ],
+              [
+                186.4881389092576,
+                13.087088559814148
+              ],
+              [
+                187.13488237619117,
+                5.113273733272291
+              ],
+              [
+                155.3233717334668,
+                2.5330925867290714
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H03_SO6_MIN_V2_1_EXTRUDE",
+            "sketch": "WEB_MOUNT_H03_SO6_MIN_V2_1",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H03_SO6_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 28,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"feature\": 394,\n      \"ms\": 1.4655,\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_WEB_0\",\n      \"projected\": null,\n      \"sketch\": 395\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 395\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 396,\n      \"ms\": 27.2983,\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_WEB_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_WEB_1\",\n      \"projected\": null,\n      \"sketch\": 397\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 397\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 398,\n      \"ms\": 46.6703,\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_WEB_1_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 399,\n      \"ms\": 32.954499999999996,\n      \"name\": \"MASK_MOUNT_H03_SO6_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 400,\n      \"ms\": 391.2155,\n      \"name\": \"Combine4\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H03_SO6_MIN_V2_0\",\n      \"projected\": null,\n      \"sketch\": 401\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 401\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 402,\n      \"ms\": 96.63239999999999,\n      \"name\": \"WEB_MOUNT_H03_SO6_MIN_V2_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H03_SO6_MIN_V2_1\",\n      \"projected\": null,\n      \"sketch\": 403\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 403\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H03_SO6_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 404,\n      \"ms\": 112.1279,\n      \"name\": \"WEB_MOUNT_H03_SO6_MIN_V2_1_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 1663.0581272045679,\n          \"bbox\": {\n            \"max\": [\n              195.49939051759216,\n              14.39920833479624,\n              3.0000000000000013\n            ],\n            \"min\": [\n              125.68102621051024,\n              1.320049214321149,\n              0.0\n            ]\n          },\n          \"center_of_mass\": [\n            160.71283273123058,\n            7.414416336859243,\n            1.480907232056502\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 86,\n          \"face_types\": {\n            \"cylinder\": 10,\n            \"plane\": 23\n          },\n          \"faces\": 33,\n          \"kernel\": {\n            \"edges\": 109,\n            \"faces\": 41,\n            \"shells\": 1,\n            \"vertices\": 72\n          },\n          \"mass_g\": 2.0847594141469616,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H03_SO6_MIN_V2\",\n          \"vertices\": 58,\n          \"volume_mm3\": 1616.0925691061718\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 1663.0581272045679,\n        \"edges\": 86,\n        \"faces\": 33,\n        \"mass_g\": 2.0847594141469616,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 58,\n        \"volume_mm3\": 1616.0925691061718\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": 4,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H04_SO4_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H04_SO4_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              250.42,
+              89.007,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H04_SO4_MIN_V2_WEB_0",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                254.09242995506207,
+                90.59232590503109
+              ],
+              [
+                263.7223299550621,
+                68.28452590503109
+              ],
+              [
+                256.37747004493787,
+                65.11387409496892
+              ],
+              [
+                246.7475700449379,
+                87.42167409496892
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H04_SO4_MIN_V2_WEB_0_EXTRUDE",
+            "sketch": "MASK_MOUNT_H04_SO4_MIN_V2_WEB_0",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H04_SO4_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H04_SO4_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              260.0499,
+              66.6992,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H04_SO4_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H04_SO4_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H04_SO4_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H04_SO4_MIN_V2_0",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                255.55885641721582,
+                87.19532819659865
+              ],
+              [
+                262.2559034929083,
+                71.68152361346353
+              ],
+              [
+                254.91104358278412,
+                68.51087180340136
+              ],
+              [
+                248.21399650709165,
+                84.02467638653648
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H04_SO4_MIN_V2_0_EXTRUDE",
+            "sketch": "WEB_MOUNT_H04_SO4_MIN_V2_0",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H04_SO4_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H04_SO4_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 16,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"feature\": 405,\n      \"ms\": 1.5701,\n      \"name\": \"MASK_MOUNT_H04_SO4_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H04_SO4_MIN_V2_WEB_0\",\n      \"projected\": null,\n      \"sketch\": 406\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 406\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 407,\n      \"ms\": 28.4141,\n      \"name\": \"MASK_MOUNT_H04_SO4_MIN_V2_WEB_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 408,\n      \"ms\": 39.1306,\n      \"name\": \"MASK_MOUNT_H04_SO4_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"created_bodies\": [\n        \"MOUNT_H04_SO4_MIN_V2 (1)\"\n      ],\n      \"feature\": 409,\n      \"ms\": 332.6076,\n      \"name\": \"Combine5\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H04_SO4_MIN_V2_0\",\n      \"projected\": null,\n      \"sketch\": 410\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 410\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 411,\n      \"ms\": 65.71979999999999,\n      \"name\": \"WEB_MOUNT_H04_SO4_MIN_V2_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 637.8536012318581,\n          \"bbox\": {\n            \"max\": [\n              265.0498227810661,\n              87.19532819659865,\n              3.0000000000000018\n            ],\n            \"min\": [\n              248.21399650709162,\n              61.69931808737703,\n              -2.220446049250313e-16\n            ]\n          },\n          \"center_of_mass\": [\n            256.75798644031795,\n            74.35972477576139,\n            1.4747922474266055\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 45,\n          \"face_types\": {\n            \"cylinder\": 6,\n            \"plane\": 12\n          },\n          \"faces\": 18,\n          \"kernel\": {\n            \"edges\": 61,\n            \"faces\": 24,\n            \"shells\": 1,\n            \"vertices\": 40\n          },\n          \"mass_g\": 0.7512681469700511,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H04_SO4_MIN_V2\",\n          \"vertices\": 30,\n          \"volume_mm3\": 582.3784085039155\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 637.8536012318581,\n        \"edges\": 45,\n        \"faces\": 18,\n        \"mass_g\": 0.7512681469700511,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 30,\n        \"volume_mm3\": 582.3784085039155\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": 5,
+      "commands": [
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H06_SO5_MIN_V2_POD_SO",
+            "body_name": "MASK_MOUNT_H06_SO5_MIN_V2",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              278.519,
+              6.52,
+              -0.05
+            ],
+            "operation": "new"
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "MASK_MOUNT_H06_SO5_MIN_V2_WEB_0",
+            "plane": "XY",
+            "offset": -0.05
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                274.5343196710049,
+                6.869746587859431
+              ],
+              [
+                277.30607967100485,
+                38.448546587859425
+              ],
+              [
+                285.2754403289951,
+                37.74905341214057
+              ],
+              [
+                282.50368032899513,
+                6.1702534121405685
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "MASK_MOUNT_H06_SO5_MIN_V2_WEB_0_EXTRUDE",
+            "sketch": "MASK_MOUNT_H06_SO5_MIN_V2_WEB_0",
+            "distance": 4.1,
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H06_SO5_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.cylinder",
+          "params": {
+            "name": "MASK_MOUNT_H06_SO5_MIN_V2_POD_CASE",
+            "diameter": 10.4,
+            "height": 4.1,
+            "base": [
+              281.29076,
+              38.0988,
+              -0.05
+            ],
+            "operation": "join",
+            "targets": [
+              "MASK_MOUNT_H06_SO5_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H06_SO5_MIN_V2",
+            "tools": [
+              "MASK_MOUNT_H06_SO5_MIN_V2"
+            ],
+            "operation": "intersect",
+            "keep_tools": false
+          }
+        },
+        {
+          "command": "sketch.create",
+          "params": {
+            "name": "WEB_MOUNT_H06_SO5_MIN_V2_0",
+            "plane": "XY",
+            "offset": 0
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                274.85783526477485,
+                10.55557589217992
+              ],
+              [
+                276.9825640772349,
+                34.76271728353893
+              ],
+              [
+                284.95192473522513,
+                34.063224107820076
+              ],
+              [
+                282.8271959227651,
+                9.856082716461056
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "solid.extrude",
+          "params": {
+            "name": "WEB_MOUNT_H06_SO5_MIN_V2_0_EXTRUDE",
+            "sketch": "WEB_MOUNT_H06_SO5_MIN_V2_0",
+            "distance": 3,
+            "operation": "join",
+            "targets": [
+              "MOUNT_H06_SO5_MIN_V2"
+            ]
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H06_SO5_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 16,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [],\n      \"created_bodies\": [\n        \"MASK_MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"feature\": 412,\n      \"ms\": 1.4625000000000001,\n      \"name\": \"MASK_MOUNT_H06_SO5_MIN_V2_POD_SO\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"MASK_MOUNT_H06_SO5_MIN_V2_WEB_0\",\n      \"projected\": null,\n      \"sketch\": 413\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 413\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 414,\n      \"ms\": 29.112,\n      \"name\": \"MASK_MOUNT_H06_SO5_MIN_V2_WEB_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MASK_MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 415,\n      \"ms\": 39.366,\n      \"name\": \"MASK_MOUNT_H06_SO5_MIN_V2_POD_CASE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 416,\n      \"ms\": 425.363,\n      \"name\": \"Combine6\",\n      \"removed_bodies\": [\n        \"MASK_MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"WEB_MOUNT_H06_SO5_MIN_V2_0\",\n      \"projected\": null,\n      \"sketch\": 417\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 8,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 4,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 417\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H06_SO5_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 418,\n      \"ms\": 91.7633,\n      \"name\": \"WEB_MOUNT_H06_SO5_MIN_V2_0_EXTRUDE\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 1012.5206012551863,\n          \"bbox\": {\n            \"max\": [\n              285.38800000000003,\n              43.29880018185173,\n              3.000000000000002\n            ],\n            \"min\": [\n              273.31901316591814,\n              1.3200849096639815,\n              -4.44089209848935e-16\n            ]\n          },\n          \"center_of_mass\": [\n            279.8879174262637,\n            21.793470041333094,\n            1.4667166674821535\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 80,\n          \"face_types\": {\n            \"cylinder\": 10,\n            \"plane\": 21\n          },\n          \"faces\": 31,\n          \"kernel\": {\n            \"edges\": 98,\n            \"faces\": 37,\n            \"shells\": 1,\n            \"vertices\": 65\n          },\n          \"mass_g\": 1.1959087265594115,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H06_SO5_MIN_V2\",\n          \"vertices\": 54,\n          \"volume_mm3\": 927.0610283406289\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 1012.5206012551863,\n        \"edges\": 80,\n        \"faces\": 31,\n        \"mass_g\": 1.1959087265594115,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 54,\n        \"volume_mm3\": 927.0610283406289\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": "join-and-fix-central-mask",
+      "commands": [
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H01_SO2_MIN_V2",
+            "tools": [
+              "MOUNT_H01_SO2_MIN_V2 (1)",
+              "MOUNT_H01_SO2_MIN_V2 (2)"
+            ],
+            "operation": "join"
+          }
+        },
+        {
+          "command": "solid.combine",
+          "params": {
+            "target": "MOUNT_H04_SO4_MIN_V2",
+            "tools": [
+              "MOUNT_H04_SO4_MIN_V2 (1)"
+            ],
+            "operation": "join"
+          }
+        },
+        {
+          "command": "timeline.edit",
+          "params": {
+            "feature": "MASK_MOUNT_H02_SO3_MIN_V2_SHIM_SUPPORT",
+            "set": {
+              "corner": [
+                127.681,
+                52.8,
+                -0.05
+              ],
+              "length": "6.4",
+              "width": "6.4"
+            }
+          }
+        },
+        {
+          "command": "inspect.measure",
+          "params": {
+            "bodies": [
+              "MOUNT_H01_SO2_MIN_V2",
+              "MOUNT_H02_SO3_MIN_V2",
+              "MOUNT_H04_SO4_MIN_V2"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 4,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H01_SO2_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 419,\n      \"ms\": 121.6747,\n      \"name\": \"Combine7\",\n      \"removed_bodies\": [\n        \"MOUNT_H01_SO2_MIN_V2 (2)\",\n        \"MOUNT_H01_SO2_MIN_V2 (1)\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_H04_SO4_MIN_V2\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 420,\n      \"ms\": 120.0002,\n      \"name\": \"Combine8\",\n      \"removed_bodies\": [\n        \"MOUNT_H04_SO4_MIN_V2 (1)\"\n      ],\n      \"warning\": null\n    },\n    {\n      \"feature\": 390,\n      \"recomputed\": 31,\n      \"restored\": 0\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 954.2310895954183,\n          \"bbox\": {\n            \"max\": [\n              30.199191651961787,\n              93.14487718912767,\n              3.0000000000000013\n            ],\n            \"min\": [\n              1.2940803076911602,\n              61.69938461884126,\n              -4.440892098500624e-16\n            ]\n          },\n          \"center_of_mass\": [\n            15.697074961419823,\n            77.46505993781598,\n            1.4644910219113145\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 74,\n          \"face_types\": {\n            \"cylinder\": 8,\n            \"plane\": 21\n          },\n          \"faces\": 29,\n          \"kernel\": {\n            \"edges\": 107,\n            \"faces\": 41,\n            \"shells\": 1,\n            \"vertices\": 70\n          },\n          \"mass_g\": 1.1209510899884607,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H01_SO2_MIN_V2\",\n          \"vertices\": 50,\n          \"volume_mm3\": 868.9543333243881\n        },\n        {\n          \"area_mm2\": 1390.6514697774985,\n          \"bbox\": {\n            \"max\": [\n              136.08097280258906,\n              93.14498016578128,\n              3.95\n            ],\n            \"min\": [\n              123.19999999999933,\n              42.40023196939686,\n              -4.4408920984893504e-16\n            ]\n          },\n          \"center_of_mass\": [\n            129.54836252528222,\n            67.45157212220407,\n            1.5260361528155377\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 93,\n          \"face_types\": {\n            \"cylinder\": 9,\n            \"plane\": 27\n          },\n          \"faces\": 36,\n          \"kernel\": {\n            \"edges\": 119,\n            \"faces\": 45,\n            \"shells\": 1,\n            \"vertices\": 78\n          },\n          \"mass_g\": 1.8178270287032148,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H02_SO3_MIN_V2\",\n          \"vertices\": 62,\n          \"volume_mm3\": 1409.1682393048177\n        },\n        {\n          \"area_mm2\": 865.1915177027552,\n          \"bbox\": {\n            \"max\": [\n              265.0498227810661,\n              94.20699739858921,\n              2.9999999999994134\n            ],\n            \"min\": [\n              245.22005222719486,\n              61.699318087377016,\n              0.0\n            ]\n          },\n          \"center_of_mass\": [\n            255.18251449985976,\n            78.04025684850845,\n            1.4598692458584317\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 86,\n          \"face_types\": {\n            \"cylinder\": 11,\n            \"plane\": 22\n          },\n          \"faces\": 33,\n          \"kernel\": {\n            \"edges\": 122,\n            \"faces\": 46,\n            \"shells\": 1,\n            \"vertices\": 80\n          },\n          \"mass_g\": 0.9918534697696477,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_H04_SO4_MIN_V2\",\n          \"vertices\": 58,\n          \"volume_mm3\": 768.878658736161\n        }\n      ],\n      \"body_count\": 3,\n      \"total\": {\n        \"area_mm2\": 3210.074077075672,\n        \"edges\": 253,\n        \"faces\": 98,\n        \"mass_g\": 3.930631588461323,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 170,\n        \"volume_mm3\": 3047.001231365367\n      }\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    },
+    {
+      "phase": "USB-clear-route",
+      "commands": [
+        {
+          "command": "timeline.suppress",
+          "params": {
+            "feature": "MIN_V2_JOIN_H01_PADS",
+            "suppressed": true
+          }
+        },
+        {
+          "command": "sketch.edit",
+          "params": {
+            "sketch": "MASK_MOUNT_H01_SO2_MIN_V2_WEB_0"
+          }
+        },
+        {
+          "command": "sketch.delete",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ]
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                10.494,
+                87.945
+              ],
+              [
+                10.494,
+                78.03863020308557
+              ],
+              [
+                26.902219767687825,
+                70.31860109200653
+              ],
+              [
+                23.496380232312177,
+                63.07979890799348
+              ],
+              [
+                2.4939999999999998,
+                72.96136979691443
+              ],
+              [
+                2.4939999999999998,
+                87.945
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l5",
+              "l6",
+              "l7",
+              "l8",
+              "l9",
+              "l10"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        },
+        {
+          "command": "sketch.edit",
+          "params": {
+            "sketch": "WEB_MOUNT_H01_SO2_MIN_V2_0"
+          }
+        },
+        {
+          "command": "sketch.delete",
+          "params": {
+            "entities": [
+              "l1",
+              "l2",
+              "l3",
+              "l4"
+            ]
+          }
+        },
+        {
+          "command": "sketch.line",
+          "params": {
+            "points": [
+              [
+                10.494,
+                84.24499999999999
+              ],
+              [
+                10.494,
+                78.03863020308557
+              ],
+              [
+                23.554273757581786,
+                71.89380187711777
+              ],
+              [
+                20.148434222206138,
+                64.65499969310471
+              ],
+              [
+                2.4939999999999998,
+                72.96136979691443
+              ],
+              [
+                2.4939999999999998,
+                84.24499999999999
+              ]
+            ],
+            "closed": true,
+            "infer": false
+          }
+        },
+        {
+          "command": "sketch.constraint.fix",
+          "params": {
+            "entities": [
+              "l5",
+              "l6",
+              "l7",
+              "l8",
+              "l9",
+              "l10"
+            ],
+            "fixed": true
+          }
+        },
+        {
+          "command": "sketch.solve",
+          "params": {}
+        },
+        {
+          "command": "sketch.finish",
+          "params": {}
+        }
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"completed\": 13,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"feature\": 419,\n      \"suppressed\": true\n    },\n    {\n      \"name\": \"MASK_MOUNT_H01_SO2_MIN_V2_WEB_0\",\n      \"sketch\": 380\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"deleted\": 4,\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l5\",\n          \"l6\",\n          \"l7\",\n          \"l8\",\n          \"l9\",\n          \"l10\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l5.start\",\n          \"l5.end\",\n          \"l6.end\",\n          \"l7.end\",\n          \"l8.end\",\n          \"l9.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 12,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 6,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 380\n    },\n    {\n      \"name\": \"WEB_MOUNT_H01_SO2_MIN_V2_0\",\n      \"sketch\": 384\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"deleted\": 4,\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [\n          \"l5\",\n          \"l6\",\n          \"l7\",\n          \"l8\",\n          \"l9\",\n          \"l10\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l5.start\",\n          \"l5.end\",\n          \"l6.end\",\n          \"l7.end\",\n          \"l8.end\",\n          \"l9.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 12,\n        \"solved\": true\n      }\n    },\n    {\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"result\": {\n        \"changed\": 6,\n        \"fixed\": true\n      },\n      \"sketch\": {\n        \"dof\": 0,\n        \"solved\": true\n      }\n    },\n    {\n      \"dof\": 0,\n      \"failing\": [],\n      \"profiles\": 1,\n      \"status\": \"solved\"\n    },\n    {\n      \"profiles\": 1,\n      \"sketch\": 384\n    }\n  ]\n}"
+          },
+          {
+            "type": "text",
+            "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+          }
+        ]
+      }
+    }
+  ]
+}
