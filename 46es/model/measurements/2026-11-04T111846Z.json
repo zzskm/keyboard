@@ -1,0 +1,199 @@
+{
+  "schema": "46es-psd60-measurements/1",
+  "exported_at": "2026-11-04T11:18:46.692Z",
+  "units": "mm (각도 °)",
+  "note": "Claude Code 세션에 그대로 붙여넣으면 parameters.csv/.sc에 반영. params는 칸 값에서 바로 만든 후보(집계 규칙 포함)이며 최종 채택값은 검토 후 정한다.",
+  "items": {
+    "M01": {
+      "title": "내측 폭 (좌↔우 내벽)",
+      "fields": {
+        "front_post": {
+          "label": "앞 · 지지대 높이",
+          "value": 286,
+          "unit": "mm"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M02": {
+      "title": "내측 깊이 (앞↔뒤 내벽)",
+      "fields": {
+        "left_post": {
+          "label": "좌 · 지지대 높이",
+          "value": 96,
+          "unit": "mm"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M05": {
+      "title": "내부 높이: 바닥→지지대 상면, 지지대→테두리 상단, 턱·언더컷",
+      "fields": {
+        "sup_H01": {
+          "label": "바닥→지지대 H01",
+          "value": 5.5,
+          "unit": "mm"
+        },
+        "rim_F": {
+          "label": "지지대→앞 테두리 상단",
+          "value": 14,
+          "unit": "mm",
+          "param": "TBD_support_to_rim_F"
+        },
+        "rim_B": {
+          "label": "지지대→뒤 테두리 상단",
+          "value": 14,
+          "unit": "mm",
+          "param": "TBD_support_to_rim_B"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M08": {
+      "title": "체결 구멍 6곳: 내벽 기준 중심 거리, 중심 간 거리",
+      "fields": {
+        "H01_x": {
+          "label": "H01 좌벽→중심",
+          "value": 26,
+          "unit": "mm"
+        },
+        "H02_y": {
+          "label": "H02 앞벽→중심",
+          "value": 49,
+          "unit": "mm"
+        },
+        "H03_y": {
+          "label": "H03 앞벽→중심",
+          "value": 11,
+          "unit": "mm"
+        },
+        "H04_y": {
+          "label": "H04 앞벽→중심",
+          "value": 68,
+          "unit": "mm"
+        },
+        "H05_x": {
+          "label": "H05 좌벽→중심",
+          "value": 4,
+          "unit": "mm"
+        },
+        "H06_y": {
+          "label": "H06 앞벽→중심",
+          "value": 39,
+          "unit": "mm"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M09": {
+      "title": "케이스 나사 규격, 나사산 유효 깊이",
+      "fields": {
+        "D": {
+          "label": "호칭경",
+          "value": 2,
+          "unit": "mm",
+          "param": "TBD_case_screw_D"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M10": {
+      "title": "케이스 지지대(보스) 외경·높이 (6곳)",
+      "fields": {
+        "H01_D": {
+          "label": "H01 외경",
+          "value": 5,
+          "unit": "mm"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M13": {
+      "title": "기존 육각 스탠드오프 형식·규격",
+      "fields": {
+        "type": {
+          "label": "형식",
+          "value": "암-암 육각"
+        },
+        "material": {
+          "label": "나사 재질(자석 붙는지)",
+          "value": "스테인리스"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M14": {
+      "title": "배선 공간 (현 버전)",
+      "fields": {
+        "wire_low": {
+          "label": "plate 하면→배선 최하단",
+          "value": 8,
+          "unit": "mm"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    },
+    "M15": {
+      "title": "컨트롤러 보드 종류·치수·USB 커넥터",
+      "fields": {
+        "board": {
+          "label": "보드 종류",
+          "value": "Pro Micro (ATmega32U4)"
+        },
+        "H": {
+          "label": "전체 높이(PCB+부품)",
+          "value": 4,
+          "unit": "mm",
+          "param": "TBD_ctrl_H"
+        },
+        "usb": {
+          "label": "USB 커넥터 종류",
+          "value": "Micro-B"
+        }
+      },
+      "note": "",
+      "date": "2026-11-04"
+    }
+  },
+  "params": {
+    "TBD_case_in_W": {
+      "value": 286,
+      "source": "M01",
+      "rule": "min(front_post,mid_post,back_post,front_rim,mid_rim,back_rim)"
+    },
+    "TBD_case_in_D": {
+      "value": 96,
+      "source": "M02",
+      "rule": "min(left_post,mid_post,right_post,left_rim,mid_rim,right_rim)"
+    },
+    "TBD_support_to_rim_F": {
+      "value": 14,
+      "source": "M05.rim_F"
+    },
+    "TBD_support_to_rim_B": {
+      "value": 14,
+      "source": "M05.rim_B"
+    },
+    "TBD_support_H": {
+      "value": 5.5,
+      "source": "M05",
+      "rule": "mean(sup_H01,sup_H02,sup_H03,sup_H04,sup_H05,sup_H06)"
+    },
+    "TBD_case_screw_D": {
+      "value": 2,
+      "source": "M09.D"
+    },
+    "TBD_ctrl_H": {
+      "value": 4,
+      "source": "M15.H"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"completed\": 4,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"display_value\": 4.0,\n      \"name\": \"split_usb_bridge_W\",\n      \"unit\": \"mm\",\n      \"value\": 4.0\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_L_SPLIT_V1\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 362,\n      \"ms\": 248.4164,\n      \"name\": \"MOUNT_L_USB_BYPASS_CROSSBAR_V1\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"changed_bodies\": [\n        \"MOUNT_L_SPLIT_V1\"\n      ],\n      \"created_bodies\": [],\n      \"feature\": 363,\n      \"ms\": 229.5092,\n      \"name\": \"MOUNT_L_USB_BYPASS_LEG_V1\",\n      \"removed_bodies\": [],\n      \"warning\": null\n    },\n    {\n      \"bodies\": [\n        {\n          \"area_mm2\": 7949.022254235494,\n          \"bbox\": {\n            \"max\": [\n              110.0,\n              94.96700000000001,\n              3.0000000000000018\n            ],\n            \"min\": [\n              -0.3930000000000118,\n              -0.36700000000000443,\n              -2.9999999999999996\n            ]\n          },\n          \"center_of_mass\": [\n            44.171864141457405,\n            48.10311844467875,\n            0.9043861314665292\n          ],\n          \"closed\": true,\n          \"density_g_cm3\": 1.29,\n          \"edges\": 259,\n          \"face_types\": {\n            \"cylinder\": 16,\n            \"plane\": 82\n          },\n          \"faces\": 98,\n          \"kernel\": {\n            \"edges\": 330,\n            \"faces\": 121,\n            \"shells\": 1,\n            \"vertices\": 218\n          },\n          \"mass_g\": 10.75287948114143,\n          \"material\": \"Default\",\n          \"name\": \"MOUNT_L_SPLIT_V1\",\n          \"vertices\": 176,\n          \"volume_mm3\": 8335.565489256922\n        }\n      ],\n      \"body_count\": 1,\n      \"total\": {\n        \"area_mm2\": 7949.022254235494,\n        \"edges\": 259,\n        \"faces\": 98,\n        \"mass_g\": 10.75287948114143,\n        \"open_bodies_skipped\": 0,\n        \"vertices\": 176,\n        \"volume_mm3\": 8335.565489256922\n      }\n    }\n  ]\n}"
+    },
+    {
+      "type": "text",
+      "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+    }
+  ]
+}

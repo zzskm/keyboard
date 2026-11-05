@@ -1,0 +1,12 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"completed\": 11,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"display_value\": 10.2,\n      \"name\": \"split_M2_plate_seat_Z\",\n      \"unit\": \"mm\",\n      \"value\": 10.2\n    },\n    {\n      \"display_value\": 4.8,\n      \"name\": \"split_gate_ear_Z\",\n      \"unit\": \"mm\",\n      \"value\": 4.8\n    },\n    {\n      \"display_value\": 6.4,\n      \"name\": \"split_gate_cap_Z\",\n      \"unit\": \"mm\",\n      \"value\": 6.4\n    },\n    {\n      \"display_value\": 3.2,\n      \"name\": \"split_gate_cap_H\",\n      \"unit\": \"mm\",\n      \"value\": 3.2\n    },\n    {\n      \"display_value\": 7.8,\n      \"name\": \"split_gate_nut_Z\",\n      \"unit\": \"mm\",\n      \"value\": 7.8\n    },\n    {\n      \"feature\": 159,\n      \"recomputed\": 205,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 164,\n      \"recomputed\": 200,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 181,\n      \"recomputed\": 183,\n      \"restored\": 0\n    },\n    {\n      \"feature\": 185,\n      \"recomputed\": 179,\n      \"restored\": 0\n    },\n    {\n      \"changed\": {\n        \"d477\": 10.2\n      },\n      \"coalesced\": 2,\n      \"errors\": [],\n      \"expression\": \"split_M2_plate_seat_Z\",\n      \"name\": \"d477\",\n      \"recomputed\": 174,\n      \"restored\": 0,\n      \"value\": 10.2\n    },\n    {\n      \"changed\": {\n        \"d486\": 10.2\n      },\n      \"coalesced\": 2,\n      \"errors\": [],\n      \"expression\": \"split_M2_plate_seat_Z\",\n      \"name\": \"d486\",\n      \"recomputed\": 174,\n      \"restored\": 0,\n      \"value\": 10.2\n    }\n  ]\n}"
+    },
+    {
+      "type": "text",
+      "text": "Note: this is a headless session because the SolidCraft app was not found; the user cannot see this work. Ask them to start SolidCraft. While this session has no features, the next call connects to the app; once it has work, it stays here."
+    }
+  ]
+}
