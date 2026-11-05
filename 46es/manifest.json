@@ -206,9 +206,9 @@
     },
     {
       "path": "inspection/switch_tester/README.md",
-      "bytes": 8557,
-      "sha256": "a2673906deccd32bcd4b3e632af4b19ae14d9ea3fb3d9d6b7734508715b87b8d",
-      "git_blob_sha": "8bd43f1f62f7ee8a750619c538951877f5384ed7"
+      "bytes": 8523,
+      "sha256": "f577c77bbe1855ceef301e40e610c1c44ebc2325fbf67bf732db886143365138",
+      "git_blob_sha": "a00cb1df14c0d0ea761953db9809b57c6f95a807"
     },
     {
       "path": "inspection/switch_tester/render/fidget_bottom.png",
@@ -254,9 +254,9 @@
     },
     {
       "path": "inspection/wilmore/README.md",
-      "bytes": 8737,
-      "sha256": "314c29d587dbd496d39e613dd86db59b23e376b2b4a8d61b8f22f3d152ead93d",
-      "git_blob_sha": "5e53f96d5a104aad56ac7d265fb2d375706f6e0a"
+      "bytes": 8720,
+      "sha256": "8a254f0e0907a4098c32025796e4c1b8c8ca495d27bdce66557025e0cff73c37",
+      "git_blob_sha": "96d0d9846944b0383ee0b255ff76e9ecdb3dfbeb"
     },
     {
       "path": "inspection/wilmore/render/compare_z-3.0_housing_vs_wilmore.png",
