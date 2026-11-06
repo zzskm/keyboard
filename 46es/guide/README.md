@@ -4,7 +4,7 @@
 
 `guide_v4.json`은 v4 출력 부품과 부분 실측 케이스·MX 스위치·OEM 키캡을 포함한 검토 모델(`model/46es_assembly_review.sc`)을 사용한다. 출력 원본은 `model/46es_mount_seam_v4.sc`다. [참고 형상 치수 근거·재생성 방법](../docs/assembly-reference-2026-11-06.md)에 측정값과 가정을 구분했다. `guide_v3.json`은 v3 판 기록으로 남겨 두었다(`--spec guide_v3.json`).
 
-**v5 검토판(2026-11-06)**: `guide_v5.json` + `assembly_v5.json`은 v5 검토 모델(`model/46es_assembly_review_v5.sc`, 원본 `model/46es_mount_seam_v5.sc`)을 쓴다. 두 단 커버(바닥 테두리 +2.1 / 창 둘레 턱 Z 19 = +5.0), 아래 다리 자석 2쌍, 키캡 여유 1 mm, upper plate 1.7, 참고 키캡 착좌 + 6.0이 들어 있다. 출력은 `out_v5/`이고 게시하지 않는다. 기본값과 게시본은 v4 그대로다. [v5 문서](../docs/v5-cover-magnet-margin-2026-11-06.md)를 본다.
+**v5 검토판(2026-11-06)**: `guide_v5.json` + `assembly_v5.json`은 v5 검토 모델(`model/46es_assembly_review_v5.sc`, 원본 `model/46es_mount_seam_v5.sc`)을 쓴다. 두 단 커버(바닥 테두리 +2.1 / 창 둘레 턱 Z 19 = +5.0), 아래 다리 자석 2쌍, 키캡 여유 1 mm, upper plate 1.7, 참고 키캡 착좌 + 6.0이 들어 있다. 출력은 `out_v5/`이고, 게시본은 v4 페이지 아래 `keyboard-46es/v5/`에 함께 올린다(v4 lede에서 링크). 기본값과 `keyboard-46es/` 루트는 v4 그대로다. [v5 문서](../docs/v5-cover-magnet-margin-2026-11-06.md)를 본다.
 
 ```powershell
 python build_guide.py --spec guide_v5.json --out out_v5
