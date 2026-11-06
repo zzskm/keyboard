@@ -1,0 +1,443 @@
+{
+ "ok": true,
+ "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
+ "v5_sha": "24fb580afa120aff12bc5346f05f304b256ab37a3bbdbb4baf4b12f2ddf9b9c5",
+ "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
+ "print_set": [
+  {
+   "file": "46es_v5_plate_L",
+   "material": "MJF PA12S-HP 검정",
+   "flip": true,
+   "volume_cm3": 38.121,
+   "size": [
+    143.29,
+    95.33,
+    8.0
+   ],
+   "wall_min_mm": 1.0,
+   "rel": 3.6e-05
+  },
+  {
+   "file": "46es_v5_plate_R",
+   "material": "MJF PA12S-HP 검정",
+   "flip": true,
+   "volume_cm3": 40.636,
+   "size": [
+    154.26,
+    95.33,
+    8.0
+   ],
+   "wall_min_mm": 1.047,
+   "rel": 1.9e-05
+  },
+  {
+   "file": "46es_v5_spine",
+   "material": "MJF PA12S-HP 검정",
+   "flip": true,
+   "volume_cm3": 1.691,
+   "size": [
+    30.0,
+    49.0,
+    4.5
+   ],
+   "wall_min_mm": 1.0,
+   "rel": 5.2e-05
+  },
+  {
+   "file": "46es_v5_ctrl_bracket",
+   "material": "MJF PA12S-HP 검정",
+   "flip": true,
+   "volume_cm3": 1.416,
+   "size": [
+    35.68,
+    28.6,
+    7.0
+   ],
+   "wall_min_mm": 1.0,
+   "rel": 2.5e-05
+  },
+  {
+   "file": "46es_v5_ctrl_gate",
+   "material": "MJF PA12S-HP 검정",
+   "flip": true,
+   "volume_cm3": 0.186,
+   "size": [
+    7.92,
+    11.0,
+    7.6
+   ],
+   "wall_min_mm": 1.3,
+   "rel": 1.1e-05
+  },
+  {
+   "file": "46es_v5_cover_L",
+   "material": "8001 레진 투명",
+   "flip": true,
+   "volume_cm3": 15.578,
+   "size": [
+    101.79,
+    95.33,
+    7.5
+   ],
+   "wall_min_mm": 1.098,
+   "rel": 6e-06
+  },
+  {
+   "file": "46es_v5_cover_T",
+   "material": "8001 레진 투명",
+   "flip": true,
+   "volume_cm3": 14.422,
+   "size": [
+    87.7,
+    95.33,
+    7.5
+   ],
+   "wall_min_mm": 1.098,
+   "rel": 3e-06
+  },
+  {
+   "file": "46es_v5_cover_R",
+   "material": "8001 레진 투명",
+   "flip": true,
+   "volume_cm3": 16.212,
+   "size": [
+    128.7,
+    95.33,
+    7.5
+   ],
+   "wall_min_mm": 1.098,
+   "rel": 5e-06
+  }
+ ],
+ "bodies": 115,
+ "untouched_bodies_exact": 54,
+ "derived_same_volume_box": [
+  "SEAM_COUPON_L_V4",
+  "SEAM_COUPON_R_V4"
+ ],
+ "plates_same_as_flat_Z18": true,
+ "changed": [
+  "COVER_L_DRAFT_TBD",
+  "COVER_R_DRAFT_TBD",
+  "COVER_T_DRAFT_TBD",
+  "MOUNT_H02_SO3_MIN_V2",
+  "MOUNT_H03_SO6_MIN_V2",
+  "MOUNT_L_PAIR_V3",
+  "MOUNT_R_PAIR_V3",
+  "PLATE_L_SPLIT_V1",
+  "PLATE_R_SPLIT_V1",
+  "REF_SW_ASSUMED_01",
+  "REF_SW_ASSUMED_01 (10)",
+  "REF_SW_ASSUMED_01 (11)",
+  "REF_SW_ASSUMED_01 (12)",
+  "REF_SW_ASSUMED_01 (13)",
+  "REF_SW_ASSUMED_01 (14)",
+  "REF_SW_ASSUMED_01 (15)",
+  "REF_SW_ASSUMED_01 (16)",
+  "REF_SW_ASSUMED_01 (17)",
+  "REF_SW_ASSUMED_01 (18)",
+  "REF_SW_ASSUMED_01 (19)",
+  "REF_SW_ASSUMED_01 (2)",
+  "REF_SW_ASSUMED_01 (20)",
+  "REF_SW_ASSUMED_01 (21)",
+  "REF_SW_ASSUMED_01 (22)",
+  "REF_SW_ASSUMED_01 (23)",
+  "REF_SW_ASSUMED_01 (24)",
+  "REF_SW_ASSUMED_01 (25)",
+  "REF_SW_ASSUMED_01 (26)",
+  "REF_SW_ASSUMED_01 (27)",
+  "REF_SW_ASSUMED_01 (28)",
+  "REF_SW_ASSUMED_01 (29)",
+  "REF_SW_ASSUMED_01 (3)",
+  "REF_SW_ASSUMED_01 (30)",
+  "REF_SW_ASSUMED_01 (31)",
+  "REF_SW_ASSUMED_01 (32)",
+  "REF_SW_ASSUMED_01 (33)",
+  "REF_SW_ASSUMED_01 (34)",
+  "REF_SW_ASSUMED_01 (35)",
+  "REF_SW_ASSUMED_01 (36)",
+  "REF_SW_ASSUMED_01 (37)",
+  "REF_SW_ASSUMED_01 (38)",
+  "REF_SW_ASSUMED_01 (39)",
+  "REF_SW_ASSUMED_01 (4)",
+  "REF_SW_ASSUMED_01 (40)",
+  "REF_SW_ASSUMED_01 (41)",
+  "REF_SW_ASSUMED_01 (42)",
+  "REF_SW_ASSUMED_01 (43)",
+  "REF_SW_ASSUMED_01 (44)",
+  "REF_SW_ASSUMED_01 (45)",
+  "REF_SW_ASSUMED_01 (46)",
+  "REF_SW_ASSUMED_01 (5)",
+  "REF_SW_ASSUMED_01 (6)",
+  "REF_SW_ASSUMED_01 (7)",
+  "REF_SW_ASSUMED_01 (8)",
+  "REF_SW_ASSUMED_01 (9)"
+ ],
+ "added": [
+  "REF_LEGMAG_L_COVER",
+  "REF_LEGMAG_L_PLATE",
+  "REF_LEGMAG_R_COVER",
+  "REF_LEGMAG_R_PLATE"
+ ],
+ "timeline": 462,
+ "sketches": 75,
+ "params": 211,
+ "new_params": [
+  "v5_cover_top_Z",
+  "v5_cover_top_above_rim",
+  "v5_key_margin",
+  "v5_keycap_bottom_above_seat",
+  "v5_keycap_bottom_rest_Z",
+  "v5_legmag_L_X",
+  "v5_legmag_L_Y",
+  "v5_legmag_R_X",
+  "v5_legmag_R_Y",
+  "v5_legmag_plate_clr",
+  "v5_legmag_skin",
+  "v5_legmag_skin_min",
+  "v5_legpad_L",
+  "v5_lip_relief_clr",
+  "v5_rim_ref_Z",
+  "v5_skirt_cover_H"
+ ],
+ "changed_params": {
+  "TBD_upper_plate_T": "1.7 mm",
+  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)"
+ },
+ "cover_Z": [
+  11.5,
+  19.0
+ ],
+ "cover_T": 6.0,
+ "cover_levels": {
+  "COVER_L_DRAFT_TBD": {
+   "19.0": 2511.215
+  },
+  "COVER_T_DRAFT_TBD": {
+   "19.0": 2359.906
+  },
+  "COVER_R_DRAFT_TBD": {
+   "19.0": 2600.172
+  }
+ },
+ "plate_supports": [
+  {
+   "mount": "MOUNT_L_PAIR_V3",
+   "target": "PLATE_L_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     6.35,
+     12.55
+    ],
+    [
+     5.6,
+     23.65
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 74.519
+  },
+  {
+   "mount": "MOUNT_L_PAIR_V3",
+   "target": "PLATE_L_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     5.55,
+     82.55
+    ],
+    [
+     5.1,
+     74.65
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 50.831
+  },
+  {
+   "mount": "MOUNT_R_PAIR_V3",
+   "target": "PLATE_R_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     281,
+     24.5
+    ],
+    [
+     280.85,
+     33.65
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 49.171
+  },
+  {
+   "mount": "MOUNT_R_PAIR_V3",
+   "target": "PLATE_R_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     257,
+     71.85
+    ],
+    [
+     256.65,
+     77.2
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 34.012
+  },
+  {
+   "mount": "MOUNT_H02_SO3_MIN_V2",
+   "target": "PLATE_L_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     126.1,
+     51.5
+    ],
+    [
+     126.1,
+     54.5
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 24.566
+  },
+  {
+   "mount": "MOUNT_H03_SO6_MIN_V2",
+   "target": "PLATE_R_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     175.2,
+     8.15
+    ],
+    [
+     184.55,
+     8.8
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 73.514
+  },
+  {
+   "mount": "MOUNT_H03_SO6_MIN_V2",
+   "target": "PLATE_R_SPLIT_V1",
+   "end_centres_xy": [
+    [
+     143.95,
+     6.5
+    ],
+    [
+     152.1,
+     6.5
+    ]
+   ],
+   "top_Z": 8.0,
+   "seat_area_mm2": 48.084
+  }
+ ],
+ "leg_magnets": {
+  "L": {
+   "center": [
+    94.0,
+    2.5
+   ],
+   "cover_pocket_D": 3.2,
+   "plate_pocket_D": 3.3,
+   "cover_wall_to_window_mm": 1.184,
+   "cover_wall_to_outer_edge_mm": 1.267,
+   "cover_top_skin_mm": 3.9,
+   "plate_wall_to_switch_opening_mm": 2.909,
+   "plate_wall_to_front_edge_mm": 1.217,
+   "plate_wall_to_pad_end_mm": 2.35,
+   "plate_floor_mm": 2.9,
+   "magnet_gap_mm": 0.2
+  },
+  "R": {
+   "center": [
+    167.7,
+    2.5
+   ],
+   "cover_pocket_D": 3.2,
+   "plate_pocket_D": 3.3,
+   "cover_wall_to_window_mm": 1.171,
+   "cover_wall_to_outer_edge_mm": 1.267,
+   "cover_top_skin_mm": 3.9,
+   "plate_wall_to_switch_opening_mm": 2.896,
+   "plate_wall_to_front_edge_mm": 1.217,
+   "plate_wall_to_pad_end_mm": 2.35,
+   "plate_floor_mm": 2.9,
+   "magnet_gap_mm": 0.2
+  }
+ },
+ "clearance": {
+  "changed_vs_unchanged": {
+   "overlaps": 0,
+   "contacts": 49
+  },
+  "among_changed": {
+   "overlaps": 0,
+   "contacts": 59
+  }
+ },
+ "plate_files_unchanged": {
+  "plate_L": {
+   ".stl": true,
+   ".step": true
+  },
+  "plate_R": {
+   ".stl": true,
+   ".step": true
+  }
+ },
+ "parts": [
+  {
+   "file": "46es_v5_cover_L_REVIEW_ONLY",
+   "material": "8001 레진 투명",
+   "volume_cm3": 15.58,
+   "v4_volume_cm3": 5.78,
+   "flat_Z18_volume_cm3": 13.07,
+   "wall_min_mm": 1.098,
+   "min_mm": 0.305,
+   "stl_volume_rel_err": 6e-06
+  },
+  {
+   "file": "46es_v5_cover_T_REVIEW_ONLY",
+   "material": "8001 레진 투명",
+   "volume_cm3": 14.42,
+   "v4_volume_cm3": 5.21,
+   "flat_Z18_volume_cm3": 12.06,
+   "wall_min_mm": 1.098,
+   "min_mm": 0.146,
+   "stl_volume_rel_err": 3e-06
+  },
+  {
+   "file": "46es_v5_cover_R_REVIEW_ONLY",
+   "material": "8001 레진 투명",
+   "volume_cm3": 16.21,
+   "v4_volume_cm3": 6.17,
+   "flat_Z18_volume_cm3": 13.61,
+   "wall_min_mm": 1.098,
+   "min_mm": 0.31,
+   "stl_volume_rel_err": 5e-06
+  },
+  {
+   "file": "46es_v5_plate_L_REVIEW_ONLY",
+   "material": "MJF PA12S-HP 검정",
+   "volume_cm3": 38.12,
+   "v4_volume_cm3": 38.12,
+   "flat_Z18_volume_cm3": 38.12,
+   "wall_min_mm": 1.0,
+   "min_mm": 0.026,
+   "stl_volume_rel_err": 3.6e-05
+  },
+  {
+   "file": "46es_v5_plate_R_REVIEW_ONLY",
+   "material": "MJF PA12S-HP 검정",
+   "volume_cm3": 40.64,
+   "v4_volume_cm3": 40.64,
+   "flat_Z18_volume_cm3": 40.64,
+   "wall_min_mm": 1.047,
+   "min_mm": 0.026,
+   "stl_volume_rel_err": 1.9e-05
+  }
+ ]
+}

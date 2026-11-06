@@ -1,0 +1,15 @@
+# Keep hash-checked text identical in Windows and Unix checkouts.
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+# CAD/export bytes are inputs to the geometry and file-hash checks.
+*.sc -text
+*.stl -text
+*.step -text
+*.dwg -text
+*.dxf -text
+*.png -text

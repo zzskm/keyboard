@@ -1,0 +1,19 @@
+name: 46es repository checks
+on:
+  pull_request:
+    paths: ['46es/**', '.github/workflows/46es-check.yml']
+  push:
+    branches: [main]
+    paths: ['46es/**', '.github/workflows/46es-check.yml']
+permissions:
+  contents: read
+jobs:
+  consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -I 46es/tools/update_manifest.py --check
+      - run: python -B 46es/tools/check_repository.py
