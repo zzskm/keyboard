@@ -1,5 +1,7 @@
 # 46es v4 출력 세트 — 주문 2회
 
+> **2026-11-06 상태:** 아직 주문하지 않았다. 사용자 결정으로 현행 설계는 [v5](../../docs/v5-cover-magnet-margin-2026-11-06.md)다. 주문 1(아래)의 mount 4·이음 쿠폰·B 쿠폰(행 C 1.7)·보스 탭은 v5에서도 같은 부품이라 그대로 유효하다. 주문 2는 v5 모델에서 다시 내보낸 [print_v5/order2](../print_v5/README.md)를 쓴다(두 단 커버, 다리 자석 포켓, upper plate 1.7). 이 폴더의 `order2/`는 v4 기록이다.
+
 기준일: 2026-11-05(커버 재료는 2026-11-06). 모델은 [`../46es_mount_seam_v4.sc`](../46es_mount_seam_v4.sc), 매개변수는 [`../parameters_seam_v4.csv`](../parameters_seam_v4.csv)다.
 
 **재료는 두 가지다(JLC3DP, 사용자 결정 2026-11-06 "mount, plate는 black으로 하고 cover는 transparent resin으로").**

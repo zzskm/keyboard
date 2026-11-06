@@ -1,5 +1,5 @@
 """Read-only v5 audit (2026-11-06, 2nd pass: two-level cover): v4 kept, exact BRep of untouched bodies,
-parameters/CSV, health, cover levels (base Z 16.1 / collar Z 19.0: analytic skins, BRep face areas, sample
+parameters/CSV, health, cover levels (base Z 16.4 / collar Z 19.0 — 3rd pass skin 1.3: analytic skins, BRep face areas, sample
 points, expected volume against the flat 1st-pass snapshot), leg-magnet walls, clearance of changed bodies,
 review exports and thin walls.
 
@@ -129,7 +129,7 @@ def leg_magnet_walls(params):
                       cover_pocket_D=2 * r_cover, plate_pocket_D=2 * r_plate,
                       cover_wall_to_window_mm=round(min(edge_distance(p, q) for q in cut) - r_cover, 3),
                       cover_wall_to_outer_edge_mm=round(p[1] - edge_y - r_cover, 3),
-                      # 2nd pass: the pocket sits under the cover base (Z 16.1), not under the collar top
+                      # 2nd pass: the pocket sits under the cover base (Z 16.4 since the 3rd pass), not under the collar top
                       cover_top_skin_mm=round(params['v5_cover_base_Z'] - (params['v4_plate_top_Z'] + params['TBD_magnet_T']
                                                                             + params['TBD_magnet_clr']), 3),
                       plate_wall_to_switch_opening_mm=round(min(edge_distance(p, q) for q in openings) - r_plate, 3),
@@ -150,7 +150,8 @@ def cover_levels(params, bodies, flat_bodies):
     legmag_pocket_top = plate_top + params['TBD_magnet_T'] + params['TBD_magnet_clr']          # 15.1
     boss_pocket_top = 13.6                                                                      # six boss magnets (v4)
     skins = dict(legmag_pocket_skin_mm=round(base - legmag_pocket_top, 4), boss_pocket_skin_mm=round(base - boss_pocket_top, 4))
-    assert skins['legmag_pocket_skin_mm'] >= 1.0 - 1e-9 and skins['boss_pocket_skin_mm'] >= 1.0 - 1e-9, skins
+    # 3rd pass safety margin: resin wall rule 1.0 + 0.3 over the leg-magnet pockets
+    assert skins['legmag_pocket_skin_mm'] >= 1.3 - 1e-9 and skins['boss_pocket_skin_mm'] >= 1.0 - 1e-9, skins
     levels = top_levels(V5)
     flat_levels = top_levels(FLAT)
     per_cover = {}
@@ -239,6 +240,44 @@ def sample_points(params):
     return probes
 
 
+# ---------------------------------------------------------------- order-2 print set (3rd pass, tools/export_print_v5.py)
+PRINT_V5 = ROOT / 'model/print_v5/order2'
+PRINT_SET_FILES = {'46es_v5_plate_L', '46es_v5_plate_R', '46es_v5_spine', '46es_v5_ctrl_bracket', '46es_v5_ctrl_gate',
+                   '46es_v5_cover_L', '46es_v5_cover_T', '46es_v5_cover_R'}
+SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1', '46es_v5_ctrl_bracket': 'CTRL_BRACKET_SPLIT_V1', '46es_v5_ctrl_gate': 'CTRL_GATE_SPLIT_V1'}
+MJF_MAX = (370.0, 276.0)
+
+
+def check_print_set(bodies, v4_bodies):
+    """print_v5/order2 STL/STEP files: hashes as recorded, one component, no open edges, volume = CAD, MJF 1.0 / resin 0.8
+    walls, box on the bed and inside the MJF build volume; spine, bracket and gate keep the v4 volumes."""
+    parts = json.loads((ROOT / 'inspection/data/seam-v5-print-set.json').read_text(encoding='utf-8'))
+    thin = {t['file']: t for t in json.loads((ROOT / 'inspection/data/seam-v5-mjf-thin-wall.json').read_text(encoding='utf-8'))['parts']}
+    assert {p['file'] for p in parts} == PRINT_SET_FILES == set(thin), (set(thin), {p['file'] for p in parts})
+    out = []
+    for p in parts:
+        stl = PRINT_V5 / (p['file'] + '.stl')
+        step = stl.with_suffix('.step')
+        assert sha(stl) == p['stl_sha256'] and sha(step) == p['step_sha256'], p['file']
+        t = thin[p['file']]
+        assert t['stl_sha256'] == p['stl_sha256'], ('thin-wall scan is of another STL', p['file'])
+        limit = 0.8 if p['material'].startswith('8001') else 1.0
+        assert t['wall_min_mm'] is None or t['wall_min_mm'] >= limit - 1e-3, (p['file'], t['wall_min_mm'])
+        assert abs(p['cad_volume_mm3'] - bodies[p['body']]['volume_mm3']) < 1e-3, p['file']
+        if p['file'] in SAME_AS_V4:
+            assert abs(p['cad_volume_mm3'] - v4_bodies[SAME_AS_V4[p['file']]]['volume_mm3']) < 1e-3, p['file']
+        m = check(str(stl))
+        assert len(m['components']) == 1 and m['bad_edge_count'] == 0, p['file']
+        c = m['components'][0]
+        rel = abs(c['signed_volume'] - p['cad_volume_mm3']) / p['cad_volume_mm3']
+        assert rel < 0.001, (p['file'], rel)
+        size = [c['bbox']['max'][k] - c['bbox']['min'][k] for k in range(3)]
+        assert sorted(size[:2], reverse=True)[0] <= MJF_MAX[0] and sorted(size[:2])[0] <= MJF_MAX[1] and abs(c['bbox']['min'][2]) < 1e-4, p['file']
+        out.append(dict(file=p['file'], material=p['material'], flip=p['print_flip_about_X'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 3),
+                        size=[round(s, 2) for s in size], wall_min_mm=t['wall_min_mm'], rel=round(rel, 6)))
+    return out
+
+
 def main():
     assert sha(V4) == V4_SHA, 'v4 changed'
     assert sha(FLAT) == FLAT_SHA, 'the flat Z 18 snapshot changed'
@@ -283,7 +322,8 @@ def main():
         lo, hi = bodies[n]['bbox']['min'][2], bodies[n]['bbox']['max'][2]
         assert abs(hi - cover_hi) < 1e-6 and abs(lo - cover_lo) < 1e-6, n
     assert abs(params['TBD_cover_T'] - 6) < 1e-9 and abs(params['v5_cover_top_Z'] - 19) < 1e-9
-    assert abs(params['v5_cover_base_Z'] - 16.1) < 1e-9 and abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
+    assert abs(params['v5_legmag_skin'] - 1.3) < 1e-9, params['v5_legmag_skin']          # 3rd pass safety margin
+    assert abs(params['v5_cover_base_Z'] - 16.4) < 1e-9 and abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
     walls = leg_magnet_walls(params)
     v4_bodies = {b['name']: b for b in json.loads((ROOT / 'guide/.cache/reference/eval.json').read_text(encoding='utf-8'))['bodies']}
     for n in DERIVED:
@@ -315,6 +355,8 @@ def main():
         assert r['overlaps'] == [] and r['unchecked'] == [], (key, r['overlaps'], r['unchecked'])
     (ROOT / 'inspection/data/seam-v5-clearance.json').write_text(json.dumps(clearance, indent=1), encoding='utf-8')
 
+    print_set = check_print_set(bodies, v4_bodies)
+
     exports = json.loads((ROOT / 'inspection/data/seam-v5-exports.json').read_text(encoding='utf-8'))
     assert exports['model_sha'] == sha(V5), 'exports are of another model'
     thin = {Path(t['file']).stem if 'file' in t else t: t for t in
@@ -339,7 +381,7 @@ def main():
     v4_vol = {b['name']: b['volume_mm3'] for b in v4_eval['bodies']}
     for part, p in zip(parts, exports['parts']):
         part['v4_volume_cm3'] = round(v4_vol[p['body']] / 1000, 2)
-    result = dict(ok=True, v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, bodies=len(new), untouched_bodies_exact=len(same),
+    result = dict(ok=True, v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
                   derived_same_volume_box=sorted(DERIVED), plates_same_as_flat_Z18=True,
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
                   params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},

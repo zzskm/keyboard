@@ -2,10 +2,10 @@
   "version": "v5",
   "generator": "tools/build_assembly_reference_v5.py",
   "source": "46es_mount_seam_v5.sc",
-  "source_sha": "a61f57fab3fbbfedcd465f76c0c47a2a04f0712b9507c4a7dc151345dd5abba7",
+  "source_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
   "measurement_sha": "882dbfb65f1554378061ddb09068cd0b80cac2c17c538825e4a316d48058b9af",
-  "generator_sha": "c511b9c4da79768ae93354d3c5776c14fc1d962b681990a800497d5453256af4",
-  "output_sha": "8e23eb3e89d014360c3be97e3e5eea1f0fb10eae50e10cdbee8a1389e5560593",
+  "generator_sha": "8652542b825618b9c79fba5c0cfbd7c635d4033c2b4df3fba70f534858f05d6e",
+  "output_sha": "0b486c1ad970fa5f4993d099977193b4121b9011a31e1c2911bb49623aa0c480",
   "keys": [
     {
       "x": 110.46542391096345,
@@ -471,11 +471,11 @@
   "switch_seat_Z": 11.3,
   "keycap_bottom_rest_Z": 17.3,
   "keycap_bottom_above_seat": 6.0,
-  "cover_base_Z": 16.1,
+  "cover_base_Z": 16.4,
   "cover_top_Z": 19.0,
   "skirt_cover_H": 1.7,
   "cover_top_above_rim": 5.0,
-  "cover_base_above_rim": 2.1000000000000014,
+  "cover_base_above_rim": 2.3999999999999986,
   "rim_ref_Z": 14.0,
   "housing": "REF_HOUSING_PSD60_MEASURED",
   "body_count": 483

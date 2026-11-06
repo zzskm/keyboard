@@ -1,17 +1,17 @@
 {
  "model": "46es_mount_seam_v5.sc",
- "model_sha": "a61f57fab3fbbfedcd465f76c0c47a2a04f0712b9507c4a7dc151345dd5abba7",
+ "model_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
    "body": "COVER_L_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 9286.29,
+   "cad_volume_mm3": 9937.137,
    "bbox": {
     "max": [
      101.3921083648772,
-     94.96700000000044,
+     94.96700000000025,
      18.999999999999993
     ],
     "min": [
@@ -20,15 +20,15 @@
      11.500000000002512
     ]
    },
-   "stl_sha256": "ef56e20e2c11313e9572fdaab81489517733fe30550de4445c937fd3d671b360",
-   "step_sha256": "fe812d5679e18bbccf74201bc3e5989c0f244568598a1e61fc82e2ff348a8b26"
+   "stl_sha256": "0883ab93db8345d81af1c986a9c09b630c841ae503f42f5fe69f31d5e89c7cd7",
+   "step_sha256": "adc986c6c84e7e4eeff28a8683b0866e2e51ba0af153aad32c6060e2975706a2"
   },
   {
    "file": "46es_v5_cover_T_REVIEW_ONLY",
    "body": "COVER_T_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 8652.689,
+   "cad_volume_mm3": 9249.519,
    "bbox": {
     "max": [
      174.71402231022077,
@@ -37,33 +37,33 @@
     ],
     "min": [
      87.01436633065919,
-     -0.36700000000041266,
+     -0.367000000003348,
      11.500000000005503
     ]
    },
-   "stl_sha256": "a582a09caac3751bee422c5f92e4d1a30afe5dbd872a3346cce21d8736309ed1",
-   "step_sha256": "b3c5964d3f13c1a00d7b4cc3fd5bb6848b77121c73fe2f4dea18f3002d3c496b"
+   "stl_sha256": "70f3d7baeacd23a78cb6080093c01023facfd831ab5b3648e0a8a481dfb3ff85",
+   "step_sha256": "edf63ebdbd5d2284ea492ee76c056372d9c473f2e785a78959c43fa21a5f2969"
   },
   {
    "file": "46es_v5_cover_R_REVIEW_ONLY",
    "body": "COVER_R_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 10155.256,
+   "cad_volume_mm3": 10781.857,
    "bbox": {
     "max": [
-     285.388,
-     94.96700000000233,
+     285.3879999999999,
+     94.96700000000001,
      18.999999999999982
     ],
     "min": [
      156.6909501437699,
-     -0.3670000000034679,
+     -0.3669999999999902,
      11.500000000011024
     ]
    },
-   "stl_sha256": "bb95f5c7e2c6b6118127bb9f24a39d1fd0481031b4fcdec3aee5bb4a90c1733e",
-   "step_sha256": "f00ed9e698f9c6ef3b4d91f306733b4af7434c1f0081390e131fcc91957cbcb6"
+   "stl_sha256": "93475a5b22565b419f468951bfafc38cf5a305b10a89fa821ccbac3ac5e52a5a",
+   "step_sha256": "69e3801314070453910c5be150d666a2d3805f811ef97f4b858bea24e9ef0d55"
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",
@@ -120,7 +120,7 @@
  },
  "combined_step": {
   "file": "46es_v5_changed_REVIEW_ONLY.step",
-  "sha256": "73b7871bc3138e5c2077455e8e4c5ebfbf4b7464fb829b3e7ec0bf329400d9ab"
+  "sha256": "81a9fcf09289520e83cb5b0c65c222f70e4dc3579592b174677be3fcdcd32450"
  },
- "csv_sha256": "b1b9a745767a9dff8b321797c171b824f773e615c1c328fe69a566ffe679d17c"
+ "csv_sha256": "723d3ace0035827eb1b3adfeffc4272fe5cbe3618ea44e88184d924554b3f5e9"
 }

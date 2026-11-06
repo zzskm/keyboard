@@ -128,9 +128,9 @@
     },
     {
       "path": "guide/README.md",
-      "bytes": 9011,
-      "sha256": "4cdd597e9e3f0515d0b1cd96e4dd1cab5530cb0d533c4323ddf8bc05464e3b86",
-      "git_blob_sha": "b415d30f6875f6c0664b713e35f44ed49385f264"
+      "bytes": 9098,
+      "sha256": "2af5662e745d9f534a22c879eaab50c45ab7296aabb0772be6a35764d3b8bb5d",
+      "git_blob_sha": "2a3a29e9e86f9ec18c66d88c61bfe57dea0db93e"
     },
     {
       "path": "guide/assembly.py",
@@ -236,15 +236,15 @@
     },
     {
       "path": "guide/guide_v4.json",
-      "bytes": 63285,
-      "sha256": "59c3cd6dfe90307d2a7f0bde24b91892323417df12ec3c8abb1579f895ad1629",
-      "git_blob_sha": "3ae58958a8c2bddbcf129e95dd34e471e717c10e"
+      "bytes": 63382,
+      "sha256": "5f73855ca9393b2e43ed7142d33e51f718bdc91c0af3f5a1598e2956e9a4836b",
+      "git_blob_sha": "3cbb035d5aa9bce0e8cfd83d512e8166dd66064e"
     },
     {
       "path": "guide/guide_v5.json",
-      "bytes": 74987,
-      "sha256": "1f779ff3e2598cb618e0e37aa4eff1b5c5e7f0b99e45784e503ac2833b079b7d",
-      "git_blob_sha": "3b542604b97fb3c6be59725a55649c7a7241f5e5"
+      "bytes": 75043,
+      "sha256": "aa1358210bf70b5c3b45ac96b1b958799106c0c17c142c9d32f901babec45651",
+      "git_blob_sha": "f9e239025e6e02de6dba7e8a7564972befd6f28e"
     },
     {
       "path": "images/46es_r2_keyboard_preview.png",

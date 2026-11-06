@@ -1,4 +1,4 @@
-"""Validate the v5 assembly review model: case reference kept, two-level cover above the rim (base +2.1, collar
+"""Validate the v5 assembly review model: case reference kept, two-level cover above the rim (base +2.4, collar
 +5.0), keycap clearance at rest and pressed 4 mm (cover windows, case inner wall), pressed cap vs plate top
 (0.3), CASE_V5 design requirement vs measured PSD60.
 
@@ -78,7 +78,7 @@ def main():
     assert abs(protrusion - params['v5_cover_top_above_rim']) < 1e-6 and abs(protrusion - 5.0) < 1e-6, protrusion
     cover_base = params['v5_cover_base_Z']
     base_above_rim = cover_base - rim
-    assert abs(base_above_rim - params['v5_cover_base_above_rim']) < 1e-6 and abs(base_above_rim - 2.1) < 1e-6, base_above_rim
+    assert abs(base_above_rim - params['v5_cover_base_above_rim']) < 1e-6 and abs(base_above_rim - 2.4) < 1e-6, base_above_rim
     levels = top_levels(MODEL)
     for n, lv in levels.items():
         assert set(lv) == {round(cover_base, 4), round(cover_top, 4)}, (n, lv)

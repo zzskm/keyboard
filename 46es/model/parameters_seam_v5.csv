@@ -136,16 +136,16 @@ TBD_ctrl_lip_W,mm,1,1,[설계 미확정] plate 브래킷 레일 안쪽 턱 폭(P
 TBD_ctrl_lip_T,mm,1,1,"[설계 미확정] 브래킷 턱 두께. 아래 턱 Z = TBD_ctrl_pcb_Z − 이 값, 위 턱 Z = PCB 상면 + 여유",false
 REF_ctrl_pcb_T,mm,1.6 mm,1.6,[자료값] Pro Micro PCB 두께,false
 v5_rim_ref_Z,mm,14,14,[v5 설계 기준 2026-11-06] 케이스 테두리 상단 Z. PSD60 1차 실측 M05 rim_F/rim_B 14(캘리퍼 대략값)를 커버 높이 비교 기준으로만 쓴다(형상은 자석 적층에서 유도). 케이스 형상(REF_WIL_*/REF_PSD_*)은 바꾸지 않는다,false
-v5_legmag_skin,mm,1.0,1,[v5 2차 2026-11-06] 아래 다리 자석 포켓(윗면 Z 15.1) 위에 남기는 최소 살. 8001 레진 벽 규칙 ≥ 1.0,false
-v5_cover_base_Z,mm,v4_plate_top_Z + TBD_magnet_T + TBD_magnet_clr + v5_legmag_skin,16.1,[v5 2차 유도값] 커버 바닥(창 둘레 턱 밖) 윗면 Z = plate 윗면 13 + 자석 2 + 포켓 여유 0.1 + 살 1.0 = 16.1 (테두리 14 + 2.1). 테두리가 아니라 다리 자석 적층에서 유도한다,false
+v5_legmag_skin,mm,1.3,1.3,[v5 3차 안전마진 2026-11-06] 아래 다리 자석 포켓(윗면 Z 15.1) 위에 남기는 살. 8001 레진 벽 규칙 ≥ 1.0 + 안전마진 0.3 (2차는 1.0으로 규칙 경계값이었다. 사용자: 의심되는 곳은 안전마진 추가),false
+v5_cover_base_Z,mm,v4_plate_top_Z + TBD_magnet_T + TBD_magnet_clr + v5_legmag_skin,16.4,[v5 유도값] 커버 바닥(창 둘레 턱 밖) 윗면 Z = plate 윗면 13 + 자석 2 + 포켓 여유 0.1 + 살 1.3 = 16.4 (테두리 14 + 2.4; 2차는 살 1.0 → 16.1). 테두리가 아니라 다리 자석 적층에서 유도한다,false
 v5_keycap_bottom_above_seat,mm,6.0,6,"[v5 2차 r2 근거 2026-11-06] 쉴 때 키캡 스커트 밑면 − 스위치 착좌면. r2: 2T upper plate 위에서 키캡을 끝까지 누르면 유격이 거의 없다 → 바닥에서 착좌 + 약 2, 쉴 때 + 약 6. r2 실측(upper plate 윗면 → 스커트 밑면 g)으로 확정: 2 + g",false
 v5_keycap_bottom_rest_Z,mm,v4_plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat,17.3,[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3,false
 v5_skirt_cover_H,mm,1.7,1.7,"[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. 대안 1.2(턱 Z 18.5) / 0.7(Z 18)",false
 v5_cover_top_Z,mm,v5_keycap_bottom_rest_Z + v5_skirt_cover_H,19,[v5 2차 유도값] 창 둘레 턱(collar) 윗면 Z = 17.3 + 1.7 = 19.0 (테두리 14 + 5.0). v5 1차: 테두리 + 4 = 18,false
 v5_collar_W,mm,1.5,1.5,[v5 2차 사용자 결정 2026-11-06] 창 가장자리(키캡 + v5_key_margin)에서 턱 바깥면까지 폭. 레진 벽 ≥ 1.0. 베젤이 이보다 좁은 앞·뒤 7곳에서는 턱이 커버 바깥면까지 찬다. SK36_COVER_DROP_V5 사각형은 이 값으로 만든 고정 숫자(tools/build_seam_v5.py에서 재생성),false
 v5_cover_top_above_rim,mm,v5_cover_top_Z - v5_rim_ref_Z,5,[v5 2차 보고용] 턱 윗면 − 테두리 = 5.0,false
-v5_cover_base_above_rim,mm,v5_cover_base_Z - v5_rim_ref_Z,2.1,[v5 2차 보고용] 바닥 윗면 − 테두리 = 2.1,false
-TBD_cover_T,mm,v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T),6,"[v5 2차 2026-11-06] 커버 전체 높이(턱 윗면 Z 19 − plate 윗면 Z 13) = 6. 밑면·립·보스·자석은 그대로, 위로만 두꺼워짐(v4: 2, v5 1차 평판: 5). 창 둘레 턱 밖은 COVER_DROP_V5로 v5_cover_base_Z(16.1)까지 깎는다. r2 실물은 5T+2T 2층",false
+v5_cover_base_above_rim,mm,v5_cover_base_Z - v5_rim_ref_Z,2.4,[v5 보고용] 바닥 윗면 − 테두리 = 2.4 (2차 2.1),false
+TBD_cover_T,mm,v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T),6,"[v5 2차 2026-11-06] 커버 전체 높이(턱 윗면 Z 19 − plate 윗면 Z 13) = 6. 밑면·립·보스·자석은 그대로, 위로만 두꺼워짐(v4: 2, v5 1차 평판: 5). 창 둘레 턱 밖은 COVER_DROP_V5로 v5_cover_base_Z(16.4)까지 깎는다. r2 실물은 5T+2T 2층",false
 TBD_cover_lip_H,mm,1 mm,1,[설계 미확정] 커버 테두리 립 높이 = plate 가장자리 단차(rabbet) 깊이,false
 TBD_cover_lip_clr,mm,0.3 mm,0.3,[미확정] 커버 립 ↔ plate 단차 안쪽 여유. M18,false
 TBD_cover_min_rail,mm,1.6 mm,1.6,[JLC3DP 최소 벽·DXF 생성 입력] 커버 창 ↔ 가장자리 최소 살. 실루엣 창은 가장자리 안쪽 이 값으로 잘림(현재 창은 위 2.29 / 아래 2.55 / 좌 5.65 / 우 4.73 여유로 잘리지 않음),false

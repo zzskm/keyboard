@@ -1,23 +1,23 @@
 {
   "ok": true,
-  "model_sha": "8e23eb3e89d014360c3be97e3e5eea1f0fb10eae50e10cdbee8a1389e5560593",
-  "source_sha": "a61f57fab3fbbfedcd465f76c0c47a2a04f0712b9507c4a7dc151345dd5abba7",
+  "model_sha": "0b486c1ad970fa5f4993d099977193b4121b9011a31e1c2911bb49623aa0c480",
+  "source_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 18.999999999999993,
   "cover_above_rim_mm": 5.0,
-  "cover_base_Z": 16.1,
-  "cover_base_above_rim_mm": 2.1,
+  "cover_base_Z": 16.4,
+  "cover_base_above_rim_mm": 2.4,
   "cover_levels": {
     "COVER_L_DRAFT_TBD": {
-      "16.1": 2169.492,
+      "16.4": 2169.492,
       "19.0": 341.723
     },
     "COVER_T_DRAFT_TBD": {
-      "16.1": 1989.435,
+      "16.4": 1989.435,
       "19.0": 370.471
     },
     "COVER_R_DRAFT_TBD": {
-      "16.1": 2088.675,
+      "16.4": 2088.675,
       "19.0": 511.497
     }
   },
@@ -51,9 +51,9 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          31,
+          9,
           1.0,
-          "COVER_R_DRAFT_TBD"
+          "COVER_L_DRAFT_TBD"
         ],
         [
           28,
@@ -61,12 +61,12 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          32,
+          31,
           1.0,
           "COVER_R_DRAFT_TBD"
         ],
         [
-          44,
+          32,
           1.0,
           "COVER_R_DRAFT_TBD"
         ]
@@ -98,9 +98,9 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          31,
+          9,
           1.0,
-          "COVER_R_DRAFT_TBD"
+          "COVER_L_DRAFT_TBD"
         ],
         [
           28,
@@ -108,12 +108,12 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          32,
+          31,
           1.0,
           "COVER_R_DRAFT_TBD"
         ],
         [
-          44,
+          32,
           1.0,
           "COVER_R_DRAFT_TBD"
         ]
@@ -149,7 +149,7 @@
       "in_D_min": 95.334,
       "keycap_wall_min": 1.0
     },
-    "right_edge_X": 285.388,
+    "right_edge_X": 285.3879999999999,
     "wall_X": 285.307,
     "right_edge_overlap_mm": 0.081,
     "centred_gap_each_side_mm": 0.109,

@@ -147,8 +147,8 @@ def build():
             feature['suppressed'] = True
     # v5 case design requirements: kept apart from the measured REF_PSD_* reference (never overwritten).
     for name, expression, comment in [
-        ('rim_Z', 'v5_rim_ref_Z', '[v5 설계 요구·실측 아님] 커버 돌출을 재는 테두리 Z. 두 단 커버: 바닥 16.1(+2.1), 창 둘레 턱 19.0(+5.0). '
-                                  '실물 테두리가 다르면 돌출 = 16.1/19.0 − 실물 테두리(형상은 자석 적층·키캡 높이에서 유도되어 바뀌지 않음)'),
+        ('rim_Z', 'v5_rim_ref_Z', '[v5 설계 요구·실측 아님] 커버 돌출을 재는 테두리 Z. 두 단 커버: 바닥 16.4(+2.4, 3차 안전마진; 2차 16.1), 창 둘레 턱 19.0(+5.0). '
+                                  '실물 테두리가 다르면 돌출 = 16.4/19.0 − 실물 테두리(형상은 자석 적층·키캡 높이에서 유도되어 바뀌지 않음)'),
         ('in_W_design', 'TBD_case_in_W - 2*TBD_plate_gap + 2*TBD_cover_gap', '[v5 설계 요구·실측 아님] plate·커버 폭 + 설계 틈 0.3×2'),
         ('in_W_min', 'TBD_case_in_W - 2*TBD_plate_gap', '[v5 설계 요구·실측 아님] plate·커버 폭(틈 0, 이보다 좁으면 들어가지 않음)'),
         ('in_D_design', 'TBD_case_in_D - 2*TBD_plate_gap + 2*TBD_cover_gap', '[v5 설계 요구·실측 아님] plate·커버 깊이 + 설계 틈 0.3×2'),

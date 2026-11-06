@@ -2,7 +2,7 @@
 
 [조립 검토 CAD](../model/46es_assembly_review.sc)는 기존 v4 출력 부품을 복사하고 참고 케이스·스위치·키캡을 갱신한 모델이다. 출력용 원본은 [46es_mount_seam_v4.sc](../model/46es_mount_seam_v4.sc)이며 주문 STL/STEP은 이번에 수정하지 않았다. 가이드는 조립 검토 CAD를 사용한다.
 
-> v5(2026-11-06): 별도 검토 모델 [46es_assembly_review_v5.sc](../model/46es_assembly_review_v5.sc)(`tools/build_assembly_reference_v5.py`)를 추가했다. 2차(같은 날)부터 커버는 두 단이다: 바닥 윗면 Z 16.1(테두리 + 2.1), 창 둘레 턱 Z 19.0(+ 5.0). 참고 키캡 밑면은 쉴 때 Z 17.3(착좌 11.3 + 6.0, r2 근거)이고 4 mm 눌림에서 plate 윗면과 0.3 남는다. 아래 실측 참조 `REF_PSD_*`는 그대로이고, v5 설계 요구는 `CASE_V5_*`로 따로 두었다. [v5 문서](v5-cover-magnet-margin-2026-11-06.md)를 본다. 이 문서의 수치는 v4 검토 모델 기준이다.
+> v5(2026-11-06): 별도 검토 모델 [46es_assembly_review_v5.sc](../model/46es_assembly_review_v5.sc)(`tools/build_assembly_reference_v5.py`)를 추가했다. 2차(같은 날)부터 커버는 두 단이다: 바닥 윗면 Z 16.4(테두리 + 2.4; 3차 안전마진, 2차 16.1), 창 둘레 턱 Z 19.0(+ 5.0). 참고 키캡 밑면은 쉴 때 Z 17.3(착좌 11.3 + 6.0, r2 근거)이고 4 mm 눌림에서 plate 윗면과 0.3 남는다. 아래 실측 참조 `REF_PSD_*`는 그대로이고, v5 설계 요구는 `CASE_V5_*`로 따로 두었다. [v5 문서](v5-cover-magnet-margin-2026-11-06.md)를 본다. 이 문서의 수치는 v4 검토 모델 기준이다.
 
 ## 케이스 치수의 근거
 

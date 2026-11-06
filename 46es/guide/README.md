@@ -1,13 +1,14 @@
 # 46es 설계 검토·조립 가이드 생성기
 
-`guide_v4.json`(내용, 기본값)과 CAD 모델에서 정적 웹페이지 한 장(`index.html` + `img/`)을 만든다. 게시본은 <https://zzskm.github.io/keyboard-46es/>이다.
+`guide_v5.json`(내용, 기본값)과 CAD 모델에서 정적 웹페이지 한 장(`index.html` + `img/`)을 만든다. 게시본은 <https://zzskm.github.io/keyboard-46es/>(v5, 현행 설계)이고, 이전 판 v4는 <https://zzskm.github.io/keyboard-46es/v4/>에 기록용으로 둔다(서로 lede에서 링크).
 
-`guide_v4.json`은 v4 출력 부품과 부분 실측 케이스·MX 스위치·OEM 키캡을 포함한 검토 모델(`model/46es_assembly_review.sc`)을 사용한다. 출력 원본은 `model/46es_mount_seam_v4.sc`다. [참고 형상 치수 근거·재생성 방법](../docs/assembly-reference-2026-11-06.md)에 측정값과 가정을 구분했다. `guide_v3.json`은 v3 판 기록으로 남겨 두었다(`--spec guide_v3.json`).
+`guide_v4.json`은 v4 출력 부품과 부분 실측 케이스·MX 스위치·OEM 키캡을 포함한 검토 모델(`model/46es_assembly_review.sc`)을 사용한다(`--spec guide_v4.json`). 원본은 `model/46es_mount_seam_v4.sc`다. [참고 형상 치수 근거·재생성 방법](../docs/assembly-reference-2026-11-06.md)에 측정값과 가정을 구분했다. `guide_v3.json`은 v3 판 기록으로 남겨 두었다(`--spec guide_v3.json`).
 
-**v5 검토판(2026-11-06)**: `guide_v5.json` + `assembly_v5.json`은 v5 검토 모델(`model/46es_assembly_review_v5.sc`, 원본 `model/46es_mount_seam_v5.sc`)을 쓴다. 두 단 커버(바닥 테두리 +2.1 / 창 둘레 턱 Z 19 = +5.0), 아래 다리 자석 2쌍, 키캡 여유 1 mm, upper plate 1.7, 참고 키캡 착좌 + 6.0이 들어 있다. 출력은 `out_v5/`이고, 게시본은 v4 페이지 아래 `keyboard-46es/v5/`에 함께 올린다(v4 lede에서 링크). 기본값과 `keyboard-46es/` 루트는 v4 그대로다. [v5 문서](../docs/v5-cover-magnet-margin-2026-11-06.md)를 본다.
+**v5(2026-11-06, 현행 설계·기본값)**: `guide_v5.json` + `assembly_v5.json`은 v5 검토 모델(`model/46es_assembly_review_v5.sc`, 원본 `model/46es_mount_seam_v5.sc`)을 쓴다. 두 단 커버(바닥 테두리 +2.4 / 창 둘레 턱 Z 19 = +5.0; 3차 안전마진으로 포켓 위 살 1.3), 아래 다리 자석 2쌍, 키캡 여유 1 mm, upper plate 1.7, 참고 키캡 착좌 + 6.0이 들어 있다. 기본 출력은 `out/`이고 게시는 `keyboard-46es/` 루트다. 사용자 결정(2026-11-06): 주문 전이므로 v5가 현행 설계이고 v4는 `v4/` 아래 기록용. [v5 문서](../docs/v5-cover-magnet-margin-2026-11-06.md)를 본다.
 
 ```powershell
-python build_guide.py --spec guide_v5.json --out out_v5
+python build_guide.py                                   # v5 → out/
+python build_guide.py --spec guide_v4.json --out out_v4   # v4 기록판
 ```
 
 조립 화면의 머리글과 케이스 높이 안내는 `assembly_v*.json`의 `labels`(`eyebrow`, `case_hint`)에서 읽는다. 없으면 v4 문구를 쓴다. 검토 모델 매니페스트에 `generator`가 있으면 그 생성기의 해시를 확인한다. `check_browser.py`는 `GUIDE_URL`, `GUIDE_SHOT_PREFIX`, `GUIDE_SECOND_STEP_TITLE` 환경 변수로 다른 판을 확인할 수 있다(Python playwright 필요).
@@ -90,13 +91,14 @@ python build_guide.py --out D:/work/zzskm.github.io/keyboard-46es --clean-img   
 
 ```
 cd D:/work/zzskm.github.io && git pull --ff-only
-python D:/work/keyboard/46es/guide/build_guide.py --out D:/work/zzskm.github.io/keyboard-46es --clean-img
+python D:/work/keyboard/46es/guide/build_guide.py --out D:/work/zzskm.github.io/keyboard-46es --clean-img                          # v5(기본) → 루트
+python D:/work/keyboard/46es/guide/build_guide.py --spec guide_v4.json --out D:/work/zzskm.github.io/keyboard-46es/v4 --clean-img   # v4 기록판
 git add keyboard-46es && git commit -m "docs(keyboard-46es): 가이드 재생성" && git pull --rebase && git push
 ```
 
 Pages 저장소에는 자동 커밋이 계속 쌓이므로 커밋 전에 `pull --ff-only`, push 전에 `pull --rebase`를 한다.
 
-## spec 구조 (`guide_v4.json`)
+## spec 구조 (`guide_v5.json` · `guide_v4.json` 공통)
 
 - `model`, `measurements`: spec 기준 상대 경로.
 - `cameras`: `{target, yaw, pitch, distance, fov}`(mm, 라디안). yaw 0은 −Y(앞)에서, **yaw −π/2는 +X 쪽에서** 본다. pitch +π/2는 위에서 본 평면도.
