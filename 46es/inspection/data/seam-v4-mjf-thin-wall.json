@@ -5,11 +5,11 @@
  "parts": [
   {
    "file": "46es_v4_boss_tab",
-   "stl_sha256": "a4d47d6a5b06d7cfb3f6d8a88420280cde0ecb68c894abf195378012b72d4e1a",
-   "facets": 1888,
-   "samples": 87864,
-   "min_mm": 1.297,
-   "wall_min_mm": 1.297,
+   "stl_sha256": "0649e6274a9b95fcfd5c543c0fa19050a1439d82aaaedf4df3e50496b75280a6",
+   "facets": 6404,
+   "samples": 145344,
+   "min_mm": 1.299,
+   "wall_min_mm": 1.299,
    "below_limit": [],
    "below_warn_count": 1
   },
@@ -242,9 +242,9 @@
   },
   {
    "file": "46es_v4_sw_hole_coupon",
-   "stl_sha256": "95dcd00cac13ba1b1acf11342ffe5b5d3261c58288742ee704f874510507d912",
-   "facets": 8608,
-   "samples": 1017199,
+   "stl_sha256": "5c872514f60cb2bd4146a06405214d89e21a27d1686861380ad87dc3a2963b24",
+   "facets": 22708,
+   "samples": 1111990,
    "min_mm": 1.5,
    "wall_min_mm": 1.5,
    "below_limit": [],

@@ -30,6 +30,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+import assembly
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
@@ -443,7 +444,8 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
     legend = "".join(f'<span><i style="background:{l["color"]}"></i>{ctx.text(l["label"])}</span>' for l in pg.get("legend", []))
     callout = f'<div class="callout" style="margin-top:1.1rem"><p>{ctx.text(pg["callout"])}</p></div>' if pg.get("callout") else ""
     hero = f'<div class="hero">{figure(ctx, pg["hero"], pg.get("hero_caption"), eager=True)}</div>' if pg.get("hero") else ""
-    nav = "".join(f'<a href="#{s["id"]}">{ctx.text(s.get("nav", s["title"]))}</a>' for s in spec["sections"])
+    interactive = bool(spec.get('interactive'))
+    nav = ('<a href="#interactive">3D 조립</a>' if interactive else '') + "".join(f'<a href="#{s["id"]}">{ctx.text(s.get("nav", s["title"]))}</a>' for s in spec["sections"])
     body = "".join(SECTIONS[s["type"]](s, ctx) for s in spec["sections"])
     stamp = datetime.date.today().isoformat()
     auto_foot = (f"모델 <code>{html.escape(model_name)}</code>(SHA-256 {model_sha[:12]}): 바디 {ev['body_count']}, "
@@ -463,6 +465,7 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 <title>{html.escape(pg['title'])}</title>
 <meta name="description" content="{html.escape(pg['description'])}">
 {robots}{FONTS}
+{('<link rel="stylesheet" href="assembly.css">' if interactive else '')}
 <style>
 {css}</style>
 </head>
@@ -478,11 +481,13 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 </header>
 <div class="bar"><div class="wrap"><nav aria-label="섹션">{nav}</nav></div></div>
 <main class="wrap">
+{assembly.markup(getattr(ctx, 'interactive', None)) if interactive else ''}
 {body}
 </main>
 <footer class="wrap">{foot}</footer>
 <script>
 {js}</script>
+{('<script type="module" src="assembly.js"></script>' if interactive else '')}
 </body>
 </html>
 """
@@ -511,6 +516,17 @@ def main():
         die(f"SolidCraft CLI not found: {cli} (use --cli)")
 
     model_sha = file_sha256(model)
+    if spec.get('reference_manifest'):
+        manifest_path = (base / spec['reference_manifest']).resolve()
+        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+        reference_root = manifest_path.parent
+        generator = manifest.get('generator', 'tools/build_assembly_reference.py')
+        inputs = [(reference_root / manifest['source'], 'source_sha'),
+                  (reference_root / 'measurements/2026-11-04T111846Z.json', 'measurement_sha'),
+                  (reference_root.parent / generator, 'generator_sha'),
+                  (model, 'output_sha')]
+        if any(file_sha256(path) != manifest[key] for path, key in inputs):
+            die(f'assembly reference is stale; run python {generator} first')
     ev = model_eval(cli, model, model_sha)
     names = [b["name"] for b in ev["bodies"]]
     groups = spec.get("groups", {})
@@ -551,6 +567,7 @@ def main():
             if p.stem not in results:
                 p.unlink()
                 print(f"removed unused {p.name}")
+    assembly.prepare(ctx, base, out, cli, model, model_sha, CACHE, expand, run, die)
     page = build_page(spec, ctx, model.name, model_sha, len(results))
     (out / "index.html").write_text(page, encoding="utf-8", newline="\n")
     print(f"wrote {out / 'index.html'} ({len(page.encode('utf-8'))} bytes), {len(results)} images, {fresh} rendered now")

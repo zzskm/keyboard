@@ -1,0 +1,614 @@
+{
+  "steps": {
+    "prep": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "PLATE_SPINE_V1",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD"
+      ],
+      "focus": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "PLATE_SPINE_V1",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD"
+      ],
+      "needs": {
+        "MOUNT_L_PAIR_V3": "1 · 끼움 확인",
+        "MOUNT_R_PAIR_V3": "1 · 끼움 확인",
+        "MOUNT_H02_SO3_MIN_V2": "1 · 끼움 확인",
+        "MOUNT_H03_SO6_MIN_V2": "1 · 끼움 확인",
+        "PLATE_L_SPLIT_V1": "1 · 끼움 확인",
+        "PLATE_R_SPLIT_V1": "1 · 끼움 확인",
+        "PLATE_SPINE_V1": "1 · 끼움 확인",
+        "CTRL_BRACKET_SPLIT_V1": "1 · 끼움 확인",
+        "CTRL_GATE_SPLIT_V1": "1 · 끼움 확인",
+        "COVER_L_DRAFT_TBD": "1 · 끼움 확인",
+        "COVER_T_DRAFT_TBD": "1 · 끼움 확인",
+        "COVER_R_DRAFT_TBD": "1 · 끼움 확인"
+      },
+      "view": "iso",
+      "note": "부품 손질 단계입니다. 화면은 각 부품의 최종 위치를 보여 줍니다. 분해 슬라이더로 나누어 살펴보세요.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "magnet": {
+      "show": [
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD",
+        "magnets"
+      ],
+      "focus": [
+        "magnets"
+      ],
+      "needs": {
+        "COVER_L_DRAFT_TBD": 1,
+        "COVER_T_DRAFT_TBD": 1,
+        "COVER_R_DRAFT_TBD": 1,
+        "magnets": 6,
+        "epoxy": "소량"
+      },
+      "view": "bottom",
+      "note": "커버만 작업합니다. 에폭시가 완전히 굳은 뒤 진행하세요.",
+      "hardwareStages": []
+    },
+    "standoff": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower"
+      ],
+      "focus": [
+        "standoffs",
+        "m3-lower"
+      ],
+      "needs": {
+        "MOUNT_L_PAIR_V3": 1,
+        "MOUNT_R_PAIR_V3": 1,
+        "MOUNT_H02_SO3_MIN_V2": 1,
+        "MOUNT_H03_SO6_MIN_V2": 1,
+        "standoffs": 6,
+        "m3-lower": 6
+      },
+      "view": "bottom",
+      "note": "",
+      "hardwareStages": []
+    },
+    "case-loose": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb"
+      ],
+      "focus": [
+        "case-screws"
+      ],
+      "needs": {
+        "housing": 1,
+        "MOUNT_L_PAIR_V3": 1,
+        "MOUNT_R_PAIR_V3": 1,
+        "MOUNT_H02_SO3_MIN_V2": 1,
+        "MOUNT_H03_SO6_MIN_V2": 1,
+        "case-screws": 6
+      },
+      "view": "iso",
+      "note": "",
+      "hardwareStages": []
+    },
+    "seam": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts"
+      ],
+      "focus": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5"
+      ],
+      "needs": {
+        "PLATE_L_SPLIT_V1": 1,
+        "PLATE_R_SPLIT_V1": 1,
+        "m2-5": 1,
+        "m2-nuts": 1
+      },
+      "view": "iso",
+      "note": "케이스 밖에서 조립합니다. 이음 나사와 너트가 강조됩니다.",
+      "hardwareStages": [
+        "REF_M2_SEAM_FRONT"
+      ]
+    },
+    "join": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6"
+      ],
+      "focus": [
+        "PLATE_SPINE_V1",
+        "m2-6"
+      ],
+      "needs": {
+        "PLATE_SPINE_V1": 1,
+        "m2-6": 4,
+        "m2-nuts": 4
+      },
+      "view": "bottom",
+      "note": "",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT"
+      ]
+    },
+    "trial": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6"
+      ],
+      "focus": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1"
+      ],
+      "needs": {
+        "PLATE_L_SPLIT_V1": 1,
+        "PLATE_R_SPLIT_V1": 1,
+        "shim": "두께 확인"
+      },
+      "view": "iso",
+      "note": "plate를 임시로 얹습니다. 아직 위쪽 M3 나사는 조이지 않습니다.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT"
+      ]
+    },
+    "case-tight": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb"
+      ],
+      "focus": [
+        "case-screws"
+      ],
+      "needs": {
+        "case-screws": "6 · 재조임"
+      },
+      "view": "iso",
+      "note": "공구가 닿도록 plate 모듈을 들어낸 상태입니다.",
+      "hardwareStages": []
+    },
+    "switch": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches"
+      ],
+      "focus": [
+        "switches"
+      ],
+      "needs": {
+        "switches": 46
+      },
+      "view": "iso",
+      "note": "케이스 밖의 plate 모듈에 끼웁니다. 스위치 형상은 위치 확인용입니다.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "ctrl": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller"
+      ],
+      "focus": [
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller"
+      ],
+      "needs": {
+        "CTRL_BRACKET_SPLIT_V1": 1,
+        "CTRL_GATE_SPLIT_V1": 1,
+        "controller": 1,
+        "m2-6": 2,
+        "m2-5": 1,
+        "m2-nuts": 3
+      },
+      "view": "bottom",
+      "note": "",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "glue": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller"
+      ],
+      "focus": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "PLATE_SPINE_V1"
+      ],
+      "needs": {
+        "epoxy": "필요할 때만"
+      },
+      "view": "iso",
+      "note": "누름 시험 후 접착 여부를 결정합니다. 형상은 plate 모듈 상태를 보여 줍니다.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "wire": {
+      "show": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller",
+        "usb"
+      ],
+      "focus": [
+        "controller",
+        "switches"
+      ],
+      "needs": {
+        "wiring": "다이오드 46개 · 신호선 16",
+        "usb": 1
+      },
+      "view": "bottom",
+      "note": "배선 경로는 3D에 표시되지 않습니다. 아래 배선 설명과 펌웨어 핀 배치를 확인하세요.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "module": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller",
+        "m3-upper"
+      ],
+      "focus": [
+        "m3-upper"
+      ],
+      "needs": {
+        "m3-upper": 6,
+        "shim": "시험 후 결정"
+      },
+      "view": "iso",
+      "note": "",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "cover": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller",
+        "m3-upper",
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD",
+        "magnets"
+      ],
+      "focus": [
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD"
+      ],
+      "needs": {
+        "COVER_L_DRAFT_TBD": 1,
+        "COVER_T_DRAFT_TBD": 1,
+        "COVER_R_DRAFT_TBD": 1
+      },
+      "view": "iso",
+      "note": "케이스 테두리 Z=14 mm, 커버 윗면 Z=15 mm로 약 1 mm 올라옵니다(분해 슬라이더 0 기준). 실측은 부분·대략값입니다. 앞 높이 시점에서 확인하세요.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    },
+    "keycap": {
+      "show": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "standoffs",
+        "m3-lower",
+        "housing",
+        "case-screws",
+        "usb",
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "m2-5",
+        "m2-nuts",
+        "PLATE_SPINE_V1",
+        "m2-6",
+        "switches",
+        "CTRL_BRACKET_SPLIT_V1",
+        "CTRL_GATE_SPLIT_V1",
+        "controller",
+        "m3-upper",
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD",
+        "magnets",
+        "keycaps"
+      ],
+      "focus": [
+        "keycaps"
+      ],
+      "needs": {
+        "keycaps": 46
+      },
+      "view": "iso",
+      "note": "키캡은 곡면·내부 형상을 생략하고 윗면을 평평하게 만든 OEM 검토 형상입니다. 행별 높이·경사, 맨 아랫줄 폭 1.25u·1u·2.25u·2u·1u·1u와 키 회전각을 반영했습니다. 실제 제조사별 높이·눌림 간섭은 현물 확인이 필요합니다.",
+      "hardwareStages": [
+        "REF_M2_PLATE_3",
+        "REF_M2_PLATE_4",
+        "REF_M2_PLATE_5",
+        "REF_M2_PLATE_6",
+        "REF_M2_SEAM_FRONT",
+        "REF_M2_PLATE_1",
+        "REF_M2_PLATE_2",
+        "REF_M2_GATE"
+      ]
+    }
+  },
+  "hardware_bodies": {
+    "standoffs": [
+      "@standoffs"
+    ],
+    "m3-upper": [
+      "@m3_upper"
+    ],
+    "m3-lower": [
+      "@m3_lower"
+    ],
+    "m2-6": [
+      "REF_M2_PLATE_1",
+      "REF_M2_PLATE_2",
+      "REF_M2_PLATE_3",
+      "REF_M2_PLATE_4",
+      "REF_M2_PLATE_5",
+      "REF_M2_PLATE_6"
+    ],
+    "m2-5": [
+      "REF_M2_GATE",
+      "REF_M2_SEAM_FRONT"
+    ],
+    "m2-nuts": [
+      "REF_M2_PLATE_1_NUT",
+      "REF_M2_PLATE_2_NUT",
+      "REF_M2_PLATE_3_NUT",
+      "REF_M2_PLATE_4_NUT",
+      "REF_M2_PLATE_5_NUT",
+      "REF_M2_PLATE_6_NUT",
+      "REF_M2_GATE_NUT",
+      "REF_M2_SEAM_FRONT_NUT"
+    ],
+    "case-screws": [
+      "@case_screws"
+    ],
+    "magnets": [
+      "@magnets"
+    ],
+    "switches": [
+      "@switches"
+    ],
+    "controller": [
+      "@ctrl"
+    ],
+    "usb": [
+      "@usb"
+    ],
+    "keycaps": [
+      "@keycaps"
+    ]
+  },
+  "references": [
+    {
+      "id": "housing",
+      "label": "PSD60 케이스 · 부분 실측",
+      "qty": 1,
+      "bodies": [
+        "@housing"
+      ],
+      "detail": "내측 약 286×96 mm, H01 지지대 5.5 mm, 지지대→테두리 앞·뒤 14 mm 반영. H 위치는 측정된 축만 반영. 외곽 320×115 mm는 문서값이며 바닥·코너·USB는 가정입니다. 대략 폭·가정 원점 기준 오른쪽 가장자리 0.081 mm 겹침 가능: 현물 끼움은 미확정입니다."
+    }
+  ],
+  "approximate": [
+    "switches",
+    "controller",
+    "usb",
+    "standoffs",
+    "m3-upper",
+    "m3-lower",
+    "m2-6",
+    "m2-5",
+    "m2-nuts",
+    "case-screws",
+    "magnets",
+    "keycaps"
+  ],
+  "colors": {
+    "PLATE_L_SPLIT_V1": "#4a8491",
+    "PLATE_R_SPLIT_V1": "#4a8491",
+    "MOUNT_L_PAIR_V3": "#7a8791",
+    "MOUNT_R_PAIR_V3": "#7a8791",
+    "MOUNT_H02_SO3_MIN_V2": "#7a8791",
+    "MOUNT_H03_SO6_MIN_V2": "#7a8791",
+    "COVER_L_DRAFT_TBD": "#719bc7",
+    "COVER_T_DRAFT_TBD": "#719bc7",
+    "COVER_R_DRAFT_TBD": "#719bc7",
+    "PLATE_SPINE_V1": "#b6a06d",
+    "housing": "#bbc2c7",
+    "controller": "#478761",
+    "switches": "#c1b38a",
+    "magnets": "#a7aeb5",
+    "keycaps": "#e7ebef"
+  }
+}

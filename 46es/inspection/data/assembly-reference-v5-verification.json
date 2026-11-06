@@ -1,0 +1,158 @@
+{
+  "ok": true,
+  "model_sha": "8e23eb3e89d014360c3be97e3e5eea1f0fb10eae50e10cdbee8a1389e5560593",
+  "source_sha": "a61f57fab3fbbfedcd465f76c0c47a2a04f0712b9507c4a7dc151345dd5abba7",
+  "rim_Z": 14.000000000000007,
+  "cover_top_Z": 18.999999999999993,
+  "cover_above_rim_mm": 5.0,
+  "cover_base_Z": 16.1,
+  "cover_base_above_rim_mm": 2.1,
+  "cover_levels": {
+    "COVER_L_DRAFT_TBD": {
+      "16.1": 2169.492,
+      "19.0": 341.723
+    },
+    "COVER_T_DRAFT_TBD": {
+      "16.1": 1989.435,
+      "19.0": 370.471
+    },
+    "COVER_R_DRAFT_TBD": {
+      "16.1": 2088.675,
+      "19.0": 511.497
+    }
+  },
+  "keycap": {
+    "target_mm": 1.0,
+    "case_target_mm": 2.6,
+    "press_mm": 4.0,
+    "rest": {
+      "cover_min_mm": 1.0,
+      "keys_within_3mm_of_cover": 31,
+      "case_min_mm": null,
+      "closest": [
+        [
+          23,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          1,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          24,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          40,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          31,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          28,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          32,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          44,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ]
+      ]
+    },
+    "pressed_4mm": {
+      "cover_min_mm": 1.0,
+      "keys_within_3mm_of_cover": 31,
+      "case_min_mm": 2.6277,
+      "closest": [
+        [
+          23,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          1,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          24,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          40,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          31,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          28,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          32,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          44,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ]
+      ]
+    },
+    "cap_bottom_rest_Z": 17.3,
+    "cap_bottom_above_seat_mm": 6.0,
+    "cap_bottom_above_rim_mm": 3.3,
+    "skirt_cover_rest_mm": 1.7,
+    "skirt_cover_pressed_mm": 5.7,
+    "note": "Clearance measured on exact faces: flat OEM reference caps (actual widths, rotations) against the three cover pieces and the measured PSD60 case. Cap skirt bottom at rest = switch seat + 6.0 (r2 based; to be confirmed by the r2 measurement, plan §11-1)."
+  },
+  "pressed_vs_plate": {
+    "overlapping_caps": 0,
+    "min_distance_mm": 0.3,
+    "target_mm": 0.25,
+    "cap_bottom_rest_Z": 17.3,
+    "plate_top_Z": 13.000000000007192,
+    "travel_to_plate_mm": 4.3,
+    "note": "Reference caps: bottom Z 17.30 = seat Z 11.30 + 6.0 (r2 based: on a 2T upper plate a fully pressed cap has almost no play -> about seat + 2 at bottom-out, about seat + 6 at rest). Pressed 4 mm they stop 0.30 above the plate top (Z 13); v5 upper layer 1.7 provides that 0.3 over r2. Real check since the 2nd pass (2026-11-06)."
+  },
+  "case": {
+    "measured": {
+      "in_W": 286.0,
+      "in_D": 96.0,
+      "rim": 14.0
+    },
+    "v5_design": {
+      "rim_Z": 14.0,
+      "in_W_design": 286.381,
+      "in_W_min": 285.781,
+      "in_D_design": 95.934,
+      "in_D_min": 95.334,
+      "keycap_wall_min": 1.0
+    },
+    "right_edge_X": 285.388,
+    "wall_X": 285.307,
+    "right_edge_overlap_mm": 0.081,
+    "centred_gap_each_side_mm": 0.109,
+    "depth_gap_each_side_mm": 0.333
+  }
+}

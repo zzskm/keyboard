@@ -5,3 +5,4 @@ __pycache__/
 # guide generator: render cache and local output
 guide/.cache/
 guide/out/
+guide/out_*/

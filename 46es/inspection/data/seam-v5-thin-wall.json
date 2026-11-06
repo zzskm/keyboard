@@ -1,0 +1,623 @@
+{
+ "limit_mm": 0.8,
+ "warn_mm": 1.5,
+ "spacing_mm": 0.5,
+ "parts": [
+  {
+   "file": "46es_v5_cover_L_REVIEW_ONLY",
+   "stl_sha256": "ef56e20e2c11313e9572fdaab81489517733fe30550de4445c937fd3d671b360",
+   "facets": 2656,
+   "samples": 298974,
+   "min_mm": 0.305,
+   "wall_min_mm": 1.0,
+   "below_limit": [
+    {
+     "min_mm": 0.305,
+     "points": 16615,
+     "wall_min_mm": 1.387,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      68.216,
+      94.935,
+      12.156
+     ],
+     "to_print": [
+      67.913,
+      94.967,
+      12.156
+     ],
+     "dir_print": [
+      -0.995,
+      0.105,
+      -0.0
+     ],
+     "box_print": [
+      [
+       2.99,
+       28.7,
+       12.01
+      ],
+      [
+       68.22,
+       94.97,
+       18.98
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.345,
+     "points": 2384,
+     "wall_min_mm": 1.5,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      71.818,
+      13.562,
+      13.253
+     ],
+     "to_print": [
+      71.479,
+      13.622,
+      13.253
+     ],
+     "dir_print": [
+      -0.985,
+      0.173,
+      -0.0
+     ],
+     "box_print": [
+      [
+       52.94,
+       12.12,
+       13.1
+      ],
+      [
+       71.82,
+       14.59,
+       18.98
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.699,
+     "points": 11,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      100.926,
+      1.5,
+      12.067
+     ],
+     "to_print": [
+      100.24,
+      1.633,
+      12.067
+     ],
+     "dir_print": [
+      -0.982,
+      0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       100.8,
+       1.5,
+       12.07
+      ],
+      [
+       100.93,
+       1.63,
+       12.94
+      ]
+     ]
+    }
+   ],
+   "below_warn_count": 4
+  },
+  {
+   "file": "46es_v5_cover_T_REVIEW_ONLY",
+   "stl_sha256": "a582a09caac3751bee422c5f92e4d1a30afe5dbd872a3346cce21d8736309ed1",
+   "facets": 1868,
+   "samples": 213917,
+   "min_mm": 0.046,
+   "wall_min_mm": 1.098,
+   "below_limit": [
+    {
+     "min_mm": 0.046,
+     "points": 9,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      174.403,
+      92.972,
+      12.889
+     ],
+     "to_print": [
+      174.357,
+      92.967,
+      12.889
+     ],
+     "dir_print": [
+      -0.995,
+      -0.105,
+      -0.0
+     ],
+     "box_print": [
+      [
+       174.39,
+       92.97,
+       12.07
+      ],
+      [
+       174.4,
+       93.12,
+       12.89
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.068,
+     "points": 8,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      87.165,
+      92.974,
+      12.889
+     ],
+     "to_print": [
+      87.233,
+      92.967,
+      12.889
+     ],
+     "dir_print": [
+      0.995,
+      -0.105,
+      -0.0
+     ],
+     "box_print": [
+      [
+       87.17,
+       92.97,
+       12.07
+      ],
+      [
+       87.18,
+       93.12,
+       12.89
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.146,
+     "points": 3259,
+     "wall_min_mm": 1.159,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      145.098,
+      -0.339,
+      18.844
+     ],
+     "to_print": [
+      144.955,
+      -0.367,
+      18.844
+     ],
+     "dir_print": [
+      -0.982,
+      -0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       139.1,
+       -0.37,
+       12.02
+      ],
+      [
+       145.1,
+       22.15,
+       18.98
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.388,
+     "points": 65,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      117.712,
+      -0.293,
+      12.189
+     ],
+     "to_print": [
+      118.093,
+      -0.367,
+      12.189
+     ],
+     "dir_print": [
+      0.982,
+      -0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       117.71,
+       -0.37,
+       12.05
+      ],
+      [
+       117.86,
+       -0.1,
+       16.08
+      ]
+     ]
+    }
+   ],
+   "below_warn_count": 3
+  },
+  {
+   "file": "46es_v5_cover_R_REVIEW_ONLY",
+   "stl_sha256": "bb95f5c7e2c6b6118127bb9f24a39d1fd0481031b4fcdec3aee5bb4a90c1733e",
+   "facets": 2780,
+   "samples": 339749,
+   "min_mm": 0.31,
+   "wall_min_mm": 1.0,
+   "below_limit": [
+    {
+     "min_mm": 0.31,
+     "points": 8112,
+     "wall_min_mm": 1.385,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      193.352,
+      94.935,
+      12.311
+     ],
+     "to_print": [
+      193.66,
+      94.967,
+      12.311
+     ],
+     "dir_print": [
+      0.995,
+      0.105,
+      -0.0
+     ],
+     "box_print": [
+      [
+       193.35,
+       83.38,
+       12.01
+      ],
+      [
+       256.75,
+       94.97,
+       18.98
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.481,
+     "points": 25177,
+     "wall_min_mm": 1.0,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      201.017,
+      14.16,
+      13.308
+     ],
+     "to_print": [
+      201.495,
+      14.219,
+      13.308
+     ],
+     "dir_print": [
+      0.993,
+      0.122,
+      -0.0
+     ],
+     "box_print": [
+      [
+       156.85,
+       -0.37,
+       13.03
+      ],
+      [
+       283.03,
+       47.9,
+       18.98
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.699,
+     "points": 18,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      157.018,
+      1.5,
+      12.267
+     ],
+     "to_print": [
+      157.704,
+      1.633,
+      12.267
+     ],
+     "dir_print": [
+      0.982,
+      0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       157.02,
+       1.5,
+       12.03
+      ],
+      [
+       157.16,
+       1.63,
+       12.95
+      ]
+     ]
+    }
+   ],
+   "below_warn_count": 5
+  },
+  {
+   "file": "46es_v5_plate_L_REVIEW_ONLY",
+   "stl_sha256": "e40b74ffc2b568aacd00a8e86526eba0ad37a8c4456914e7f7eb45d58d229dae",
+   "facets": 9098,
+   "samples": 1013784,
+   "min_mm": 0.026,
+   "wall_min_mm": 1.0,
+   "below_limit": [
+    {
+     "min_mm": 0.026,
+     "points": 8637,
+     "wall_min_mm": 1.056,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      121.669,
+      46.155,
+      8.167
+     ],
+     "to_print": [
+      121.695,
+      46.15,
+      8.167
+     ],
+     "dir_print": [
+      0.982,
+      -0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       104.47,
+       40.82,
+       8.01
+      ],
+      [
+       123.71,
+       60.08,
+       11.3
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.185,
+     "points": 1779,
+     "wall_min_mm": 1.0,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      129.26,
+      87.445,
+      8.417
+     ],
+     "to_print": [
+      129.08,
+      87.4,
+      8.417
+     ],
+     "dir_print": [
+      -0.97,
+      -0.242,
+      -0.0
+     ],
+     "box_print": [
+      [
+       127.94,
+       85.09,
+       8.0
+      ],
+      [
+       133.73,
+       90.8,
+       9.5
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.79,
+     "points": 8899,
+     "wall_min_mm": 1.047,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      115.58,
+      77.977,
+      8.017
+     ],
+     "to_print": [
+      115.731,
+      78.753,
+      8.017
+     ],
+     "dir_print": [
+      0.191,
+      0.982,
+      -0.0
+     ],
+     "box_print": [
+      [
+       108.12,
+       59.54,
+       8.0
+      ],
+      [
+       128.73,
+       78.78,
+       11.3
+      ]
+     ]
+    }
+   ],
+   "below_warn_count": 25
+  },
+  {
+   "file": "46es_v5_plate_R_REVIEW_ONLY",
+   "stl_sha256": "5fa959daa0f64109ec33defc71f48d24c8408a48c1210325b87dcda13e43e087",
+   "facets": 5872,
+   "samples": 1097140,
+   "min_mm": 0.026,
+   "wall_min_mm": 1.047,
+   "below_limit": [
+    {
+     "min_mm": 0.026,
+     "points": 8637,
+     "wall_min_mm": 1.057,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      140.094,
+      46.155,
+      8.417
+     ],
+     "to_print": [
+      140.068,
+      46.15,
+      8.417
+     ],
+     "dir_print": [
+      -0.982,
+      -0.191,
+      -0.0
+     ],
+     "box_print": [
+      [
+       138.05,
+       40.82,
+       8.01
+      ],
+      [
+       157.29,
+       60.08,
+       11.3
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.184,
+     "points": 33,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      137.131,
+      9.837,
+      12.867
+     ],
+     "to_print": [
+      137.315,
+      9.837,
+      12.867
+     ],
+     "dir_print": [
+      1.0,
+      0.0,
+      -0.0
+     ],
+     "box_print": [
+      [
+       137.13,
+       9.79,
+       10.73
+      ],
+      [
+       137.53,
+       10.29,
+       12.87
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.254,
+     "points": 29,
+     "wall_min_mm": null,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      137.227,
+      3.399,
+      11.813
+     ],
+     "to_print": [
+      137.131,
+      3.164,
+      11.813
+     ],
+     "dir_print": [
+      -0.378,
+      -0.926,
+      -0.0
+     ],
+     "box_print": [
+      [
+       137.13,
+       2.87,
+       10.69
+      ],
+      [
+       137.61,
+       3.4,
+       11.95
+      ]
+     ]
+    },
+    {
+     "min_mm": 0.79,
+     "points": 8901,
+     "wall_min_mm": 1.047,
+     "wall_points_below_limit": 0,
+     "at_print": [
+      146.182,
+      77.977,
+      8.017
+     ],
+     "to_print": [
+      146.031,
+      78.752,
+      8.017
+     ],
+     "dir_print": [
+      -0.191,
+      0.982,
+      -0.0
+     ],
+     "box_print": [
+      [
+       133.03,
+       59.54,
+       8.0
+      ],
+      [
+       153.64,
+       78.78,
+       11.3
+      ]
+     ]
+    }
+   ],
+   "below_warn_count": 31
+  }
+ ]
+}

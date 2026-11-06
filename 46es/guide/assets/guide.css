@@ -129,6 +129,7 @@ td small{display:block;color:var(--muted);font-size:.8rem;margin-top:.15rem}
 .sgrid.fig{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:start}
 .sgrid > *{min-width:0}
 .sbody ul{margin:0;padding-left:1.15rem;display:grid;gap:.3rem}
+.sbody li{min-width:0;overflow-wrap:anywhere}
 .lines{display:grid;gap:.35rem;font-size:.9rem}
 .lines div{display:grid;grid-template-columns:4.6rem minmax(0,1fr);gap:.5rem}
 .lines .lb{font-weight:600;font-size:.78rem;color:var(--muted);padding-top:.15rem}

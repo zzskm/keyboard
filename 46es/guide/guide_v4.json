@@ -1,5 +1,5 @@
 {
-  "model": "../model/46es_mount_seam_v4.sc",
+  "model": "../model/46es_assembly_review.sc",
   "measurements": "../model/measurements.csv",
   "page": {
     "title": "46es 설계 검토·조립 가이드",
@@ -51,11 +51,11 @@
       },
       {
         "color": "#c3cbd4",
-        "label": "하우징 대용 바디"
+        "label": "PSD60 부분 실측 케이스"
       }
     ],
     "hero": "hero",
-    "hero_caption": "v4 조립 상태(키캡 없음). 스위치는 가정 형상이고, 하우징은 Wilmore(GH60 호환 케이스) STL에서 읽은 치수로 만든 대용 바디라 PSD60 실물이 아니다."
+    "hero_caption": "v4 조립 상태(OEM 키캡 참고 형상 포함). 케이스는 PSD60 부분 실측(내측 약 286×96, 지지대 5.5, 테두리 Z 14 mm)을 반영한 검토 형상이다. 외곽 320×115는 문서값, 코너·바닥·USB 등은 가정이다. MX 스위치·OEM 키캡은 Thingiverse 참고 형상으로 실물 정밀 모델이 아니다."
   },
   "cameras": {
     "iso": {
@@ -178,7 +178,7 @@
   },
   "groups": {
     "housing": [
-      "REF_HOUSING_WILMORE_NOT_PSD60"
+      "REF_HOUSING_PSD60_MEASURED"
     ],
     "mounts": [
       "MOUNT_*"
@@ -224,7 +224,7 @@
       "USB_OUTLET_TBD"
     ],
     "switches": [
-      "REF_SW_ASSUMED_01*"
+      "REF_MX_*"
     ],
     "covers": [
       "COVER_*_DRAFT_TBD"
@@ -252,6 +252,9 @@
     ],
     "seam_hw": [
       "REF_M2_SEAM_FRONT*"
+    ],
+    "keycaps": [
+      "REF_KEYCAP_OEM_*"
     ]
   },
   "renders": [
@@ -259,7 +262,8 @@
       "id": "hero",
       "show": [
         "@no_switches",
-        "@switches"
+        "@switches",
+        "@keycaps"
       ]
     },
     {
@@ -879,91 +883,106 @@
           "item": "M3 암-암 관통 지지대",
           "qty": "6",
           "spec": "길이 6, 맞변 5. 후보 Harwin R30-1000602",
-          "decide": "보유 5 mm 지지대(맞변 4.33–4.5)는 맞지 않음"
+          "decide": "보유 5 mm 지지대(맞변 4.33–4.5)는 맞지 않음",
+          "id": "standoffs"
         },
         {
           "item": "M3 버튼헤드(위)",
           "qty": "6",
           "spec": "M3×4 ISO 7380, 흑색 탄소강(투명 커버 아래로 보인다). 후보 Würth 00600134(마감 확인)",
-          "decide": "자석이 붙어야 함. 보유(r2) 나사는 자석에 붙지만 접시머리"
+          "decide": "자석이 붙어야 함. 보유(r2) 나사는 자석에 붙지만 접시머리",
+          "id": "m3-upper"
         },
         {
           "item": "M3 버튼헤드(아래)",
           "qty": "6",
           "spec": "M3×5 ISO 7380. 재질 무관. 후보 Würth 00600135",
-          "decide": "물림 3. 위 나사 끝과 0.5 간격"
+          "decide": "물림 3. 위 나사 끝과 0.5 간격",
+          "id": "m3-lower"
         },
         {
           "item": "M2 저두 나사 ×6",
           "qty": "6",
           "spec": "브래킷 2 + spine 4. 머리 Ø4 × 1.1. 후보 NBK SSH-M2-6",
-          "decide": "와셔 없음"
+          "decide": "와셔 없음",
+          "id": "m2-6"
         },
         {
           "item": "M2 저두 나사 ×5",
           "qty": "2",
           "spec": "게이트 1 + 앞 이음 1(v4). 후보 NBK SSH-M2-5",
-          "decide": "게이트는 아래에서 위로, 이음은 위에서 아래로"
+          "decide": "게이트는 아래에서 위로, 이음은 위에서 아래로",
+          "id": "m2-5"
         },
         {
           "item": "M2 너트",
           "qty": "8",
           "spec": "DIN 934, 맞변 4 × 높이 1.6",
-          "decide": "포켓 맞변 4.4. 깊이 1.8(브래킷·spine·게이트), 1.0(앞 이음)"
+          "decide": "포켓 맞변 4.4. 깊이 1.8(브래킷·spine·게이트), 1.0(앞 이음)",
+          "id": "m2-nuts"
         },
         {
           "item": "케이스 나사",
           "qty": "6",
           "spec": "PSD60 기존 나사(M2, 1차 실측 호칭경 2). 머리 자리 Ø4.4 × 1",
-          "decide": "주문 1 mount로 길이·머리 확인"
+          "decide": "주문 1 mount로 길이·머리 확인",
+          "id": "case-screws"
         },
         {
           "item": "네오디뮴 자석",
           "qty": "6",
           "spec": "Ø3 × 2, N52(없으면 N35). 커버 보스 포켓 Ø3.2 × 2.1에 투명 에폭시로 접착. 흑색 에폭시 코팅이면 투명 커버에서 덜 보인다. 시험·예비 포함 20개 묶음. MJF 전환으로 Ø4에서 바꿨다(보스 둘레 벽 0.6 → 1.1)",
-          "decide": "흡착력은 보스 탭으로"
+          "decide": "흡착력은 보스 탭으로",
+          "id": "magnets"
         },
         {
           "item": "투명 2액형 에폭시",
           "qty": "—",
           "spec": "커버 자석 접착(투명 커버에 순간접착제 금지) + 앞 이음 tab 접착(선택)",
-          "decide": "자석은 조립 전, 이음은 가조립 누름 시험 뒤(조립 11)"
+          "decide": "자석은 조립 전, 이음은 가조립 누름 시험 뒤(조립 11)",
+          "id": "epoxy"
         },
         {
           "item": "중앙 shim",
           "qty": "시험분",
           "spec": "절연 박판",
-          "decide": "공칭 틈 0.05에 맞춰 0–0.1"
+          "decide": "공칭 틈 0.05에 맞춰 0–0.1",
+          "id": "shim"
         },
         {
           "item": "스위치",
           "qty": "46",
           "spec": "Gateron KS-3 Milky Yellow Pro, 5핀, MX 호환",
-          "decide": "걸쇠 위치·폭(M19)"
+          "decide": "걸쇠 위치·폭(M19)",
+          "id": "switches"
         },
         {
           "item": "키캡",
           "qty": "46",
-          "spec": "1u 43 · 1.25u 1 · 2.25u 1 · 2u 1. 스태빌라이저 없음",
-          "decide": "키캡 하단·스트로크(M17)"
+          "spec": "OEM 프로파일. 1u 43 · 1.25u 1 · 2.25u 1 · 2u 1. 스태빌라이저 없음",
+          "decide": "키캡 하단·스트로크(M17)",
+          "id": "keycaps"
         },
         {
           "item": "Pro Micro",
           "qty": "1",
           "spec": "33 × 18, ATmega32U4, Micro-B, 높이 4(1차 실측)",
-          "decide": "보드 변형(M15)"
+          "decide": "보드 변형(M15)",
+          "id": "controller"
         },
         {
           "item": "USB inside 케이블",
           "qty": "1",
           "spec": "r2에서 쓰던 것(C 암 아웃렛 ↔ Pro Micro 플러그). 아웃렛은 케이스에 이미 접착",
-          "decide": "추가 구매 없음"
+          "decide": "추가 구매 없음",
+          "id": "usb"
         },
         {
           "item": "다이오드 · 배선",
           "qty": "46",
           "spec": "4행 × 12열 매트릭스, 신호선 16",
-          "decide": "점유 높이·경로(M14)"
+          "decide": "점유 높이·경로(M14)",
+          "id": "wiring"
         }
       ],
       "tools": "공구: 2 mm 육각 렌치(M3 ISO 7380), 1.3 mm 육각 렌치(M2 저두), 케이스 나사용 드라이버, 핀셋(너트), 캘리퍼, 바늘줄, 사포, 투명 2액형 에폭시, 글루스틱 또는 핫글루, 납땜 도구."
@@ -1524,5 +1543,7 @@
   "footer": [
     "근거 파일: keyboard 저장소 <code>46es/model/README.md</code>, <code>model/print_v4/README.md</code>, <code>docs/seam-v4-2026-11-05.md</code>, <code>docs/side-pairs-v3-2026-11-05.md</code>, <code>docs/split-v1-hardware-2026-11-05.md</code>, <code>model/measurements.csv</code>. 이 페이지는 <code>46es/guide/build_guide.py</code>가 <code>guide_v4.json</code>에서 만든다.",
     "케이스 구멍은 GH60 채택값이고 PSD60 실측값이 아니다. 여유는 주문 1 시험 뒤 바뀔 수 있다. 체크 표시는 이 브라우저에만 저장된다."
-  ]
+  ],
+  "interactive": "assembly_v4.json",
+  "reference_manifest": "../model/assembly_reference.json"
 }
