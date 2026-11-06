@@ -1,0 +1,322 @@
+[
+ {
+  "order": "order1",
+  "file": "46es_v4_sw_hole_coupon",
+  "body": "SW_HOLE_SAMPLE",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 55737.4327,
+  "stl_triangles": 8608,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 55752.1916,
+  "stl_rel_volume_error": 0.000265,
+  "print_bbox_mm": [
+   145.35,
+   74.15,
+   10.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "95dcd00cac13ba1b1acf11342ffe5b5d3261c58288742ee704f874510507d912",
+  "step_sha256": "38c9aecb17286db4c72602f06cfc4a69c39a160df5f2f331f2d994f6aa524243"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_boss_tab",
+  "body": "BOSS_TAB_SAMPLE",
+  "print_flip_about_X": false,
+  "cad_volume_mm3": 8968.8322,
+  "stl_triangles": 1888,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 8968.975,
+  "stl_rel_volume_error": 1.6e-05,
+  "print_bbox_mm": [
+   30.0,
+   30.0,
+   11.5
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "a4d47d6a5b06d7cfb3f6d8a88420280cde0ecb68c894abf195378012b72d4e1a",
+  "step_sha256": "2034895d99e07c026e44c64b45bde53ab97ac1215de62ee9deb2236b30951916"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_seam_coupon_L",
+  "body": "SEAM_COUPON_L_V4",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 1618.0339,
+  "stl_triangles": 2672,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1618.3926,
+  "stl_rel_volume_error": 0.000222,
+  "print_bbox_mm": [
+   24.9,
+   21.567,
+   8.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "ddcebde56022e05145a10e6b07326473f7f10801ca767c743a919405c258c1a8",
+  "step_sha256": "9c365f0c409dde85c0895be44c2701abc16519858ffb0dfb982e04353a2e1471"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_seam_coupon_R",
+  "body": "SEAM_COUPON_R_V4",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 1512.1478,
+  "stl_triangles": 560,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1512.1662,
+  "stl_rel_volume_error": 1.2e-05,
+  "print_bbox_mm": [
+   18.869,
+   21.567,
+   8.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "7997309451192da0d335cf667f01f0ebbd4d114d5b0316fec797342ac98cc9ca",
+  "step_sha256": "dafa94c39372f44305079c3699df34d6de51bb14e0354f33592112dc1ae33499"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_mount_L",
+  "body": "MOUNT_L_PAIR_V3",
+  "print_flip_about_X": false,
+  "cad_volume_mm3": 2563.9014,
+  "stl_triangles": 1954,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 2563.1622,
+  "stl_rel_volume_error": 0.000288,
+  "print_bbox_mm": [
+   30.592,
+   91.825,
+   3.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "0c4d629841c97da590d17b2838a9b5e73208a98931f20d174583de8b7fd11265",
+  "step_sha256": "c05808e7526795821ac12dbe85bad5e25f2695bcb105ab8a5b8a0d11c2855bab"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_mount_R",
+  "body": "MOUNT_R_PAIR_V3",
+  "print_flip_about_X": false,
+  "cad_volume_mm3": 2337.1176,
+  "stl_triangles": 1916,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 2336.5751,
+  "stl_rel_volume_error": 0.000232,
+  "print_bbox_mm": [
+   40.164,
+   92.883,
+   3.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "acaadd7f226c7bc2f13de9e66d0c5c0965b11da8932cabed9ddebc505c4ea39e",
+  "step_sha256": "c8ec936807f79bca6cd118fff5b9b9c34c1da5813483117643b5cf137bc32321"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_mount_H02_SO3",
+  "body": "MOUNT_H02_SO3_MIN_V2",
+  "print_flip_about_X": false,
+  "cad_volume_mm3": 1407.2815,
+  "stl_triangles": 1372,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1407.1244,
+  "stl_rel_volume_error": 0.000112,
+  "print_bbox_mm": [
+   12.881,
+   50.745,
+   3.95
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "b6755c6678287c9e4b7198fdbdb848e95b85021a5d95e523c5336dd5d337e7e7",
+  "step_sha256": "fd5547c51467861bc05c8686b92a1f968b314fc116f7204007ad6bfc3513431f"
+ },
+ {
+  "order": "order1",
+  "file": "46es_v4_mount_H03_SO6",
+  "body": "MOUNT_H03_SO6_MIN_V2",
+  "print_flip_about_X": false,
+  "cad_volume_mm3": 1616.0926,
+  "stl_triangles": 1182,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1615.6932,
+  "stl_rel_volume_error": 0.000247,
+  "print_bbox_mm": [
+   69.818,
+   13.077,
+   3.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "14d08ef865ff993fb9cf87969dc65e919342e8833dffbc21e3f7bcbb9fa293d7",
+  "step_sha256": "6a4d03a2b6821312766418a3bc4779bdc3a54be7a0ce74a73b69f1bf0e582610"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_plate_L",
+  "body": "PLATE_L_SPLIT_V1",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 38120.3738,
+  "stl_triangles": 4208,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 38126.2411,
+  "stl_rel_volume_error": 0.000154,
+  "print_bbox_mm": [
+   143.293,
+   95.334,
+   8.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "217b31aab8a76a4412b93db5bc10819c043a6564742b66382e0e214750fba2d2",
+  "step_sha256": "9760ced40f890cd2af91fa9f995b625287b2ed99deeaa8435e16693b23534226"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_plate_R",
+  "body": "PLATE_R_SPLIT_V1",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 40635.9545,
+  "stl_triangles": 3334,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 40639.0843,
+  "stl_rel_volume_error": 7.7e-05,
+  "print_bbox_mm": [
+   154.257,
+   95.334,
+   8.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "21b7a31be28ecf8527382a17cbc9b7f884715683b2a9193a387843abbaeb3c81",
+  "step_sha256": "7dd11cb3ca203e7afe21490aca96398cdd1aec7edc51cbc91bfd6afe0ee73bf6"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_spine",
+  "body": "PLATE_SPINE_V1",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 1691.2445,
+  "stl_triangles": 1204,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1691.619,
+  "stl_rel_volume_error": 0.000221,
+  "print_bbox_mm": [
+   30.0,
+   49.0,
+   4.5
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "c3d7f72f8d3bcac8efc52742c4cf044f9bdf187523c5f69833e3783ff087825c",
+  "step_sha256": "643624467f9d94f5006a7e155553bee33c45cdf0eda6596035c7265bdcde537b"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_ctrl_bracket",
+  "body": "CTRL_BRACKET_SPLIT_V1",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 1415.5932,
+  "stl_triangles": 1062,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 1415.73,
+  "stl_rel_volume_error": 9.7e-05,
+  "print_bbox_mm": [
+   35.681,
+   28.6,
+   7.0
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "6469f32ef26a8b95a2daf4ba08d4a0a78efb65ced60c8360f811b0e63b4d0820",
+  "step_sha256": "bb1e6db00ec3c99fa4818ee1e8866d42f259e85bf661d11fc0fe2c049d59b291"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_ctrl_gate",
+  "body": "CTRL_GATE_SPLIT_V1",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 186.4739,
+  "stl_triangles": 558,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 186.4843,
+  "stl_rel_volume_error": 5.5e-05,
+  "print_bbox_mm": [
+   7.919,
+   11.0,
+   7.6
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "76a49323d057503b1604115c5686cf9d0cb469ee34f55eeda70f40470d3d496b",
+  "step_sha256": "50f096e8dd87342ece64dd81eec4b8a799df4637d25748e79ea754b84d376ccb"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_cover_L",
+  "body": "COVER_L_DRAFT_TBD",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 5784.6906,
+  "stl_triangles": 848,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 5784.376,
+  "stl_rel_volume_error": 5.4e-05,
+  "print_bbox_mm": [
+   101.881,
+   95.334,
+   3.5
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "fdaf6e11508226653e2b56452be8c071f96da00523efe8d9ece354e0d67302b8",
+  "step_sha256": "4c3c5d90a70830dce72257c63cecd602f244187bc4811662c9f795c5adf7911b"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_cover_T",
+  "body": "COVER_T_DRAFT_TBD",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 5211.5162,
+  "stl_triangles": 660,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 5211.3271,
+  "stl_rel_volume_error": 3.6e-05,
+  "print_bbox_mm": [
+   88.466,
+   95.334,
+   3.5
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "61e46a23f138bf6c308f48d390903ea0a07880852d3048b4f7c03a2ed15e88a5",
+  "step_sha256": "7942a4cfa0565a97539159fe29ca6feb2baae19b0aff2daa9ffe7d030ed0a3e1"
+ },
+ {
+  "order": "order2",
+  "file": "46es_v4_cover_R",
+  "body": "COVER_R_DRAFT_TBD",
+  "print_flip_about_X": true,
+  "cad_volume_mm3": 6173.8131,
+  "stl_triangles": 860,
+  "stl_components": 1,
+  "stl_bad_edges": 0,
+  "stl_volume_mm3": 6173.6211,
+  "stl_rel_volume_error": 3.1e-05,
+  "print_bbox_mm": [
+   128.792,
+   95.334,
+   3.5
+  ],
+  "bed_zmin": 0.0,
+  "stl_sha256": "f516377a8d6e1316c280560b1cb0c62aa845607565fd8ebfd9fd54016934192a",
+  "step_sha256": "7465c12d995c8596ff7be663b02a7601de54d2d8d1ca514f733a6f88294beb2c"
+ }
+]

@@ -1,0 +1,1 @@
+{"bodies": 111, "timeline_items": 428, "sketches": 64, "dof_nonzero": [], "errors": [], "warnings": ["HOUSING_POSTS_CAND"], "source": "solidcraft-cli eval --in model/46es_mount_seam_v4.sc (2026-11-05, after MJF PA12 changes)"}

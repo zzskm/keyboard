@@ -1,10 +1,12 @@
 # 46es 설계 검토·조립 가이드 생성기
 
-`guide_v3.json`(내용)과 CAD 모델에서 정적 웹페이지 한 장(`index.html` + `img/`)을 만든다. 게시본은 <https://zzskm.github.io/keyboard-46es/>이다.
+`guide_v4.json`(내용, 기본값)과 CAD 모델에서 정적 웹페이지 한 장(`index.html` + `img/`)을 만든다. 게시본은 <https://zzskm.github.io/keyboard-46es/>이다.
+
+`guide_v4.json`(2026-11-05)은 v4 모델(`model/46es_mount_seam_v4.sc`) 기준이다. 앞 이음 조립, 접착 판단 단계, 주문 1 시험, 하드웨어 수량을 담았다. 재료 MJF PA12(자연 회색)와 그에 따른 변경(자석 Ø3, 방향 자유, 나일론 접착)도 반영했다. `guide_v3.json`은 v3 판 기록으로 남겨 두었다(`--spec guide_v3.json`).
 
 ## 무엇이 자동이고 무엇을 손으로 쓰나
 
-| 자동(모델·CSV에서) | 손으로(`guide_v3.json`) |
+| 자동(모델·CSV에서) | 손으로(`guide_v4.json`) |
 |---|---|
 | 렌더 PNG. 단계마다 보일 바디, 카메라, 단면을 spec에 적으면 `solidcraft-cli snapshot`으로 찍는다 | 조립 단계 문장, 확인할 것, 안 맞을 때 대처 |
 | 출력 부품 표의 부피와 X×Y×Z(`solidcraft-cli eval`), JLC 최소 크기 경고 | 맞춤 검토 표, 열린 항목, 구매품, 국부 시험, 결정 기록 |
@@ -40,7 +42,7 @@ git add keyboard-46es && git commit -m "docs(keyboard-46es): 가이드 재생성
 
 Pages 저장소에는 자동 커밋이 계속 쌓이므로 커밋 전에 `pull --ff-only`, push 전에 `pull --rebase`를 한다.
 
-## spec 구조 (`guide_v3.json`)
+## spec 구조 (`guide_v4.json`)
 
 - `model`, `measurements`: spec 기준 상대 경로.
 - `cameras`: `{target, yaw, pitch, distance, fov}`(mm, 라디안). yaw 0은 −Y(앞)에서, **yaw −π/2는 +X 쪽에서** 본다. pitch +π/2는 위에서 본 평면도.

@@ -1,0 +1,1522 @@
+{
+  "model": "../model/46es_mount_seam_v4.sc",
+  "measurements": "../model/measurements.csv",
+  "page": {
+    "title": "46es 설계 검토·조립 가이드",
+    "description": "46키 핸드와이어드 키보드 46es의 3D 프린팅 케이스 내부(v4: split mount + plate 앞 이음) 설계 검토와 조립 순서. 렌더와 부품 표는 CAD 모델에서 자동으로 만든다.",
+    "store_key": "46es-guide-v4",
+    "h1": "설계 검토 · 조립 가이드",
+    "sub": "46키 핸드와이어드 · PSD60 Defender 하우징 · MJF PA12 나일론 출력(JLC3DP, 자연 회색) · v4(앞 이음 · 출력 세트)",
+    "lede": "알루미늄 하우징 안에 3D 프린팅한 mount 4개를 케이스 나사로 고정하고, 그 위에 두 조각 plate와 spine, 컨트롤러 브래킷, 커버 3조각을 얹는 구조다. v4에서 plate 두 조각의 앞쪽을 dovetail 반턱과 M2 나사로 잇고, 출력 파일을 두 번의 주문(시험 → 본 세트)으로 나눴다. 이 페이지에서 설계가 어디서 맞지 않을 수 있는지 점검하고, 부품이 나왔을 때 따라 할 조립 순서를 확인한다.",
+    "chips": [
+      {
+        "tone": "wait",
+        "text": "출력 파일 준비됨 · 주문 1(시험) 전"
+      },
+      {
+        "tone": "ok",
+        "text": "GH60 값 채택 · 정밀 실측 생략"
+      },
+      {
+        "tone": "ok",
+        "text": "재료 MJF PA12 · 자연 회색"
+      },
+      {
+        "auto": "measurements"
+      },
+      {
+        "auto": "model"
+      }
+    ],
+    "legend": [
+      {
+        "color": "#7fae5c",
+        "label": "plate 왼쪽"
+      },
+      {
+        "color": "#9aa0a8",
+        "label": "plate 오른쪽 · mount · 브래킷"
+      },
+      {
+        "color": "#e2a238",
+        "label": "지지대"
+      },
+      {
+        "color": "#3f7fd0",
+        "label": "커버"
+      },
+      {
+        "color": "#d24c4c",
+        "label": "Pro Micro 점유"
+      },
+      {
+        "color": "#c3cbd4",
+        "label": "하우징 대용 바디"
+      }
+    ],
+    "hero": "hero",
+    "hero_caption": "v4 조립 상태(키캡 없음). 스위치는 가정 형상이고, 하우징은 Wilmore(GH60 호환 케이스) STL에서 읽은 치수로 만든 대용 바디라 PSD60 실물이 아니다."
+  },
+  "cameras": {
+    "iso": {
+      "target": [
+        142,
+        46,
+        -2
+      ],
+      "yaw": -0.32,
+      "pitch": 0.62,
+      "distance": 315,
+      "fov": 0.6
+    },
+    "below": {
+      "target": [
+        142,
+        47,
+        6
+      ],
+      "yaw": -0.15,
+      "pitch": -1.1,
+      "distance": 330,
+      "fov": 0.6
+    },
+    "ctrl_below": {
+      "target": [
+        128,
+        22,
+        5
+      ],
+      "yaw": -0.2,
+      "pitch": -1.0,
+      "distance": 165,
+      "fov": 0.6
+    },
+    "top": {
+      "target": [
+        142,
+        47,
+        0
+      ],
+      "yaw": 0,
+      "pitch": 1.5707963,
+      "distance": 300,
+      "fov": 0.6
+    },
+    "sec_so1": {
+      "target": [
+        6.5,
+        5.5,
+        5.5
+      ],
+      "yaw": -1.5708,
+      "pitch": 0.04,
+      "distance": 42,
+      "fov": 0.6
+    },
+    "sec_seam": {
+      "target": [
+        131,
+        42,
+        7
+      ],
+      "yaw": 0,
+      "pitch": 0.04,
+      "distance": 62,
+      "fov": 0.6
+    },
+    "sec_support": {
+      "target": [
+        131,
+        56,
+        5
+      ],
+      "yaw": 0,
+      "pitch": 0.04,
+      "distance": 40,
+      "fov": 0.6
+    },
+    "sec_gate": {
+      "target": [
+        116.5,
+        12,
+        5
+      ],
+      "yaw": -1.5708,
+      "pitch": 0.04,
+      "distance": 50,
+      "fov": 0.6
+    },
+    "sec_front": {
+      "target": [
+        136,
+        6.6,
+        8
+      ],
+      "yaw": 0,
+      "pitch": 0.04,
+      "distance": 40,
+      "fov": 0.6
+    },
+    "front_top": {
+      "target": [
+        133,
+        22,
+        10
+      ],
+      "yaw": 0,
+      "pitch": 1.5707963,
+      "distance": 115,
+      "fov": 0.6
+    }
+  },
+  "render_defaults": {
+    "camera": "iso",
+    "size": [
+      1400,
+      620
+    ]
+  },
+  "groups": {
+    "housing": [
+      "REF_HOUSING_WILMORE_NOT_PSD60"
+    ],
+    "mounts": [
+      "MOUNT_*"
+    ],
+    "standoffs": [
+      "STANDOFF_SO*_REF"
+    ],
+    "m3_lower": [
+      "REF_SO*_M3_LOWER"
+    ],
+    "m3_upper": [
+      "REF_SO*_M3_UPPER"
+    ],
+    "case_screws": [
+      "REF_CASE_H0*_M2"
+    ],
+    "plates": [
+      "PLATE_L_SPLIT_V1",
+      "PLATE_R_SPLIT_V1"
+    ],
+    "spine": [
+      "PLATE_SPINE_V1"
+    ],
+    "spine_hw": [
+      "REF_M2_PLATE_3*",
+      "REF_M2_PLATE_4*",
+      "REF_M2_PLATE_5*",
+      "REF_M2_PLATE_6*"
+    ],
+    "bracket": [
+      "CTRL_BRACKET_SPLIT_V1",
+      "REF_M2_PLATE_1*",
+      "REF_M2_PLATE_2*"
+    ],
+    "gate": [
+      "CTRL_GATE_SPLIT_V1",
+      "REF_M2_GATE*"
+    ],
+    "ctrl": [
+      "CTRL_KEEPOUT_TBD"
+    ],
+    "usb": [
+      "USB_OUTLET_TBD"
+    ],
+    "switches": [
+      "REF_SW_ASSUMED_01*"
+    ],
+    "covers": [
+      "COVER_*_DRAFT_TBD"
+    ],
+    "magnets": [
+      "REF_SO*_MAGNET"
+    ],
+    "no_switches": [
+      "@housing",
+      "@mounts",
+      "@standoffs",
+      "@m3_lower",
+      "@m3_upper",
+      "@case_screws",
+      "@plates",
+      "@spine",
+      "@spine_hw",
+      "@seam_hw",
+      "@bracket",
+      "@gate",
+      "@ctrl",
+      "@usb",
+      "@covers",
+      "@magnets"
+    ],
+    "seam_hw": [
+      "REF_M2_SEAM_FRONT*"
+    ]
+  },
+  "renders": [
+    {
+      "id": "hero",
+      "show": [
+        "@no_switches",
+        "@switches"
+      ]
+    },
+    {
+      "id": "st-mounts",
+      "show": [
+        "@mounts",
+        "@standoffs",
+        "@m3_lower"
+      ]
+    },
+    {
+      "id": "st-case",
+      "show": [
+        "@housing",
+        "@mounts",
+        "@standoffs",
+        "@case_screws",
+        "@usb"
+      ]
+    },
+    {
+      "id": "st-join",
+      "show": [
+        "@plates",
+        "@spine",
+        "@spine_hw",
+        "@seam_hw"
+      ],
+      "camera": "below"
+    },
+    {
+      "id": "st-trial",
+      "show": [
+        "@housing",
+        "@mounts",
+        "@standoffs",
+        "@case_screws",
+        "@usb",
+        "@plates",
+        "@spine"
+      ]
+    },
+    {
+      "id": "st-switches",
+      "show": [
+        "@plates",
+        "@spine",
+        "@switches"
+      ]
+    },
+    {
+      "id": "st-ctrl",
+      "show": [
+        "@plates",
+        "@spine",
+        "@bracket",
+        "@gate",
+        "@ctrl",
+        "STANDOFF_SO6_REF"
+      ],
+      "camera": "ctrl_below",
+      "size": [
+        1200,
+        700
+      ]
+    },
+    {
+      "id": "st-module",
+      "show": [
+        "@housing",
+        "@mounts",
+        "@standoffs",
+        "@m3_lower",
+        "@case_screws",
+        "@usb",
+        "@plates",
+        "@spine",
+        "@spine_hw",
+        "@bracket",
+        "@gate",
+        "@ctrl",
+        "@switches",
+        "@m3_upper",
+        "@seam_hw"
+      ]
+    },
+    {
+      "id": "mounts-top",
+      "show": [
+        "@housing",
+        "@mounts",
+        "@standoffs",
+        "@case_screws",
+        "@usb",
+        "@ctrl"
+      ],
+      "camera": "top",
+      "size": [
+        1400,
+        560
+      ]
+    },
+    {
+      "id": "sec-so1",
+      "show": [
+        "@no_switches"
+      ],
+      "section": "x=6.494",
+      "camera": "sec_so1",
+      "size": [
+        1200,
+        660
+      ]
+    },
+    {
+      "id": "sec-seam",
+      "show": [
+        "@no_switches"
+      ],
+      "section": "y=42,flip",
+      "camera": "sec_seam",
+      "size": [
+        1200,
+        660
+      ]
+    },
+    {
+      "id": "sec-support",
+      "show": [
+        "@no_switches"
+      ],
+      "section": "y=56,flip",
+      "camera": "sec_support",
+      "size": [
+        1200,
+        660
+      ]
+    },
+    {
+      "id": "sec-gate",
+      "show": [
+        "@no_switches"
+      ],
+      "section": "x=116.5",
+      "camera": "sec_gate",
+      "size": [
+        1200,
+        660
+      ]
+    },
+    {
+      "id": "st-seam",
+      "show": [
+        "@plates",
+        "@seam_hw",
+        "STANDOFF_SO6_REF"
+      ],
+      "camera": "front_top",
+      "size": [
+        1200,
+        760
+      ]
+    },
+    {
+      "id": "sec-front",
+      "show": [
+        "@no_switches"
+      ],
+      "section": "y=6.6,flip",
+      "camera": "sec_front",
+      "size": [
+        1200,
+        660
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "요약",
+      "src": "근거 · model/print_v4/README.md · docs/seam-v4-2026-11-05.md · docs/side-pairs-v3-2026-11-05.md",
+      "cards": [
+        {
+          "k": "출력 부품",
+          "big": "12개",
+          "text": "mount 4(좌·우 pair, 중앙, 앞), plate 2조각과 spine, 컨트롤러 브래킷과 게이트, 커버 3조각. 둘레 프레임 없이 mount가 케이스 나사와 plate 지지대만 잇는다. 주문 1에 시험물 4개(B 쿠폰, 보스 탭, 이음 쿠폰 L·R)를 더한다."
+        },
+        {
+          "k": "출력 공차 가정",
+          "big": "±0.3 / ±0.4%",
+          "text": "JLC3DP MJF PA12 치수 공차(100 mm 이하 / 그 이상). 설계 여유 0.15–0.7은 이 공차로 보장되지 않아 주문 1 시험으로 확인한다. 최소 벽은 1.0이고, 출력 세트 16개의 벽은 모두 1.0 이상이다."
+        },
+        {
+          "k": "지금 할 일",
+          "ol": [
+            "주문 1(시험): B 쿠폰, 보스 탭, 이음 쿠폰 L·R, mount 4개. 파일은 <code>model/print_v4/order1/</code>",
+            "구매품: 탄소강 M3×4 버튼헤드, M3 6 mm 지지대(맞변 5), Ø3×2 자석, M2 저두 나사·너트",
+            "주문 1 시험 결과를 v4에 반영(아래 「주문 1 시험」)",
+            "주문 2(본 세트): plate 2, spine, 브래킷, 게이트, 커버 3. 두 주문 모두 MJF PA12 자연 회색"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "type": "structure",
+      "title": "구조",
+      "cols": 2,
+      "src": "근거 · docs/seam-v4-2026-11-05 · side-pairs-v3 · minimal-mount-v2 · split-v1-hardware",
+      "layers": [
+        {
+          "z": "Z 11.5–15",
+          "color": "#3f7fd0",
+          "title": "커버 3조각(L·T·R).",
+          "text": "베젤 2T에 테두리 립 1. 밑면 보스(Ø5.4)가 plate 카운터보어(Ø6)에 꽂히고, 보스 끝 자석이 위 M3 나사머리를 끌어당긴다(틈 0.45)."
+        },
+        {
+          "z": "Z 8–13",
+          "color": "#7fae5c",
+          "title": "plate 2조각.",
+          "text": "X {{p:split_center_X}} 부근에서 좌·우로 나눴다. 3층 구조(위 2 = 16.5 개구, 가운데 1.5 = 14.0 홀, 아래 1.5 = 릴리프)와 46키 배치는 원본과 같다. 두 조각을 합친 외곽은 285.8 × 95.3이다. <b>앞 이음(v4)</b>: 왼쪽 조각 윗면 쪽 {{p:seam_tab_T}}가 dovetail tab으로 나와 오른쪽 조각의 위가 열린 포켓에 꽂히고, M2×5 1개와 너트로 조인다(SO6 바로 오른쪽, 커버 T 조각 아래)."
+        },
+        {
+          "z": "Z 4–8.5",
+          "color": "#9aa0a8",
+          "title": "spine.",
+          "text": "두 조각 이음부 밑(Y 38–87)에서 M2 4개로 plate를 잇는다(폭 {{p:split_spine_W}}). 중앙 mount의 받침({{p:split_support_size}} × {{p:split_support_size}}, 상면 Z 3.95)이 {{p:split_support_gap}} 아래에서 받친다. 줄기 아랫면에 배선 홈 3곳(Y 49·64·72, 폭 {{p:spine_wire_W}} × 높이 {{p:spine_wire_H}})이 있다."
+        },
+        {
+          "z": "Z 1–9.6",
+          "color": "#d24c4c",
+          "title": "컨트롤러 브래킷·게이트.",
+          "text": "Pro Micro 브래킷은 별도 부품으로 plate 왼쪽 아랫면에 M2 2개로 단다. 지붕이 오른쪽 조각 앞부분(Y 13–33)을 아래에서 받친다. 게이트(M2 1개)가 −X(USB) 쪽 빠짐을 막는다."
+        },
+        {
+          "z": "Z 2–8",
+          "color": "#e2a238",
+          "title": "육각 지지대 6개.",
+          "text": "M3 암-암 관통 6 mm, 맞변 {{p:TBD_so_AF}}. mount 육각 포켓(맞변 5.4, 깊이 {{p:TBD_so_pocket_D}})에 앉고, 위는 M3×4, 아래는 M3×5로 잡는다."
+        },
+        {
+          "z": "Z 0–3",
+          "color": "#9aa0a8",
+          "title": "mount 4개.",
+          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다."
+        },
+        {
+          "z": "Z 0 기준",
+          "color": "#c3cbd4",
+          "title": "PSD60 하우징 지지대 상면.",
+          "text": "좌표 원점은 GH60 PCB 기준점(앞·왼쪽)이고 타이핑 경사는 뺀 값이다."
+        }
+      ],
+      "figs": [
+        {
+          "render": "sec-so1",
+          "caption": "SO1 단면(X 6.494). 하우징 앞벽, mount, 지지대(주황), 위·아래 M3, plate 카운터보어, 커버 보스와 자석."
+        },
+        {
+          "render": "sec-front",
+          "caption": "앞 이음 단면(Y 6.6). 왼쪽 조각 tab(윗면 쪽 2.4)이 오른쪽 조각 포켓에 얹히고, M2×5 머리는 tab 카운터보어에, 너트는 오른쪽 조각 아랫면 포켓에 들어간다. 왼쪽은 SO6 지지대와 커버 T 보스·자석."
+        },
+        {
+          "render": "sec-seam",
+          "caption": "plate 이음부 단면(Y 42). spine이 M2 나사·너트로 두 조각을 잇는다."
+        },
+        {
+          "render": "sec-support",
+          "caption": "중앙 받침 단면(Y 56). spine 하면과 mount 받침 사이 공칭 틈 {{p:split_support_gap}}을 shim으로 맞춘다."
+        },
+        {
+          "render": "sec-gate",
+          "caption": "게이트 단면(X 116.5). 게이트 M2는 아래에서 위로 조이고 너트는 게이트 위쪽 포켓에 들어간다. 빨강은 Pro Micro와 플러그 점유."
+        }
+      ]
+    },
+    {
+      "id": "fit",
+      "type": "fit",
+      "title": "맞춤 검토",
+      "cols": 1,
+      "src": "근거 · docs/seam-v4-2026-11-05 · assembly-tolerance-2026-11-04 · split-v1-hardware",
+      "intro": [
+        "plate는 여전히 가장 비싼 출력물이다. 다만 두 조각으로 나뉘어 한쪽만 다시 뽑을 수 있게 됐다. 어긋남은 mount, spine, shim 같은 작은 부품과 조립 순서로 먼저 흡수하고, plate는 사포질 이상으로 손대지 않는다."
+      ],
+      "note": "판정은 JLC 규격 최악값과 모델 여유를 비교한 것이다. 지지대 간격과 plate 조각 행의 최악값은 이 페이지를 만들며 계산했다.",
+      "rows": [
+        {
+          "where": "케이스 ↔ mount<small>케이스 나사 6</small>",
+          "worst": "0.93",
+          "worst_sub": "1차 대략 실측 H 위치와 GH60 채택 좌표 차이 최대(H03 Y). 정밀 실측은 하지 않기로 했다(2026-11-05)",
+          "absorb": "±{{p:TBD_case_adjust}}",
+          "absorb_sub": "방향별 장공: H01·H05는 X, H02·H03·H04·H06은 Y. M2 기준 지정축 약 ±1.2, 직교 ±0.2. H05는 ±{{p:split_H05_adjust}}",
+          "tone": "warn",
+          "verdict": "주문 1 mount로 확인",
+          "fix": "장공을 줄로 늘리거나 그 mount만 다시 출력"
+        },
+        {
+          "where": "mount ↔ plate<small>pair 하나의 지지대 2개</small>",
+          "worst": "0.6",
+          "worst_sub": "좌 pair SO1↔SO2 81.4, 우 pair SO5↔SO4 약 87. 두 부품 ±0.3씩",
+          "absorb": "0.4",
+          "absorb_sub": "plate M3 구멍 Ø3.4(편측 0.2) × 2. 중앙·앞 mount는 지지대가 1개라 해당 없음",
+          "tone": "warn",
+          "verdict": "부족할 수 있음",
+          "fix": "mount 쪽 육각 포켓을 그 방향으로 줄로 넓히거나 mount만 다시 출력. plate 구멍은 건드리지 않는다"
+        },
+        {
+          "where": "plate 좌 ↔ 우 ↔ spine",
+          "worst": "±0.55",
+          "worst_sub": "조각 길이 약 137 × 0.4%",
+          "absorb": "0.15–0.5",
+          "absorb_sub": "앞 이음 tab ↔ 포켓 사방 0.15, spine 이음 맞춤 X {{p:split_fit_X}}, 뒤 Y {{p:split_fit_rear_Y}}, 조각 사이 {{p:split_plate_gap}}. M2 구멍 Ø{{p:split_M2_clear_D}}",
+          "tone": "warn",
+          "verdict": "이음 쿠폰",
+          "fix": "tab이 빡빡하면 tab 옆면을 줄로, 헐거우면 에폭시로 채운다. spine은 다듬거나 spine만 다시 출력"
+        },
+        {
+          "where": "spine ↔ 중앙 받침",
+          "worst": "{{p:split_support_gap}}",
+          "worst_sub": "공칭 틈. 출력 오차는 포함하지 않음",
+          "absorb": "shim 0–0.1",
+          "absorb_sub": "절연 박판",
+          "tone": "wait",
+          "verdict": "현물 맞춤",
+          "fix": "shim 두께를 바꾸거나 받침 윗면을 사포로"
+        },
+        {
+          "where": "하우징 벽 ↔ plate 외곽",
+          "worst": "약 1.0",
+          "worst_sub": "조각 길이 오차 약 0.55 + 조립 위치 0.5",
+          "absorb": "{{p:TBD_plate_gap}}",
+          "absorb_sub": "외곽 틈. plate 보호 변형은 0.8",
+          "tone": "warn",
+          "verdict": "부족할 수 있음",
+          "fix": "닿는 곳만 그 조각 가장자리를 사포로. 심하면 그 조각만 다시 출력"
+        },
+        {
+          "where": "컨트롤러 브래킷 ↔ 앞 mount 패드",
+          "worst": "—",
+          "absorb": "0.3",
+          "absorb_sub": "모델 최소 간격",
+          "tone": "warn",
+          "verdict": "공칭값",
+          "fix": "패드를 줄로"
+        },
+        {
+          "where": "USB 아웃렛 ↔ 좌 pair",
+          "worst": "글루",
+          "worst_sub": "r2에서 쓰던 아웃렛이 이미 케이스에 핫멜트로 붙어 있다",
+          "absorb": "1.02",
+          "absorb_sub": "가정 점유 기준 최소 거리",
+          "tone": "ok",
+          "verdict": "현물 확인",
+          "fix": "글루 덩어리는 조립하며 깎는다. 지지대 높이를 넘지 않는다(사용자 확인)"
+        },
+        {
+          "where": "위 M3 머리 ↔ 카운터보어",
+          "worst": "Ø5.7",
+          "absorb": "반경 0.15",
+          "absorb_sub": "Ø6 카운터보어",
+          "tone": "warn",
+          "verdict": "공차 보장 아님",
+          "fix": "카운터보어를 드릴이나 줄로 넓힌다(머리 아래 plate 살 1.5는 유지)"
+        },
+        {
+          "where": "커버 보스 ↔ 카운터보어",
+          "worst": "Ø5.4",
+          "absorb": "반경 0.3",
+          "tone": "ok",
+          "verdict": "여유 있음",
+          "fix": "B 쿠폰 결과로 보스 지름을 정하고 그 커버 조각만 다시 출력"
+        },
+        {
+          "where": "스위치 46 ↔ 14.0 홀",
+          "worst": "홀 ±0.4",
+          "worst_sub": "홀 층은 16.5 개구 위로 1.25 돌출 출력",
+          "absorb": "B 쿠폰 행 C",
+          "absorb_sub": "13.7–14.3, plate와 같은 출력 방향",
+          "tone": "wait",
+          "verdict": "시험 전",
+          "fix": "빡빡하면 16.5 개구로 바늘줄을 넣어 14.0 홀을 다듬는다. 헐거우면 아래 릴리프 쪽에서 접착"
+        }
+      ],
+      "figs": [
+        {
+          "render": "mounts-top",
+          "caption": "위에서 본 mount 배치(plate·커버 숨김). 좌·우 pair는 케이스 나사 2개와 지지대 2개를 한 부품으로 잇고, 앞 mount는 컨트롤러(빨강) 앞을 지난다."
+        },
+        {
+          "render": "st-seam",
+          "caption": "위에서 본 앞 이음(plate만). 왼쪽 조각(녹색)의 tab이 SO6 오른쪽에서 오른쪽 조각 포켓으로 들어가고, 그 안에 M2×5가 있다."
+        }
+      ]
+    },
+    {
+      "id": "issues",
+      "type": "issues",
+      "title": "열린 항목",
+      "src": "근거 · docs/seam-v4-2026-11-05 · model/print_v4/README.md · model/measurements/README.md · docs/side-pairs-v3",
+      "items": [
+        {
+          "id": "wire",
+          "tone": "risk",
+          "tag": "위험",
+          "title": "배선이 plate 밑 8까지 내려온다",
+          "text": "1차 실측(M14)에서 plate 밑면부터 배선 최하단까지가 8이었다. plate 밑면은 Z 8이라 배선이 Z 0 근처까지 내려온다. 둘레 프레임이 없어졌으므로 문제가 되는 곳은 mount(Z 0–3), spine(Z 4–8.5), 컨트롤러 브래킷과 겹치는 경로뿐이다. 8 mm 한 값만으로 키 높이를 올리지 않고, 실제 배선 경로를 그려 겹치는 곳을 먼저 찾는다. spine을 건너는 행 배선은 줄기 아랫면 홈 3곳(Y 49·64·72)으로 지난다. 실제 배선 위치가 다르면 홈을 옮긴다."
+        },
+        {
+          "id": "front-mount",
+          "tone": "risk",
+          "tag": "위험",
+          "title": "긴 앞 mount(H03–SO6, 69.8 mm)",
+          "text": "케이스 나사 1개와 지지대 1개를 잇는 가장 긴 어댑터다. 굽힘과 층간 파손, 반복 탈착 후 들뜸을 국부 시험에서 가장 먼저 본다."
+        },
+        {
+          "id": "seam",
+          "tone": "warn",
+          "tag": "확인",
+          "title": "앞 이음은 나사 1개",
+          "text": "이음면에서 커버 창 끝까지 약 6.5 mm뿐이고 그 뒤 아래에는 브래킷이 있어 M2를 하나만 넣었다. 브래킷 지붕이 오른쪽 조각 앞부분을 받친다. 접착 여부는 가조립 뒤 누름 시험으로 정한다(조립 11)."
+        },
+        {
+          "id": "pair-pitch",
+          "tone": "warn",
+          "tag": "확인",
+          "title": "pair의 지지대 간격 흡수 0.4 < 규격 최악 0.6",
+          "text": "좌·우 pair는 지지대 2개가 한 부품에 있어 서로 움직이지 않는다. plate 구멍 여유로 0.4까지만 흡수된다. 넘치면 mount 쪽을 고친다."
+        },
+        {
+          "id": "center",
+          "tone": "warn",
+          "tag": "확인",
+          "title": "중앙 처짐과 shim",
+          "text": "둘레 프레임이 없어 전체 강성이 plate와 spine에 더 의존한다. 중앙 받침 틈 {{p:split_support_gap}}을 shim으로 맞춘 뒤 눌렀을 때 들뜸과 휨을 본다."
+        },
+        {
+          "id": "usb",
+          "tone": "ok",
+          "tag": "확인됨",
+          "title": "USB 아웃렛은 r2 그대로",
+          "text": "r2에서 쓰던 inside 케이블(C 암 아웃렛 ↔ Pro Micro 플러그)을 그대로 쓴다. 아웃렛은 이미 케이스에 핫멜트로 붙어 있어 홀더 없이 점유 영역만 둔다. 글루 덩어리가 좌 pair(여유 1.02)에 닿으면 조립하며 깎는다."
+        },
+        {
+          "id": "h05",
+          "tone": "warn",
+          "tag": "확인",
+          "title": "H05 조정 끝의 남은 살 약 2.0",
+          "text": "H05는 머리 자리 없이 X ±{{p:split_H05_adjust}} 조정한다. 조정 끝에서 체결할 때 살이 깨지지 않는지 본다."
+        },
+        {
+          "id": "nail",
+          "tone": "warn",
+          "tag": "확인",
+          "title": "커버를 들어 올릴 손톱 여유",
+          "text": "1차 대략 실측은 테두리 14다. 지금 높이(베젤 밑면 Z 13)에서는 베젤이 테두리보다 1 낮고 커버 윗면만 1 솟아 손톱이 들어가기 어렵다. 커버를 받아 본 뒤 정한다. 그대로면 자석 없는 끝의 립을 끊고 밑면을 모따기하거나 들어 올릴 홈을 낸다."
+        },
+        {
+          "id": "buy",
+          "tone": "wait",
+          "tag": "구매",
+          "title": "보유 나사·지지대는 그대로 못 쓴다",
+          "text": "커버 자석이 붙어야 하므로 위 M3 버튼헤드는 탄소강이어야 하는데 보유 나사는 스테인리스다(1차 실측 M13). 보유 5 mm 지지대는 맞변 4.33이라 맞변 5 포켓과 맞지 않는다. 자석 Ø3×2와 함께 새로 산다(「부품과 구매품」)."
+        },
+        {
+          "id": "vendor",
+          "tone": "wait",
+          "tag": "업체",
+          "title": "재료 MJF PA12(자연 회색)와 업로드",
+          "text": "재료는 MJF PA12-HP 나일론, 자연 회색으로 정했다(2026-11-05). 주문 1과 주문 2는 같은 재료·같은 색으로 한다. MJF에는 FDM의 최소 부품 크기 규칙이 없고, 최대 370 × 276 × 360이라 모든 부품이 들어간다. 업로드 때 얇은 벽 경고가 뜨면 <code>model/print_v4/README.md</code>의 「MJF 전환」 절과 맞춰 본다. 남은 1.0 미만 값은 벽이 아니라 모서리 끝뿐이다."
+        },
+        {
+          "id": "case-screw",
+          "tone": "wait",
+          "tag": "확인",
+          "title": "케이스 나사 규격과 지지대 높이",
+          "text": "호칭경 2만 기록됐다. 정밀 실측 대신 주문 1의 mount 4개를 실제로 케이스 나사로 고정해 길이·머리·유효 깊이와 지지대 높이 차이를 확인한다. 높이가 다르면 XY 장공으로 풀지 않고 접촉면 높이와 스페이서를 검토한다."
+        },
+        {
+          "id": "order1",
+          "tone": "wait",
+          "tag": "주문 대기",
+          "title": "주문 1(시험 출력)",
+          "text": "B 쿠폰·보스 탭·이음 쿠폰 L·R·mount 4개의 STL/STEP을 <code>model/print_v4/order1/</code>에 내보냈다. 결과로 홀 크기, 보스 여유, 이음 여유, 장공 범위를 정한 뒤 주문 2를 넣는다. jig A는 폭 285.8로 업체 한도 250을 넘어 mount 4개로 대신했다."
+        },
+        {
+          "id": "port",
+          "tone": "wait",
+          "tag": "검토",
+          "title": "plate 보호 변형에서 옮겨 올 것",
+          "text": "원본 계열 변형(<code>46es_draft_sketches_plate_protect.sc</code>)의 plate 외곽 틈 0.8과 맞춰 놓고 조이는 순서를 v4에 옮길지 정한다. 순서는 이 페이지의 조립 03–08에 이미 반영했다."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "type": "parts",
+      "title": "부품과 구매품",
+      "src": "근거 · 모델 바디(자동) · model/print_v4/README.md 재료·하드웨어",
+      "printed": [
+        {
+          "label": "좌 mount pair",
+          "bodies": [
+            "MOUNT_L_PAIR_V3"
+          ],
+          "orient": "자유(MJF) · STL은 밑면이 아래",
+          "note": "주문 1 · H05·H01 ↔ SO1·SO2. USB 아웃렛을 피해 꺾인다"
+        },
+        {
+          "label": "우 mount pair",
+          "bodies": [
+            "MOUNT_R_PAIR_V3"
+          ],
+          "orient": "자유 · STL은 밑면이 아래",
+          "note": "주문 1 · H06·H04 ↔ SO5·SO4"
+        },
+        {
+          "label": "중앙 mount",
+          "bodies": [
+            "MOUNT_H02_SO3_MIN_V2"
+          ],
+          "orient": "자유 · STL은 밑면이 아래",
+          "note": "주문 1 · H02 ↔ SO3. spine 받침 {{p:split_support_size}} × {{p:split_support_size}}"
+        },
+        {
+          "label": "앞 mount",
+          "bodies": [
+            "MOUNT_H03_SO6_MIN_V2"
+          ],
+          "orient": "자유 · STL은 밑면이 아래",
+          "note": "주문 1 · H03 ↔ SO6. 굽힘·층간 확인 1순위"
+        },
+        {
+          "label": "plate 왼쪽",
+          "bodies": [
+            "PLATE_L_SPLIT_V1"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 2 · 3층. SO1·SO2·SO3·SO6 카운터보어, 앞 이음 tab"
+        },
+        {
+          "label": "plate 오른쪽",
+          "bodies": [
+            "PLATE_R_SPLIT_V1"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 2 · 3층. SO4·SO5 카운터보어, 앞 이음 포켓·너트 포켓"
+        },
+        {
+          "label": "spine",
+          "bodies": [
+            "PLATE_SPINE_V1"
+          ],
+          "orient": "자유 · STL은 윗면이 아래",
+          "note": "주문 2 · M2 4개와 너트로 두 조각을 잇는다. 배선 홈 3곳"
+        },
+        {
+          "label": "컨트롤러 브래킷",
+          "bodies": [
+            "CTRL_BRACKET_SPLIT_V1"
+          ],
+          "orient": "자유 · STL은 지붕이 아래",
+          "note": "주문 2 · plate에 M2 2개. PCB 1.6 + 0.3 홈"
+        },
+        {
+          "label": "게이트",
+          "bodies": [
+            "CTRL_GATE_SPLIT_V1"
+          ],
+          "orient": "자유 · STL은 너트 포켓 면이 아래",
+          "note": "주문 2 · M2×5 1개와 너트. 풀면 PCB를 −X로 뺀다"
+        },
+        {
+          "label": "커버 L",
+          "bodies": [
+            "COVER_L_DRAFT_TBD"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 2 · SO1·SO2 보스"
+        },
+        {
+          "label": "커버 T",
+          "bodies": [
+            "COVER_T_DRAFT_TBD"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 2 · SO3·SO6 보스"
+        },
+        {
+          "label": "커버 R",
+          "bodies": [
+            "COVER_R_DRAFT_TBD"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 2 · SO4·SO5 보스"
+        },
+        {
+          "label": "이음 쿠폰 L",
+          "bodies": [
+            "SEAM_COUPON_L_V4"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 1 · plate 왼쪽 앞 이음 부분을 그대로 잘라낸 시험물"
+        },
+        {
+          "label": "이음 쿠폰 R",
+          "bodies": [
+            "SEAM_COUPON_R_V4"
+          ],
+          "orient": "자유, 판을 수평으로 요청 · STL은 윗면이 아래",
+          "note": "주문 1 · plate 오른쪽 같은 부분. M2×5 + 너트 1조로 조여 본다"
+        }
+      ],
+      "hardware": [
+        {
+          "item": "M3 암-암 관통 지지대",
+          "qty": "6",
+          "spec": "길이 6, 맞변 5. 후보 Harwin R30-1000602",
+          "decide": "보유 5 mm 지지대(맞변 4.33)는 맞지 않음"
+        },
+        {
+          "item": "M3 버튼헤드(위)",
+          "qty": "6",
+          "spec": "M3×4 ISO 7380, 탄소강. 후보 Würth 00600134",
+          "decide": "자석이 붙어야 함. 보유 나사는 스테인리스"
+        },
+        {
+          "item": "M3 버튼헤드(아래)",
+          "qty": "6",
+          "spec": "M3×5 ISO 7380. 재질 무관. 후보 Würth 00600135",
+          "decide": "물림 3. 위 나사 끝과 0.5 간격"
+        },
+        {
+          "item": "M2 저두 나사 ×6",
+          "qty": "6",
+          "spec": "브래킷 2 + spine 4. 머리 Ø4 × 1.1. 후보 NBK SSH-M2-6",
+          "decide": "와셔 없음"
+        },
+        {
+          "item": "M2 저두 나사 ×5",
+          "qty": "2",
+          "spec": "게이트 1 + 앞 이음 1(v4). 후보 NBK SSH-M2-5",
+          "decide": "게이트는 아래에서 위로, 이음은 위에서 아래로"
+        },
+        {
+          "item": "M2 너트",
+          "qty": "8",
+          "spec": "DIN 934, 맞변 4 × 높이 1.6",
+          "decide": "포켓 맞변 4.4. 깊이 1.8(브래킷·spine·게이트), 1.0(앞 이음)"
+        },
+        {
+          "item": "케이스 나사",
+          "qty": "6",
+          "spec": "PSD60 기존 나사(M2, 1차 실측 호칭경 2). 머리 자리 Ø4.4 × 1",
+          "decide": "주문 1 mount로 길이·머리 확인"
+        },
+        {
+          "item": "네오디뮴 자석",
+          "qty": "6",
+          "spec": "Ø3 × 2, N52(없으면 N35). 커버 보스 포켓 Ø3.2 × 2.1에 접착. 시험·예비 포함 20개 묶음. MJF 전환으로 Ø4에서 바꿨다(보스 둘레 벽 0.6 → 1.1)",
+          "decide": "흡착력은 보스 탭으로"
+        },
+        {
+          "item": "2액형 에폭시(선택)",
+          "qty": "—",
+          "spec": "앞 이음 tab 접착용",
+          "decide": "가조립 누름 시험 뒤(조립 11)"
+        },
+        {
+          "item": "중앙 shim",
+          "qty": "시험분",
+          "spec": "절연 박판",
+          "decide": "공칭 틈 0.05에 맞춰 0–0.1"
+        },
+        {
+          "item": "스위치",
+          "qty": "46",
+          "spec": "Gateron KS-3 Milky Yellow Pro, 5핀, MX 호환",
+          "decide": "걸쇠 위치·폭(M19)"
+        },
+        {
+          "item": "키캡",
+          "qty": "46",
+          "spec": "1u 43 · 1.25u 1 · 2.25u 1 · 2u 1. 스태빌라이저 없음",
+          "decide": "키캡 하단·스트로크(M17)"
+        },
+        {
+          "item": "Pro Micro",
+          "qty": "1",
+          "spec": "33 × 18, ATmega32U4, Micro-B, 높이 4(1차 실측)",
+          "decide": "보드 변형(M15)"
+        },
+        {
+          "item": "USB inside 케이블",
+          "qty": "1",
+          "spec": "r2에서 쓰던 것(C 암 아웃렛 ↔ Pro Micro 플러그). 아웃렛은 케이스에 이미 접착",
+          "decide": "추가 구매 없음"
+        },
+        {
+          "item": "다이오드 · 배선",
+          "qty": "46",
+          "spec": "4행 × 12열 매트릭스, 신호선 16",
+          "decide": "점유 높이·경로(M14)"
+        }
+      ],
+      "tools": "공구: 2 mm 육각 렌치(M3 ISO 7380), 1.3 mm 육각 렌치(M2 저두), 케이스 나사용 드라이버, 핀셋(너트), 캘리퍼, 바늘줄, 사포, 순간접착제, 2액형 에폭시(선택), 글루스틱 또는 핫글루, 납땜 도구."
+    },
+    {
+      "id": "assembly",
+      "type": "assembly",
+      "title": "조립 순서",
+      "nav": "조립",
+      "src": "근거 · model/print_v4/README.md · docs/seam-v4-2026-11-05 · side-pairs-v3 · split-v1-hardware 체결 스택",
+      "callout": "<b>출력은 두 번으로 나눈다.</b> 주문 1(B 쿠폰, 보스 탭, 이음 쿠폰, mount 4개)로 맞춤을 확인한 뒤 주문 2(plate, spine, 브래킷, 게이트, 커버)를 넣는다. 파일과 재료(MJF PA12 자연 회색)는 <code>model/print_v4/README.md</code>에 있다. 아래 순서는 v4 모델 기준이다.",
+      "phases": [
+        {
+          "title": "준비",
+          "steps": [
+            {
+              "id": "prep",
+              "title": "출력물 손질과 끼움 확인",
+              "list": [
+                "남은 가루를 털어낸다. plate 14.0 홀 층 가장자리, 카운터보어 바닥, 브래킷·게이트의 너트 포켓과 1.4 받침에 가루가 뭉쳐 있지 않은지 특히 본다.",
+                "M3 지지대를 mount 육각 포켓(맞변 5.4)에 넣어 돌지 않는지, M2 너트가 포켓(맞변 4.4 × 깊이 1.8)에 들어가는지 본다.",
+                "커버 보스를 나사 없는 카운터보어에 꽂아 본다."
+              ],
+              "check": "지지대가 포켓에서 헛돌지 않는다.",
+              "fix": "빡빡하면 포켓을 바늘줄로 다듬는다. 헐거워서 돌면 그 mount만 다시 출력한다."
+            },
+            {
+              "id": "magnet",
+              "title": "커버 자석 붙이기",
+              "text": "보스 끝 포켓 6곳(Ø3.2 × 2.1)에 Ø3 × 2 자석을 순간접착제로 붙인다. 상대가 강철 나사머리라 극성은 상관없다. 다 굳은 뒤 다음 단계로 간다.",
+              "check": "자석 면이 보스 끝보다 튀어나오지 않는다."
+            }
+          ]
+        },
+        {
+          "title": "mount 맞추기 · 처음 한 번, 그리고 mount나 plate를 바꿨을 때",
+          "steps": [
+            {
+              "id": "standoff",
+              "title": "mount에 지지대 고정",
+              "render": "st-mounts",
+              "text": "케이스 밖에서 한다. 각 mount 포켓에 M3 지지대를 넣고 아래에서 M3×5로 조인다. 좌 pair는 SO1·SO2, 우 pair는 SO4·SO5, 중앙은 SO3, 앞은 SO6이다.",
+              "check": "지지대가 포켓 바닥(Z 2)에 붙어 있고 돌지 않는다."
+            },
+            {
+              "id": "case-loose",
+              "title": "케이스 나사를 가볍게",
+              "render": "st-case",
+              "text": "mount 4개를 하우징 지지대에 놓고 케이스 나사 6개를 손으로만 돌린다. 좌 pair는 H05·H01, 우 pair는 H06·H04, 중앙은 H02, 앞은 H03이다. 장공 방향은 H01·H05가 X, 나머지가 Y다.",
+              "check": "모든 나사가 억지 없이 걸린다.",
+              "fix": "안 걸리면 그 장공 방향으로 어긋난 것이다. 장공을 줄로 늘리거나 그 mount만 다시 출력한다."
+            },
+            {
+              "id": "seam",
+              "title": "plate 앞 이음 맞추기",
+              "render": "st-seam",
+              "caption": "위에서 본 앞 이음. 녹색이 왼쪽 조각이다.",
+              "list": [
+                "오른쪽 조각을 윗면이 위로 오게 놓고, 왼쪽 조각을 위에서 내려 tab을 오른쪽 포켓에 꽂는다. 옆으로 밀어 넣지 않는다(dovetail이라 위에서만 들어간다).",
+                "오른쪽 조각 아랫면 육각 포켓에 M2 너트를 넣고(포켓은 이음면 쪽이 열려 있으니 손가락으로 받친다), tab 위 카운터보어에서 M2×5를 조인다.",
+                "이음 쿠폰에서 정한 대로 손질한 상태여야 한다(주문 1 시험)."
+              ],
+              "check": "윗면 단차가 손톱에 걸리지 않고, 나사머리가 윗면 아래에 묻힌다.",
+              "fix": "빡빡하면 tab 옆면을 줄로 조금 다듬는다. 헐거우면 지금은 그대로 두고 조립 11에서 접착을 정한다."
+            },
+            {
+              "id": "join",
+              "title": "spine으로 이음부 아래 잇기",
+              "render": "st-join",
+              "caption": "아래에서 본 모습.",
+              "text": "앞 이음을 조인 plate를 뒤집어, 이음부 밑에 spine을 대고 M2×6 4개와 너트로 잇는다. 스위치와 배선 전이어도 된다.",
+              "check": "이음부가 억지 없이 닫히고 SO3·SO6 자리는 왼쪽 조각에 있다.",
+              "fix": "빡빡하면 spine 쪽을 다듬거나 spine만 다시 출력한다."
+            },
+            {
+              "id": "trial",
+              "title": "plate 임시 장착으로 위치 맞추기",
+              "render": "st-trial",
+              "text": "이은 plate를 mount 지지대 위에 얹는다. SO1·SO2, SO4·SO5가 힘 없이 맞도록 mount를 장공 안에서 옮긴다. 중앙 받침과 spine 사이 틈을 보고 shim 두께를 정한다.",
+              "check": "6곳 모두 나사 없이 plate 구멍과 지지대 구멍이 맞는다.",
+              "fix": "pair의 두 지지대 간격이 plate와 다르면 mount 쪽 포켓을 줄로 넓힌다(열린 항목 4)."
+            },
+            {
+              "id": "case-tight",
+              "title": "plate를 떼고 케이스 나사 조이기",
+              "text": "공구가 닿지 않으면 plate를 들어낸 뒤 케이스 나사 6개를 조인다. 나사가 1개뿐인 중앙·앞 mount가 조이는 동안 돌지 않았는지 본다. USB 아웃렛은 r2 때 케이스에 붙여 둔 그대로 쓴다. 글루 덩어리가 좌 pair에 닿으면 깎는다.",
+              "check": "조인 뒤 plate를 다시 얹어도 6곳이 맞는다."
+            }
+          ]
+        },
+        {
+          "title": "plate 모듈",
+          "steps": [
+            {
+              "id": "switch",
+              "title": "스위치 46개 끼우기",
+              "render": "st-switches",
+              "text": "plate 조립품을 작업대에 두고 위에서 끼운다. 걸쇠가 14.0 홀 층(1.5) 아래 릴리프에 걸리고, 플랜지는 plate 윗면보다 2 아래(16.5 개구 안)에 앉는다.",
+              "fix": "빡빡하면 16.5 개구로 바늘줄을 넣어 14.0 홀을 다듬는다. 헐겁거나 걸쇠가 안 걸리면 아래 릴리프 쪽에서 접착한다."
+            },
+            {
+              "id": "ctrl",
+              "title": "컨트롤러 브래킷 · Pro Micro · 게이트",
+              "render": "st-ctrl",
+              "caption": "아래에서 본 모습. 빨강은 Pro Micro와 USB 플러그 점유.",
+              "list": [
+                "브래킷을 plate 아랫면에 M2×6 2개와 너트로 단다.",
+                "Pro Micro를 부품면이 아래로 가게 브래킷 홈에 −X(USB) 쪽에서 밀어 넣는다.",
+                "게이트를 대고 M2×5를 아래에서 위로 조인다. 너트는 게이트 위쪽 포켓에 들어간다."
+              ],
+              "check": "브래킷 M2 끝과 PCB 사이가 0.3 남는다. 게이트를 풀면 PCB가 −X로 빠진다.",
+              "fix": "홈이 빡빡하면 턱을 줄로, 헐거우면 테이프로 심을 댄다."
+            },
+            {
+              "id": "glue",
+              "title": "가조립 누름 시험 → 이음 접착 여부",
+              "list": [
+                "스위치와 브래킷을 단 상태에서 가운데 아래쪽 키와 이음 가까운 키를 눌러 본다.",
+                "이음부에 단차가 생기거나 삐걱이면 앞 이음 M2를 풀고 tab 아래·옆을 사포로 거칠게 하고 탈지한 뒤 2액형 에폭시를 바르고 다시 조인다. 나일론은 매끈하면 잘 붙지 않는다. 핫멜트는 쓰지 않는다.",
+                "괜찮으면 나사만으로 둔다(나중에 한쪽만 바꿀 수 있다)."
+              ],
+              "check": "눌러도 이음부 윗면이 벌어지거나 어긋나지 않는다.",
+              "fix": "접착 뒤에도 움직이면 spine M2와 브래킷 M2가 다 조여졌는지 본다."
+            },
+            {
+              "id": "wire",
+              "title": "배선",
+              "list": [
+                "4행 × 12열 매트릭스를 다이오드와 함께 배선한다. 펌웨어 JSON 기준 행 D1·D0·D4·C6, 열 D7·E6·B4·B5·F4·F5·F6·F7·B1·B3·B2·B6.",
+                "Pro Micro 배선은 PCB 윗면(plate 쪽)에서 한다.",
+                "행 배선이 seam을 건너는 곳은 spine 줄기 아랫면 홈(Y 49·64·72)으로 지나간다. 배선을 시작하면 두 조각을 다시 벌리기 어렵다.",
+                "inside 케이블 플러그를 Pro Micro에 꽂는다."
+              ],
+              "check": "mount·spine·브래킷과 겹치는 곳에서 배선이 그 부품 윗면까지 내려오지 않는다. 1차 실측은 plate 밑 8이었다(열린 항목 1)."
+            }
+          ]
+        },
+        {
+          "title": "합치기",
+          "steps": [
+            {
+              "id": "module",
+              "title": "plate 모듈 장착",
+              "render": "st-module",
+              "text": "중앙 받침 위에 shim을 놓고 plate 모듈을 지지대에 얹은 뒤 위 M3×4(탄소강) 6개를 조인다. inside 케이블은 하우징 뒤쪽 USB 아웃렛으로 보낸다.",
+              "check": "plate가 하우징 벽 어디에도 닿지 않는다(설계 틈 {{p:TBD_plate_gap}}). 위·아래 나사 끝이 서로 닿지 않는다(공칭 0.5).",
+              "fix": "벽에 닿으면 그 조각 가장자리를 사포로 다듬는다."
+            },
+            {
+              "id": "cover",
+              "title": "커버 3조각 올리기",
+              "render": "hero",
+              "text": "L(SO1·SO2), T(SO3·SO6), R(SO4·SO5)을 순서 상관없이 올린다. 보스가 카운터보어에 꽂히고 자석이 0.45 아래 나사머리를 끌어당긴다.",
+              "fix": "보스가 안 들어가면 보스를 줄로 깎거나 그 조각만 다시 출력한다."
+            },
+            {
+              "id": "keycap",
+              "title": "키캡",
+              "text": "맨 아랫줄은 왼쪽부터 1.25u · 1u · 2.25u · 2u · 1u · 1u, 나머지는 1u다. 스태빌라이저는 쓰지 않는다."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "type": "steps",
+      "title": "정비할 때",
+      "nav": "정비",
+      "src": "근거 · docs/assembly-revision.md 분해·점검 절차 · minimal-mount-v2 조립",
+      "steps": [
+        {
+          "title": "USB 케이블을 뺀다"
+        },
+        {
+          "title": "커버를 벗긴다",
+          "text": "자석은 조각마다 한쪽 끝에 몰려 있다. 자석이 없는 쪽 끝을 들어 벗긴다. 키캡이 걸리면 그 키캡만 먼저 뽑는다."
+        },
+        {
+          "title": "위 M3×4 6개만 푼다",
+          "text": "mount, 지지대, 케이스 나사는 하우징에 그대로 남는다."
+        },
+        {
+          "title": "plate 모듈을 꺼낸다",
+          "text": "plate 두 조각, spine, 스위치, 배선, Pro Micro가 한 덩어리로 들린다. 조금 들어 올린 상태에서 inside 케이블 플러그를 뽑는다."
+        },
+        {
+          "title": "Pro Micro만 바꿀 때",
+          "text": "꺼낸 모듈을 뒤집어 게이트 M2를 풀고 PCB를 −X로 빼낸다. 스위치 납땜은 건드리지 않는다."
+        },
+        {
+          "title": "mount나 plate를 바꿀 때",
+          "text": "케이스 나사를 풀어 해당 mount만 바꾸고, 조립 03–08(mount 맞추기)을 다시 한다. 앞 이음을 접착했다면 plate는 두 조각을 함께 바꾼다."
+        }
+      ]
+    },
+    {
+      "id": "tests",
+      "type": "table",
+      "title": "주문 1 시험",
+      "width": "wide",
+      "src": "근거 · model/print_v4/README.md · samples/README.md 시험 절차 · side-pairs-v3 국부 시험",
+      "intro": "전체 케이스 지그(jig A)는 쓰지 않는다. 실제 mount 4개가 같은 것을 더 많이 확인한다. 주문 1의 시험물과 mount로 먼저 확인하고, 결과를 v4에 반영한 뒤 주문 2를 넣는다. 부품을 눌러 억지로 맞춘 결과는 합격으로 치지 않는다. 시험물은 본 세트와 같은 MJF PA12 자연 회색으로 뽑는다.",
+      "columns": [
+        "시험",
+        "출력물",
+        "확인과 채택 기준",
+        "상태"
+      ],
+      "rows": [
+        [
+          "스위치 홀",
+          "B 쿠폰 행 A·B·C",
+          "Gateron Milky Yellow 삽입력, 걸쇠, 키캡 뽑을 때 딸려 나오는지. 행 C는 플랜지가 평평하게 앉는지와 홀 가장자리 처짐 → <code>TBD_sw_hole</code>",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "나사·포켓",
+          "B 쿠폰 행 D",
+          "M2·M3 구멍 통과, 카운터보어에 버튼헤드가 앉는지, 육각 포켓에 지지대가 미끄러지되 돌지 않는지",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "커버 보스·자석",
+          "보스 탭 + B 쿠폰 카운터보어",
+          "보스 끼움, 보스 벽(1.3)이 깨지지 않는지, Ø3 자석이 평면 포켓 3.2 / 3.3 / 3.4 중 어디에 맞는지, 자석을 붙이고 탄소강 M3×4를 넣은 상태에서 뒤집어도 붙어 있는지",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "축척 오차",
+          "B 쿠폰 외곽",
+          "145.35 × 74.15 × 10을 재어 오차율을 구하고 plate 외곽 틈을 다시 본다",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "앞 이음",
+          "이음 쿠폰 L·R + M2×5·너트",
+          "tab이 힘 없이 들어가는지, 윗면 단차, 조인 뒤 흔들림·누름 → 이음 여유(지금 사방 0.15, 업체 권장 0.2–0.4보다 작다). 너트 포켓은 이음면 쪽으로 열려 있다",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "케이스 체결",
+          "mount 4개(실부품)",
+          "케이스 나사 6곳이 장공 안에서 들어가는지, 지지대가 포켓에서 돌지 않는지, 앞 mount(69.8 mm) 굽힘, pair 연결부(폭 {{p:side_pair_bridge_W}}) 층간, H05 조정 끝 살",
+          {
+            "tone": "wait",
+            "text": "주문 1 전"
+          }
+        ],
+        [
+          "중앙·컨트롤러·스위치",
+          "주문 2 부품",
+          "이음부 닫힘과 shim, 게이트 −X 탈거와 공구 접근, 실제 스위치·다이오드·키캡 스트로크와 커버 간섭",
+          {
+            "tone": "wait",
+            "text": "주문 2 후"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "gates",
+      "type": "measurements",
+      "title": "실측 현황",
+      "nav": "실측",
+      "src": "근거 · model/measurements.csv(자동) · model/measurements/README.md",
+      "note": "2026-11-05 사용자 결정으로 정밀 실측 대신 GH60 값을 쓴다(케이스 구멍 좌표 <code>[GH60 채택 2026-11-05]</code>, 실측값 아님). 아래는 기록이다. 주황은 2026-11-04 1차 기록(150 mm 캘리퍼 대략값)이고 확정으로 세지 않는다. 맞는지는 주문 1에서 확인한다.",
+      "names": {
+        "M01": "하우징 내측 폭",
+        "M02": "하우징 내측 깊이",
+        "M03": "내측 코너 R",
+        "M04": "외형·경사",
+        "M05": "내부 높이·테두리",
+        "M06": "벽 두께·수직도",
+        "M07": "벽 → GH60 기준점",
+        "M08": "체결 구멍 6곳 좌표",
+        "M09": "케이스 나사 규격",
+        "M10": "지지대 외경·높이",
+        "M11": "아크릴 스위치 홀",
+        "M12": "키 간격·각도",
+        "M13": "스탠드오프 형식",
+        "M14": "배선 공간",
+        "M15": "컨트롤러 보드",
+        "M16": "USB 개구부·플러그",
+        "M17": "키캡·커버 간섭",
+        "M18": "출력 보정(쿠폰)",
+        "M19": "스위치 걸쇠",
+        "M20": "현물 키 배치 대조",
+        "M21": "r2 판 두께·적층"
+      },
+      "pills": {
+        "M01": [
+          "warn",
+          "1차 286 · 대략값"
+        ],
+        "M02": [
+          "warn",
+          "1차 96 · 대략값"
+        ],
+        "M04": [
+          "wait",
+          "문서값"
+        ],
+        "M05": [
+          "warn",
+          "H01 5.5 · 테두리 14"
+        ],
+        "M08": [
+          "ok",
+          "GH60 채택 · 1차는 참고"
+        ],
+        "M09": [
+          "warn",
+          "호칭경 2"
+        ],
+        "M10": [
+          "warn",
+          "H01 외경 5 · 참고"
+        ],
+        "M11": [
+          "ok",
+          "실측 생략 결정"
+        ],
+        "M13": [
+          "warn",
+          "암-암 · 스테인리스 나사"
+        ],
+        "M14": [
+          "warn",
+          "배선 8 · 대략값"
+        ],
+        "M15": [
+          "warn",
+          "Micro-B · 높이 4"
+        ],
+        "M19": [
+          "wait",
+          "모델명만 확정"
+        ],
+        "M20": [
+          "wait",
+          "수량만 확인"
+        ],
+        "M21": [
+          "wait",
+          "미실측"
+        ],
+        "M18": [
+          "wait",
+          "주문 1 쿠폰으로"
+        ]
+      }
+    },
+    {
+      "id": "log",
+      "type": "log",
+      "title": "결정 기록",
+      "src": "근거 · docs/seam-v4-2026-11-05.md · model/README.md · docs/*-2026-11-05.md",
+      "decisions": [
+        {
+          "date": "2026-11-05",
+          "title": "재료 MJF PA12-HP 나일론, 자연 회색.",
+          "text": "JLC에서 키보드에 흔히 쓰는 나일론이다. 층이 없어 결 방향 강도 차이가 적고 서포트가 없다. 최소 벽 1.0에 맞춰 출력 세트 16개를 점검하고 고쳤다. 이음 나사 X 139.5, 너트 포켓·단차 벽 합침, spine 자리 지느러미 제거, 이음 쿠폰 범위 재설정."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "spine 뒤 M2 카운터보어 막 오류 수정.",
+          "text": "plate L·R의 spine 뒤 패드 나사 자리가 윗면 0.2 막에 덮여 M2 머리가 들어갈 수 없었다(split v1부터). 앞쪽 2개처럼 윗면까지 뚫었다. MJF 얇은 벽 점검에서 찾았다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "v4 앞 이음(현재).",
+          "text": "plate 왼쪽 tab(윗면 쪽 2.4) → 오른쪽 포켓 dovetail 반턱 + M2×5 1개. spine 배선 홈 3곳. 나머지 부품은 v3와 같다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "정밀 실측 대신 GH60 값.",
+          "text": "캘리퍼(150 mm, 1 mm 눈금)로는 정밀 실측이 어렵다. 장공·여유와 주문 1 시험으로 확인한다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "주문 2회.",
+          "text": "시험물과 mount를 먼저 받아 맞춤을 확인한 뒤 plate·커버를 주문한다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "plate 2분할 유지.",
+          "text": "X ≤ 250은 업체 한도이고, 나눠 보내는 쪽이 배송에도 안전하다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "이음 접착은 가조립 뒤에.",
+          "text": "형상은 나사만 쓸 때와 같다. 누름 시험에서 움직이면 에폭시를 쓴다. 배선 전에 정한다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "USB는 r2 inside 케이블 그대로.",
+          "text": "아웃렛은 이미 케이스에 붙어 있어 점유 영역만 둔다. 글루는 조립하며 깎는다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "자석 Ø3×2 + 탄소강 M3×4.",
+          "text": "MJF 최소 벽 1.0 때문에 Ø4(보스 둘레 벽 0.6)에서 Ø3(1.1)으로 바꿨다. 흔한 규격이다. 나사는 새로 산다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "split mount v3.",
+          "text": "좌·우 각 2개 mount를 하나로 합쳐 mount 4개가 됐다. v4의 바탕이다. 한때 폐기로 처리했다가 되살린 계열이다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "minimal mount v2.",
+          "text": "둘레 띠와 lap 연결을 없애고 케이스 나사와 지지대를 잇는 독립 어댑터 6개로 바꿨다. mount 부피는 71% 줄었다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "split v1.",
+          "text": "plate를 2조각 + spine으로, 컨트롤러 브래킷과 게이트를 별도 부품으로 나눴다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "plate 보호 변형 보존.",
+          "text": "원본 계열(테두리형 프레임)에 스탠드오프 장공과 plate 틈 0.8을 넣은 안. 별도 파일로 두고 split 계열로 옮길 때의 출발점으로 쓴다."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "B 쿠폰 개정.",
+          "text": "행 C(plate 3층, 같은 출력 방향), 행 D(M2·M3·카운터보어·육각 포켓), 별도 보스 탭."
+        },
+        {
+          "date": "2026-11-05",
+          "title": "FDM 확정, 출력 업체 JLC3DP (→ 2026-11-05 MJF PA12로 바뀜).",
+          "text": "SUS304 판금은 검토만 했다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "조립 여유 수정.",
+          "text": "케이스 체결을 방향별 장공 6개로, M3 구멍 Ø3.4, 커버 보스 Ø5.4로 바꿨다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "1차 실측은 참고로만.",
+          "text": "150 mm 캘리퍼 대략값이라 모델 값은 그대로 두고, H 지지대 값만 근거로 쓴다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "마운트가 조립 오차를 흡수해야 한다.",
+          "text": "r2 외곽은 코너 R 외에는 잘 맞으므로 외곽을 과하게 줄이지 않고 체결부 장공과 조립 순서로 맞춘다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "커버 고정은 자석.",
+          "text": "보스가 카운터보어에 꽂혀 위치를 잡고, 자석이 강철 나사머리를 당긴다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "커버·plate는 아크릴 r2 형상.",
+          "text": "커버 3조각 창, plate + upper plate를 3층 한 부품으로."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "Pro Micro는 중앙 하단.",
+          "text": "SO6 바로 뒤 키 없는 자리. 지금은 별도 브래킷과 게이트로 단다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "스태빌라이저 없음.",
+          "text": "2.25u·2u 썸키는 스위치만으로 지지한다."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "USB는 패널형 연장 케이블.",
+          "text": "PSD60 개구부 안쪽에 접착한다(2026-11-05: r2 케이블을 그대로 쓴다)."
+        },
+        {
+          "date": "2026-11-04",
+          "title": "스위치 Gateron KS-3 Milky Yellow Pro.",
+          "text": "아크릴 홀 실측(M11)은 생략하고 r2 도면 14.0에서 시작한다."
+        }
+      ],
+      "rejected": [
+        {
+          "title": "자석 Ø4×2 유지.",
+          "text": "MJF에서 커버 보스 둘레 벽이 0.6으로 최소 벽 1.0에 못 미친다. 보스를 키우면 plate 카운터보어와 SO4 쪽 단차 벽이 더 얇아진다."
+        },
+        {
+          "title": "검정 염색.",
+          "text": "사용자가 자연 회색을 골랐다. 염색은 치수가 조금 달라질 수 있어 두 주문을 같은 색으로 맞춘다."
+        },
+        {
+          "title": "수평 반턱의 아래 혀를 오른쪽 조각에.",
+          "text": "plate는 윗면을 베드에 두고 출력하므로 혀 밑면이 떠서 서포트가 맞닿는 면에 남는다. 위가 열린 포켓으로 바꿨다."
+        },
+        {
+          "title": "앞 이음 나사 2개.",
+          "text": "커버 창 끝과 브래킷 사이에 너트 자리가 하나뿐이다."
+        },
+        {
+          "title": "뒤쪽 이음 추가.",
+          "text": "spine 뒤 패드(M2 2개)가 이미 잇고 있고, 패드와 단차 사이 5.6에는 너트 포켓이 들어가지 않는다."
+        },
+        {
+          "title": "jig A 출력.",
+          "text": "폭 285.8이 업체 한도 250을 넘는다. 실제 mount 4개로 같은 확인을 한다."
+        },
+        {
+          "title": "둘레 프레임 mount.",
+          "text": "v2에서 독립 어댑터로 바꿨다. plate 보호 변형에는 남아 있다."
+        },
+        {
+          "title": "mount lap 연결.",
+          "text": "v2에서 없애 M2×5 4개와 너트 4개가 빠졌다."
+        },
+        {
+          "title": "볼트 구멍 주변 교환식 블럭.",
+          "text": "자리가 없고 끼움이 하나 늘며 재주문 대기는 같다."
+        },
+        {
+          "title": "벽 있는 커버.",
+          "text": "뒤쪽 윗줄 키캡과 내벽 사이가 2.15라 틈 0.3 + 벽 2가 안 들어간다."
+        },
+        {
+          "title": "자석 ↔ 자석.",
+          "text": "plate 상면에 포켓 자리가 부족하고 위치결정이 따로 필요하다."
+        },
+        {
+          "title": "별도 Ø2.5 핀.",
+          "text": "좌·우 세로 베젤 폭 5에 들어가지 않는다."
+        },
+        {
+          "title": "r2식 관통 나사.",
+          "text": "커버 위로 나사머리 6개가 보인다."
+        }
+      ]
+    }
+  ],
+  "footer": [
+    "근거 파일: keyboard 저장소 <code>46es/model/README.md</code>, <code>model/print_v4/README.md</code>, <code>docs/seam-v4-2026-11-05.md</code>, <code>docs/side-pairs-v3-2026-11-05.md</code>, <code>docs/split-v1-hardware-2026-11-05.md</code>, <code>model/measurements.csv</code>. 이 페이지는 <code>46es/guide/build_guide.py</code>가 <code>guide_v4.json</code>에서 만든다.",
+    "케이스 구멍은 GH60 채택값이고 PSD60 실측값이 아니다. 여유는 주문 1 시험 뒤 바뀔 수 있다. 체크 표시는 이 브라우저에만 저장된다."
+  ]
+}

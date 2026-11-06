@@ -10,7 +10,7 @@ tokens that are filled from the model: {{p:PARAM}} parameter value, {{v:BODY}} v
 {{d:BODY}} bbox size, {{n:PATTERN}} number of bodies matching a pattern or @group.
 
 Usage (paths may be relative to this folder):
-  python build_guide.py                                  # guide_v3.json -> out/
+  python build_guide.py                                  # guide_v4.json -> out/
   python build_guide.py --out D:/work/zzskm.github.io/keyboard-46es --clean-img
   python build_guide.py --only hero,sec-so1              # re-render just these
 Options: --spec FILE  --cli PATH  --jobs N  --skip-renders  --only IDS  --clean-img
@@ -490,7 +490,7 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--spec", default="guide_v3.json")
+    ap.add_argument("--spec", default="guide_v4.json")
     ap.add_argument("--out", default="out")
     ap.add_argument("--cli", default=str(DEFAULT_CLI))
     ap.add_argument("--jobs", type=int, default=4)
