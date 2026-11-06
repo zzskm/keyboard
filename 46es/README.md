@@ -2,6 +2,13 @@
 
 **현행 설계는 v5다.** non-split 키보드이며 plate만 제작·조립을 위해 좌우로 나뉜다. 46sp는 별도 참고 키보드다. 현재 상태는 **시험 출력 전**이며 실물 적합성 검증은 남아 있다.
 
+## Source of Truth (SOT)
+
+- **SOT(편집 대상):** `tools/build_seam_v5.py` (v5 케이스 생성기). 이 파일의 생성 규칙이 현행 형상의 기준이다.
+- **생성물(.sc):** `model/46es_mount_seam_v5.sc` 등 생성된 CAD 파일은 출력물이다. 직접 편집하지 말고 생성기를 수정한 뒤 재생성한다. (`AGENTS.md` §4)
+- **비교/회귀 기준:** `model/baselines/`의 파일들은 회귀 검증용 기준이지 SOT가 아니다. (`model/baselines/README.md` 참조)
+- **검토/생산 구분:** `model/review_v5/`는 조립 검토용, `model/print_v5/`는 실제 제작 세트다. 서로 대체하지 않는다.
+
 | 목적 | 기준 자료 |
 |---|---|
 | 작업 절차·변경 검증 기준 | [작업 지침](AGENTS.md) |

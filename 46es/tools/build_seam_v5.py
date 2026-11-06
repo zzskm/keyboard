@@ -7,6 +7,8 @@ per piece. Integral mount seats support the switch plate from underneath.
 Run from the repository root with python 46es/tools/build_seam_v5.py.
 Use --probe to build into guide/.cache/v5 without replacing the current CAD.
 """
+# SOURCE OF TRUTH - Edit this file. Do NOT hand-edit generated .sc files.
+# Regenerate outputs with: python tools/build_seam_v5.py (and export scripts as needed)
 import argparse
 import copy
 import hashlib
