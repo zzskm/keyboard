@@ -13,6 +13,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from build_seam_v5 import PLATE_SUPPORTS
+
 ROOT = Path(__file__).resolve().parents[1]
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
@@ -31,7 +33,7 @@ def sha(path):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    # plate files must not change in the 2nd pass (two-level cover touches the covers only): remember their hashes
+    # The support seats are on the mounts. Track whether plate exports remain byte-identical.
     before = {part: {ext: sha(OUT / f'46es_v5_{part}_REVIEW_ONLY{ext}') for ext in ('.stl', '.step')
                      if (OUT / f'46es_v5_{part}_REVIEW_ONLY{ext}').exists()} for part in ('plate_L', 'plate_R')}
     script = []
@@ -39,8 +41,9 @@ def main():
         stem = OUT / f'46es_v5_{part}_REVIEW_ONLY'
         script.append(dict(command='file.export_stl', params=dict(path=str(stem) + '.stl', bodies=[body], quality='fine')))
         script.append(dict(command='file.export_step', params=dict(path=str(stem) + '.step', bodies=[body])))
+    mounts = sorted({seat[0] for seat in PLATE_SUPPORTS})
     script.append(dict(command='file.export_step', params=dict(
-        path=str(OUT / '46es_v5_changed_REVIEW_ONLY.step'), bodies=[b for b, _, _ in PARTS.values()] + MAGNETS)))
+        path=str(OUT / '46es_v5_changed_REVIEW_ONLY.step'), bodies=[b for b, _, _ in PARTS.values()] + mounts + MAGNETS)))
     script.append(dict(command='parameters.export', params=dict(path=str(ROOT / 'model/parameters_seam_v5.csv'),
                                                                  format='csv')))
     cache = ROOT / 'guide/.cache/v5'

@@ -1,24 +1,19 @@
 {
   "ok": true,
-  "model_sha": "0b486c1ad970fa5f4993d099977193b4121b9011a31e1c2911bb49623aa0c480",
-  "source_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
+  "model_sha": "d5ec4c21af5d8044e90d895ecc422047a587cf3a6817623a4b59fd7336a3af86",
+  "source_sha": "fd6dd79769442fdf5335af64167b68ecbd8c7bfa41c70f1763ade2ad67dcb3e2",
   "rim_Z": 14.000000000000007,
-  "cover_top_Z": 18.999999999999993,
+  "cover_top_Z": 19.0,
   "cover_above_rim_mm": 5.0,
-  "cover_base_Z": 16.4,
-  "cover_base_above_rim_mm": 2.4,
   "cover_levels": {
     "COVER_L_DRAFT_TBD": {
-      "16.4": 2169.492,
-      "19.0": 341.723
+      "19.0": 2511.215
     },
     "COVER_T_DRAFT_TBD": {
-      "16.4": 1989.435,
-      "19.0": 370.471
+      "19.0": 2359.906
     },
     "COVER_R_DRAFT_TBD": {
-      "16.4": 2088.675,
-      "19.0": 511.497
+      "19.0": 2600.172
     }
   },
   "keycap": {
@@ -36,27 +31,7 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          1,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
           24,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
-          40,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
-          9,
-          1.0,
-          "COVER_L_DRAFT_TBD"
-        ],
-        [
-          28,
           1.0,
           "COVER_T_DRAFT_TBD"
         ],
@@ -66,7 +41,27 @@
           "COVER_R_DRAFT_TBD"
         ],
         [
+          25,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          28,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
           32,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          6,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          19,
           1.0,
           "COVER_R_DRAFT_TBD"
         ]
@@ -83,27 +78,7 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          1,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
           24,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
-          40,
-          1.0,
-          "COVER_T_DRAFT_TBD"
-        ],
-        [
-          9,
-          1.0,
-          "COVER_L_DRAFT_TBD"
-        ],
-        [
-          28,
           1.0,
           "COVER_T_DRAFT_TBD"
         ],
@@ -113,7 +88,27 @@
           "COVER_R_DRAFT_TBD"
         ],
         [
+          25,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          28,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
           32,
+          1.0,
+          "COVER_R_DRAFT_TBD"
+        ],
+        [
+          6,
+          1.0,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          19,
           1.0,
           "COVER_R_DRAFT_TBD"
         ]
@@ -149,7 +144,7 @@
       "in_D_min": 95.334,
       "keycap_wall_min": 1.0
     },
-    "right_edge_X": 285.3879999999999,
+    "right_edge_X": 285.388,
     "wall_X": 285.307,
     "right_edge_overlap_mm": 0.081,
     "centred_gap_each_side_mm": 0.109,

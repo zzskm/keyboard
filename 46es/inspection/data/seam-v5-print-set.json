@@ -110,20 +110,20 @@
   "body": "COVER_L_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 9937.137,
-  "stl_triangles": 2654,
+  "cad_volume_mm3": 15577.8126,
+  "stl_triangles": 2688,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 9937.0832,
-  "stl_rel_volume_error": 5e-06,
+  "stl_volume_mm3": 15577.7212,
+  "stl_rel_volume_error": 6e-06,
   "print_bbox_mm": [
    101.785,
    95.334,
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "51cf8a6ab6d533b0b77ad51638a227f2f6601cbf5e1649043abdfa137142b524",
-  "step_sha256": "14059c0239ec21ec5fd43db6b06f23143cfb63c28bbfab2c1eaae71a707a9573"
+  "stl_sha256": "74303736fba944271c3983d4a2dcead25ab1a1b3e4d04e8b91b69619ea6d8cc2",
+  "step_sha256": "abed07eace67226f2be7cfa1ad5f7a39b743bf6e6d2099e840f94e6a512e43f3"
  },
  {
   "order": "order2",
@@ -131,20 +131,20 @@
   "body": "COVER_T_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 9249.5194,
-  "stl_triangles": 1868,
+  "cad_volume_mm3": 14422.051,
+  "stl_triangles": 1788,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 9249.4737,
-  "stl_rel_volume_error": 5e-06,
+  "stl_volume_mm3": 14422.0055,
+  "stl_rel_volume_error": 3e-06,
   "print_bbox_mm": [
    87.7,
    95.334,
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "73eff2f4d6aeef203dd27070fa98481ac97c3ecf25f8baab90bbb749d12a37ad",
-  "step_sha256": "072a4cff34c0c8bbe8431a673717c62b27eb3c485f92b196888ea772bfbe83fe"
+  "stl_sha256": "cd80e6099572e589de71e9ec18cc4b212d779334a395a67556cbfc0d647e449f",
+  "step_sha256": "b98ba674f5266a2dde674b0c993384150f669fe126189a6227f590cf593b03e2"
  },
  {
   "order": "order2",
@@ -152,19 +152,19 @@
   "body": "COVER_R_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 10781.8573,
+  "cad_volume_mm3": 16212.4061,
   "stl_triangles": 2780,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 10781.8127,
-  "stl_rel_volume_error": 4e-06,
+  "stl_volume_mm3": 16212.3295,
+  "stl_rel_volume_error": 5e-06,
   "print_bbox_mm": [
    128.697,
    95.334,
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "e180145451d4177d4ab8d6294ee8ea5a40f8853bffd3c2fa48e93e3fcbf69f25",
-  "step_sha256": "5c9e8fd6079a193b50fd8b75bd2d2c12cc5484d63a722dd09465c5f26ec75c58"
+  "stl_sha256": "a1eadd57bc528561b447f53886d7c38e9de9c991ba8b8cb332ded2ce9ec739c3",
+  "step_sha256": "a29e76dd5406073bfcf63b39cfb5b3d514d4c6b95e47e00325198a6ffa3e61ea"
  }
 ]

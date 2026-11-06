@@ -7,8 +7,8 @@ python tools/export_print_v5.py
   -> inspection/data/seam-v5-print-set.json     (hashes, dimensions and CAD/STL volumes)
   -> inspection/data/seam-v5-mjf-thin-wall.json (thin wall scan, mapped back to assembly coordinates)
 
-Order 1 (mount x4, seam coupons, B coupon row C 1.7, boss tab) is unchanged between v4 and v5: its files stay
-in model/print_v5/order1/ (use --trial to regenerate). Spine, bracket and gate are identical bodies in v4 and v5 (verify_seam_v5 proves the
+Use --trial to export the four reinforced mounts and four test coupons in model/print_v5/order1/.
+Spine, bracket and gate are identical bodies in v4 and v5 (verify_seam_v5 proves the
 BRep equality); they are exported again here only so that order 2 is one folder.
 """
 import argparse

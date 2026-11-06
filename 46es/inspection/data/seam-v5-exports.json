@@ -1,69 +1,69 @@
 {
  "model": "46es_mount_seam_v5.sc",
- "model_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
+ "model_sha": "fd6dd79769442fdf5335af64167b68ecbd8c7bfa41c70f1763ade2ad67dcb3e2",
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
    "body": "COVER_L_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 9937.137,
+   "cad_volume_mm3": 15577.813,
    "bbox": {
     "max": [
      101.3921083648772,
-     94.96700000000025,
-     18.999999999999993
+     94.967,
+     19.0
     ],
     "min": [
-     -0.393000000000034,
-     -0.367,
-     11.500000000002512
+     -0.39300000000000956,
+     -0.36700000000000443,
+     11.50000000000251
     ]
    },
-   "stl_sha256": "0883ab93db8345d81af1c986a9c09b630c841ae503f42f5fe69f31d5e89c7cd7",
-   "step_sha256": "adc986c6c84e7e4eeff28a8683b0866e2e51ba0af153aad32c6060e2975706a2"
+   "stl_sha256": "e568befea2dc8925bf67b0a56383830a16510c6b1e5dd20ffc3337b7b7cfde5b",
+   "step_sha256": "345896f80f90465619867d4d4a03e6ce598f9b96774bbc41c7da2e5d3134d4ee"
   },
   {
    "file": "46es_v5_cover_T_REVIEW_ONLY",
    "body": "COVER_T_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 9249.519,
+   "cad_volume_mm3": 14422.051,
    "bbox": {
     "max": [
-     174.71402231022077,
-     94.96700000000001,
+     174.7140223102208,
+     94.96700000000048,
      18.999999999999993
     ],
     "min": [
      87.01436633065919,
-     -0.367000000003348,
-     11.500000000005503
+     -0.3669999999999875,
+     11.500000000005501
     ]
    },
-   "stl_sha256": "70f3d7baeacd23a78cb6080093c01023facfd831ab5b3648e0a8a481dfb3ff85",
-   "step_sha256": "edf63ebdbd5d2284ea492ee76c056372d9c473f2e785a78959c43fa21a5f2969"
+   "stl_sha256": "50d48beaa4626c5b472b4581bde2dc19f171a5fa788da9e672619e0d0dd3cbb5",
+   "step_sha256": "c975926013d7156c2b112925651cc231dde6ae45a2e54bf2a1500bb9d1df7f6a"
   },
   {
    "file": "46es_v5_cover_R_REVIEW_ONLY",
    "body": "COVER_R_DRAFT_TBD",
    "material": "8001 레진 투명",
    "wall_limit_mm": 0.8,
-   "cad_volume_mm3": 10781.857,
+   "cad_volume_mm3": 16212.406,
    "bbox": {
     "max": [
-     285.3879999999999,
+     285.388,
      94.96700000000001,
-     18.999999999999982
+     18.99999999999999
     ],
     "min": [
-     156.6909501437699,
+     156.69095014376677,
      -0.3669999999999902,
-     11.500000000011024
+     11.500000000011022
     ]
    },
-   "stl_sha256": "93475a5b22565b419f468951bfafc38cf5a305b10a89fa821ccbac3ac5e52a5a",
-   "step_sha256": "69e3801314070453910c5be150d666a2d3805f811ef97f4b858bea24e9ef0d55"
+   "stl_sha256": "439089962b0f81ac1b63fb7cef29bc7f8ca54de96290d3220fa7f808576cbf06",
+   "step_sha256": "e70cc81765e6e1019fa19b23469bd5efa8ee4cac47c9afb0db93f57914425a41"
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",
@@ -120,7 +120,7 @@
  },
  "combined_step": {
   "file": "46es_v5_changed_REVIEW_ONLY.step",
-  "sha256": "81a9fcf09289520e83cb5b0c65c222f70e4dc3579592b174677be3fcdcd32450"
+  "sha256": "174d9de8cc35650f3aa5875a92edddf450a9f5fe43e338720941e9ad34531c0d"
  },
- "csv_sha256": "723d3ace0035827eb1b3adfeffc4272fe5cbe3618ea44e88184d924554b3f5e9"
+ "csv_sha256": "1af7994609111e27c5e0a9365cd7418f2dc0e18156c65de878a30126c871cfe8"
 }

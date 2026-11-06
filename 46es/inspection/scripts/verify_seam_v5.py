@@ -1,9 +1,6 @@
-"""Read-only v5 audit (2026-11-06, 2nd pass: two-level cover): v4 kept, exact BRep of untouched bodies,
-parameters/CSV, health, cover levels (base Z 16.4 / collar Z 19.0 — 3rd pass skin 1.3: analytic skins, BRep face areas, sample
-points, expected volume against the flat 1st-pass snapshot), leg-magnet walls, clearance of changed bodies,
-review exports and thin walls.
+"""Audit the flat v5 cover, plate supports, baseline BRep, and current print exports.
 
-Run from the repository: python -B inspection/scripts/verify_seam_v5.py
+Run with python -B 46es/inspection/scripts/verify_seam_v5.py.
 Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
 """
 import csv, hashlib, json, math, subprocess, sys
@@ -13,7 +10,7 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import top_levels, COVERS, COLLAR_W  # noqa: E402
+from build_seam_v5 import top_levels, COVERS, PLATE_SUPPORTS  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 V4 = ROOT / 'model/baselines/seam_v4.sc'
@@ -22,28 +19,17 @@ FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
 SWITCH_BOUNDS = {'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}  # follow the 1.7 seat
-CHANGED = SWITCH_BOUNDS | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD'}
+CHANGED = SWITCH_BOUNDS | {seat[0] for seat in PLATE_SUPPORTS} | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD'}
 # Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
 # the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
 DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
 ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}
-NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_cover_base_Z', 'v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z',
-              'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_collar_W', 'v5_cover_top_above_rim', 'v5_cover_base_above_rim',
+NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_legmag_skin_min', 'v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z',
+              'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_cover_top_above_rim',
               'v5_key_margin', 'v5_legmag_plate_clr', 'v5_legpad_L', 'v5_lip_relief_clr',
               'v5_legmag_L_X', 'v5_legmag_L_Y', 'v5_legmag_R_X', 'v5_legmag_R_Y'}
 CHANGED_PARAMS = {'TBD_cover_T', 'TBD_upper_plate_T'}
 CACHE = ROOT / 'guide/.cache/v5'
-# Cover outline (plan §1) and the narrowest bezels: window edge -> outline. Where the bezel is narrower than the
-# collar width the collar fills the bezel and the outer face stands at the collar top; elsewhere the base shows
-# (ledge = bezel - collar). For a rotated key the narrowest spot is the window corner nearest the edge, not the
-# key centre; where the r2 window (SK34) already reaches the edge there is no cover material at all ("open").
-# Probe boxes 0.2 x 0.2, Z 16.2..18.8, 0.3 inside the outline at the foot of that corner.
-OUTLINE = dict(x0=-0.393, x1=285.388, y0=-0.367, y1=94.967)
-SAMPLE_POINTS = [  # (label, side, key centre (X, Y) from plan §1 or a fixed along-edge position for left/right)
-    ('front_1', 'front', (161.6, 14.4)), ('front_2', 'front', (96.4, 15.1)), ('front_3', 'front', (252.1, 13.3)),
-    ('back_1', 'back', (76.5, 82.6)), ('back_2', 'back', (185.3, 82.6)), ('back_3', 'back', (54.6, 81.8)), ('back_4', 'back', (207.2, 81.8)),
-    ('left', 'left', 54.7), ('right', 'right', 19.7)]
-PROBE_INSET = 0.3
 
 
 def sha(path):
@@ -129,9 +115,7 @@ def leg_magnet_walls(params):
                       cover_pocket_D=2 * r_cover, plate_pocket_D=2 * r_plate,
                       cover_wall_to_window_mm=round(min(edge_distance(p, q) for q in cut) - r_cover, 3),
                       cover_wall_to_outer_edge_mm=round(p[1] - edge_y - r_cover, 3),
-                      # 2nd pass: the pocket sits under the cover base (Z 16.4 since the 3rd pass), not under the collar top
-                      cover_top_skin_mm=round(params['v5_cover_base_Z'] - (params['v4_plate_top_Z'] + params['TBD_magnet_T']
-                                                                            + params['TBD_magnet_clr']), 3),
+                      cover_top_skin_mm=round(params['v5_legmag_skin'], 3),
                       plate_wall_to_switch_opening_mm=round(min(edge_distance(p, q) for q in openings) - r_plate, 3),
                       plate_wall_to_front_edge_mm=round(p[1] - edge_y - r_plate, 3),
                       plate_wall_to_pad_end_mm=round(params['v5_legpad_L'] / 2 - r_plate, 3),
@@ -142,102 +126,53 @@ def leg_magnet_walls(params):
     return out
 
 
-# ---------------------------------------------------------------- two-level cover
 def cover_levels(params, bodies, flat_bodies):
-    """Analytic skins, BRep upward-face areas (exactly two Z levels) and the expected volume from the flat snapshot."""
-    base, top = params['v5_cover_base_Z'], params['v5_cover_top_Z']
-    plate_top = params['v4_plate_top_Z']
-    legmag_pocket_top = plate_top + params['TBD_magnet_T'] + params['TBD_magnet_clr']          # 15.1
-    boss_pocket_top = 13.6                                                                      # six boss magnets (v4)
-    skins = dict(legmag_pocket_skin_mm=round(base - legmag_pocket_top, 4), boss_pocket_skin_mm=round(base - boss_pocket_top, 4))
-    # 3rd pass safety margin: resin wall rule 1.0 + 0.3 over the leg-magnet pockets
-    assert skins['legmag_pocket_skin_mm'] >= 1.3 - 1e-9 and skins['boss_pocket_skin_mm'] >= 1.0 - 1e-9, skins
+    """Check the single top plane and the unchanged XY shape against the flat baseline."""
+    top = params['v5_cover_top_Z']
     levels = top_levels(V5)
     flat_levels = top_levels(FLAT)
-    per_cover = {}
-    for n in COVERS:
-        lv = levels[n]
-        assert set(lv) == {round(base, 4), round(top, 4)}, (n, lv)
-        a_base, a_top = lv[round(base, 4)], lv[round(top, 4)]
-        flat_top = sum(flat_levels[n].values())
-        assert set(flat_levels[n]) == {18.0}, flat_levels[n]
-        assert abs(a_base + a_top - flat_top) < 0.01, (n, a_base + a_top, flat_top)
-        # flat cover: top Z 18 -> raise the whole top to Z 19 (+area x 1), then drop the base regions by (top - base)
-        expected = flat_bodies[n]['volume_mm3'] + flat_top * (top - 18.0) - a_base * (top - base)
-        actual = bodies[n]['volume_mm3']
-        assert abs(actual - expected) / expected < 0.001, (n, actual, expected)
-        assert actual < flat_bodies[n]['volume_mm3'], n
-        per_cover[n] = dict(base_area_mm2=round(a_base, 2), collar_area_mm2=round(a_top, 2), flat_top_area_mm2=round(flat_top, 2),
-                            volume_mm3=round(actual, 2), flat_Z18_volume_mm3=round(flat_bodies[n]['volume_mm3'], 2),
-                            expected_volume_mm3=round(expected, 2), volume_rel_err=round(abs(actual - expected) / expected, 7))
-    return dict(base_Z=base, collar_top_Z=top, drop_depth_mm=round(top - base, 4), collar_W_mm=params['v5_collar_W'],
-                rim_ref_Z=params['v5_rim_ref_Z'], base_above_rim_mm=round(params['v5_cover_base_above_rim'], 4),
-                collar_above_rim_mm=round(params['v5_cover_top_above_rim'], 4),
-                keycap_bottom_rest_Z=params['v5_keycap_bottom_rest_Z'], skirt_cover_H_mm=params['v5_skirt_cover_H'],
-                **skins, covers=per_cover)
+    for name in COVERS:
+        area = flat_levels[name][18.0]
+        assert set(flat_levels[name]) == {18.0}, flat_levels[name]
+        assert levels[name] == {round(top, 4): area}, (name, levels[name])
+        expected = flat_bodies[name]['volume_mm3'] + area * (top - 18.0)
+        actual = bodies[name]['volume_mm3']
+        assert abs(actual - expected) / expected < 0.001, (name, actual, expected)
+    assert params['v5_legmag_skin'] >= params['v5_legmag_skin_min']
+    return levels
 
 
-def sample_points(params):
-    """Probe boxes 0.3 inside the outline at the plan §1 spots: overlap with a cover = collar height at the outer face."""
-    base, top = params['v5_cover_base_Z'], params['v5_cover_top_Z']
-    keys = load_keys(.693, .667)
-    m = params['v5_key_margin']
-    r2_windows = dxf_polygons(ROOT / 'inspection/derived/REF_r2_cover_windows_P4_gh60.dxf')
-    windows = [rect(k['x'], k['y'], 18.05 + (k['w_u'] - 1) * 19.05 + 2 * m, 18.05 + 2 * m, k['rot']) for k in keys]
-    collars = [rect(k['x'], k['y'], 18.05 + (k['w_u'] - 1) * 19.05 + 2 * (m + COLLAR_W), 18.05 + 2 * (m + COLLAR_W), k['rot'])
-               for k in keys]
-    probes, script = [], []
-    for label, side, where in SAMPLE_POINTS:
-        if side in ('front', 'back'):
-            i = min(range(len(keys)), key=lambda j: math.hypot(keys[j]['x'] - where[0], keys[j]['y'] - where[1]))
-            corner = min(windows[i], key=lambda p: p[1]) if side == 'front' else max(windows[i], key=lambda p: p[1])
-            bezel = corner[1] - OUTLINE['y0'] if side == 'front' else OUTLINE['y1'] - corner[1]
-            x = corner[0]
-            y = OUTLINE['y0'] + PROBE_INSET if side == 'front' else OUTLINE['y1'] - PROBE_INSET
-            key = dict(x=round(keys[i]['x'], 3), y=round(keys[i]['y'], 3), rot=round(keys[i]['rot'], 3), w_u=keys[i]['w_u'])
-        else:
-            x = OUTLINE['x0'] + PROBE_INSET if side == 'left' else OUTLINE['x1'] - PROBE_INSET
-            y = where
-            bezel = min(edge_distance((OUTLINE['x0'] if side == 'left' else OUTLINE['x1'], y), q) for q in windows)
-            key = None
-        point = (x, y)
-        if any(inside(point, q) for q in r2_windows) or any(inside(point, q) for q in windows):
-            expected = 'open'          # the r2 window reaches the edge here: no cover material
-        elif any(inside(point, q) for q in collars):
-            expected = top
-        else:
-            expected = base
-        name = f'PROBE_{label}'
-        script.append(dict(command='solid.box', params=dict(name=name, body_name=name, corner=[x - 0.1, y - 0.1, base + 0.1],
-                                                             length=0.2, width=0.2, height=top - base - 0.2, operation='new')))
-        probes.append(dict(label=label, side=side, key=key, point=[round(x, 3), round(y, 3)], bezel_mm=round(bezel, 3),
-                           expected_top_Z=expected,
-                           base_ledge_mm=round(max(0.0, bezel - COLLAR_W), 3) if expected == base else 0.0))
-    names = [p['label'] for p in probes]
-    script.append(dict(command='inspect.clearance', params=dict(bodies=[f'PROBE_{n}' for n in names], against=COVERS,
-                                                                clearance=0.5, nearest=1)))
-    res = cli_results(script, V5, 'cover_probes_v5')[-1]
-    hit, nearest = {}, {}
-    for o in res['overlaps']:
-        probe = o['a'] if o['a'].startswith('PROBE_') else o['b']
-        hit[probe] = max(hit.get(probe, 0), o['volume_mm3'])
-    for probe, lst in res['nearest'].items():
-        nearest[probe] = min(n['distance_mm'] for n in lst) if lst else None
-    for p in probes:
-        name = f'PROBE_{p["label"]}'
-        v = hit.get(name, 0.0)
-        d = nearest.get(name)
-        p['probe_overlap_mm3'] = round(v, 4)
-        p['nearest_cover_mm'] = None if d is None else round(d, 4)
-        if v > 1e-6:
-            p['measured_top_Z'] = top
-            assert abs(v - 0.04 * (top - base - 0.2)) < 1e-3, p   # the whole probe sits inside the collar
-        elif d is not None and abs(d - 0.1) < 1e-3:
-            p['measured_top_Z'] = base                            # probe bottom is 0.1 above the base top
-        else:
-            p['measured_top_Z'] = 'open'
-        assert p['measured_top_Z'] == p['expected_top_Z'], p
-    return probes
+def support_contacts(params):
+    """Confirm the complete rectangular bearing faces, without solid overlap."""
+    z = params['v4_plate_top_Z'] - params['TBD_plate_T']
+    mounts = sorted({seat[0] for seat in PLATE_SUPPORTS})
+    plates = sorted({seat[1] for seat in PLATE_SUPPORTS})
+    commands = [dict(command='inspect.clearance', params=dict(
+        bodies=mounts, against=plates, clearance=0.01, min_volume=0.000001))]
+    probes = {}
+    for i, (mount, plate, x, y, length, width) in enumerate(PLATE_SUPPORTS, 1):
+        name = f'SEAT_PROBE_{i}'
+        commands.append(dict(command='solid.box', params=dict(
+            name=name, body_name=name, corner=[x, y, z - 0.05],
+            length=length, width=width, height=0.1, operation='new')))
+        probes[name] = (mount, plate, x, y, length * width)
+    commands.append(dict(command='inspect.clearance', params=dict(
+        bodies=list(probes), against=mounts + plates, clearance=0.01, min_volume=0.000001)))
+    results = cli_results(commands, V5, 'plate_support_contacts')
+    contact, bearing = results[0], results[-1]
+    assert not contact['overlaps'] and not contact['unchecked'], contact
+    assert not bearing['unchecked'], bearing
+    contacts = {frozenset((p['a'], p['b'])) for p in contact['near'] if p['distance_mm'] < 1e-6}
+    volumes = {frozenset((p['a'], p['b'])): p['volume_mm3'] for p in bearing['overlaps']}
+    seats = []
+    for probe, (mount, plate, x, y, area) in probes.items():
+        assert frozenset((mount, plate)) in contacts, (mount, plate, contact)
+        for target in (mount, plate):
+            volume = volumes[frozenset((probe, target))]
+            assert abs(volume - area * 0.05) < 0.001, (probe, target, volume)
+        seats.append(dict(mount=mount, target=plate, corner_xy=[x, y], top_Z=z,
+                          seat_area_mm2=area))
+    return seats
 
 
 # ---------------------------------------------------------------- order-2 print set (3rd pass, tools/export_print_v5.py)
@@ -292,9 +227,7 @@ def main():
     assert {n for n in p4 if p4[n] != p5[n]} == CHANGED_PARAMS
     rows = {r['name']: r for r in csv.DictReader((ROOT / 'model/parameters_seam_v5.csv').open(encoding='utf-8-sig'))}
     assert {n: r['expression'] for n, r in rows.items()} == p5, 'CSV differs from the model'
-    drop = next(f for f in v5['features'] if f['name'] == 'COVER_DROP_V5')
-    assert drop['type'] == 'extrude' and drop['operation'] == 'cut' and sorted(drop['targets']) == sorted(COVERS), drop
-    assert drop['extent']['distance'] == 'v5_cover_top_Z - v5_cover_base_Z + 0.5' and drop['extent']['direction'] == 'negative'
+    assert all(f['name'] != 'COVER_DROP_V5' for f in v5['features'])
 
     old, new = live_shapes(V4), live_shapes(V5)
     assert set(new) - set(old) == ADDED and not set(old) - set(new)
@@ -322,8 +255,8 @@ def main():
         lo, hi = bodies[n]['bbox']['min'][2], bodies[n]['bbox']['max'][2]
         assert abs(hi - cover_hi) < 1e-6 and abs(lo - cover_lo) < 1e-6, n
     assert abs(params['TBD_cover_T'] - 6) < 1e-9 and abs(params['v5_cover_top_Z'] - 19) < 1e-9
-    assert abs(params['v5_legmag_skin'] - 1.3) < 1e-9, params['v5_legmag_skin']          # 3rd pass safety margin
-    assert abs(params['v5_cover_base_Z'] - 16.4) < 1e-9 and abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
+    assert abs(params['v5_legmag_skin'] - 3.9) < 1e-9
+    assert abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
     walls = leg_magnet_walls(params)
     v4_eval_path = CACHE / f'eval-baseline-{V4_SHA[:16]}.json'
     if not v4_eval_path.exists():
@@ -342,10 +275,7 @@ def main():
         assert abs(bodies[n]['volume_mm3'] - flat_bodies[n]['volume_mm3']) < 1e-6, n
         assert flat_shapes[n] == new[n], n
     levels = cover_levels(params, bodies, flat_bodies)
-    probes = sample_points(params)
-    build_info = json.loads((CACHE / 'build_v5.json').read_text(encoding='utf-8'))
-    assert build_info.get('output_sha') == sha(V5), 'build_v5.json is of another model'
-    regions = build_info['drop_regions']
+    seats = support_contacts(params)
 
     # clearance of the changed/added bodies: against the 106 untouched bodies and among themselves
     moving = sorted(CHANGED | ADDED)
@@ -388,10 +318,8 @@ def main():
                   derived_same_volume_box=sorted(DERIVED), plates_same_as_flat_Z18=True,
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
                   params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},
-                  cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels, sample_points=probes,
-                  drop_regions=dict(picked=len([r for r in regions if r['selected']]),
-                                    trapped_pockets_dropped=[r for r in regions if r['selected'] and not r['outer']],
-                                    left_at_full_height=[r for r in regions if not r['selected']]),
+                  cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
+                  plate_supports=seats,
                   leg_magnets=walls,
                   clearance={k: dict(overlaps=len(v['overlaps']), contacts=len(v['contacts'])) for k, v in clearance.items()},
                   plate_files_unchanged=exports.get('plate_files_unchanged_since_previous_export'), parts=parts)

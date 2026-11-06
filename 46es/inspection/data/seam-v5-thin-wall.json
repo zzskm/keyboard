@@ -5,26 +5,26 @@
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
-   "stl_sha256": "0883ab93db8345d81af1c986a9c09b630c841ae503f42f5fe69f31d5e89c7cd7",
-   "facets": 2654,
-   "samples": 296454,
+   "stl_sha256": "e568befea2dc8925bf67b0a56383830a16510c6b1e5dd20ffc3337b7b7cfde5b",
+   "facets": 2688,
+   "samples": 251772,
    "min_mm": 0.305,
    "wall_min_mm": 1.098,
    "below_limit": [
     {
      "min_mm": 0.305,
-     "points": 16045,
-     "wall_min_mm": 1.387,
+     "points": 365,
+     "wall_min_mm": 1.386,
      "wall_points_below_limit": 0,
      "at_print": [
       68.216,
       94.935,
-      12.156
+      18.689
      ],
      "to_print": [
       67.913,
       94.967,
-      12.156
+      18.689
      ],
      "dir_print": [
       -0.995,
@@ -33,31 +33,31 @@
      ],
      "box_print": [
       [
-       2.99,
-       28.7,
+       67.58,
+       93.53,
        12.01
       ],
       [
        68.22,
        94.97,
-       18.99
+       18.97
       ]
      ]
     },
     {
-     "min_mm": 0.345,
-     "points": 2248,
-     "wall_min_mm": 1.5,
+     "min_mm": 0.662,
+     "points": 55,
+     "wall_min_mm": null,
      "wall_points_below_limit": 0,
      "at_print": [
-      71.818,
-      13.562,
-      13.261
+      71.812,
+      13.524,
+      13.143
      ],
      "to_print": [
-      71.479,
-      13.622,
-      13.261
+      71.16,
+      13.639,
+      13.143
      ],
      "dir_print": [
       -0.985,
@@ -66,14 +66,14 @@
      ],
      "box_print": [
       [
-       52.95,
-       12.12,
+       71.67,
+       13.44,
        13.1
       ],
       [
-       71.82,
-       14.59,
-       18.98
+       71.81,
+       13.61,
+       18.95
       ]
      ]
     },
@@ -115,125 +115,59 @@
   },
   {
    "file": "46es_v5_cover_T_REVIEW_ONLY",
-   "stl_sha256": "70f3d7baeacd23a78cb6080093c01023facfd831ab5b3648e0a8a481dfb3ff85",
-   "facets": 1868,
-   "samples": 213837,
-   "min_mm": 0.046,
+   "stl_sha256": "50d48beaa4626c5b472b4581bde2dc19f171a5fa788da9e672619e0d0dd3cbb5",
+   "facets": 1788,
+   "samples": 183940,
+   "min_mm": 0.146,
    "wall_min_mm": 1.098,
    "below_limit": [
     {
-     "min_mm": 0.046,
-     "points": 9,
-     "wall_min_mm": null,
-     "wall_points_below_limit": 0,
-     "at_print": [
-      174.403,
-      92.972,
-      12.889
-     ],
-     "to_print": [
-      174.357,
-      92.967,
-      12.889
-     ],
-     "dir_print": [
-      -0.995,
-      -0.105,
-      -0.0
-     ],
-     "box_print": [
-      [
-       174.39,
-       92.97,
-       12.07
-      ],
-      [
-       174.4,
-       93.12,
-       12.89
-      ]
-     ]
-    },
-    {
-     "min_mm": 0.068,
-     "points": 8,
-     "wall_min_mm": null,
-     "wall_points_below_limit": 0,
-     "at_print": [
-      87.165,
-      92.974,
-      12.889
-     ],
-     "to_print": [
-      87.233,
-      92.967,
-      12.889
-     ],
-     "dir_print": [
-      0.995,
-      -0.105,
-      -0.0
-     ],
-     "box_print": [
-      [
-       87.17,
-       92.97,
-       12.07
-      ],
-      [
-       87.18,
-       93.12,
-       12.89
-      ]
-     ]
-    },
-    {
      "min_mm": 0.146,
-     "points": 3165,
-     "wall_min_mm": 1.159,
+     "points": 414,
+     "wall_min_mm": 1.173,
      "wall_points_below_limit": 0,
      "at_print": [
       145.098,
       -0.339,
-      18.378
+      12.156
      ],
      "to_print": [
       144.955,
       -0.367,
-      18.378
+      12.156
      ],
      "dir_print": [
       -0.982,
       -0.191,
-      -0.0
+      0.0
      ],
      "box_print": [
       [
-       139.1,
+       144.38,
        -0.37,
-       12.03
+       12.04
       ],
       [
        145.1,
-       22.15,
-       18.98
+       0.88,
+       18.96
       ]
      ]
     },
     {
-     "min_mm": 0.388,
-     "points": 65,
+     "min_mm": 0.25,
+     "points": 88,
      "wall_min_mm": null,
      "wall_points_below_limit": 0,
      "at_print": [
-      117.712,
-      -0.293,
-      12.2
+      117.706,
+      -0.319,
+      18.69
      ],
      "to_print": [
-      118.093,
+      117.951,
       -0.367,
-      12.2
+      18.69
      ],
      "dir_print": [
       0.982,
@@ -244,89 +178,89 @@
       [
        117.71,
        -0.37,
-       12.06
+       12.07
       ],
       [
        117.86,
        -0.1,
-       16.37
+       18.96
       ]
      ]
     }
    ],
-   "below_warn_count": 3
+   "below_warn_count": 6
   },
   {
    "file": "46es_v5_cover_R_REVIEW_ONLY",
-   "stl_sha256": "93475a5b22565b419f468951bfafc38cf5a305b10a89fa821ccbac3ac5e52a5a",
+   "stl_sha256": "439089962b0f81ac1b63fb7cef29bc7f8ca54de96290d3220fa7f808576cbf06",
    "facets": 2780,
-   "samples": 339562,
+   "samples": 285554,
    "min_mm": 0.31,
    "wall_min_mm": 1.098,
    "below_limit": [
     {
      "min_mm": 0.31,
-     "points": 7759,
-     "wall_min_mm": 1.385,
+     "points": 369,
+     "wall_min_mm": 1.394,
      "wall_points_below_limit": 0,
      "at_print": [
       193.352,
       94.935,
-      12.311
+      18.844
      ],
      "to_print": [
       193.66,
       94.967,
-      12.311
+      18.844
      ],
      "dir_print": [
       0.995,
       0.105,
-      -0.0
+      0.0
      ],
      "box_print": [
       [
        193.35,
-       83.38,
+       93.51,
        12.01
       ],
       [
-       256.75,
+       194.18,
        94.97,
-       18.98
+       18.97
       ]
      ]
     },
     {
      "min_mm": 0.481,
-     "points": 24437,
-     "wall_min_mm": 1.173,
+     "points": 14,
+     "wall_min_mm": null,
      "wall_points_below_limit": 0,
      "at_print": [
       201.017,
       14.16,
-      13.308
+      18.846
      ],
      "to_print": [
       201.495,
       14.219,
-      13.308
+      18.846
      ],
      "dir_print": [
       0.993,
       0.122,
-      -0.0
+      0.0
      ],
      "box_print": [
       [
-       156.85,
-       -0.37,
-       13.04
+       201.02,
+       14.13,
+       13.15
       ],
       [
-       283.03,
-       47.9,
-       18.98
+       201.02,
+       14.16,
+       18.85
       ]
      ]
     },
@@ -364,7 +298,7 @@
      ]
     }
    ],
-   "below_warn_count": 5
+   "below_warn_count": 6
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",

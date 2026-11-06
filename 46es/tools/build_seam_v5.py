@@ -1,34 +1,16 @@
-"""Build the v5 production CAD from v4 without touching v4.
+"""Build the v5 production CAD from the fixed v4 baseline.
 
-v5 (2026-11-06, user request):
-  1. two-level cover (2nd pass, plan docs/design.md):
-     - base top Z 16.4 = plate top 13 + magnet 2 + pocket clearance 0.1 + 1.3 skin over the lower-leg magnet
-       pockets (rim reference Z 14 -> +2.4). 3rd pass (2026-11-06, user: "add a safety margin where in doubt"):
-       skin 1.0 -> 1.3 (resin wall rule 1.0 + 0.3 margin; 2nd pass sat exactly on the rule);
-     - a collar around every key window rises to Z 19.0 = keycap skirt bottom at rest (switch seat 11.3 + 6.0,
-       r2 based) + 1.7 skirt cover (rim +5.0); collar width 1.5 beyond the 1.0 key margin;
-     - built as one extrude cut (COVER_DROP_V5) from Z 19 down to 16.4 of the sketch regions outside the
-       46 "window + collar" rectangles; trapped pockets between collars narrower than 3.0 stay at full height
-       (3rd pass: was 2.0, which left one 2.09 wide pocket as a 2.9 deep dust groove).
-     The cover keeps its underside (plate contact Z 13), lip, locating bosses and the six boss magnets;
-     only the top grows: TBD_cover_T 2 -> 6 (1st pass: flat Z 18, TBD_cover_T 5; snapshot model/baselines/flat_Z18.sc).
-  2. one magnet pair at the tip of each lower leg of the left/right C-shaped covers (user: lower legs only).
-     cover pocket + plate pocket, Ø3x2 like the existing six. The plate rabbet is filled locally (pad)
-     and the cover lip is relieved there, so both pockets keep >= 1 mm walls.
-  4. upper plate layer 2.0 -> 1.7 (user 2026-11-06): the switch seat rises 0.3 (Z 11 -> 11.3), so a keycap
-     bottoms out 0.3 further above the plate top than on r2 (r2: 2T upper plate, almost no play but works).
-  3. key margin: every keycap footprint (actual width) grown by v5_key_margin is cut out of the cover,
-     added to the r2 window (the window never shrinks). Key layout, switch and keycap heights unchanged.
+The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
+three-piece outline, keycap clearance, and magnet seats, with one flat face
+per piece. Integral mount seats support the switch plate from underneath.
 
-Run from the repository: python tools/build_seam_v5.py            (writes model/46es_mount_seam_v5.sc)
-                         python tools/build_seam_v5.py --probe    (builds into guide/.cache/v5 only, prints checks)
-                         python tools/build_seam_v5.py --flat     (1st-pass flat cover, guide/.cache/v5/v5_flat.sc only)
+Run from the repository root with python 46es/tools/build_seam_v5.py.
+Use --probe to build into guide/.cache/v5 without replacing the current CAD.
 """
 import argparse
 import copy
 import hashlib
 import json
-import math
 from pathlib import Path
 import subprocess
 import sys
@@ -42,22 +24,28 @@ SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/v5'
 KEY_MARGIN = 1.0
-COLLAR_W = 1.5            # v5_collar_W: window edge -> collar outer face
-LEGMAG_SKIN = 1.3         # v5_legmag_skin: cover material above the lower-leg magnet pockets (rule 1.0 + 0.3 margin)
+LEGMAG_SKIN_MIN = 1.3
 CAP_1U = 18.05
-# Drop-region raster (plan §2-2): the sketch holds one big rectangle and the 46 window+collar rectangles; the
-# regions of "big rectangle minus the union of the key rectangles" are cut down to the base. Trapped pockets
-# between collars are cut only when their inscribed width is >= 2 * DROP_MIN_HALF_WIDTH (no dust grooves).
-# 3rd pass: 1.0 -> 1.5 (the only trapped pocket, 2.09 wide at X 74.6-79.1 / Y 25.3-32.8, now stays at collar height).
-DROP_STEP = 0.05
-DROP_BOX = (-2.0, 288.0, -2.0, 97.0)
-DROP_MIN_HALF_WIDTH = 1.5
 # Leg-end magnet pairs (lower legs only, user 2026-11-06). Chosen on a 0.05 mm raster so that
 # cover pocket Ø3.2 and plate pocket Ø3.3 keep >= 1.2 mm to the v5 window, the 16.5 openings
 # and the part edges, as close to the leg tip as that allows.
 LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
+
+# Each footprint stays inside the existing mount and under solid plate.
+# The separated seats leave open paths for wires and driver access.
+PLATE_SUPPORTS = [
+    # mount, bearing body, X, Y, length, width (mm)
+    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', 3, 11, 5, 14),
+    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', 3, 73, 4, 12),
+    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', 279, 23.5, 4, 12),
+    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', 255, 70, 4, 8),
+    ('MOUNT_H02_SO3_MIN_V2', 'PLATE_L_SPLIT_V1', 124, 50, 4, 6),
+    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', 172.5, 6, 14, 5),
+    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', 142, 4.5, 12, 4),
+]
+SEAT_ROOT_Z = 1.5
 
 
 def sha(path):
@@ -99,51 +87,6 @@ def margin_groups(keys, m=KEY_MARGIN):
         else:
             groups.append([r])
     return groups
-
-
-def drop_regions(keys, m=KEY_MARGIN + COLLAR_W, step=DROP_STEP, box=DROP_BOX, min_half_width=DROP_MIN_HALF_WIDTH):
-    """Connected components of (big rectangle minus the union of the window+collar rectangles) on a raster.
-
-    Each component gets one interior pick point (the point farthest from any boundary). The outer component
-    (touching the big rectangle) is always selected; a trapped component only when its inscribed half-width
-    is >= min_half_width. Raster slivers (one cell wide along the edge of a rotated rectangle) are reported
-    but never selected.
-    """
-    import numpy as np
-    from scipy import ndimage
-    x0, x1, y0, y1 = box
-    xs = np.arange(x0, x1 + step / 2, step)
-    ys = np.arange(y0, y1 + step / 2, step)
-    X, Y = np.meshgrid(xs, ys)
-    inside = np.zeros(X.shape, bool)
-    for k in keys:
-        w = CAP_1U + (k['w_u'] - 1) * 19.05 + 2 * m
-        h = CAP_1U + 2 * m
-        a = math.radians(k['rot'])
-        c, s = math.cos(a), math.sin(a)
-        dx, dy = X - k['x'], Y - k['y']
-        u, v = dx * c + dy * s, -dx * s + dy * c
-        inside |= (np.abs(u) <= w / 2) & (np.abs(v) <= h / 2)
-    labels, n = ndimage.label(~inside)          # 4-connectivity
-    border = set(np.unique(np.concatenate([labels[0], labels[-1], labels[:, 0], labels[:, -1]]))) - {0}
-    objects = ndimage.find_objects(labels, n)
-    regions = []
-    for lab in range(1, n + 1):
-        comp = labels == lab
-        padded = np.pad(comp, 1)                 # the raster border counts as a boundary for the pick point
-        dist = ndimage.distance_transform_edt(padded)[1:-1, 1:-1] * step
-        j, i = np.unravel_index(int(np.argmax(dist)), dist.shape)
-        sl = objects[lab - 1]
-        outer = lab in border
-        half = float(dist.max())
-        regions.append(dict(
-            point=[round(float(xs[i]), 3), round(float(ys[j]), 3)], outer=outer,
-            area_mm2=round(float(comp.sum()) * step * step, 3), inscribed_half_width_mm=round(half, 3),
-            bbox=[round(float(xs[sl[1].start]), 2), round(float(ys[sl[0].start]), 2),
-                  round(float(xs[sl[1].stop - 1]), 2), round(float(ys[sl[0].stop - 1]), 2)],
-            selected=bool(outer or half >= min_half_width)))
-    assert sum(r['outer'] for r in regions) == 1, 'the outer region must be one connected band'
-    return regions
 
 
 # ------------------------------------------------------------------------------------ BRep top-level audit
@@ -191,7 +134,7 @@ def top_levels(model, bodies=COVERS, tol=1e-4):
     return levels
 
 
-def build(flat=False, probe=False):
+def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(SOURCE) as archive:
         doc = json.loads(archive.read('document.json'))
@@ -204,17 +147,8 @@ def build(flat=False, probe=False):
         doc['params'].insert(index, p)
         params[name] = p
 
-    # --- 1. cover height: two levels (plan §2-1) ------------------------------------------------------
-    new_param('v5_rim_ref_Z', 14, '[v5 설계 기준 2026-11-06] 케이스 테두리 상단 Z. PSD60 1차 실측 M05 rim_F/rim_B 14(캘리퍼 대략값)를 '
-              '커버 높이 비교 기준으로만 쓴다(형상은 자석 적층에서 유도). 케이스 형상(REF_WIL_*/REF_PSD_*)은 바꾸지 않는다',
-              before='TBD_cover_T')
-    new_param('v5_legmag_skin', LEGMAG_SKIN, '[v5 3차 안전마진 2026-11-06] 아래 다리 자석 포켓(윗면 Z 15.1) 위에 남기는 살. 8001 레진 벽 규칙 ≥ 1.0 '
-              '+ 안전마진 0.3 (2차는 1.0으로 규칙 경계값이었다. 사용자: 의심되는 곳은 안전마진 추가)',
-              before='TBD_cover_T')
-    new_param('v5_cover_base_Z', 'v5_cover_top_Z' if flat else
-              'v4_plate_top_Z + TBD_magnet_T + TBD_magnet_clr + v5_legmag_skin',
-              '[v5 유도값] 커버 바닥(창 둘레 턱 밖) 윗면 Z = plate 윗면 13 + 자석 2 + 포켓 여유 0.1 + 살 1.3 = 16.4 (테두리 14 + 2.4; 2차는 살 1.0 → 16.1). '
-              '테두리가 아니라 다리 자석 적층에서 유도한다' + (' — --flat: 평판형이라 턱 윗면과 같다' if flat else ''),
+    new_param('v5_rim_ref_Z', 14, 'Approximate PSD60 rim height for comparison only', before='TBD_cover_T')
+    new_param('v5_legmag_skin_min', LEGMAG_SKIN_MIN, 'Minimum resin skin above the leg magnet pocket',
               before='TBD_cover_T')
     new_param('v5_keycap_bottom_above_seat', 6.0, '[v5 2차 r2 근거 2026-11-06] 쉴 때 키캡 스커트 밑면 − 스위치 착좌면. r2: 2T upper plate 위에서 '
               '키캡을 끝까지 누르면 유격이 거의 없다 → 바닥에서 착좌 + 약 2, 쉴 때 + 약 6. r2 실측(upper plate 윗면 → 스커트 밑면 g)으로 '
@@ -224,17 +158,14 @@ def build(flat=False, probe=False):
     new_param('v5_skirt_cover_H', 1.7, '[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
               '대안 1.2(턱 Z 18.5) / 0.7(Z 18)', before='TBD_cover_T')
     new_param('v5_cover_top_Z', 'v5_keycap_bottom_rest_Z + v5_skirt_cover_H',
-              '[v5 2차 유도값] 창 둘레 턱(collar) 윗면 Z = 17.3 + 1.7 = 19.0 (테두리 14 + 5.0). v5 1차: 테두리 + 4 = 18',
-              before='TBD_cover_T')
-    new_param('v5_collar_W', COLLAR_W, '[v5 2차 사용자 결정 2026-11-06] 창 가장자리(키캡 + v5_key_margin)에서 턱 바깥면까지 폭. 레진 벽 ≥ 1.0. '
-              '베젤이 이보다 좁은 앞·뒤 7곳에서는 턱이 커버 바깥면까지 찬다. SK36_COVER_DROP_V5 사각형은 이 값으로 만든 고정 숫자'
-              '(tools/build_seam_v5.py에서 재생성)', before='TBD_cover_T')
-    new_param('v5_cover_top_above_rim', 'v5_cover_top_Z - v5_rim_ref_Z', '[v5 2차 보고용] 턱 윗면 − 테두리 = 5.0', before='TBD_cover_T')
-    new_param('v5_cover_base_above_rim', 'v5_cover_base_Z - v5_rim_ref_Z', '[v5 보고용] 바닥 윗면 − 테두리 = 2.4 (2차 2.1)', before='TBD_cover_T')
+              'Single flat cover top at Z 19', before='TBD_cover_T')
+    new_param('v5_cover_top_above_rim', 'v5_cover_top_Z - v5_rim_ref_Z',
+              'Flat cover top minus approximate rim height', before='TBD_cover_T')
+    new_param('v5_legmag_skin', 'v5_cover_top_Z - v4_plate_top_Z - TBD_magnet_T - TBD_magnet_clr',
+              'Actual material over the lower leg magnet pocket', before='TBD_cover_T')
     cover_t = params['TBD_cover_T']
     cover_t['expr'] = 'v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)'
-    cover_t['comment'] = ('[v5 2차 2026-11-06] 커버 전체 높이(턱 윗면 Z 19 − plate 윗면 Z 13) = 6. 밑면·립·보스·자석은 그대로, 위로만 두꺼워짐'
-                          '(v4: 2, v5 1차 평판: 5). 창 둘레 턱 밖은 COVER_DROP_V5로 v5_cover_base_Z(16.4)까지 깎는다. r2 실물은 5T+2T 2층')
+    cover_t['comment'] = 'Flat cover thickness from the plate top to Z 19'
     # --- 4. upper plate layer ------------------------------------------------------------------------
     upper = params['TBD_upper_plate_T']
     assert upper['expr'] == '2 mm', upper['expr']
@@ -322,71 +253,46 @@ def build(flat=False, probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
-    # --- 1b. two-level cover: one sketch (big rectangle + 46 window+collar rectangles), region-pick cut ---------
-    regions = None
-    if not flat:
-        regions = drop_regions(keys)
-        x0, x1, y0, y1 = DROP_BOX
-        big = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
-        sketch('SK36_COVER_DROP_V5', top_plane, [big] + key_rects(keys, KEY_MARGIN + COLLAR_W))
-        doc['name'] = ('46es seam v5 - two-level cover (base Z 16.4 / collar Z 19), lower-leg magnet pairs, '
-                       '1 mm key margin, upper plate 1.7')
-    else:
-        doc['name'] = '46es seam v5 flat (1st pass shape: cover top Z 19 flat), lower-leg magnet pairs, 1 mm key margin, upper plate 1.7'
-    seed = CACHE / ('seed_v5_flat.sc' if flat else 'seed_v5.sc')
+    for i, (mount, _, x, y, length, width) in enumerate(PLATE_SUPPORTS, 1):
+        feature('box', f'MOUNT_PLATE_SEAT_{i}_V5', corner=[str(x), str(y), str(SEAT_ROOT_Z)],
+                length=str(length), width=str(width),
+                height=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}',
+                operation='join', participants=[mount])
+
+    doc['name'] = '46es seam v5 - flat cover and direct plate supports'
+    seed = CACHE / 'seed_v5.sc'
     with zipfile.ZipFile(seed, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('document.json', json.dumps(doc, ensure_ascii=False))
         archive.writestr('container.json', container)
-    pending = CACHE / ('v5_flat.sc' if flat else 'v5.sc')
-    if flat:
-        run('run', '--in', seed, '--save', pending, '--quiet')
-    else:
-        # The point picks are turned into stored curve selections by the extrude command itself, so the cut is
-        # added through a command script on top of the seed design (document.json has no point-pick form).
-        picks = [dict(point=r['point']) for r in regions if r['selected']]
-        script = [dict(command='solid.extrude', params=dict(
-            name='COVER_DROP_V5', sketch='SK36_COVER_DROP_V5', profiles=picks, exact_regions=True,
-            operation='cut', targets=list(COVERS), direction='negative', start_offset=0.5,
-            distance='v5_cover_top_Z - v5_cover_base_Z + 0.5'))]
-        script_path = CACHE / 'drop_v5.json'
-        script_path.write_text(json.dumps(script), encoding='utf-8')
-        run('run', script_path, '--in', seed, '--save', pending, '--quiet')
-    report = CACHE / ('eval_v5_flat.json' if flat else 'eval_v5.json')
+    pending = CACHE / 'v5.sc'
+    run('run', '--in', seed, '--save', pending, '--quiet')
+    report = CACHE / 'eval_v5.json'
     run('eval', '--in', pending, '--json-out', report)
     evaluated = json.loads(report.read_text(encoding='utf-8'))
     failed = [f for f in evaluated['timeline'] if f.get('error')]
     assert not failed, failed
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
-    top_z, base_z = values['v5_cover_top_Z'], values['v5_cover_base_Z']
-    info = dict(model=str(pending if (flat or probe) else OUTPUT), flat=flat, source_sha=sha(SOURCE),
-                bodies=evaluated['body_count'], margin_sketches=len(groups), timeline=len(evaluated['timeline']),
-                params=len(doc['params']), cover_top_Z=top_z, cover_base_Z=base_z, cover_T=values['TBD_cover_T'],
-                covers={n: dict(volume_mm3=round(bodies[n]['volume_mm3'], 3), z=[round(bodies[n]['bbox']['min'][2], 4),
-                                                                                round(bodies[n]['bbox']['max'][2], 4)])
-                        for n in COVERS})
-    for n in COVERS:
-        assert abs(bodies[n]['bbox']['max'][2] - top_z) < 1e-6, (n, bodies[n]['bbox'])
-    if not flat:
-        # probe (b): the upward faces of each cover sit at exactly two levels, collar top and base top
-        levels = top_levels(pending)
-        for n, lv in levels.items():
-            assert set(lv) == {round(base_z, 4), round(top_z, 4)}, (n, lv)
-        info.update(drop_regions=regions, drop_picks=len([r for r in regions if r['selected']]),
-                    unselected_regions=[r for r in regions if not r['selected']], cover_levels=levels,
-                    drop_depth=round(top_z - base_z, 4))
-        if not probe:
-            pending.replace(OUTPUT)
-            info['output_sha'] = sha(OUTPUT)
-    (CACHE / ('build_v5_flat.json' if flat else ('probe_v5.json' if probe else 'build_v5.json'))).write_text(
+    top_z = values['v5_cover_top_Z']
+    assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
+    levels = top_levels(pending)
+    for name, faces in levels.items():
+        assert set(faces) == {round(top_z, 4)}, (name, faces)
+        assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
+    info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
+                bodies=evaluated['body_count'], timeline=len(evaluated['timeline']),
+                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels)
+    if not probe:
+        pending.replace(OUTPUT)
+        info['output_sha'] = sha(OUTPUT)
+    (CACHE / ('probe_v5.json' if probe else 'build_v5.json')).write_text(
         json.dumps(info, indent=1, ensure_ascii=False), encoding='utf-8')
-    print(json.dumps({k: v for k, v in info.items() if k != 'drop_regions'}, ensure_ascii=False, indent=1))
+    print(json.dumps(info, ensure_ascii=False, indent=1))
     return info
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--flat', action='store_true', help='1st-pass flat cover into guide/.cache/v5/v5_flat.sc only')
     ap.add_argument('--probe', action='store_true', help='build into guide/.cache/v5/v5.sc only and print the checks')
     a = ap.parse_args()
-    build(flat=a.flat, probe=a.probe)
+    build(probe=a.probe)

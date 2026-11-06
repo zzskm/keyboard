@@ -1,10 +1,4 @@
-"""Validate the v5 assembly review model: case reference kept, two-level cover above the rim (base +2.4, collar
-+5.0), keycap clearance at rest and pressed 4 mm (cover windows, case inner wall), pressed cap vs plate top
-(0.3), CASE_V5 design requirement vs measured PSD60.
-
-Run from the repository: python -B inspection/scripts/verify_assembly_reference_v5.py
-Writes inspection/data/assembly-reference-v5-verification.json.
-"""
+"""Verify the flat cover and keycap clearance in the v5 assembly reference."""
 import hashlib
 import json
 import math
@@ -71,17 +65,14 @@ def main():
     case = bodies[HOUSING]['bbox']
     rim = case['max'][2]
     assert abs(rim - 14) < 1e-6
-    # two-level cover: collar top from the body boxes, base level from the upward faces of the covers
+    # Confirm all three cover top faces share the same plane.
     cover_top = max(bodies[n]['bbox']['max'][2] for n in COVERS)
     assert all(abs(bodies[n]['bbox']['max'][2] - cover_top) < 1e-6 for n in COVERS)
     protrusion = cover_top - rim
     assert abs(protrusion - params['v5_cover_top_above_rim']) < 1e-6 and abs(protrusion - 5.0) < 1e-6, protrusion
-    cover_base = params['v5_cover_base_Z']
-    base_above_rim = cover_base - rim
-    assert abs(base_above_rim - params['v5_cover_base_above_rim']) < 1e-6 and abs(base_above_rim - 2.4) < 1e-6, base_above_rim
     levels = top_levels(MODEL)
     for n, lv in levels.items():
-        assert set(lv) == {round(cover_base, 4), round(cover_top, 4)}, (n, lv)
+        assert set(lv) == {round(cover_top, 4)}, (n, lv)
     design = {k: round(params['CASE_V5_' + k], 3) for k in
               ('rim_Z', 'in_W_design', 'in_W_min', 'in_D_design', 'in_D_min', 'keycap_wall_min')}
     # production bodies identical to the v5 source
@@ -131,7 +122,6 @@ def main():
     result = dict(
         ok=True, model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],
         rim_Z=rim, cover_top_Z=cover_top, cover_above_rim_mm=round(protrusion, 6),
-        cover_base_Z=cover_base, cover_base_above_rim_mm=round(base_above_rim, 6),
         cover_levels={n: {str(z): a for z, a in lv.items()} for n, lv in levels.items()},
         keycap=dict(target_mm=TARGET, case_target_mm=TARGET_CASE, press_mm=PRESS, **states,
                     cap_bottom_rest_Z=round(lowest_cap, 3), cap_bottom_above_seat_mm=manifest['keycap_bottom_above_seat'],

@@ -1,7 +1,7 @@
 {
  "ok": true,
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
+ "v5_sha": "fd6dd79769442fdf5335af64167b68ecbd8c7bfa41c70f1763ade2ad67dcb3e2",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
  "print_set": [
   {
@@ -73,44 +73,44 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 9.937,
+   "volume_cm3": 15.578,
    "size": [
     101.79,
     95.33,
     7.5
    ],
    "wall_min_mm": 1.098,
-   "rel": 5e-06
+   "rel": 6e-06
   },
   {
    "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 9.25,
+   "volume_cm3": 14.422,
    "size": [
     87.7,
     95.33,
     7.5
    ],
    "wall_min_mm": 1.098,
-   "rel": 5e-06
+   "rel": 3e-06
   },
   {
    "file": "46es_v5_cover_R",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 10.782,
+   "volume_cm3": 16.212,
    "size": [
     128.7,
     95.33,
     7.5
    ],
    "wall_min_mm": 1.098,
-   "rel": 4e-06
+   "rel": 5e-06
   }
  ],
  "bodies": 115,
- "untouched_bodies_exact": 58,
+ "untouched_bodies_exact": 54,
  "derived_same_volume_box": [
   "SEAM_COUPON_L_V4",
   "SEAM_COUPON_R_V4"
@@ -120,6 +120,10 @@
   "COVER_L_DRAFT_TBD",
   "COVER_R_DRAFT_TBD",
   "COVER_T_DRAFT_TBD",
+  "MOUNT_H02_SO3_MIN_V2",
+  "MOUNT_H03_SO6_MIN_V2",
+  "MOUNT_L_PAIR_V3",
+  "MOUNT_R_PAIR_V3",
   "PLATE_L_SPLIT_V1",
   "PLATE_R_SPLIT_V1",
   "REF_SW_ASSUMED_01",
@@ -175,13 +179,10 @@
   "REF_LEGMAG_R_COVER",
   "REF_LEGMAG_R_PLATE"
  ],
- "timeline": 450,
- "sketches": 69,
- "params": 213,
+ "timeline": 455,
+ "sketches": 68,
+ "params": 211,
  "new_params": [
-  "v5_collar_W",
-  "v5_cover_base_Z",
-  "v5_cover_base_above_rim",
   "v5_cover_top_Z",
   "v5_cover_top_above_rim",
   "v5_key_margin",
@@ -193,14 +194,15 @@
   "v5_legmag_R_Y",
   "v5_legmag_plate_clr",
   "v5_legmag_skin",
+  "v5_legmag_skin_min",
   "v5_legpad_L",
   "v5_lip_relief_clr",
   "v5_rim_ref_Z",
   "v5_skirt_cover_H"
  ],
  "changed_params": {
-  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)",
-  "TBD_upper_plate_T": "1.7 mm"
+  "TBD_upper_plate_T": "1.7 mm",
+  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)"
  },
  "cover_Z": [
   11.5,
@@ -208,369 +210,88 @@
  ],
  "cover_T": 6.0,
  "cover_levels": {
-  "base_Z": 16.4,
-  "collar_top_Z": 19.0,
-  "drop_depth_mm": 2.6,
-  "collar_W_mm": 1.5,
-  "rim_ref_Z": 14.0,
-  "base_above_rim_mm": 2.4,
-  "collar_above_rim_mm": 5.0,
-  "keycap_bottom_rest_Z": 17.3,
-  "skirt_cover_H_mm": 1.7,
-  "legmag_pocket_skin_mm": 1.3,
-  "boss_pocket_skin_mm": 2.8,
-  "covers": {
-   "COVER_L_DRAFT_TBD": {
-    "base_area_mm2": 2169.49,
-    "collar_area_mm2": 341.72,
-    "flat_top_area_mm2": 2511.22,
-    "volume_mm3": 9937.14,
-    "flat_Z18_volume_mm3": 13066.6,
-    "expected_volume_mm3": 9937.13,
-    "volume_rel_err": 2e-07
-   },
-   "COVER_T_DRAFT_TBD": {
-    "base_area_mm2": 1989.43,
-    "collar_area_mm2": 370.47,
-    "flat_top_area_mm2": 2359.91,
-    "volume_mm3": 9249.52,
-    "flat_Z18_volume_mm3": 12062.15,
-    "expected_volume_mm3": 9249.52,
-    "volume_rel_err": 1e-07
-   },
-   "COVER_R_DRAFT_TBD": {
-    "base_area_mm2": 2088.68,
-    "collar_area_mm2": 511.5,
-    "flat_top_area_mm2": 2600.17,
-    "volume_mm3": 10781.86,
-    "flat_Z18_volume_mm3": 13612.24,
-    "expected_volume_mm3": 10781.85,
-    "volume_rel_err": 4e-07
-   }
+  "COVER_L_DRAFT_TBD": {
+   "19.0": 2511.215
+  },
+  "COVER_T_DRAFT_TBD": {
+   "19.0": 2359.906
+  },
+  "COVER_R_DRAFT_TBD": {
+   "19.0": 2600.172
   }
  },
- "sample_points": [
+ "plate_supports": [
   {
-   "label": "front_1",
-   "side": "front",
-   "key": {
-    "x": 161.649,
-    "y": 14.359,
-    "rot": 11.0,
-    "w_u": 2.0
-   },
-   "point": [
-    144.372,
-    -0.067
+   "mount": "MOUNT_L_PAIR_V3",
+   "target": "PLATE_L_SPLIT_V1",
+   "corner_xy": [
+    3,
+    11
    ],
-   "bezel_mm": 1.155,
-   "expected_top_Z": 19.0,
-   "base_ledge_mm": 0.0,
-   "probe_overlap_mm3": 0.096,
-   "nearest_cover_mm": 0.0,
-   "measured_top_Z": 19.0
+   "top_Z": 8.0,
+   "seat_area_mm2": 70
   },
   {
-   "label": "front_2",
-   "side": "front",
-   "key": {
-    "x": 96.434,
-    "y": 15.075,
-    "rot": -11.0,
-    "w_u": 2.25
-   },
-   "point": [
-    116.049,
-    -0.067
+   "mount": "MOUNT_L_PAIR_V3",
+   "target": "PLATE_L_SPLIT_V1",
+   "corner_xy": [
+    3,
+    73
    ],
-   "bezel_mm": 1.417,
-   "expected_top_Z": "open",
-   "base_ledge_mm": 0.0,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 1.5637,
-   "measured_top_Z": "open"
+   "top_Z": 8.0,
+   "seat_area_mm2": 48
   },
   {
-   "label": "front_3",
-   "side": "front",
-   "key": {
-    "x": 252.126,
-    "y": 13.252,
-    "rot": 5.0,
-    "w_u": 1.0
-   },
-   "point": [
-    243.013,
-    -0.067
+   "mount": "MOUNT_R_PAIR_V3",
+   "target": "PLATE_R_SPLIT_V1",
+   "corner_xy": [
+    279,
+    23.5
    ],
-   "bezel_mm": 2.759,
-   "expected_top_Z": 16.4,
-   "base_ledge_mm": 1.259,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 0.1,
-   "measured_top_Z": 16.4
+   "top_Z": 8.0,
+   "seat_area_mm2": 48
   },
   {
-   "label": "back_1",
-   "side": "back",
-   "key": {
-    "x": 76.494,
-    "y": 82.564,
-    "rot": -6.0,
-    "w_u": 1.0
-   },
-   "point": [
-    67.572,
-    94.667
+   "mount": "MOUNT_R_PAIR_V3",
+   "target": "PLATE_R_SPLIT_V1",
+   "corner_xy": [
+    255,
+    70
    ],
-   "bezel_mm": 1.385,
-   "expected_top_Z": 19.0,
-   "base_ledge_mm": 0.0,
-   "probe_overlap_mm3": 0.096,
-   "nearest_cover_mm": 0.0,
-   "measured_top_Z": 19.0
+   "top_Z": 8.0,
+   "seat_area_mm2": 32
   },
   {
-   "label": "back_2",
-   "side": "back",
-   "key": {
-    "x": 185.269,
-    "y": 82.564,
-    "rot": 6.0,
-    "w_u": 1.0
-   },
-   "point": [
-    194.191,
-    94.667
+   "mount": "MOUNT_H02_SO3_MIN_V2",
+   "target": "PLATE_L_SPLIT_V1",
+   "corner_xy": [
+    124,
+    50
    ],
-   "bezel_mm": 1.385,
-   "expected_top_Z": 19.0,
-   "base_ledge_mm": 0.0,
-   "probe_overlap_mm3": 0.096,
-   "nearest_cover_mm": 0.0,
-   "measured_top_Z": 19.0
+   "top_Z": 8.0,
+   "seat_area_mm2": 24
   },
   {
-   "label": "back_3",
-   "side": "back",
-   "key": {
-    "x": 54.587,
-    "y": 81.774,
-    "rot": -3.0,
-    "w_u": 1.0
-   },
-   "point": [
-    45.1,
-    94.667
+   "mount": "MOUNT_H03_SO6_MIN_V2",
+   "target": "PLATE_R_SPLIT_V1",
+   "corner_xy": [
+    172.5,
+    6
    ],
-   "bezel_mm": 2.657,
-   "expected_top_Z": 16.4,
-   "base_ledge_mm": 1.157,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 0.1,
-   "measured_top_Z": 16.4
+   "top_Z": 8.0,
+   "seat_area_mm2": 70
   },
   {
-   "label": "back_4",
-   "side": "back",
-   "key": {
-    "x": 207.176,
-    "y": 81.774,
-    "rot": 3.0,
-    "w_u": 1.0
-   },
-   "point": [
-    216.663,
-    94.667
+   "mount": "MOUNT_H03_SO6_MIN_V2",
+   "target": "PLATE_R_SPLIT_V1",
+   "corner_xy": [
+    142,
+    4.5
    ],
-   "bezel_mm": 2.657,
-   "expected_top_Z": 16.4,
-   "base_ledge_mm": 1.157,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 0.1,
-   "measured_top_Z": 16.4
-  },
-  {
-   "label": "left",
-   "side": "left",
-   "key": null,
-   "point": [
-    -0.093,
-    54.7
-   ],
-   "bezel_mm": 5.363,
-   "expected_top_Z": 16.4,
-   "base_ledge_mm": 3.863,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 0.1,
-   "measured_top_Z": 16.4
-  },
-  {
-   "label": "right",
-   "side": "right",
-   "key": null,
-   "point": [
-    285.088,
-    19.7
-   ],
-   "bezel_mm": 4.623,
-   "expected_top_Z": 16.4,
-   "base_ledge_mm": 3.123,
-   "probe_overlap_mm3": 0.0,
-   "nearest_cover_mm": 0.1,
-   "measured_top_Z": 16.4
+   "top_Z": 8.0,
+   "seat_area_mm2": 48
   }
  ],
- "drop_regions": {
-  "picked": 1,
-  "trapped_pockets_dropped": [],
-  "left_at_full_height": [
-   {
-    "point": [
-     74.5,
-     25.05
-    ],
-    "outer": false,
-    "area_mm2": 0.013,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     74.5,
-     25.05,
-     74.5,
-     25.25
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     77.75,
-     31.5
-    ],
-    "outer": false,
-    "area_mm2": 10.778,
-    "inscribed_half_width_mm": 1.044,
-    "bbox": [
-     74.55,
-     25.3,
-     79.1,
-     32.8
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     182.65,
-     32.35
-    ],
-    "outer": false,
-    "area_mm2": 0.035,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     182.65,
-     32.35,
-     183.2,
-     32.4
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     183.25,
-     32.45
-    ],
-    "outer": false,
-    "area_mm2": 0.02,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     183.25,
-     32.45,
-     183.6,
-     32.45
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     183.7,
-     32.5
-    ],
-    "outer": false,
-    "area_mm2": 0.018,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     183.7,
-     32.5,
-     184.0,
-     32.5
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     184.2,
-     32.55
-    ],
-    "outer": false,
-    "area_mm2": 0.015,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     184.2,
-     32.55,
-     184.45,
-     32.55
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     184.65,
-     32.6
-    ],
-    "outer": false,
-    "area_mm2": 0.013,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     184.65,
-     32.6,
-     184.85,
-     32.6
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     185.15,
-     32.65
-    ],
-    "outer": false,
-    "area_mm2": 0.008,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     185.15,
-     32.65,
-     185.25,
-     32.65
-    ],
-    "selected": false
-   },
-   {
-    "point": [
-     185.6,
-     32.7
-    ],
-    "outer": false,
-    "area_mm2": 0.005,
-    "inscribed_half_width_mm": 0.05,
-    "bbox": [
-     185.6,
-     32.7,
-     185.65,
-     32.7
-    ],
-    "selected": false
-   }
-  ]
- },
  "leg_magnets": {
   "L": {
    "center": [
@@ -581,7 +302,7 @@
    "plate_pocket_D": 3.3,
    "cover_wall_to_window_mm": 1.184,
    "cover_wall_to_outer_edge_mm": 1.267,
-   "cover_top_skin_mm": 1.3,
+   "cover_top_skin_mm": 3.9,
    "plate_wall_to_switch_opening_mm": 2.909,
    "plate_wall_to_front_edge_mm": 1.217,
    "plate_wall_to_pad_end_mm": 2.35,
@@ -597,7 +318,7 @@
    "plate_pocket_D": 3.3,
    "cover_wall_to_window_mm": 1.171,
    "cover_wall_to_outer_edge_mm": 1.267,
-   "cover_top_skin_mm": 1.3,
+   "cover_top_skin_mm": 3.9,
    "plate_wall_to_switch_opening_mm": 2.896,
    "plate_wall_to_front_edge_mm": 1.217,
    "plate_wall_to_pad_end_mm": 2.35,
@@ -608,11 +329,11 @@
  "clearance": {
   "changed_vs_unchanged": {
    "overlaps": 0,
-   "contacts": 29
+   "contacts": 49
   },
   "among_changed": {
    "overlaps": 0,
-   "contacts": 55
+   "contacts": 59
   }
  },
  "plate_files_unchanged": {
@@ -629,32 +350,32 @@
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 9.94,
+   "volume_cm3": 15.58,
    "v4_volume_cm3": 5.78,
    "flat_Z18_volume_cm3": 13.07,
    "wall_min_mm": 1.098,
    "min_mm": 0.305,
-   "stl_volume_rel_err": 5e-06
+   "stl_volume_rel_err": 6e-06
   },
   {
    "file": "46es_v5_cover_T_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 9.25,
+   "volume_cm3": 14.42,
    "v4_volume_cm3": 5.21,
    "flat_Z18_volume_cm3": 12.06,
    "wall_min_mm": 1.098,
-   "min_mm": 0.046,
-   "stl_volume_rel_err": 5e-06
+   "min_mm": 0.146,
+   "stl_volume_rel_err": 3e-06
   },
   {
    "file": "46es_v5_cover_R_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 10.78,
+   "volume_cm3": 16.21,
    "v4_volume_cm3": 6.17,
    "flat_Z18_volume_cm3": 13.61,
    "wall_min_mm": 1.098,
    "min_mm": 0.31,
-   "stl_volume_rel_err": 4e-06
+   "stl_volume_rel_err": 5e-06
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",

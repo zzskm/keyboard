@@ -147,8 +147,7 @@ def build():
             feature['suppressed'] = True
     # v5 case design requirements: kept apart from the measured REF_PSD_* reference (never overwritten).
     for name, expression, comment in [
-        ('rim_Z', 'v5_rim_ref_Z', '[v5 설계 요구·실측 아님] 커버 돌출을 재는 테두리 Z. 두 단 커버: 바닥 16.4(+2.4, 3차 안전마진; 2차 16.1), 창 둘레 턱 19.0(+5.0). '
-                                  '실물 테두리가 다르면 돌출 = 16.4/19.0 − 실물 테두리(형상은 자석 적층·키캡 높이에서 유도되어 바뀌지 않음)'),
+        ('rim_Z', 'v5_rim_ref_Z', '커버 돌출 비교 기준. 평면 윗면 Z 19에서 실제 테두리 높이를 뺀 값이 돌출 높이다.'),
         ('in_W_design', 'TBD_case_in_W - 2*TBD_plate_gap + 2*TBD_cover_gap', '[v5 설계 요구·실측 아님] plate·커버 폭 + 설계 틈 0.3×2'),
         ('in_W_min', 'TBD_case_in_W - 2*TBD_plate_gap', '[v5 설계 요구·실측 아님] plate·커버 폭(틈 0, 이보다 좁으면 들어가지 않음)'),
         ('in_D_design', 'TBD_case_in_D - 2*TBD_plate_gap + 2*TBD_cover_gap', '[v5 설계 요구·실측 아님] plate·커버 깊이 + 설계 틈 0.3×2'),
@@ -280,9 +279,9 @@ def build():
     manifest = dict(version='v5', generator='tools/build_assembly_reference_v5.py', source=SOURCE.name, source_sha=sha(SOURCE), measurement_sha=sha(MEASUREMENTS),
                     generator_sha=sha(Path(__file__)), output_sha=sha(OUTPUT),
                     keys=keys, switch_seat_Z=seat_Z, keycap_bottom_rest_Z=cap_bottom_Z, keycap_bottom_above_seat=cap_above_seat,
-                    cover_base_Z=values['v5_cover_base_Z'], cover_top_Z=values['v5_cover_top_Z'],
+                    cover_top_Z=values['v5_cover_top_Z'],
                     skirt_cover_H=values['v5_skirt_cover_H'], cover_top_above_rim=values['v5_cover_top_above_rim'],
-                    cover_base_above_rim=values['v5_cover_base_above_rim'], rim_ref_Z=values['v5_rim_ref_Z'],
+                    rim_ref_Z=values['v5_rim_ref_Z'],
                     housing=housing_name, body_count=evaluated['body_count'])
     MANIFEST.write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     print(json.dumps(dict(model=str(OUTPUT), bodies=evaluated['body_count'], keys=len(keys))))
