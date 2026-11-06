@@ -12,7 +12,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from verify_minimal_v2 import live_shapes
+from cad_model import live_shapes
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))

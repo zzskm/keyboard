@@ -1,5 +1,6 @@
 # 스위치 테스터 키체인(`v2 keychain.step`) 분석 — 스위치 끼움 치수 참고
 
+> 원본·외부 참고 자료 분석 기록이다. 당시 모델·경로는 [정리 전 커밋](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)에 있으며, 현행 제작 기준은 [46es README](https://github.com/zzskm/keyboard/tree/main/46es)를 따른다.
 상태: 참고 자료 분석 (2026-11-04). 스위치 모델명은 이 파일에 없다. 셀 치수는 **스위치 바디를 포켓에 눌러 끼우는 구조**의 값이며, 46es plate의 1.5T 스냅 체결과는 다른 방식이다.
 
 ## 원본

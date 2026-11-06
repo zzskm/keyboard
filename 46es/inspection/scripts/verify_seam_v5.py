@@ -8,7 +8,7 @@ Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
 """
 import csv, hashlib, json, math, subprocess, sys
 from pathlib import Path
-from verify_minimal_v2 import ROOT, live_shapes, document
+from cad_model import ROOT, live_shapes, document
 from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -16,9 +16,9 @@ from make_key_dxf import load_keys, rect  # noqa: E402
 from build_seam_v5 import top_levels, COVERS, COLLAR_W  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
-V4 = ROOT / 'model/46es_mount_seam_v4.sc'
+V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
-FLAT = ROOT / 'model/review_v5/flat_Z18/46es_mount_seam_v5.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
+FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
 SWITCH_BOUNDS = {'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}  # follow the 1.7 seat
@@ -325,7 +325,11 @@ def main():
     assert abs(params['v5_legmag_skin'] - 1.3) < 1e-9, params['v5_legmag_skin']          # 3rd pass safety margin
     assert abs(params['v5_cover_base_Z'] - 16.4) < 1e-9 and abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
     walls = leg_magnet_walls(params)
-    v4_bodies = {b['name']: b for b in json.loads((ROOT / 'guide/.cache/reference/eval.json').read_text(encoding='utf-8'))['bodies']}
+    v4_eval_path = CACHE / f'eval-baseline-{V4_SHA[:16]}.json'
+    if not v4_eval_path.exists():
+        subprocess.run([CLI, 'eval', '--in', str(V4), '--json-out', str(v4_eval_path)], check=True, capture_output=True)
+    v4_eval = json.loads(v4_eval_path.read_text(encoding='utf-8'))
+    v4_bodies = {b['name']: b for b in v4_eval['bodies']}
     for n in DERIVED:
         assert abs(bodies[n]['volume_mm3'] - v4_bodies[n]['volume_mm3']) < 1e-3, n
         assert all(abs(bodies[n]['bbox'][k][i] - v4_bodies[n]['bbox'][k][i]) < 1e-6 for k in ('min', 'max') for i in range(3)), n
@@ -377,7 +381,6 @@ def main():
         parts.append(dict(file=p['file'], material=p['material'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 2),
                           v4_volume_cm3=None, flat_Z18_volume_cm3=round(flat_bodies[p['body']]['volume_mm3'] / 1000, 2),
                           wall_min_mm=t['wall_min_mm'], min_mm=t.get('min_mm'), stl_volume_rel_err=round(rel, 6)))
-    v4_eval = json.loads((ROOT / 'guide/.cache/reference/eval.json').read_text(encoding='utf-8'))
     v4_vol = {b['name']: b['volume_mm3'] for b in v4_eval['bodies']}
     for part, p in zip(parts, exports['parts']):
         part['v4_volume_cm3'] = round(v4_vol[p['body']] / 1000, 2)

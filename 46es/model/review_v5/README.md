@@ -1,15 +1,7 @@
-# v5 검토 파일 — 주문용 아님 (2026-11-06, 3차 안전마진: 바닥 Z 16.4)
+# v5 검토용 출력물
 
-[46es_mount_seam_v5.sc](../46es_mount_seam_v5.sc)에서 바뀐 부품만 **조립 좌표 그대로** 내보냈다. 출력 방향 회전이나 주문 폴더 분리는 하지 않았다. v5는 현행 설계(사용자 결정 2026-11-06)이고, 주문 2 파일은 출력 방향으로 [print_v5/order2](../print_v5/README.md)에 따로 내보냈다. 주문 1 파일은 v5에서도 같아 [print_v4/order1](../print_v4/README.md) 그대로다.
+현행 v5의 커버 L/T/R와 plate L/R을 **조립 좌표**로 내보낸 STEP/STL이다. `46es_v5_changed_REVIEW_ONLY.step`은 변경 부품과 자석 참고 바디를 함께 담는다.
 
-| 파일 | 바디 | 재료(예정) | 부피 cm³ (1차 평판 Z 18 / v4) | 최소 벽 |
-|---|---|---|---:|---:|
-| `46es_v5_cover_L_REVIEW_ONLY` | COVER_L_DRAFT_TBD | 8001 레진 투명 | 9.94 (13.07 / 5.78) | 1.098 (보스 둘레; 다리 포켓 위 살은 1.3) |
-| `46es_v5_cover_T_REVIEW_ONLY` | COVER_T_DRAFT_TBD | 8001 레진 투명 | 9.25 (12.06 / 5.21) | 1.098 (보스 둘레) |
-| `46es_v5_cover_R_REVIEW_ONLY` | COVER_R_DRAFT_TBD | 8001 레진 투명 | 10.78 (13.61 / 6.17) | 1.098 (보스 둘레; 다리 포켓 위 살은 1.3) |
-| `46es_v5_plate_L_REVIEW_ONLY` | PLATE_L_SPLIT_V1 | MJF PA12S-HP 검정 | 38.12 (38.12 / 38.12) | 1.000 |
-| `46es_v5_plate_R_REVIEW_ONLY` | PLATE_R_SPLIT_V1 | MJF PA12S-HP 검정 | 40.64 (40.64 / 40.64) | 1.047 |
-| `46es_v5_changed_REVIEW_ONLY.step` | 위 5개 + 다리 자석 참고 4개 | — | — | — |
-| `flat_Z18/` | 1차 평판 커버(윗면 Z 18, 테두리 +4) 모델 + 커버 STEP 3개 | — | 13.07 / 12.06 / 13.61 | 1.098 |
+주문용 파일은 [print_v5](../print_v5/README.md)에 있다. 이 폴더의 STL은 출력 방향으로 회전한 주문 파일을 대신하지 않는다.
 
-커버는 두 단이다: 바닥 윗면 Z 16.4(테두리 +2.4; 2차 16.1, 3차 안전마진 +0.3), 창 둘레 폭 1.5 턱 Z 19.0(+5.0). 2·3차에서 plate 파일은 바뀌지 않았다(STL/STEP sha 동일, `seam-v5-exports.json`의 `plate_files_unchanged_since_previous_export`). 각 부품은 `.stl`(fine)과 `.step` 두 가지다. STL은 연결 성분 1개이고 열린 모서리가 없다. CAD와 부피 차이는 0.004 % 이하다. 커버 얇은 벽 검사에서 1.0 미만으로 잡힌 곳은 창이 가장자리와 만나는 모서리 끝과 회전 키 턱이 외곽과 비스듬히 만나는 쐐기 끝뿐이다(`wall_min_mm` ≥ 1.0). 해시와 얇은 벽 검사 결과는 `inspection/data/seam-v5-exports.json`, `seam-v5-thin-wall.json`에 있다. 변경 내용은 [v5 문서](../../docs/v5-cover-magnet-margin-2026-11-06.md)를 본다. 다시 만들려면 `python tools/export_seam_v5_review.py`를 실행한다.
+재생성: 저장소 루트에서 `python 46es/tools/export_seam_v5_review.py`. 매개변수 CSV와 `inspection/data/seam-v5-exports.json`, `seam-v5-thin-wall.json`도 갱신한다. 초기 평판 비교 기준은 [baselines](../baselines/README.md)에 있다.

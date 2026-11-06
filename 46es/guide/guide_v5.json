@@ -7,7 +7,7 @@
     "store_key": "46es-guide-v5",
     "h1": "설계 검토 · 조립 가이드",
     "sub": "46키 핸드와이어드 · PSD60 Defender 하우징 · JLC3DP 출력(plate·mount 검정 MJF PA12S, 커버 투명 레진) · v5 검토(두 단 커버 +2.4/+5.0 · 다리 자석 · 키 여유 1 mm · upper plate 1.7)",
-    "lede": "알루미늄 하우징 안에 3D 프린팅한 mount 4개를 케이스 나사로 고정하고, 그 위에 두 조각 plate와 spine, 컨트롤러 브래킷, 커버 3조각을 얹는 구조다. v4에서 plate 두 조각의 앞쪽을 dovetail 반턱과 M2 나사로 잇고, 출력 파일을 두 번의 주문(시험 → 본 세트)으로 나눴다. 이 페이지에서 설계가 어디서 맞지 않을 수 있는지 점검하고, 부품이 나왔을 때 따라 할 조립 순서를 확인한다. <b>v5(2026-11-06, 2차)</b>: 커버를 두 단으로 했다. 바닥 윗면은 Z 16.4(테두리 Z 14 + 2.4, 아래 다리 자석 포켓 위 살 1.3에서 유도)이고, 창 둘레를 따라 폭 1.5의 턱이 Z 19.0(쉴 때 키캡 스커트 밑면 17.3 + 덮음 1.7, 테두리 + 5.0)까지 올라온다. 밑면·보스·자석은 그대로 두고 위로만 두껍게 했다(2 → 6 mm, 1차 평판 Z 18은 스냅샷으로 보존). 좌·우 ㄷ자 커버의 아래 다리 끝에 커버 ↔ plate 자석 쌍을 하나씩 더했다. 키캡 둘레 커버 창을 넓혀 여유를 1 mm 이상으로 했다. 참고 키캡은 r2 근거로 착좌 + 6.0에 앉혀 4 mm 눌림 ↔ plate 0.3 검사를 실제 검사로 바꿨다. <b>3차(같은 날, 안전마진)</b>: 사용자 결정으로 의심되는 곳에 안전마진을 더했다. 포켓 위 살 1.0 → 1.3(레진 벽 규칙 1.0 + 0.3)이라 바닥이 Z 16.1 → 16.4(테두리 + 2.4)로 올랐고, 턱 사이 갇힌 포켓은 폭 3.0 미만이면 깎지 않는다. 주문 세트는 아직 안 나갔고 이 v5가 현행 설계다. 이전 판: <a href=\"v4/\">v4 가이드</a>(기록용).",
+    "lede": "PSD60 하우징 안에 mount 4개, 좌우 plate, spine, Pro Micro 브래킷과 자석 커버 3조각을 조립한다. 현행 v5는 두 단 커버(바닥 Z 16.4 / 턱 Z 19), 키캡 창 여유 1.0, upper plate 1.7을 사용한다. 아직 시험 출력 전이며 주문 1의 맞춤 시험을 통과한 뒤 주문 2를 진행한다. 이 페이지의 케이스·키캡은 참고 형상이다.",
     "chips": [
       {
         "tone": "wait",
@@ -533,7 +533,7 @@
       "id": "summary",
       "type": "summary",
       "title": "요약",
-      "src": "근거 · docs/v5-cover-magnet-margin-2026-11-06.md · model/print_v4/README.md · docs/seam-v4-2026-11-05.md",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "cards": [
         {
           "k": "v5 변경",
@@ -554,7 +554,7 @@
           "k": "지금 할 일",
           "ol": [
             "v5 확정(사용자 결정 2026-11-06, 주문 전): 두 단 커버·다리 자석·키 여유 1.0·안전마진(포켓 위 살 1.3)을 이 페이지와 <code>model/review_v5/</code>에서 확인. 주문 2 파일은 <code>model/print_v5/order2/</code>에 내보냄",
-            "주문 1(시험): B 쿠폰, 보스 탭(투명 레진), 이음 쿠폰 L·R, mount 4개. 파일은 <code>model/print_v4/order1/</code>",
+            "주문 1(시험): B 쿠폰, 보스 탭(투명 레진), 이음 쿠폰 L·R, mount 4개. 파일은 <code>model/print_v5/order1/</code>",
             "구매품: 흑색 탄소강 M3×4 버튼헤드, M3 6 mm 지지대(맞변 5), Ø3×2 자석 10개 + 예비(흑색 코팅이면 좋음), M2 저두 나사·너트, 투명 2액형 에폭시",
             "주문 1 시험 결과를 v4에 반영(아래 「주문 1 시험」)",
             "주문 2(본 세트): plate 2, spine, 브래킷, 게이트(MJF PA12S 검정), 커버 3(8001 투명 레진) — <code>model/print_v5/order2/</code>(v5 두 단 커버·upper 1.7·다리 자석 포켓)"
@@ -567,7 +567,7 @@
       "type": "structure",
       "title": "구조",
       "cols": 2,
-      "src": "근거 · docs/seam-v4-2026-11-05 · side-pairs-v3 · minimal-mount-v2 · split-v1-hardware",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "layers": [
         {
           "z": "Z 11.5–19",
@@ -656,7 +656,7 @@
       "type": "fit",
       "title": "맞춤 검토",
       "cols": 1,
-      "src": "근거 · docs/seam-v4-2026-11-05 · assembly-tolerance-2026-11-04 · split-v1-hardware",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "intro": [
         "plate는 여전히 가장 비싼 출력물이다. 다만 두 조각으로 나뉘어 한쪽만 다시 뽑을 수 있게 됐다. 어긋남은 mount, spine, shim 같은 작은 부품과 조립 순서로 먼저 흡수하고, plate는 사포질 이상으로 손대지 않는다."
       ],
@@ -774,7 +774,7 @@
       "id": "issues",
       "type": "issues",
       "title": "열린 항목",
-      "src": "근거 · docs/seam-v4-2026-11-05 · model/print_v4/README.md · model/measurements/README.md · docs/side-pairs-v3",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "items": [
         {
           "id": "v5-travel",
@@ -879,7 +879,7 @@
           "tone": "wait",
           "tag": "업체",
           "title": "재료(검정 MJF · 투명 레진)와 업로드",
-          "text": "2026-11-06에 재료·색을 바꿨다. plate·mount와 spine·브래킷·게이트·B 쿠폰·이음 쿠폰은 MJF PA12S-HP 검정, 커버 3조각과 보스 탭은 8001 레진 투명이다. 견적 화면에서 파일마다 재료를 고르고, 시험물은 대신하는 부품과 같은 재료·색으로 한다. 커버 주문 메모에는 받침을 보스 쪽 아랫면에만 두라고 적는다. 두 재료 모두 최소 크기 규칙에 걸리는 부품이 없다. 업로드 때 얇은 벽 경고가 뜨면 <code>model/print_v4/README.md</code>의 「MJF 전환」 절과 맞춰 본다. 남은 1.0 미만 값은 벽이 아니라 모서리 끝뿐이다."
+          "text": "2026-11-06에 재료·색을 바꿨다. plate·mount와 spine·브래킷·게이트·B 쿠폰·이음 쿠폰은 MJF PA12S-HP 검정, 커버 3조각과 보스 탭은 8001 레진 투명이다. 견적 화면에서 파일마다 재료를 고르고, 시험물은 대신하는 부품과 같은 재료·색으로 한다. 커버 주문 메모에는 받침을 보스 쪽 아랫면에만 두라고 적는다. 두 재료 모두 최소 크기 규칙에 걸리는 부품이 없다. 업로드 때 얇은 벽 경고가 뜨면 <code>model/print_v5/README.md</code>의 「재료·주문 메모」 절과 맞춰 본다. 남은 1.0 미만 값은 벽이 아니라 모서리 끝뿐이다."
         },
         {
           "id": "case-screw",
@@ -893,7 +893,7 @@
           "tone": "wait",
           "tag": "주문 대기",
           "title": "주문 1(시험 출력)",
-          "text": "B 쿠폰·보스 탭·이음 쿠폰 L·R·mount 4개의 STL/STEP을 <code>model/print_v4/order1/</code>에 내보냈다. 결과로 홀 크기, 보스 여유, 이음 여유, 장공 범위를 정한 뒤 주문 2를 넣는다. jig A는 폭 285.8로 업체 한도 250을 넘어 mount 4개로 대신했다."
+          "text": "B 쿠폰·보스 탭·이음 쿠폰 L·R·mount 4개의 STL/STEP을 <code>model/print_v5/order1/</code>에 내보냈다. 결과로 홀 크기, 보스 여유, 이음 여유, 장공 범위를 정한 뒤 주문 2를 넣는다. mount 4개로 케이스 체결을 시험하고 통과한 부품을 본 조립에 사용한다."
         },
         {
           "id": "port",
@@ -908,7 +908,7 @@
       "id": "parts",
       "type": "parts",
       "title": "부품과 구매품",
-      "src": "근거 · 모델 바디(자동) · model/print_v4/README.md 재료·하드웨어",
+      "src": "근거 · model/print_v5/README.md · model/samples/README.md",
       "printed": [
         {
           "label": "좌 mount pair",
@@ -1137,8 +1137,8 @@
       "type": "assembly",
       "title": "조립 순서",
       "nav": "조립",
-      "src": "근거 · model/print_v4/README.md · docs/seam-v4-2026-11-05 · side-pairs-v3 · split-v1-hardware 체결 스택",
-      "callout": "<b>출력은 두 번으로 나눈다.</b> 주문 1(B 쿠폰, 보스 탭, 이음 쿠폰, mount 4개)로 맞춤을 확인한 뒤 주문 2(plate, spine, 브래킷, 게이트, 커버)를 넣는다. 주문 1 파일과 재료·주문 메모는 <code>model/print_v4/README.md</code>, 주문 2 파일(v5)은 <code>model/print_v5/README.md</code>에 있다(검정 MJF PA12S, 커버는 투명 레진). 아래 순서와 3D 화면은 v5 검토 모델 기준이다. 사용자 결정(2026-11-06): 아직 주문 전이므로 v5가 현행 설계다.",
+      "src": "근거 · model/print_v5/README.md · model/samples/README.md",
+      "callout": "<b>출력은 두 번으로 나눈다.</b> 주문 1(B 쿠폰, 보스 탭, 이음 쿠폰, mount 4개)로 맞춤을 확인한 뒤 주문 2(plate, spine, 브래킷, 게이트, 커버)를 넣는다. 주문 1 파일과 재료·주문 메모는 <code>model/print_v5/README.md</code>, 주문 2 파일(v5)은 <code>model/print_v5/README.md</code>에 있다(검정 MJF PA12S, 커버는 투명 레진). 아래 순서와 3D 화면은 v5 검토 모델 기준이다. 사용자 결정(2026-11-06): 아직 주문 전이므로 v5가 현행 설계다.",
       "phases": [
         {
           "title": "준비",
@@ -1300,7 +1300,7 @@
       "type": "steps",
       "title": "정비할 때",
       "nav": "정비",
-      "src": "근거 · docs/assembly-revision.md 분해·점검 절차 · minimal-mount-v2 조립",
+      "src": "근거 · model/print_v5/README.md · model/samples/README.md",
       "steps": [
         {
           "title": "USB 케이블을 뺀다"
@@ -1332,7 +1332,7 @@
       "type": "table",
       "title": "주문 1 시험",
       "width": "wide",
-      "src": "근거 · model/print_v4/README.md · samples/README.md 시험 절차 · side-pairs-v3 국부 시험",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "intro": "전체 케이스 지그(jig A)는 쓰지 않는다. 실제 mount 4개가 같은 것을 더 많이 확인한다. 주문 1의 시험물과 mount로 먼저 확인하고, 결과를 v4에 반영한 뒤 주문 2를 넣는다. 부품을 눌러 억지로 맞춘 결과는 합격으로 치지 않는다. 시험물은 대신하는 부품과 같은 재료·색으로 뽑는다(B 쿠폰·이음 쿠폰은 검정 MJF PA12S, 보스 탭은 투명 레진).",
       "columns": [
         "시험",
@@ -1411,7 +1411,7 @@
       "type": "measurements",
       "title": "실측 현황",
       "nav": "실측",
-      "src": "근거 · model/measurements.csv(자동) · model/measurements/README.md",
+      "src": "근거 · docs/design.md · docs/validation.md · model/measurements.csv",
       "note": "2026-11-05 사용자 결정으로 정밀 실측 대신 GH60 값을 쓴다(케이스 구멍 좌표 <code>[GH60 채택 2026-11-05]</code>, 실측값 아님). 아래는 기록이다. 주황은 2026-11-04 1차 기록(150 mm 캘리퍼 대략값)이고 확정으로 세지 않는다. 맞는지는 주문 1에서 확인한다.",
       "names": {
         "M01": "하우징 내측 폭",
@@ -1498,203 +1498,10 @@
           "주문 1 쿠폰으로"
         ]
       }
-    },
-    {
-      "id": "log",
-      "type": "log",
-      "title": "결정 기록",
-      "src": "근거 · docs/color-material-2026-11-06.md · docs/seam-v4-2026-11-05.md · model/README.md · docs/*-2026-11-05.md",
-      "decisions": [
-        {
-          "date": "2026-11-06",
-          "title": "v5: 두 단 커버(바닥 +2.4 / 턱 Z 19), 아래 다리 자석, 키 여유 1 mm, upper plate 1.7.",
-          "text": "사용자 요청. 커버 윗면 = 테두리 Z 14 + 4 = Z 18(위로만 두껍게, 밑면·보스·자석 유지). 자석 쌍은 좌우 2곳씩(4쌍)을 검토했으나 위 다리 끝은 폭이 모자라 사용자 결정으로 아래 다리에만 1쌍씩. 키캡 ↔ 커버 창은 키캡 바닥 외곽 + 1.0으로 창을 넓혔다(줄이지 않음). 케이스 내벽은 키캡에서 2.63 이상 떨어져 PSD60을 그대로 쓴다. v4 파일은 그대로 두었다. 이어서 upper plate를 2 → 1.7로 줄였다(r2 2T는 키캡 유격 거의 0으로 작동 → 출력 공차 위험을 지지 않음). <b>2차(같은 날)</b>: 평판 Z 18(테두리 + 4)을 두 단으로 바꿨다. 바닥 Z 16.4는 자석 포켓 위 살 1.3(3차 안전마진; 2차는 1.0 → 16.1)에서, 창 둘레 폭 1.5 턱 Z 19.0은 키캡 스커트 밑면(착좌 + 6.0) + 덮음 1.7에서 유도. 경사(모따기) 안은 앞·뒤 베젤 1.16–2.76에 폭이 없어 폐기. 참고 키캡 +1.8(착좌 + 6.0), B 쿠폰 행 C 1.7. 1차 평판은 model/review_v5/flat_Z18에 보존."
-        },
-        {
-          "date": "2026-11-06",
-          "title": "plate·mount 검정 MJF PA12S-HP, 커버 투명 레진.",
-          "text": "사용자 결정. plate와 한 묶음인 spine·브래킷·게이트와 plate 시험물도 PA12S-HP 검정이다(JLC가 검정을 정식 색으로 내고, 규격은 PA12-HP와 같다). 커버 3조각과 보스 탭은 8001 레진 투명(사포질·투명 코팅 기본, 공차 ±0.2, 권장 벽 0.8). 투명 커버 아래가 보이므로 위 M3는 흑색, 자석은 투명 에폭시로 붙인다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "재료 MJF PA12-HP 나일론, 자연 회색 (→ 2026-11-06 검정 PA12S-HP, 커버 투명 레진).",
-          "text": "JLC에서 키보드에 흔히 쓰는 나일론이다. 층이 없어 결 방향 강도 차이가 적고 서포트가 없다. 최소 벽 1.0에 맞춰 출력 세트 16개를 점검하고 고쳤다. 이음 나사 X 139.5, 너트 포켓·단차 벽 합침, spine 자리 지느러미 제거, 이음 쿠폰 범위 재설정."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "spine 뒤 M2 카운터보어 막 오류 수정.",
-          "text": "plate L·R의 spine 뒤 패드 나사 자리가 윗면 0.2 막에 덮여 M2 머리가 들어갈 수 없었다(split v1부터). 앞쪽 2개처럼 윗면까지 뚫었다. MJF 얇은 벽 점검에서 찾았다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "v4 앞 이음(현재).",
-          "text": "plate 왼쪽 tab(윗면 쪽 2.4) → 오른쪽 포켓 dovetail 반턱 + M2×5 1개. spine 배선 홈 3곳. 나머지 부품은 v3와 같다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "정밀 실측 대신 GH60 값.",
-          "text": "캘리퍼(150 mm, 1 mm 눈금)로는 정밀 실측이 어렵다. 장공·여유와 주문 1 시험으로 확인한다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "주문 2회.",
-          "text": "시험물과 mount를 먼저 받아 맞춤을 확인한 뒤 plate·커버를 주문한다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "plate 2분할 유지.",
-          "text": "X ≤ 250은 업체 한도이고, 나눠 보내는 쪽이 배송에도 안전하다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "이음 접착은 가조립 뒤에.",
-          "text": "형상은 나사만 쓸 때와 같다. 누름 시험에서 움직이면 에폭시를 쓴다. 배선 전에 정한다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "USB는 r2 inside 케이블 그대로.",
-          "text": "아웃렛은 이미 케이스에 붙어 있어 점유 영역만 둔다. 글루는 조립하며 깎는다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "자석 Ø3×2 + 탄소강 M3×4.",
-          "text": "MJF 최소 벽 1.0 때문에 Ø4(보스 둘레 벽 0.6)에서 Ø3(1.1)으로 바꿨다. 흔한 규격이다. 나사는 새로 산다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "split mount v3.",
-          "text": "좌·우 각 2개 mount를 하나로 합쳐 mount 4개가 됐다. v4의 바탕이다. 한때 폐기로 처리했다가 되살린 계열이다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "minimal mount v2.",
-          "text": "둘레 띠와 lap 연결을 없애고 케이스 나사와 지지대를 잇는 독립 어댑터 6개로 바꿨다. mount 부피는 71% 줄었다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "split v1.",
-          "text": "plate를 2조각 + spine으로, 컨트롤러 브래킷과 게이트를 별도 부품으로 나눴다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "plate 보호 변형 보존.",
-          "text": "원본 계열(테두리형 프레임)에 스탠드오프 장공과 plate 틈 0.8을 넣은 안. 별도 파일로 두고 split 계열로 옮길 때의 출발점으로 쓴다."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "B 쿠폰 개정.",
-          "text": "행 C(plate 3층, 같은 출력 방향), 행 D(M2·M3·카운터보어·육각 포켓), 별도 보스 탭."
-        },
-        {
-          "date": "2026-11-05",
-          "title": "FDM 확정, 출력 업체 JLC3DP (→ 2026-11-05 MJF PA12로 바뀜).",
-          "text": "SUS304 판금은 검토만 했다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "조립 여유 수정.",
-          "text": "케이스 체결을 방향별 장공 6개로, M3 구멍 Ø3.4, 커버 보스 Ø5.4로 바꿨다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "1차 실측은 참고로만.",
-          "text": "150 mm 캘리퍼 대략값이라 모델 값은 그대로 두고, H 지지대 값만 근거로 쓴다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "마운트가 조립 오차를 흡수해야 한다.",
-          "text": "r2 외곽은 코너 R 외에는 잘 맞으므로 외곽을 과하게 줄이지 않고 체결부 장공과 조립 순서로 맞춘다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "커버 고정은 자석.",
-          "text": "보스가 카운터보어에 꽂혀 위치를 잡고, 자석이 강철 나사머리를 당긴다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "커버·plate는 아크릴 r2 형상.",
-          "text": "커버 3조각 창, plate + upper plate를 3층 한 부품으로."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "Pro Micro는 중앙 하단.",
-          "text": "SO6 바로 뒤 키 없는 자리. 지금은 별도 브래킷과 게이트로 단다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "스태빌라이저 없음.",
-          "text": "2.25u·2u 썸키는 스위치만으로 지지한다."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "USB는 패널형 연장 케이블.",
-          "text": "PSD60 개구부 안쪽에 접착한다(2026-11-05: r2 케이블을 그대로 쓴다)."
-        },
-        {
-          "date": "2026-11-04",
-          "title": "스위치 Gateron KS-3 Milky Yellow Pro.",
-          "text": "아크릴 홀 실측(M11)은 생략하고 r2 도면 14.0에서 시작한다."
-        }
-      ],
-      "rejected": [
-        {
-          "title": "자석 Ø4×2 유지.",
-          "text": "MJF에서 커버 보스 둘레 벽이 0.6으로 최소 벽 1.0에 못 미친다. 보스를 키우면 plate 카운터보어와 SO4 쪽 단차 벽이 더 얇아진다."
-        },
-        {
-          "title": "커버 FDM(PLA·ASA).",
-          "text": "JLC FDM 최소 크기 30 × 30 × 10에 커버 두께 3.5가 걸리고, 보스 둘레 벽 1.09가 FDM 권장 1.6에 못 미친다. 구멍 공차도 ±0.4로 넓다."
-        },
-        {
-          "title": "수평 반턱의 아래 혀를 오른쪽 조각에.",
-          "text": "plate는 윗면을 베드에 두고 출력하므로 혀 밑면이 떠서 서포트가 맞닿는 면에 남는다. 위가 열린 포켓으로 바꿨다."
-        },
-        {
-          "title": "앞 이음 나사 2개.",
-          "text": "커버 창 끝과 브래킷 사이에 너트 자리가 하나뿐이다."
-        },
-        {
-          "title": "뒤쪽 이음 추가.",
-          "text": "spine 뒤 패드(M2 2개)가 이미 잇고 있고, 패드와 단차 사이 5.6에는 너트 포켓이 들어가지 않는다."
-        },
-        {
-          "title": "jig A 출력.",
-          "text": "폭 285.8이 업체 한도 250을 넘는다. 실제 mount 4개로 같은 확인을 한다."
-        },
-        {
-          "title": "둘레 프레임 mount.",
-          "text": "v2에서 독립 어댑터로 바꿨다. plate 보호 변형에는 남아 있다."
-        },
-        {
-          "title": "mount lap 연결.",
-          "text": "v2에서 없애 M2×5 4개와 너트 4개가 빠졌다."
-        },
-        {
-          "title": "볼트 구멍 주변 교환식 블럭.",
-          "text": "자리가 없고 끼움이 하나 늘며 재주문 대기는 같다."
-        },
-        {
-          "title": "벽 있는 커버.",
-          "text": "뒤쪽 윗줄 키캡과 내벽 사이가 2.15라 틈 0.3 + 벽 2가 안 들어간다."
-        },
-        {
-          "title": "자석 ↔ 자석.",
-          "text": "plate 상면에 포켓 자리가 부족하고 위치결정이 따로 필요하다."
-        },
-        {
-          "title": "별도 Ø2.5 핀.",
-          "text": "좌·우 세로 베젤 폭 5에 들어가지 않는다."
-        },
-        {
-          "title": "r2식 관통 나사.",
-          "text": "커버 위로 나사머리 6개가 보인다."
-        }
-      ]
     }
   ],
   "footer": [
-    "근거 파일: keyboard 저장소 <code>46es/model/README.md</code>, <code>model/print_v4/README.md</code>, <code>docs/seam-v4-2026-11-05.md</code>, <code>docs/side-pairs-v3-2026-11-05.md</code>, <code>docs/split-v1-hardware-2026-11-05.md</code>, <code>model/measurements.csv</code>. 이 페이지는 <code>46es/guide/build_guide.py</code>가 <code>guide_v5.json</code>에서 만든다.",
-    "케이스 구멍은 GH60 채택값이고 PSD60 실측값이 아니다. 여유는 주문 1 시험 뒤 바뀔 수 있다. 체크 표시는 이 브라우저에만 저장된다."
+    "현행 근거: <code>docs/design.md</code>, <code>docs/validation.md</code>, <code>model/print_v5/README.md</code>, <code>model/measurements.csv</code>. 이 페이지는 <code>guide/build_guide.py</code>가 <code>guide_v5.json</code>에서 만든다."
   ],
   "interactive": "assembly_v5.json",
   "reference_manifest": "../model/assembly_reference_v5.json"

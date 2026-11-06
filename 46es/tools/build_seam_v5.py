@@ -1,7 +1,7 @@
 """Build the v5 production CAD from v4 without touching v4.
 
 v5 (2026-11-06, user request):
-  1. two-level cover (2nd pass, plan docs/v5-plan-two-level-cover-2026-11-06.md):
+  1. two-level cover (2nd pass, plan docs/design.md):
      - base top Z 16.4 = plate top 13 + magnet 2 + pocket clearance 0.1 + 1.3 skin over the lower-leg magnet
        pockets (rim reference Z 14 -> +2.4). 3rd pass (2026-11-06, user: "add a safety margin where in doubt"):
        skin 1.0 -> 1.3 (resin wall rule 1.0 + 0.3 margin; 2nd pass sat exactly on the rule);
@@ -11,7 +11,7 @@ v5 (2026-11-06, user request):
        46 "window + collar" rectangles; trapped pockets between collars narrower than 3.0 stay at full height
        (3rd pass: was 2.0, which left one 2.09 wide pocket as a 2.9 deep dust groove).
      The cover keeps its underside (plate contact Z 13), lip, locating bosses and the six boss magnets;
-     only the top grows: TBD_cover_T 2 -> 6 (1st pass: flat Z 18, TBD_cover_T 5; snapshot model/review_v5/flat_Z18).
+     only the top grows: TBD_cover_T 2 -> 6 (1st pass: flat Z 18, TBD_cover_T 5; snapshot model/baselines/flat_Z18.sc).
   2. one magnet pair at the tip of each lower leg of the left/right C-shaped covers (user: lower legs only).
      cover pocket + plate pocket, Ø3x2 like the existing six. The plate rabbet is filled locally (pad)
      and the cover lip is relieved there, so both pockets keep >= 1 mm walls.
@@ -38,7 +38,7 @@ from make_key_dxf import load_keys, rect
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = Path('C:/Program Files/SolidCraft/solidcraft-cli.exe')
-SOURCE = ROOT / 'model/46es_mount_seam_v4.sc'
+SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/v5'
 KEY_MARGIN = 1.0
@@ -177,7 +177,7 @@ def horizontal_faces(solid):
 def top_levels(model, bodies=COVERS, tol=1e-4):
     """Per body: {Z: area} of the upward (+Z) horizontal faces, Z rounded to 1e-4."""
     sys.path.insert(0, str(ROOT / 'inspection/scripts'))
-    from verify_minimal_v2 import live_shapes
+    from cad_model import live_shapes
     shapes = live_shapes(model)
     levels = {}
     for name in bodies:

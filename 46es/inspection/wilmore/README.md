@@ -1,5 +1,6 @@
 # The_Wilmore.stl 검사 — PSD60 실측 전 하우징 대용값
 
+> 원본·외부 참고 자료 분석 기록이다. 당시 모델·경로는 [정리 전 커밋](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)에 있으며, 현행 제작 기준은 [46es README](https://github.com/zzskm/keyboard/tree/main/46es)를 따른다.
 > **Wilmore는 PSD60 Defender가 아니다.** 둘 다 GH60 호환 60% 하우징이라 내부가 비슷할 것으로 보고, PSD60을 실측하기 전까지 대용값으로만 쓴다. 여기서 뽑은 값은 모두 `REF_WIL_` 매개변수에 넣었고, 하우징 관련 `TBD_` 매개변수가 그 값을 참조한다. 실측값이 나오면 `TBD_` 매개변수의 식을 실측값으로 바꾸면 모델 전체가 따라간다(`../../model/README.md` 참고).
 
 검사일 2026-11-04. 원본 메시 파일은 저장소에 넣지 않았다(외부 모델, 재배포 권한 미확인).

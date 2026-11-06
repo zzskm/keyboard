@@ -1,10 +1,11 @@
 # 46es r2 DWG 검사 및 제작 모델 준비 보고
 
+> 원본·외부 참고 자료 분석 기록이다. 당시 모델·경로는 [정리 전 커밋](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)에 있으며, 현행 제작 기준은 [46es README](https://github.com/zzskm/keyboard/tree/main/46es)를 따른다.
 작성일: 2026-11-03 · 대상: `46es/cad/46es_r2_keyboard.dwg` (기존 아크릴 버전 설계 파일, 새 3D 프린팅 케이스의 제작 도면 아님)
 
 > **이 문서와 `46es/model/`의 어떤 값도 제작 확정 치수가 아니다.** DWG 값은 "DWG에 그렇게 그려져 있다"는 사실일 뿐 PSD60 하우징·실부품과 맞는다는 근거가 아니다. 최종 형상·STL은 만들지 않았다.
 
-> 정정 2026-11-04: 46sp는 별도 split keyboard 예시라 대조 대상에서 뺐다(§1, §7). 부품 구성(§5)은 [`docs/assembly-revision.md`](../docs/assembly-revision.md) 기준으로 갱신했다. r2 DWG는 3D 프린팅 리비전이 아니라 아크릴 버전의 설계 파일로 확인됐다(§1). DWG 판독 결과는 바뀌지 않았다.
+> 정정 2026-11-04: 46sp는 별도 split keyboard 예시라 대조 대상에서 뺐다(§1, §7). 부품 구성(§5)은 [`docs/assembly-revision.md`](https://github.com/zzskm/keyboard/blob/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es/docs/assembly-revision.md) 기준으로 갱신했다. r2 DWG는 3D 프린팅 리비전이 아니라 아크릴 버전의 설계 파일로 확인됐다(§1). DWG 판독 결과는 바뀌지 않았다.
 
 상태 표기: **확인** = 파일에서 직접 읽은 사실 · **추정** = 근거 있는 해석이지만 미검증 · **미확정/알 수 없음** = 실측 전에는 정할 수 없음 · **자리표시** = 스케치를 그리기 위해 넣은 임시값
 

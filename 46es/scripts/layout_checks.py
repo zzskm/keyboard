@@ -3,7 +3,7 @@ import json, math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = json.loads((ROOT/'inspection/source_features_by_panel.json').read_text(encoding='utf-8-sig'))
+DATA = json.loads((ROOT/'inspection/data/features_by_panel.json').read_text(encoding='utf-8-sig'))
 
 def rect(cx, cy, w, h, deg=0):
     c,s=math.cos(math.radians(deg)),math.sin(math.radians(deg))

@@ -109,7 +109,7 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
 
 
 DEFAULT_LABELS = dict(
-    eyebrow='BUILD / 46es v4',
+    eyebrow='BUILD / 46es v5',
     case_hint='케이스는 부분 실측을 반영한 검토 형상입니다. 테두리 Z 14 / 커버 윗면 Z 15 mm(약 1 mm 돌출). 스위치·키캡은 MX·OEM 참고 형상이며 실물 치수는 미확정입니다. 배선은 3D 형상이 없습니다.')
 
 

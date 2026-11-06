@@ -3,7 +3,7 @@
   "generator": "tools/build_assembly_reference_v5.py",
   "source": "46es_mount_seam_v5.sc",
   "source_sha": "038ff79c5cbec7e30e4cf4c422b86024b010de1c78cbdad682ad9e5fa2dfa3e5",
-  "measurement_sha": "882dbfb65f1554378061ddb09068cd0b80cac2c17c538825e4a316d48058b9af",
+  "measurement_sha": "7d0ddf7c509903db706e2a0cef6506bb90d9e1e67abac1c18636e22f483bebf0",
   "generator_sha": "8652542b825618b9c79fba5c0cfbd7c635d4033c2b4df3fba70f534858f05d6e",
   "output_sha": "0b486c1ad970fa5f4993d099977193b4121b9011a31e1c2911bb49623aa0c480",
   "keys": [

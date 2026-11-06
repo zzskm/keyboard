@@ -520,7 +520,7 @@ def main():
         manifest_path = (base / spec['reference_manifest']).resolve()
         manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
         reference_root = manifest_path.parent
-        generator = manifest.get('generator', 'tools/build_assembly_reference.py')
+        generator = manifest['generator']
         inputs = [(reference_root / manifest['source'], 'source_sha'),
                   (reference_root / 'measurements/2026-11-04T111846Z.json', 'measurement_sha'),
                   (reference_root.parent / generator, 'generator_sha'),

@@ -5,7 +5,7 @@ python tools/export_seam_v5_review.py
   -> model/parameters_seam_v5.csv
   -> inspection/data/seam-v5-exports.json (file hashes, CAD volumes)
   -> inspection/data/seam-v5-thin-wall.json (MJF/resin minimum wall scan of the STLs)
-Not an order set: print orientation and order folders stay with print_v4 until the user approves v5.
+Not an order set: current manufacturing files are in model/print_v5/order1 and order2.
 """
 import hashlib
 import json
