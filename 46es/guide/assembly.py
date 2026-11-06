@@ -102,10 +102,37 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
                     die(f"interactive: mesh outside CAD bounds: {p['id']}")
         shutil.copyfile(path, target / path.name)
     data = dict(parts=parts, steps=steps, model_sha=model_sha, tools=ctx.text(source.get('tools', '')))
+    prepare_comparison(base, out, die)
+    from illustrations import prepare as draw_illustrations
+    draw_illustrations(out, data)
     (out / 'assembly.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
-    for name in ('assembly.js', 'viewer.js', 'assembly.css'):
+    for name in ('assembly.js', 'viewer.js', 'assembly.css', 'comparison.js'):
         shutil.copyfile(Path(__file__).parent / 'assets' / name, out / name)
     shutil.copytree(Path(__file__).parent / 'assets' / 'vendor', out / 'vendor', dirs_exist_ok=True)
+
+
+def prepare_comparison(base, out, die):
+    root = base.parent
+    folder = root / 'model/reference_r2'
+    manifest = folder / 'reference.json'
+    if not manifest.exists():
+        die('r2 reference missing: run python 46es/tools/build_r2_reference.py')
+    ref = json.loads(manifest.read_text(encoding='utf-8'))
+    for path, expected in ref['source_files'].items():
+        if hashlib.sha256((root / path).read_bytes()).hexdigest() != expected:
+            die('r2 reference stale: run python 46es/tools/build_r2_reference.py')
+    for p in ref['parts']:
+        src = folder / Path(p['mesh']).name
+        if hashlib.sha256(src.read_bytes()).hexdigest() != p['sha256']:
+            die('r2 reference mesh hash mismatch: ' + p['id'])
+        (out / 'models').mkdir(exist_ok=True, parents=True)
+        shutil.copyfile(src, out / p['mesh'])
+    step = folder / '46es_r2_reference.step'
+    if hashlib.sha256(step.read_bytes()).hexdigest() != ref['step_sha256']:
+        die('r2 reference STEP hash mismatch')
+    shutil.copyfile(step, out / step.name)
+    shutil.copyfile(manifest, out / 'r2-reference.json')
+    shutil.copyfile(folder / 'overview.svg', out / 'r2-overview.svg')
 
 
 DEFAULT_LABELS = dict(
@@ -114,20 +141,31 @@ DEFAULT_LABELS = dict(
 
 
 def markup(config=None):
-    labels = dict(DEFAULT_LABELS, **((config or {}).get('labels') or {}))
-    return '''<section id="interactive" class="assembly-app" aria-label="3D 단계별 조립">
-<div class="assembly-heading"><div><p class="eyebrow">''' + labels['eyebrow'] + '''</p><h2>한 단계씩, 직접 살펴보며 조립하기</h2></div><a href="#assembly">전체 조립 설명 ↓</a></div>
-<p>이번 작업의 부품은 주황색으로 강조됩니다. 부품 카드를 누르면 해당 부품을 찾아볼 수 있습니다.</p>
-<p id="assembly-status" role="status">조립 가이드를 불러오는 중입니다. 아래 이미지와 전체 조립 설명도 이용할 수 있습니다.</p>
+    return '''<section id="interactive" class="assembly-app" aria-label="46es 시각 조립서">
+<div class="build-heading"><div><p class="eyebrow">46es / BUILD BOOK</p><h2>부품을 보고, 한 단계씩.</h2></div><span class="build-badge">v5 · 시험 출력 전</span></div>
+<div class="build-modes" role="group" aria-label="가이드 모드"><button id="mode-build" aria-pressed="true">조립하기</button><button id="mode-compare" aria-pressed="false">r2와 비교</button><a href="#reference-docs">상세 자료 ↗</a></div>
+<p id="assembly-status" role="status">조립서를 불러오는 중입니다. 아래 전체 설명도 이용할 수 있습니다.</p>
 <div id="assembly-ui" hidden>
-<div class="assembly-nav"><button id="asm-prev" type="button">← 이전</button><label>단계 <select id="asm-step"></select></label><button id="asm-next" type="button">다음 →</button></div>
-<div class="assembly-layout"><div class="assembly-visual"><div id="asm-canvas" tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대"></div>
-<div class="assembly-toolbar"><button type="button" data-view="iso">추천 시점</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞 높이</button><label>분해 <input id="asm-explode" type="range" min="0" max="1" step="0.01" value="0"></label></div>
-<p class="assembly-hint">드래그: 회전 · 휠/핀치: 확대 · 오른쪽 드래그: 이동</p>
-<p class="assembly-hint">''' + labels['case_hint'] + '''</p>
-<p id="asm-picked" aria-live="polite"></p>
-<details id="asm-fallback"><summary>이 단계의 참고 이미지</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
-<article class="assembly-instruction" aria-live="polite"><p id="asm-phase" class="eyebrow"></p><h3 id="asm-title"></h3><div id="asm-body"></div><div id="asm-check" class="assembly-check"></div><div id="asm-fix"></div><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 완료</label><p id="asm-progress"></p><a id="asm-detail">전체 설명에서 보기 ↗</a></article></div>
-<div class="assembly-parts-head"><h3>준비할 부품</h3><label>목록 <select id="asm-scope"><option value="step">현재 단계</option><option value="all">전체 부품</option></select></label><label>검색 <input id="asm-search" type="search" placeholder="이름 또는 규격"></label></div>
-<p id="asm-parts-note"></p><div id="asm-parts" class="assembly-parts"></div><p id="asm-tools" class="note"></p>
-</div><noscript><p>3D 조립 화면은 JavaScript가 필요합니다. 아래 조립 순서와 이미지를 이용하세요.</p></noscript></section>'''
+<div id="build-panel">
+<div class="assembly-nav"><button id="asm-prev" type="button" aria-label="이전 조립 단계">←</button><label><span class="sr-only">조립 단계</span><select id="asm-step"></select></label><button id="asm-next" type="button" aria-label="다음 조립 단계">→</button></div>
+<div id="asm-phases" class="phase-track" aria-label="조립 구간"></div>
+<div class="build-sheet">
+<div class="build-step-heading"><span id="asm-number" class="build-number">01</span><div><p id="asm-phase" class="eyebrow"></p><h3 id="asm-title"></h3></div><span id="asm-progress"></span></div>
+<div class="parts-tray"><div class="tray-label">이번에 사용할 부품 <span>3D에서 위치 표시</span></div><div id="asm-tray" class="tray-items"></div></div>
+<div class="assembly-layout"><div class="assembly-visual"><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span></div><img id="asm-drawing" alt="현재 단계 조립도"><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대"></div>
+<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><button type="button" data-view="iso">시점 복원</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></div></div>
+<p id="asm-picked" aria-live="polite"></p><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
+<article class="assembly-instruction"><ol id="asm-actions" class="action-list"></ol><div id="asm-check" class="assembly-check"></div><details id="asm-details"><summary>세부 설명 · 안 맞을 때</summary><div id="asm-body"></div><div id="asm-fix"></div><a id="asm-detail">전체 설명에서 보기 ↗</a></details><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 확인 완료</label><button id="asm-complete-next" class="primary-button" type="button">완료하고 다음 →</button></article></div>
+</div>
+<details class="parts-catalog"><summary>전체 부품 · 준비 체크 · 검색</summary><div class="assembly-parts-head"><label>목록 <select id="asm-scope"><option value="step">현재 단계</option><option value="all">전체 부품</option></select></label><label>검색 <input id="asm-search" type="search" placeholder="이름 또는 규격"></label></div><p id="asm-parts-note"></p><div id="asm-parts" class="assembly-parts"></div><p id="asm-tools" class="note"></p></details>
+<p class="reference-note">케이스·스위치·키캡·구매품은 참고 형상입니다. 배선은 3D에 없습니다. 분해 간격과 화살표는 조립 설명용이며 실물 끼움·공차를 보증하지 않습니다.</p>
+</div>
+<div id="compare-panel" hidden>
+<div class="compare-heading"><div><p class="eyebrow">r2 ACRYLIC → v5 PRINTED</p><h3>무엇이 달라졌을까?</h3></div><span class="build-badge">같은 시점 · 같은 축척</span></div>
+<p class="reference-note">r2는 도면 윤곽을 복원한 비교용 모델입니다. 두께는 공칭값, 아래→위 P0→P5 적층과 설치 높이는 가정입니다. 제작용으로 쓰지 마세요.</p>
+<div class="compare-toolbar"><label>비교 대상 <select id="cmp-scope"><option value="all">전체 구조</option><option value="plate">스위치 판</option><option value="cover">커버</option></select></label><button id="cmp-3d" type="button">3D로 보기</button><div id="cmp-3d-tools" hidden><button data-compare-view="iso">입체</button><button data-compare-view="top">위</button><button data-compare-view="front">앞</button><label>분해 <input id="cmp-explode" aria-label="비교 모델 분해 정도" type="range" min="0" max="1" step="0.01" value="0.35"></label></div></div>
+<p id="compare-status" role="status">비교 모델을 준비하고 있습니다.</p>
+<div class="compare-grid"><article><h4>r2 <small>아크릴 · 6종 / 10조각</small></h4><div id="r2-canvas" class="compare-canvas" hidden aria-label="r2 비교 모델"></div><img id="r2-fallback" src="img/build/r2-all.png" alt="r2 아크릴 적층 조립도"><div id="r2-layers" class="layer-list"></div></article><article><h4>v5 <small>현행 · 분리형 plate + 자석 커버</small></h4><div id="v5-canvas" class="compare-canvas" hidden aria-label="v5 비교 모델"></div><img id="v5-fallback" src="img/build/v5-all.png" alt="현행 v5 분해 조립도"><p>일체 판재에서 좌우 plate·spine·mount로 분리. 커버는 L·T·R을 개별 탈착합니다.</p></article></div>
+<div class="compare-facts"><div><b>46개 키 위치</b><span>r2의 2D 키 배열이 기준</span></div><div><b>plate 구조</b><span>r2 1.5T 판 → v5 좌우 분할·국부 걸쇠 층</span></div><div><b>커버 유지보수</b><span>r2 적층 판 → v5 자석 탈착 3조각</span></div></div>
+<details><summary>복원 근거와 가정 · 모델 내려받기</summary><ul id="r2-assumptions"></ul><p>좌표는 r2 P2 윗면과 v5 스위치 착좌면을 맞춘 비교 기준입니다. 하우징 설치 높이 비교가 아닙니다.</p><a href="46es_r2_reference.step" download>r2 비교용 STEP</a> · <a href="r2-reference.json">복원 근거와 파일 해시</a></details>
+</div></div><noscript><p>시각 조립서는 JavaScript가 필요합니다. 아래 전체 조립 순서와 이미지를 이용하세요.</p></noscript></section>'''

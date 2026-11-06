@@ -54,6 +54,10 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "출력물의 서포트와 거친 면을 정리한다.",
+        "주문 1 시험 결과대로 홀과 이음부의 끼움을 확인한다."
       ]
     },
     "magnet": {
@@ -79,7 +83,12 @@
       },
       "view": "bottom",
       "note": "커버와 plate만 작업합니다. v5 다리 자석 2쌍(앞쪽 가장자리)은 극성을 맞춥니다. 에폭시가 완전히 굳은 뒤 진행하세요.",
-      "hardwareStages": []
+      "hardwareStages": [],
+      "quick": [
+        "보스 6곳에 자석을 붙인다. 상대는 강철 나사머리다.",
+        "아래 다리 2쌍은 서로 당기는 극성을 확인한 뒤 붙인다.",
+        "투명 2액형 에폭시만 쓰고 완전히 굳힌다."
+      ]
     },
     "standoff": {
       "show": [
@@ -104,7 +113,11 @@
       },
       "view": "bottom",
       "note": "",
-      "hardwareStages": []
+      "hardwareStages": [],
+      "quick": [
+        "케이스 밖에서 mount 4개에 지지대 6개를 넣는다.",
+        "아래에서 M3×5 나사 6개로 고정한다."
+      ]
     },
     "case-loose": {
       "show": [
@@ -131,7 +144,11 @@
       },
       "view": "iso",
       "note": "",
-      "hardwareStages": []
+      "hardwareStages": [],
+      "quick": [
+        "mount 4개를 하우징 지지대에 놓는다.",
+        "케이스 나사 6개를 가볍게 걸어 위치 조정 여유를 남긴다."
+      ]
     },
     "seam": {
       "show": [
@@ -155,7 +172,28 @@
       "note": "케이스 밖에서 조립합니다. 이음 나사와 너트가 강조됩니다.",
       "hardwareStages": [
         "REF_M2_SEAM_FRONT"
-      ]
+      ],
+      "quick": [
+        "왼쪽 tab을 위에서 내려 오른쪽 포켓에 넣는다. 옆으로 밀지 않는다.",
+        "아래 M2 너트를 받치고 위에서 M2×5를 조인다."
+      ],
+      "placement": [
+        {
+          "from": [
+            139.5,
+            6.5,
+            34
+          ],
+          "to": [
+            139.5,
+            6.5,
+            13
+          ]
+        }
+      ],
+      "illustrationLift": {
+        "PLATE_L_SPLIT_V1": 21
+      }
     },
     "join": {
       "show": [
@@ -183,6 +221,10 @@
         "REF_M2_PLATE_5",
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT"
+      ],
+      "quick": [
+        "plate를 뒤집어 이음부 아래에 spine을 댄다.",
+        "M2×6 나사와 너트 4조로 잇는다."
       ]
     },
     "trial": {
@@ -220,7 +262,41 @@
         "REF_M2_PLATE_5",
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT"
-      ]
+      ],
+      "quick": [
+        "plate를 지지대 위에 임시로 얹는다.",
+        "6곳의 구멍이 힘없이 맞도록 mount 위치와 중앙 shim을 정한다."
+      ],
+      "placement": [
+        {
+          "from": [
+            70,
+            45,
+            40
+          ],
+          "to": [
+            70,
+            45,
+            14
+          ]
+        },
+        {
+          "from": [
+            210,
+            45,
+            40
+          ],
+          "to": [
+            210,
+            45,
+            14
+          ]
+        }
+      ],
+      "illustrationLift": {
+        "PLATE_L_SPLIT_V1": 21,
+        "PLATE_R_SPLIT_V1": 21
+      }
     },
     "case-tight": {
       "show": [
@@ -242,7 +318,11 @@
       },
       "view": "iso",
       "note": "공구가 닿도록 plate 모듈을 들어낸 상태입니다.",
-      "hardwareStages": []
+      "hardwareStages": [],
+      "quick": [
+        "plate를 들어내고 케이스 나사 6개를 조인다.",
+        "plate를 다시 얹어 구멍 6곳이 그대로 맞는지 확인한다."
+      ]
     },
     "switch": {
       "show": [
@@ -271,6 +351,10 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "케이스 밖의 plate에 스위치 46개를 위에서 끼운다.",
+        "플랜지가 착좌하고 걸쇠가 아래 릴리프에 걸리는지 확인한다."
       ]
     },
     "ctrl": {
@@ -310,6 +394,11 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "아랫면에 브래킷을 M2×6 2조로 단다.",
+        "Pro Micro는 부품면을 아래로, USB 쪽에서 밀어 넣는다.",
+        "게이트는 M2×5를 아래에서 위로 조인다."
       ]
     },
     "glue": {
@@ -344,6 +433,10 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "이음 가까운 키를 눌러 단차·삐걱임을 확인한다.",
+        "문제가 있을 때만 tab을 손질해 에폭시로 접착한다."
       ]
     },
     "wire": {
@@ -379,6 +472,11 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "4행 × 12열 매트릭스를 다이오드와 함께 배선한다.",
+        "이음부를 건너는 선은 spine 아래 홈으로 보낸다.",
+        "핀 배치와 경로는 상세 설명을 확인한다. 3D에는 배선이 없다."
       ]
     },
     "module": {
@@ -422,6 +520,10 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "중앙 shim을 놓고 plate 모듈을 지지대에 얹는다.",
+        "위쪽 M3×4 6개를 조이고 내부 USB 케이블을 연결한다."
       ]
     },
     "cover": {
@@ -472,7 +574,54 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
-      ]
+      ],
+      "quick": [
+        "커버 L·T·R의 보스를 맞춰 내려놓는다.",
+        "L·R 아래 다리 자석이 붙고, 키 주변 간격이 고른지 확인한다."
+      ],
+      "placement": [
+        {
+          "from": [
+            25,
+            75,
+            46
+          ],
+          "to": [
+            25,
+            75,
+            20
+          ]
+        },
+        {
+          "from": [
+            131,
+            70,
+            46
+          ],
+          "to": [
+            131,
+            70,
+            20
+          ]
+        },
+        {
+          "from": [
+            267,
+            70,
+            46
+          ],
+          "to": [
+            267,
+            70,
+            20
+          ]
+        }
+      ],
+      "illustrationLift": {
+        "COVER_L_DRAFT_TBD": 21,
+        "COVER_T_DRAFT_TBD": 21,
+        "COVER_R_DRAFT_TBD": 21
+      }
     },
     "keycap": {
       "show": [
@@ -519,6 +668,10 @@
         "REF_M2_PLATE_1",
         "REF_M2_PLATE_2",
         "REF_M2_GATE"
+      ],
+      "quick": [
+        "배열에 맞춰 키캡 46개를 끼운다. 스태빌라이저는 쓰지 않는다.",
+        "각 키를 끝까지 눌러 커버 간섭을 확인한다."
       ]
     }
   },

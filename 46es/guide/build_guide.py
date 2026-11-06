@@ -458,16 +458,16 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
     css = (HERE / "assets" / "guide.css").read_text(encoding="utf-8")
     js = (HERE / "assets" / "guide.js").read_text(encoding="utf-8")
     return f"""<!doctype html>
-<html lang="ko" data-store="{html.escape(pg.get('store_key', '46es-guide'))}">
+<html lang="ko" data-theme="light" data-store="{html.escape(pg.get('store_key', '46es-guide'))}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{html.escape(pg['title'])}</title>
 <meta name="description" content="{html.escape(pg['description'])}">
 {robots}{FONTS}
-{('<link rel="stylesheet" href="assembly.css">' if interactive else '')}
 <style>
 {css}</style>
+{('<link rel="stylesheet" href="assembly.css">' if interactive else '')}
 </head>
 <body>
 <header class="wrap mast">
@@ -482,7 +482,9 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 <div class="bar"><div class="wrap"><nav aria-label="섹션">{nav}</nav></div></div>
 <main class="wrap">
 {assembly.markup(getattr(ctx, 'interactive', None)) if interactive else ''}
+<details id="reference-docs" class="reference-docs"><summary>상세 설계 · 전체 조립 순서 · 시험 항목</summary>
 {body}
+</details>
 </main>
 <footer class="wrap">{foot}</footer>
 <script>

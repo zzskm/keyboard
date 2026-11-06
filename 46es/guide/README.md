@@ -6,7 +6,7 @@
 
 ## 실행 — 저장소 루트
 
-SolidCraft CLI가 필요하다. 기본 경로는 `C:/Program Files/SolidCraft/solidcraft-cli.exe`이며 `--cli`로 바꿀 수 있다.
+SolidCraft CLI와 Python NumPy·Matplotlib이 필요하다. 기본 경로는 `C:/Program Files/SolidCraft/solidcraft-cli.exe`이며 `--cli`로 바꿀 수 있다.
 
 ```sh
 python 46es/tools/build_assembly_reference_v5.py
@@ -30,7 +30,13 @@ python -m http.server 8766 --bind 127.0.0.1 --directory 46es/guide/out
 
 조립 단계 ID와 구매품 ID는 체크·진행 기록에 쓰이므로 문구를 다듬을 때 바꾸지 않는다. `assembly_v5.json`의 `show`, `focus`, `needs`, `view`, `hardwareStages`가 3D 단계를 결정한다. 배선은 3D 형상이 없고 케이스·하드웨어·키캡은 참고 형상이다.
 
-`assets/vendor/`에는 Three.js 0.180.0과 MIT 라이선스를 고정했다. 오프라인 빌드가 가능하며 npm/CDN 다운로드가 필요 없다. WebGL 실패 시 참고 이미지와 텍스트를 제공한다.
+`assets/vendor/`에는 Three.js 0.180.0과 MIT 라이선스를 고정했다. 오프라인 빌드가 가능하며 npm/CDN 다운로드가 필요 없다. 단계별 조립도와 부품 그림은 STL에서 생성한다. 3D 보기는 버튼을 눌렀을 때만 불러온다.
+
+## r2 비교 모델
+
+`comparison_r2.json`은 DWG 판 윤곽의 분류와 두께, 배치 가정을 기록한다. 비교용 STEP 및 STL은 `model/reference_r2/`에 있다. 판 두께는 공칭값이고 Z와 적층 순서는 가정이다. 생성 시 P1의 열린 윤곽을 연결한다. 원본이나 가정이 바뀌면 CadQuery 2.6과 ezdxf가 설치된 환경에서 `python 46es/tools/build_r2_reference.py`를 실행한다.
+
+SolidCraft가 없는 환경의 UI 검토에는 `python 46es/guide/preview_from_published.py --published <게시된 v5 자산 폴더>`를 쓴다. 게시 자산 폴더에는 `assembly.json`, `models/`, `img/`가 필요하다. 모델 해시가 일치해야 하며 Pillow가 필요하다. 이 명령은 정식 게시용 빌드를 대체하지 않는다.
 
 ## 검증
 
