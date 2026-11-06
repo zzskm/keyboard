@@ -1,6 +1,14 @@
 {
+  "controller": {
+    "bodies": 56,
+    "pads_per_face": 24,
+    "socket_side": "-X",
+    "component_face": "-Z",
+    "solder_face": "+Z",
+    "bracket_gate_overlap_count": 0
+  },
   "ok": true,
-  "model_sha": "97529b0d616624560dbc5d01166a80bb2563a27a62d6b02b68d0ea96acf69422",
+  "model_sha": "01cd7afb4c9742c13a8aef18e8eb36cdfe0a5a8e9a6f847d70d960f53840fc9d",
   "source_sha": "24fb580afa120aff12bc5346f05f304b256ab37a3bbdbb4baf4b12f2ddf9b9c5",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.0,

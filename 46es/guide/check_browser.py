@@ -25,6 +25,20 @@ with sync_playwright() as p:
         assert page.locator('#asm-title').inner_text()
         assert page.locator('.assembly-part').count() > 0
         page.wait_for_function("document.querySelector('#asm-drawing').naturalWidth > 0")
+    controller = next(part for part in models if part['id'] == 'controller')
+    assert controller['preserveColors'] and len({piece['color'] for piece in controller['pieces']}) >= 5
+    step_ids = page.evaluate("fetch('assembly.json').then(r=>r.json()).then(d=>d.steps.map(s=>s.id))")
+    faces = page.locator('#asm-controller-faces')
+    assert not faces.is_visible()
+    for step in ('ctrl', 'wire'):
+        page.locator('#asm-step').select_option(str(step_ids.index(step)))
+        faces.wait_for(state='visible')
+        assert '부품면' in faces.locator('figcaption').first.inner_text()
+        assert '납땜면' in faces.locator('figcaption').last.inner_text()
+        faces.scroll_into_view_if_needed()
+        page.wait_for_function("Array.from(document.querySelectorAll('#asm-controller-faces img')).every(img => img.naturalWidth > 0)")
+    page.locator('#asm-step').select_option('14')
+    assert not faces.is_visible()
     page.locator('#asm-done').check()
     page.locator('#asm-3d').click()
     page.wait_for_function("document.getElementById('assembly-status').textContent.includes('3D 준비 완료')", timeout=120000)

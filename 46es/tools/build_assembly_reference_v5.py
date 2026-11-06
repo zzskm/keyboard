@@ -1,15 +1,7 @@
-"""v5 assembly review CAD (copy of build_assembly_reference.py for v4, kept unchanged).
+"""Build the v5 assembly review CAD from the production model.
 
-Source is the v5 production model; adds CASE_V5_* design-requirement parameters next to the
-measured REF_PSD_* reference (which stay as measured). Run: python tools/build_assembly_reference_v5.py
-2nd pass (two-level cover): the reference keycaps sit at seat + v5_keycap_bottom_above_seat (Z 17.3) so that
-"pressed 4 mm vs plate top" is a real check (0.3) instead of an excluded item; the caps' height is unchanged.
-
-Original notes:
-
-Case-only parameters use the coarse PSD60 measurements. Switches/keycaps are
-new illustrative geometry, informed by Thingiverse 421524 and 468651/KeyV2.
-Run from the repository root: python tools/build_assembly_reference.py
+Adds the measured PSD60 proxy, switches, keycaps and an illustrative Pro Micro.
+Run from the repository root with python 46es/tools/build_assembly_reference_v5.py.
 """
 import copy
 import hashlib
@@ -169,7 +161,7 @@ def build():
         doc['features'].append(dict(id=fid, type=kind, name=name, suppressed=False, **kwargs))
         return fid
 
-    def sketch(name, z=0, polygons=(), circles=(), plane=None):
+    def sketch(name, z=0, polygons=(), circles=(), plane=None, xy_origin=None):
         points = [dict(id='origin', pos=[0.,0.], fixed=True)]
         curves = []
         for poly in polygons:
@@ -182,6 +174,10 @@ def build():
         for center, radius in circles:
             points.append(dict(id=f'c{len(curves)+1}.center',pos=center,fixed=True))
             curves.append(dict(id=f'c{len(curves)+1}',type='circle',c=len(points)-1,r=radius,construction=False))
+        if xy_origin:
+            for point in points[1:]:
+                point['exprs'] = {axis: f'{origin} + ({coord})'
+                                  for axis, origin, coord in zip('xy', xy_origin, point['pos'])}
         plane = plane or dict(type='offset',base=dict(type='origin',name='XY'),distance=str(z))
         return feature('sketch', 'SK_'+name, plane=plane,
                        sketch=dict(points=points,curves=curves,constraints=[],counters=dict(p=len(points),l=len(curves))))
@@ -192,6 +188,61 @@ def build():
         options = dict(targets=targets) if targets else dict(body_names=bodies)
         return feature('extrude',name,sketch=sk,profiles=dict(type='all'),extent=extent,
                        operation='join' if targets else 'new_body',**options)
+
+    # Native illustrative geometry based on the attached Arduino Pro Micro reference.
+    # All placement follows the existing board envelope; production rails, gate and
+    # the cable/plug keepout remain in the source model.
+    origin = ('TBD_ctrl_X', 'TBD_ctrl_Y')
+    pcb_bottom = 'TBD_ctrl_pcb_Z'
+    pcb_top = f'{pcb_bottom} + REF_ctrl_pcb_T'
+    pad_height = 0.04
+    pad_hole, pad_outer = 0.48, 0.87
+    pads = [(3.8 + pin * 2.54, y) for y in (1.27, 16.73) for pin in range(12)]
+    pcb, usb = 'REF_PROMICRO_PCB', 'REF_PROMICRO_USB'
+    appearance = doc['appearances']['bodies']
+
+    def ctrl_box(name, x, y, z, length, width, height, color=None, cut=None):
+        feature('box', name, corner=[f'{origin[0]} + ({x})', f'{origin[1]} + ({y})', z],
+                length=str(length), width=str(width), height=str(height),
+                operation='cut' if cut else 'new_body',
+                **(dict(participants=[cut]) if cut else dict(body_names=[name])))
+        if color:
+            appearance[name] = dict(name='Custom', color=color, opacity=1.0)
+
+    ctrl_box(pcb, 0, 0, f'{pcb_bottom} + {pad_height}', 'TBD_ctrl_L', 'TBD_ctrl_W',
+             f'REF_ctrl_pcb_T - {2 * pad_height}', [31, 109, 96])
+    holes = sketch('PROMICRO_HOLES', pcb_bottom, circles=[(xy, pad_hole) for xy in pads], xy_origin=origin)
+    drilled_bodies = [pcb]
+    for face, z in [('COMPONENT', pcb_bottom), ('SOLDER', f'{pcb_top} - {pad_height}')]:
+        name = f'REF_PROMICRO_PADS_{face}'
+        sk = sketch(name, z, circles=[(xy, pad_outer) for xy in pads], xy_origin=origin)
+        pad_names = [f'{name}_{i:02}' for i in range(1, len(pads) + 1)]
+        extrusion(name, sk, pad_height, bodies=pad_names)
+        drilled_bodies.extend(pad_names)
+        for pad in pad_names:
+            appearance[pad] = dict(name='Custom', color=[214, 163, 74], opacity=1.0)
+
+    feature('extrude', 'PROMICRO_PLATED_HOLES', sketch=holes, profiles=dict(type='all'),
+            extent=dict(convention='total_distance', direction='positive', distance='REF_ctrl_pcb_T'),
+            operation='cut', targets=drilled_bodies)
+
+    ctrl_box(usb, -0.75, 5.2, f'{pcb_bottom} - 2.2', 6.15, 7.6, 2.24, [146, 158, 168])
+    ctrl_box('PROMICRO_USB_OPENING', -0.95, 5.95, f'{pcb_bottom} - 1.9',
+             4.95, 6.1, 1.58, cut=usb)
+    ctrl_box('REF_PROMICRO_USB_TONGUE', -0.37, 6.8, f'{pcb_bottom} - 0.95',
+             4.24, 4.4, 0.39, [41, 46, 53])
+    chip = 'REF_PROMICRO_MCU'
+    sk = sketch(chip, f'{pcb_bottom} - 0.9', [rect(19.15, 9, 6.85, 6.85, 45)], xy_origin=origin)
+    extrusion(chip, sk, 0.94, bodies=[chip])
+    appearance[chip] = dict(name='Custom', color=[39, 44, 51], opacity=1.0)
+    ctrl_box('REF_PROMICRO_REGULATOR', 8.9, 7.8, f'{pcb_bottom} - 0.85', 2.7, 2.4, 0.89, [51, 54, 60])
+    for suffix, y in [('A', 4), ('B', 12.2)]:
+        ctrl_box(f'REF_PROMICRO_CAP_{suffix}', 8.4, y, f'{pcb_bottom} - 1.25',
+                 3.65, 1.8, 1.29, [202, 170, 83])
+    ctrl_box('REF_PROMICRO_CRYSTAL', 29.1, 6.55, f'{pcb_bottom} - 0.9', 3.2, 4.9, 0.94, [165, 171, 175])
+    hidden = doc['visibility'].setdefault('hidden_bodies', [])
+    if 'CTRL_KEEPOUT_TBD' not in hidden:
+        hidden.append('CTRL_KEEPOUT_TBD')
 
     keys = load_keys(.693,.667)
     def names(prefix, count=46):

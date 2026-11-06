@@ -55,7 +55,7 @@ export async function createViewer(host, data, onSelect, options = {}) {
       }
       const focus = pick ? p.id === pick : step.focus.includes(p.id);
       if (step.focusOnly && !focus) mesh.visible = false;
-      mesh.material.color.set(p.id === pick ? '#168b9b' : focus && p.id !== 'switches' ? '#e79535' : p.baseColor);
+      mesh.material.color.set(p.preserveColors ? p.baseColor : p.id === pick ? '#168b9b' : focus && p.id !== 'switches' ? '#e79535' : p.baseColor);
       mesh.material.emissive.set(focus ? '#33200a' : '#000000');
       mesh.material.transparent = !focus && (p.id === 'housing' || (options.ghost && step.focus.length > 0));
       mesh.material.opacity = mesh.material.transparent ? (p.id === 'housing' ? .12 : .23) : 1;

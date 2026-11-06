@@ -47,7 +47,7 @@
       },
       {
         "color": "#d24c4c",
-        "label": "Pro Micro 점유"
+        "label": "USB 플러그 여유 · 단면용"
       },
       {
         "color": "#c3cbd4",
@@ -251,7 +251,7 @@
       "REF_M2_GATE*"
     ],
     "ctrl": [
-      "CTRL_KEEPOUT_TBD"
+      "REF_PROMICRO_*"
     ],
     "usb": [
       "USB_OUTLET_TBD"
@@ -442,6 +442,7 @@
     {
       "id": "sec-gate",
       "show": [
+        "CTRL_KEEPOUT_TBD",
         "@no_switches"
       ],
       "section": "x=116.5",
@@ -762,7 +763,7 @@
       "figs": [
         {
           "render": "mounts-top",
-          "caption": "위에서 본 mount 배치(plate·커버 숨김). 좌·우 pair는 케이스 나사 2개와 지지대 2개를 한 부품으로 잇고, 앞 mount는 컨트롤러(빨강) 앞을 지난다. 앞 mount의 둥근 받침 두 곳 사이는 배선이 지나도록 열려 있다."
+          "caption": "위에서 본 mount 배치(plate·커버 숨김). 좌·우 pair는 케이스 나사 2개와 지지대 2개를 한 부품으로 잇고, 앞 mount는 컨트롤러 앞을 지난다. 앞 mount의 둥근 받침 두 곳 사이는 배선이 지나도록 열려 있다."
         },
         {
           "render": "st-seam",
@@ -1234,10 +1235,10 @@
               "id": "ctrl",
               "title": "컨트롤러 브래킷 · Pro Micro · 게이트",
               "render": "st-ctrl",
-              "caption": "아래에서 본 모습. 빨강은 Pro Micro와 USB 플러그 점유.",
+              "caption": "케이스 바닥 쪽에서 본 모습. USB 소켓과 검은 칩이 보이는 쪽이 부품면이다.",
               "list": [
                 "브래킷을 plate 아랫면에 M2×6 2개와 너트로 단다.",
-                "Pro Micro를 부품면이 아래로 가게 브래킷 홈에 −X(USB) 쪽에서 밀어 넣는다.",
+                "검은 칩과 USB 소켓이 있는 부품면을 케이스 바닥 쪽으로 향하게 한다. USB 소켓을 −X에 두고 PCB를 USB 쪽에서 브래킷 홈으로 밀어 넣는다.",
                 "게이트를 대고 M2×5를 아래에서 위로 조인다. 너트는 게이트 위쪽 포켓에 들어간다."
               ],
               "check": "브래킷 M2 끝과 PCB 사이가 0.3 남는다. 게이트를 풀면 PCB가 −X로 빠진다.",
@@ -1259,7 +1260,7 @@
               "title": "배선",
               "list": [
                 "4행 × 12열 매트릭스를 다이오드와 함께 배선한다. 펌웨어 JSON 기준 행 D1·D0·D4·C6, 열 D7·E6·B4·B5·F4·F5·F6·F7·B1·B3·B2·B6.",
-                "Pro Micro 배선은 PCB 윗면(plate 쪽)에서 한다.",
+                "Pro Micro의 납땜면은 plate 쪽이다. 양옆의 금색 패드 두 줄을 보고 배선한다.",
                 "행 배선이 seam을 건너는 곳은 spine 줄기 아랫면 홈(Y 49·64·72)으로 지나간다. 배선을 시작하면 두 조각을 다시 벌리기 어렵다.",
                 "inside 케이블 플러그를 Pro Micro에 꽂는다."
               ],

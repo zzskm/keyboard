@@ -32,9 +32,9 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 5535,
-      "sha256": "ec148642b93e6c84010e7b46c2508d08d38611cc16059cbb3d765757cb5f7deb",
-      "git_blob_sha": "6b343b8737a0bf311ab4b7528663b8e72d56ac09"
+      "bytes": 5968,
+      "sha256": "788c3c883c23229e1c1116870a99a591cc8ef23f80fdd1eefa923bd93e99d6ac",
+      "git_blob_sha": "6d324d0a98e9db45e4be3b668e5bcc7d6fb4c72d"
     },
     {
       "path": "docs/validation.md",
@@ -56,27 +56,27 @@
     },
     {
       "path": "guide/assembly.py",
-      "bytes": 14147,
-      "sha256": "fe9a7d55f11330e66330fa7d6660ea272c25a808b5918e7fbc6883f247799abf",
-      "git_blob_sha": "d34b6eaeff75a6e776e39e17386092a83c975558"
+      "bytes": 14817,
+      "sha256": "d57ac265c4404810c3b75567041afa1e321a28c77ee32374fc566c69d2c01c9b",
+      "git_blob_sha": "c587367ba3f0d445e7a2aecf727a23875bfb2da4"
     },
     {
       "path": "guide/assembly_v5.json",
-      "bytes": 19888,
-      "sha256": "a8f12628efbf203d40dde11b8acd18c6f841cb41584c90fbb7e9183dbe5a6b1e",
-      "git_blob_sha": "2e8474f21bb0b2adc525a5f6561b543540a72221"
+      "bytes": 20467,
+      "sha256": "ad1f2a4962924b8a1d556bc56b5ee19a22d9fb302df997e8377f478684c36d84",
+      "git_blob_sha": "7bfc67af0483111d3d94ef701c6af4df853e1349"
     },
     {
       "path": "guide/assets/assembly.css",
-      "bytes": 10733,
-      "sha256": "dd54102314b2ca68ec778d17e203454b3a5e90ca33ef9eafefb6fe9859e78b6c",
-      "git_blob_sha": "270308b553d75b25ea9a5ef91c65e49a2f8ea6b4"
+      "bytes": 11146,
+      "sha256": "4ee738df4a5dfd644da7a2192800235c346195d60f768df7fb6f20eb17cc1bbf",
+      "git_blob_sha": "d36811e79c11836ed08debd195de1ae29647faad"
     },
     {
       "path": "guide/assets/assembly.js",
-      "bytes": 11297,
-      "sha256": "896c674e19ee8b14a3b1f899ccf20ab9c325b7650bd15aa2fbb5147d7328807a",
-      "git_blob_sha": "71e4d895ff044089d7c13d0a4779f29584651920"
+      "bytes": 11845,
+      "sha256": "1de41bbf80dd2f101555a38979a1eba7366dc6e9cfa8c9bb1328d1baee9e2792",
+      "git_blob_sha": "af691735c5ad17edb0106a3460ada73db0d57407"
     },
     {
       "path": "guide/assets/comparison.js",
@@ -134,9 +134,9 @@
     },
     {
       "path": "guide/assets/viewer.js",
-      "bytes": 7988,
-      "sha256": "56e1a44c36ab901e8c49cfc5eabb551786bf655746043204d15d45ca9902e790",
-      "git_blob_sha": "b0ad101cc2571116dddbb74333094316e4747e58"
+      "bytes": 8021,
+      "sha256": "e40f137a4ea6708056246013a808fe61226aff4a24445d006a3d69acc3aa3ffd",
+      "git_blob_sha": "e1e22c13e6cd78541b2ad20fdae8969e0bb5a3a8"
     },
     {
       "path": "guide/build_guide.py",
@@ -146,9 +146,9 @@
     },
     {
       "path": "guide/check_browser.py",
-      "bytes": 4355,
-      "sha256": "51f5424993d485c7c781f720a59cfa2005e0e44561a175f1994e2df789f98458",
-      "git_blob_sha": "ec545cb9a63f43c0f9aeb5254e95ebb95318b446"
+      "bytes": 5289,
+      "sha256": "c5de9cc54b50bb1e73614bde1be932785fc094ae0e6e3ad8579ef90d6d8907d6",
+      "git_blob_sha": "45d3663d15c9ac2db11040665fa74c1d90a92271"
     },
     {
       "path": "guide/comparison_r2.json",
@@ -158,15 +158,15 @@
     },
     {
       "path": "guide/guide_v5.json",
-      "bytes": 60084,
-      "sha256": "45bcd939f248322f34183b5e2a05c81a3f0e172f96cb488c1ec7d044c3673c69",
-      "git_blob_sha": "2a2cd21baa802588b2799a8e48f586e4cdf71d77"
+      "bytes": 60276,
+      "sha256": "d1c2ff7524a420c0803a047e94ad3e99bca2432c4b7608fb6e64068ee84e680c",
+      "git_blob_sha": "643c4298dbc1b44009a9635605cfa7e8bea8e885"
     },
     {
       "path": "guide/illustrations.py",
-      "bytes": 5694,
-      "sha256": "488ac5a83c47c545771d9c79841328cdcaa6cba0503355335c76149c53d2e1e3",
-      "git_blob_sha": "48199b0433a0af76b0f638a06407a3ebcf3cd104"
+      "bytes": 6439,
+      "sha256": "e6a9acda038604a84d1ad189bead387dd0c1a84f0cb3cf5178f6835bb1161e6c",
+      "git_blob_sha": "3005185ff81a1e3d4e358de1ac95509040063fe4"
     },
     {
       "path": "guide/preview_from_published.py",
@@ -188,9 +188,9 @@
     },
     {
       "path": "inspection/data/assembly-reference-v5-verification.json",
-      "bytes": 3555,
-      "sha256": "125a43f7c611379156777d35fdc03b4511263062136a9b925de9b122eda56bc2",
-      "git_blob_sha": "675a37dfd03f0d9e86a5b5de8fa92fe983b731a2"
+      "bytes": 3735,
+      "sha256": "d2bff5344c4a8d455437245a174a2d6348b9fbc44d2958d4f9ba88c3b5498b43",
+      "git_blob_sha": "141e6c62c926372df061b5243a204f74563551f6"
     },
     {
       "path": "inspection/data/cadcraft_info.json",
@@ -422,9 +422,9 @@
     },
     {
       "path": "inspection/scripts/verify_assembly_reference_v5.py",
-      "bytes": 9958,
-      "sha256": "572bed6eb626f05300d99f9f2e8111f532716b6baa3ccd4da7d9a989c0da8f57",
-      "git_blob_sha": "d6acd955c87d5aa8f1245f035bdf75980ba20305"
+      "bytes": 11632,
+      "sha256": "4ffef4e0d015ea7d1f75103326d723e0d2aaac380ccb66a09ff6f8054e8e587f",
+      "git_blob_sha": "8076ee059b98b84d4f1b39cce289f41b129ddd36"
     },
     {
       "path": "inspection/scripts/verify_seam_v5.py",
@@ -590,9 +590,9 @@
     },
     {
       "path": "model/46es_assembly_review_v5.sc",
-      "bytes": 10207942,
-      "sha256": "97529b0d616624560dbc5d01166a80bb2563a27a62d6b02b68d0ea96acf69422",
-      "git_blob_sha": "eafce38bd2208d28d2f0c561d2d9f1b89aacd1c9"
+      "bytes": 10373453,
+      "sha256": "01cd7afb4c9742c13a8aef18e8eb36cdfe0a5a8e9a6f847d70d960f53840fc9d",
+      "git_blob_sha": "3e45301cbdad751eea5f7212f3d155c1ba3fc00b"
     },
     {
       "path": "model/46es_mount_seam_v5.sc",
@@ -609,8 +609,8 @@
     {
       "path": "model/assembly_reference_v5.json",
       "bytes": 9978,
-      "sha256": "cdd898245693097011407a4cd54670cc55eb1d159d3dead499c806352121f044",
-      "git_blob_sha": "f2ee407cc2887db35f2a715ff138eea49a5495ee"
+      "sha256": "34a1e0f68559e18f18140645f1400e8d7fceff279cd5c4d1d83ad9cb9dc6095a",
+      "git_blob_sha": "cdb6e123434b69d7affca85e382c84c59fa02608"
     },
     {
       "path": "model/baselines/README.md",
@@ -1004,9 +1004,9 @@
     },
     {
       "path": "tools/build_assembly_reference_v5.py",
-      "bytes": 16698,
-      "sha256": "adaf46ae2e9cd180a16262e14fcbe6fa1da0c19f32b0132692054157cea25da9",
-      "git_blob_sha": "3effe4206d5bd3750f15929dd884c694464e2db4"
+      "bytes": 19616,
+      "sha256": "72734c4285ff920f2a405f14a8e528b5f368e68f6ab9a63b8561867b695dc1a7",
+      "git_blob_sha": "46b9b8b1df145300b4e2292ea3b66ddf6dabb8a4"
     },
     {
       "path": "tools/build_r2_reference.py",

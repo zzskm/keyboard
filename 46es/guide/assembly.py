@@ -57,7 +57,9 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
                               items=[ctx.text(x) for x in st.get('list', [])],
                               check=ctx.text(st.get('check', '')), fix=ctx.text(st.get('fix', '')),
                               image='img/' + st.get('render', 'hero') + '.png', **setting))
-    key = hashlib.sha256(json.dumps([model_sha, [(p['id'], p['bodies']) for p in parts], 2]).encode()).hexdigest()[:20]
+    piece_colors = config.get('piece_colors', {})
+    key = hashlib.sha256(json.dumps([model_sha, [(p['id'], p['bodies']) for p in parts],
+                                     piece_colors, 2]).encode()).hexdigest()[:20]
     meshes = cache / 'web' / key
     meshes.mkdir(parents=True, exist_ok=True)
     commands = []
@@ -66,7 +68,14 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
         if not p['bodies']:
             continue
         p['pieces'] = []
-        if p['id'] == 'switches':
+        colors = piece_colors.get(p['id'], {})
+        if colors:
+            body_sets = [expand([pattern], ctx.names, ctx.groups, p['id']) for pattern in colors]
+            assigned = [body for group in body_sets for body in group]
+            if sorted(assigned) != sorted(p['bodies']):
+                die(f"interactive: invalid color groups for {p['id']}")
+            p['preserveColors'] = True
+        elif p['id'] == 'switches':
             body_sets = [[b for b in p['bodies'] if b.startswith(prefixes)]
                          for prefixes in (('REF_MX_LOWER','REF_MX_GUIDE'), ('REF_MX_UPPER',), ('REF_MX_STEM',), ('REF_MX_CONTACT',))]
             body_sets = [b for b in body_sets if b]
@@ -75,7 +84,9 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
         for j, bodies in enumerate(body_sets):
             filename = f'part-{i:02}-{j:02}.stl'
             piece = dict(mesh='models/' + filename, bodies=bodies)
-            if p['id'] == 'switches':
+            if colors:
+                piece['color'] = list(colors.values())[j]
+            elif p['id'] == 'switches':
                 piece['color'] = ['#c8bc98','#e6dfca','#e8bd30','#be9456'][j]
             p['pieces'].append(piece)
             exports.append((p, piece))
@@ -154,7 +165,7 @@ def markup(config=None):
 <div class="parts-tray"><div class="tray-label">이번에 사용할 부품 <span>3D에서 위치 표시</span></div><div id="asm-tray" class="tray-items"></div></div>
 <div class="assembly-layout"><div class="assembly-visual"><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span></div><img id="asm-drawing" alt="현재 단계 조립도"><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대"></div>
 <div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><button type="button" data-view="iso">시점 복원</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></div></div>
-<p id="asm-picked" aria-live="polite"></p><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
+<p id="asm-picked" aria-live="polite"></p><section id="asm-controller-faces" aria-label="Pro Micro 양면" hidden></section><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
 <article class="assembly-instruction"><ol id="asm-actions" class="action-list"></ol><div id="asm-check" class="assembly-check"></div><details id="asm-details"><summary>세부 설명 · 안 맞을 때</summary><div id="asm-body"></div><div id="asm-fix"></div><a id="asm-detail">전체 설명에서 보기 ↗</a></details><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 확인 완료</label><button id="asm-complete-next" class="primary-button" type="button">완료하고 다음 →</button></article></div>
 </div>
 <details class="parts-catalog"><summary>전체 부품 · 준비 체크 · 검색</summary><div class="assembly-parts-head"><label>목록 <select id="asm-scope"><option value="step">현재 단계</option><option value="all">전체 부품</option></select></label><label>검색 <input id="asm-search" type="search" placeholder="이름 또는 규격"></label></div><p id="asm-parts-note"></p><div id="asm-parts" class="assembly-parts"></div><p id="asm-tools" class="note"></p></details>

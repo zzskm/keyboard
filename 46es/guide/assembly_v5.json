@@ -384,7 +384,7 @@
         "m2-nuts": 3
       },
       "view": "bottom",
-      "note": "",
+      "note": "검은 칩과 USB 소켓이 붙은 부품면은 케이스 바닥을 향합니다. 금색 패드가 보이는 납땜면은 plate를 향합니다.",
       "hardwareStages": [
         "REF_M2_PLATE_3",
         "REF_M2_PLATE_4",
@@ -397,7 +397,7 @@
       ],
       "quick": [
         "아랫면에 브래킷을 M2×6 2조로 단다.",
-        "Pro Micro는 부품면을 아래로, USB 쪽에서 밀어 넣는다.",
+        "검은 칩과 USB 소켓이 있는 면을 케이스 바닥 쪽으로 둔다. USB 쪽에서 PCB를 브래킷 홈으로 밀어 넣는다.",
         "게이트는 M2×5를 아래에서 위로 조인다."
       ]
     },
@@ -725,6 +725,18 @@
     "keycaps": [
       "@keycaps"
     ]
+  },
+  "piece_colors": {
+    "controller": {
+      "REF_PROMICRO_PCB": "#1f6d60",
+      "REF_PROMICRO_PADS_*": "#d6a34a",
+      "REF_PROMICRO_USB": "#929ea8",
+      "REF_PROMICRO_USB_TONGUE": "#292e35",
+      "REF_PROMICRO_MCU": "#272c33",
+      "REF_PROMICRO_REGULATOR": "#33363c",
+      "REF_PROMICRO_CAP_*": "#caaa53",
+      "REF_PROMICRO_CRYSTAL": "#a5abaf"
+    }
   },
   "references": [
     {

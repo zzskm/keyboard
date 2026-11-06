@@ -82,6 +82,15 @@ try {
     }
     if (!entries.length) container.textContent = '해당하는 부품이 없습니다.';
   }
+  const controllerFaces = $('asm-controller-faces');
+  for (const face of data.controllerFaces || []) {
+    const figure = document.createElement('figure');
+    const image = document.createElement('img');
+    image.src = face.path; image.alt = face.detail; image.loading = 'lazy';
+    const caption = document.createElement('figcaption');
+    caption.textContent = face.label;
+    figure.append(image, caption); controllerFaces.append(figure);
+  }
   function update() {
     const step = data.steps[index]; selected = null; focusOnly = false;
     $('asm-focus').setAttribute('aria-pressed','false');
@@ -96,6 +105,7 @@ try {
     $('asm-body').innerHTML = (step.body ? `<p>${step.body}</p>` : '') + (step.items.length ? `<ol>${step.items.map(s=>`<li>${s}</li>`).join('')}</ol>` : '') + (step.note ? `<p class="note">${step.note}</p>` : '');
     $('asm-check').innerHTML = step.check ? `<b>✓ 확인</b><span>${step.check}</span>` : '';
     $('asm-fix').innerHTML = step.fix ? `<b>안 맞으면</b><p>${step.fix}</p>` : '';
+    controllerFaces.hidden = !data.controllerFaces?.length || !['ctrl', 'wire'].includes(step.id);
     $('asm-image').src = step.image;
     $('asm-drawing').src = step.illustration || step.image;
     $('asm-drawing').alt = `${step.title} 조립도`;

@@ -88,21 +88,33 @@ def prepare(out, data):
         if not part.get('pieces'):
             continue
         part['illustration'] = f'img/build/part-{i:02}.png'
-        draw(out, part['illustration'], [(p, '#587d78', False, 0) for p in part['pieces']], size=(1.5, .9))
+        pieces = part['pieces']
+        draw(out, part['illustration'],
+             [(p, p['color'] if part.get('preserveColors') else '#587d78', False, 0) for p in pieces],
+             'bottom' if part.get('preserveColors') else 'iso', size=(1.5, .9))
+        if part['id'] == 'controller' and part.get('preserveColors'):
+            data['controllerFaces'] = []
+            items = [(p, p['color'], False, 0) for p in pieces]
+            for view, label, detail in [
+                ('bottom', '부품면 · 케이스 바닥 쪽', 'USB 소켓과 검은 칩이 보이는 면'),
+                ('top', '납땜면 · plate 쪽', '양옆의 금색 납땜 패드가 보이는 면'),
+            ]:
+                path = f'img/build/controller-{view}.png'
+                draw(out, path, items, view, size=(3.4, 1.9))
+                data['controllerFaces'].append(dict(path=path, label=label, detail=detail))
     for step in data['steps']:
         step['illustration'] = f"img/build/{step['id']}.png"
         items = []
         for part, piece in selected_meshes(data['parts'], step):
             focus = part['id'] in step['focus']
-            items.append((piece, '#e5953e' if focus else '#d2d9d6', focus, 0))
+            color = piece['color'] if part.get('preserveColors') else ('#e5953e' if focus else '#d2d9d6')
+            items.append((part['id'], piece, color, focus))
         lift = step.get('illustrationLift', {})
         if lift:
             step['installedIllustration'] = f"img/build/{step['id']}-installed.png"
-            draw(out, step['installedIllustration'], items, step['view'])
-            items = [(piece, '#e5953e' if part['id'] in step['focus'] else '#d2d9d6',
-                      part['id'] in step['focus'], lift.get(part['id'], 0))
-                     for part, piece in selected_meshes(data['parts'], step)]
-        draw(out, step['illustration'], items, step['view'], step.get('placement', []))
+            draw(out, step['installedIllustration'], [(p, c, f, 0) for _, p, c, f in items], step['view'])
+        draw(out, step['illustration'], [(p, c, f, lift.get(pid, 0)) for pid, p, c, f in items],
+             step['view'], step.get('placement', []))
     r2 = json.loads((out / 'r2-reference.json').read_text(encoding='utf-8'))
     bounds = [(x, y, z) for x in (-8, 293) for y in (-6, 100) for z in (0, 59)]
     for scope in ('all', 'plate', 'cover'):

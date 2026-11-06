@@ -1,4 +1,4 @@
-"""Verify the flat cover and keycap clearance in the v5 assembly reference."""
+"""Verify cover and controller placement in the v5 assembly reference."""
 import hashlib
 import json
 import math
@@ -83,18 +83,40 @@ def main():
     assert gone == {'REF_HOUSING_WILMORE_NOT_PSD60'} | {n for n in old if n.startswith('REF_SW_ASSUMED_')}, gone
     assert all(old[n] == new[n] for n in common), 'production CAD changed in the review copy'
 
+    controller = [name for name in bodies if name.startswith('REF_PROMICRO_')]
+    pcb = bodies['REF_PROMICRO_PCB']['bbox']
+    assert all(bodies[name]['closed'] for name in controller)
+    assert all(abs(pcb['min'][i] - params['TBD_ctrl_' + axis]) < TOL and
+               abs(pcb['max'][i] - pcb['min'][i] - params['TBD_ctrl_' + size]) < TOL
+               for i, (axis, size) in enumerate([('X', 'L'), ('Y', 'W')]))
+    for face, bound in [('COMPONENT', 'min'), ('SOLDER', 'max')]:
+        pads = [bodies[name] for name in controller if name.startswith(f'REF_PROMICRO_PADS_{face}_')]
+        assert len(pads) == 24, (face, len(pads))
+        plane = params['TBD_ctrl_pcb_Z'] + (params['REF_ctrl_pcb_T'] if face == 'SOLDER' else 0)
+        assert all(abs(pad['bbox'][bound][2] - plane) < TOL for pad in pads), face
+        for pad in pads:
+            lo, hi = pad['bbox']['min'], pad['bbox']['max']
+            disc_volume = math.pi * ((hi[0] - lo[0]) / 2)**2 * (hi[2] - lo[2])
+            assert pad['volume_mm3'] < 0.8 * disc_volume, pad['name']
+    assert bodies['REF_PROMICRO_USB']['bbox']['min'][0] < pcb['min'][0]
+    assert bodies['REF_PROMICRO_MCU']['bbox']['min'][2] < pcb['min'][2]
+
     script = [dict(command='inspect.clearance', params=dict(bodies=CAPS, against=COVERS + [HOUSING], clearance=3, nearest=2)),
               dict(command='inspect.clearance', params=dict(bodies=CAPS, against=PLATES, clearance=6, nearest=1)),
               dict(command='solid.move', params=dict(bodies=CAPS, translate=[0, 0, -PRESS], copy=True)),
               dict(command='inspect.clearance', params=dict(bodies=[c + ' (2)' for c in CAPS], against=COVERS + [HOUSING],
                                                           clearance=3, nearest=2)),
               dict(command='inspect.clearance', params=dict(bodies=[c + ' (2)' for c in CAPS], against=PLATES, clearance=2, nearest=1))]
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=controller, against=['CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'],
+        clearance=0.1, min_volume=0.000001)))
     (CACHE / 'keycap_check.json').write_text(json.dumps(script), encoding='utf-8')
     out = CACHE / 'keycap_check_out.json'
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
-    rest, rest_plate, moved, pressed, pressed_plate = json.loads(out.read_text(encoding='utf-8'))
+    rest, rest_plate, moved, pressed, pressed_plate, controller_fit = json.loads(out.read_text(encoding='utf-8'))
     assert len(moved['bodies']) >= 46
+    assert not controller_fit['overlaps'] and not controller_fit['unchecked'], controller_fit
     states = {}
     for label, res, suffix in [('rest', rest, ''), ('pressed_4mm', pressed, ' (2)')]:
         assert res['overlaps'] == [] and res['unchecked'] == [], (label, res['overlaps'])
@@ -120,6 +142,8 @@ def main():
     assert abs(plate_min - (lowest_cap - PRESS - plate_top)) < 1e-3, (plate_min, lowest_cap - PRESS - plate_top)
     right_edge = max(bodies[p]['bbox']['max'][0] for p in PLATES + COVERS)
     result = dict(
+        controller=dict(bodies=len(controller), pads_per_face=24, socket_side='-X',
+                        component_face='-Z', solder_face='+Z', bracket_gate_overlap_count=0),
         ok=True, model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],
         rim_Z=rim, cover_top_Z=cover_top, cover_above_rim_mm=round(protrusion, 6),
         cover_levels={n: {str(z): a for z, a in lv.items()} for n, lv in levels.items()},
