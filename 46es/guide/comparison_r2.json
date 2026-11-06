@@ -1,0 +1,24 @@
+{
+  "alignment": {
+    "xy_offset_mm": [-0.693, -0.667],
+    "z_offset_mm": 2.8,
+    "seat_z_mm": 11.3,
+    "description": "XY는 기존 v5의 r2→GH60 변환을 사용. Z는 P2 윗면을 v5 스위치 착좌면 11.3 mm에 맞춘 비교 좌표다. 실제 하우징 설치 높이가 아니다."
+  },
+  "assumptions": [
+    "판 윤곽·홀은 r2 DWG의 감사된 2D 엔티티에서 복원했다.",
+    "두께 2 / 5 / 1.5 / 2 / 5 / 2 mm는 도면 라벨의 공칭값이다.",
+    "아래→위 P0→P5는 비교용 가정이다. 도면에 실제 Z와 적층 순서는 없다.",
+    "P0·P1 개구 안에 배치된 소형 육각 부품은 절단 배치이므로 적층 모델에서 제외했다.",
+    "r2의 나사·배선·케이스 설치 위치는 복원하지 않았다. 제작 파일로 사용하지 않는다."
+  ],
+  "repairs": ["P1 열린 윤곽 약 0.0071 mm는 DXF 연결 허용차 0.01 mm로 연결했다. 원본은 수정하지 않았다."],
+  "layers": [
+    {"id":"P0","label":"P0 · 링 프레임","material":"투명 아크릴 · 2T","thickness_mm":2,"panel_indices":[0],"expected_solids":1,"color":"#829caa"},
+    {"id":"P1","label":"P1 · 하부 공간","material":"투명 아크릴 · 5T","thickness_mm":5,"panel_indices":[1],"expected_solids":1,"color":"#88b7c2"},
+    {"id":"P2","label":"P2 · 스위치 판","material":"투명 압출판 · 1.5T / 46개 개구","thickness_mm":1.5,"panel_indices":[2],"expected_solids":1,"color":"#247b7b"},
+    {"id":"P3","label":"P3 · 스위치 주변","material":"투명 아스텔 · 2T / 46개 개구","thickness_mm":2,"panel_indices":[3],"expected_solids":1,"color":"#58a698"},
+    {"id":"P4","label":"P4 · 3분할 커버","material":"스모그 투명 아크릴 · 5T","thickness_mm":5,"panel_indices":[4,5,6],"expected_solids":3,"color":"#b49269"},
+    {"id":"P5","label":"P5 · 3분할 표면","material":"투명 아스텔 · 2T","thickness_mm":2,"panel_indices":[7,8,9],"expected_solids":3,"color":"#d4bb95"}
+  ]
+}

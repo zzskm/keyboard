@@ -1,27 +1,40 @@
-# 46es — 46키 non-split handwired keyboard
+# 46es — PSD60용 46키 hand-wired 키보드
 
-PSD60 Defender 하우징용 **46키 non-split hand-wired 키보드**를 기존 아크릴 버전(설계 파일 `46es_r2_keyboard.dwg`)에서 3D 프린팅 버전으로 바꾸며 배선·체결·커버 구조를 개선하는 프로젝트입니다. **46sp는 별도의 split keyboard 참고 예시이며 46es 원본이 아닙니다.**
+**현행 설계는 v5다.** non-split 키보드이며 plate만 제작·조립을 위해 좌우로 나뉜다. 46sp는 별도 참고 키보드다. 현재 상태는 **시험 출력 전**이며 실물 적합성 검증은 남아 있다.
 
-## 자료
+## Source of Truth (SOT)
 
-- [전체 논의와 다음 버전 계획](docs/planning.md)
-- [PSD60 체결·Pro Micro·점검성 설계 기준](docs/assembly-revision.md)
-- [기존 아크릴 버전 설계 DWG (r2)](cad/46es_r2_keyboard.dwg)
-- [r2 DWG 검사 보고서](inspection/46es_r2_dwg_inspection.md): 판별 형상, 체결 후보 좌표, 판독 손실·경고, 미확정 치수
-- [제작 모델 준비와 실측 시트](model/README.md): 매개변수, 실측 항목 M01–M21, 실측 후 재개 절차 (실측 대기)
-- [46키 펌웨어 설정 JSON](firmware/46es_kbfirmware.json)
-- [파일 체크섬과 크기](manifest.json): 커밋할 파일을 `git add`한 뒤 `python -I tools/update_manifest.py`로 갱신
+- **SOT(편집 대상):** `tools/build_seam_v5.py` (v5 케이스 생성기). 이 파일의 생성 규칙이 현행 형상의 기준이다.
+- **생성물(.sc):** `model/46es_mount_seam_v5.sc` 등 생성된 CAD 파일은 출력물이다. 직접 편집하지 말고 생성기를 수정한 뒤 재생성한다. (`AGENTS.md` §4)
+- **비교/회귀 기준:** `model/baselines/`의 파일들은 회귀 검증용 기준이지 SOT가 아니다. (`model/baselines/README.md` 참조)
+- **검토/생산 구분:** `model/review_v5/`는 조립 검토용, `model/print_v5/`는 실제 제작 세트다. 서로 대체하지 않는다.
 
-![DWG 내장 미리보기 — 치수 확인용 아님](images/46es_r2_keyboard_preview.png)
+| 목적 | 기준 자료 |
+|---|---|
+| 작업 절차·변경 검증 기준 | [작업 지침](AGENTS.md) |
+| 현재 구조·치수·결정 이유 | [설계 기준](docs/design.md) |
+| 제작 파일·재료·수량·시험 순서 | [v5 제작 세트](model/print_v5/README.md) — 주문 1 시험 → 통과 후 주문 2 |
+| 미확인 항목·검증·재생성 | [검증과 다음 작업](docs/validation.md) |
+| 조립 과정 | [게시 가이드](https://zzskm.github.io/keyboard-46es/) · [가이드 생성 방법](guide/README.md) |
+| 편집 CAD·파생 파일·비교 기준 | [모델 안내](model/README.md) |
+| 실측 기록 | [측정 자료](model/measurements/README.md) |
+| 키맵 | [펌웨어 JSON](firmware/46es_kbfirmware.json) |
+| 원본 근거 | [아크릴 r2 DWG](cad/46es_r2_keyboard.dwg) · [판독 보고서](inspection/46es_r2_dwg_inspection.md) |
 
-## 설계 방향
+다음 작업은 주문 1 쿠폰·mount 시험과 케이스 폭·키캡 높이 확인이다. 시험 결과를 반영한 뒤 v5 CAD, 출력물, 가이드를 함께 갱신한다.
 
-PSD60 → GH60 기준 하부 프레임 → 육각 스탠드오프 → 46es Plate(5T 구조부·국부 1.5T 스냅 체결 후보) → 별도 Cover. Pro Micro는 교체 가능한 브래킷과 분리형 커넥터를 우선 검토합니다. 치수는 실물 검증 전입니다.
+## 파일 유지 기준
 
-Plate 코너는 모따기로 간섭을 피하고, cover는 R별 코너 샘플로 현물 적합성을 확인합니다. 스위치 홀은 아크릴의 14mm 체결 결과를 출발점으로 하되 출력 오차와 걸쇠용 하면 파임을 시험합니다.
+현재 입력, 사용 중인 출력물, 검증 기준, 원본 근거만 유지한다. 텍스트 파일도 같은 기준을 적용한다. 끝난 작업 로그·폐기안·중복 사본은 추가하지 않는다. 이전 버전은 [정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)에서 찾는다.
 
-## 확인 범위
+`model/baselines/`의 두 CAD는 현행 생성·검증 입력이므로 남긴다. 나머지 구버전과 `.bak`는 보관 폴더로 옮기지 않는다. `manifest.json`은 Git index의 추적 파일 목록이며 설계 승인 상태를 뜻하지 않는다.
 
-펌웨어 JSON은 46키와 4×12 전기적 매트릭스를 확인했습니다. 실제 배선·동작 시험이나 빌드는 수행하지 않았습니다. DWG r2의 2D 형상은 [검사 보고서](inspection/46es_r2_dwg_inspection.md)에서 읽었습니다. 도면에는 기입 치수와 Z(두께·높이) 정보가 없습니다. MText의 재료 표기(아크릴·압출판·아스텔 판재)는 이 DWG가 아크릴 버전의 설계 파일이라는 점과 일치합니다. DWG 값, GH60 체결 좌표, Wedge의 R값은 모두 PSD60 실물에서 검증하기 전의 참고값입니다.
+저장소 루트에서 변경을 stage한 뒤 검사한다:
 
-46sp(별도 split keyboard 예시)의 아크릴 도면, 조립 사진, Wedge STL은 이번 업로드에 포함되지 않았습니다. 해당 자료는 업로드 시 기존 로컬 경로에서 읽히지 않았으며, 앞선 분석 기록과 참고 링크는 계획 문서에 유지했습니다. 외부 모델의 재배포 권한은 확인하지 않았습니다.
+```sh
+git add 46es
+python -I 46es/tools/update_manifest.py
+git add 46es/manifest.json
+python -I 46es/tools/update_manifest.py --check
+python -B 46es/tools/check_repository.py
+```

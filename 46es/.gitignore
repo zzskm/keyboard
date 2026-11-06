@@ -1,3 +1,13 @@
 # Python bytecode created by local read-only inspection scripts
 __pycache__/
 *.py[cod]
+
+# guide generator: render cache and local output
+guide/.cache/
+guide/out/
+guide/out_*/
+
+# Editor/CAD backup copies belong in Git history, not the current tree.
+*.bak
+*.tmp
+*.sc~
