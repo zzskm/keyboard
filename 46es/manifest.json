@@ -13,10 +13,16 @@
       "git_blob_sha": "88c79ee62c85c1880ec4eb50b6decfcad3b0ca04"
     },
     {
+      "path": "AGENTS.md",
+      "bytes": 19079,
+      "sha256": "588c08735d685a6b02db2bada3156fb13b777c590f076d3054c8e3408a29273c",
+      "git_blob_sha": "250cd54a105f98d21c485c4a566b246f781ec1b1"
+    },
+    {
       "path": "README.md",
-      "bytes": 2136,
-      "sha256": "6e4083cba7074f53f67b81088f98568b15672bef315bf4479395c272a4e31df5",
-      "git_blob_sha": "db732c7d62f24f16f5c8786f8d7bb4eef111bc29"
+      "bytes": 2205,
+      "sha256": "6ea5b6f7b25dc62713e5dd97dd5603b1298e9cd92a8e69e40c9922fb1f44d288",
+      "git_blob_sha": "45c69dc7509d6e715ec309e8637a2dfdc6e36190"
     },
     {
       "path": "cad/46es_r2_keyboard.dwg",
