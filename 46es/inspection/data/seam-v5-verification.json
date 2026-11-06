@@ -1,7 +1,7 @@
 {
  "ok": true,
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "fd6dd79769442fdf5335af64167b68ecbd8c7bfa41c70f1763ade2ad67dcb3e2",
+ "v5_sha": "24fb580afa120aff12bc5346f05f304b256ab37a3bbdbb4baf4b12f2ddf9b9c5",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
  "print_set": [
   {
@@ -179,8 +179,8 @@
   "REF_LEGMAG_R_COVER",
   "REF_LEGMAG_R_PLATE"
  ],
- "timeline": 455,
- "sketches": 68,
+ "timeline": 462,
+ "sketches": 75,
  "params": 211,
  "new_params": [
   "v5_cover_top_Z",
@@ -224,72 +224,114 @@
   {
    "mount": "MOUNT_L_PAIR_V3",
    "target": "PLATE_L_SPLIT_V1",
-   "corner_xy": [
-    3,
-    11
+   "end_centres_xy": [
+    [
+     6.35,
+     12.55
+    ],
+    [
+     5.6,
+     23.65
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 70
+   "seat_area_mm2": 74.519
   },
   {
    "mount": "MOUNT_L_PAIR_V3",
    "target": "PLATE_L_SPLIT_V1",
-   "corner_xy": [
-    3,
-    73
+   "end_centres_xy": [
+    [
+     5.55,
+     82.55
+    ],
+    [
+     5.1,
+     74.65
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 48
+   "seat_area_mm2": 50.831
   },
   {
    "mount": "MOUNT_R_PAIR_V3",
    "target": "PLATE_R_SPLIT_V1",
-   "corner_xy": [
-    279,
-    23.5
+   "end_centres_xy": [
+    [
+     281,
+     24.5
+    ],
+    [
+     280.85,
+     33.65
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 48
+   "seat_area_mm2": 49.171
   },
   {
    "mount": "MOUNT_R_PAIR_V3",
    "target": "PLATE_R_SPLIT_V1",
-   "corner_xy": [
-    255,
-    70
+   "end_centres_xy": [
+    [
+     257,
+     71.85
+    ],
+    [
+     256.65,
+     77.2
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 32
+   "seat_area_mm2": 34.012
   },
   {
    "mount": "MOUNT_H02_SO3_MIN_V2",
    "target": "PLATE_L_SPLIT_V1",
-   "corner_xy": [
-    124,
-    50
+   "end_centres_xy": [
+    [
+     126.1,
+     51.5
+    ],
+    [
+     126.1,
+     54.5
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 24
+   "seat_area_mm2": 24.566
   },
   {
    "mount": "MOUNT_H03_SO6_MIN_V2",
    "target": "PLATE_R_SPLIT_V1",
-   "corner_xy": [
-    172.5,
-    6
+   "end_centres_xy": [
+    [
+     175.2,
+     8.15
+    ],
+    [
+     184.55,
+     8.8
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 70
+   "seat_area_mm2": 73.514
   },
   {
    "mount": "MOUNT_H03_SO6_MIN_V2",
    "target": "PLATE_R_SPLIT_V1",
-   "corner_xy": [
-    142,
-    4.5
+   "end_centres_xy": [
+    [
+     143.95,
+     6.5
+    ],
+    [
+     152.1,
+     6.5
+    ]
    ],
    "top_Z": 8.0,
-   "seat_area_mm2": 48
+   "seat_area_mm2": 48.084
   }
  ],
  "leg_magnets": {

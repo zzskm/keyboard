@@ -10,7 +10,8 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import top_levels, COVERS, PLATE_SUPPORTS  # noqa: E402
+from build_seam_v5 import (COVERS, PLATE_SUPPORTS, SEAT_ROOT_Z, horizontal_faces,  # noqa: E402
+                           rounded_seat, seat_sketch_name, top_levels)
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 V4 = ROOT / 'model/baselines/seam_v4.sc'
@@ -142,36 +143,44 @@ def cover_levels(params, bodies, flat_bodies):
     return levels
 
 
-def support_contacts(params):
-    """Confirm the complete rectangular bearing faces, without solid overlap."""
+def support_contacts(params, shapes):
+    """Confirm the complete rounded bearing faces, without solid overlap."""
     z = params['v4_plate_top_Z'] - params['TBD_plate_T']
     mounts = sorted({seat[0] for seat in PLATE_SUPPORTS})
     plates = sorted({seat[1] for seat in PLATE_SUPPORTS})
     commands = [dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=plates, clearance=0.01, min_volume=0.000001))]
     probes = {}
-    for i, (mount, plate, x, y, length, width) in enumerate(PLATE_SUPPORTS, 1):
+    for i, (mount, plate, a, b, ra, rb) in enumerate(PLATE_SUPPORTS, 1):
         name = f'SEAT_PROBE_{i}'
-        commands.append(dict(command='solid.box', params=dict(
-            name=name, body_name=name, corner=[x, y, z - 0.05],
-            length=length, width=width, height=0.1, operation='new')))
-        probes[name] = (mount, plate, x, y, length * width)
+        _, area = rounded_seat(a, b, ra, rb)
+        commands.append(dict(command='solid.extrude', params=dict(
+            name=name, body_name=name, sketch=seat_sketch_name(i), profiles='all',
+            start_offset=z - SEAT_ROOT_Z - 0.05, distance=0.1, operation='new')))
+        probes[name] = (mount, plate, a, b, area)
     commands.append(dict(command='inspect.clearance', params=dict(
-        bodies=list(probes), against=mounts + plates, clearance=0.01, min_volume=0.000001)))
+        bodies=list(probes), against=plates, clearance=0.01, min_volume=0.000001)))
     results = cli_results(commands, V5, 'plate_support_contacts')
     contact, bearing = results[0], results[-1]
     assert not contact['overlaps'] and not contact['unchecked'], contact
     assert not bearing['unchecked'], bearing
     contacts = {frozenset((p['a'], p['b'])) for p in contact['near'] if p['distance_mm'] < 1e-6}
     volumes = {frozenset((p['a'], p['b'])): p['volume_mm3'] for p in bearing['overlaps']}
+    # Identical curved side faces make the probe/mount Boolean ambiguous.
+    # Read the upward bearing faces directly, and use the probes on the plate side.
+    for mount in mounts:
+        expected = sorted(area for owner, _, _, _, area in probes.values() if owner == mount)
+        faces = sorted(area for solid in shapes[mount] for height, area in horizontal_faces(solid)
+                       if abs(height - z) < 1e-6 and area > 1e-6)
+        assert len(faces) == len(expected), (mount, faces, expected)
+        assert all(abs(a - b) < 0.001 for a, b in zip(faces, expected)), (mount, faces, expected)
     seats = []
-    for probe, (mount, plate, x, y, area) in probes.items():
+    for probe, (mount, plate, a, b, area) in probes.items():
         assert frozenset((mount, plate)) in contacts, (mount, plate, contact)
-        for target in (mount, plate):
-            volume = volumes[frozenset((probe, target))]
-            assert abs(volume - area * 0.05) < 0.001, (probe, target, volume)
-        seats.append(dict(mount=mount, target=plate, corner_xy=[x, y], top_Z=z,
-                          seat_area_mm2=area))
+        volume = volumes[frozenset((probe, plate))]
+        assert abs(volume - area * 0.05) < 0.001, (probe, plate, volume)
+        seats.append(dict(mount=mount, target=plate, end_centres_xy=[a, b], top_Z=z,
+                          seat_area_mm2=round(area, 3)))
     return seats
 
 
@@ -275,7 +284,7 @@ def main():
         assert abs(bodies[n]['volume_mm3'] - flat_bodies[n]['volume_mm3']) < 1e-6, n
         assert flat_shapes[n] == new[n], n
     levels = cover_levels(params, bodies, flat_bodies)
-    seats = support_contacts(params)
+    seats = support_contacts(params, new)
 
     # clearance of the changed/added bodies: against the 106 untouched bodies and among themselves
     moving = sorted(CHANGED | ADDED)

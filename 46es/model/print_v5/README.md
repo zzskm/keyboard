@@ -2,7 +2,7 @@
 
 **주문 1 시험 → 통과 후 주문 2 본 출력.** 두 주문의 STL/STEP은 모두 이 폴더에 있다. CAD·실물 검증 완료나 발주 완료를 뜻하지 않는다. [설계](../../docs/design.md) · [열린 확인 항목](../../docs/validation.md)
 
-주문 1에는 plate 받침 7곳이 추가된 mount 4개가 포함된다. 주문 1 CAD 기준은 현행 v5와 샘플 모델이며 해시는 [시험 출력 기록](../../inspection/data/seam-v5-trial-print-set.json)에 있다.
+주문 1에는 둥근 plate 받침 7곳을 갖춘 mount 4개가 포함된다. 주문 1 CAD 기준은 현행 v5와 샘플 모델이며 해시는 [시험 출력 기록](../../inspection/data/seam-v5-trial-print-set.json)에 있다.
 
 ## 주문 1 — 시험 출력 (`order1/`)
 

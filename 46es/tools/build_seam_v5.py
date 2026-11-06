@@ -11,6 +11,7 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -33,19 +34,55 @@ LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 
-# Each footprint stays inside the existing mount and under solid plate.
-# The separated seats leave open paths for wires and driver access.
+# The two left seats flare toward the outside of the SO1/SO2 bosses.
+# The other seats follow the mount rails with tangent round ends, clear of the hardware.
 PLATE_SUPPORTS = [
-    # mount, bearing body, X, Y, length, width (mm)
-    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', 3, 11, 5, 14),
-    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', 3, 73, 4, 12),
-    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', 279, 23.5, 4, 12),
-    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', 255, 70, 4, 8),
-    ('MOUNT_H02_SO3_MIN_V2', 'PLATE_L_SPLIT_V1', 124, 50, 4, 6),
-    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', 172.5, 6, 14, 5),
-    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', 142, 4.5, 12, 4),
+    # mount, bearing body, end centres (XY), end radii (mm)
+    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', (6.35, 12.55), (5.6, 23.65), 2.7, 2.25),
+    ('MOUNT_L_PAIR_V3', 'PLATE_L_SPLIT_V1', (5.55, 82.55), (5.1, 74.65), 2.35, 2.1),
+    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', (281, 24.5), (280.85, 33.65), 2.0, 2.0),
+    ('MOUNT_R_PAIR_V3', 'PLATE_R_SPLIT_V1', (257, 71.85), (256.65, 77.2), 2.0, 2.0),
+    ('MOUNT_H02_SO3_MIN_V2', 'PLATE_L_SPLIT_V1', (126.1, 51.5), (126.1, 54.5), 2.0, 2.0),
+    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', (175.2, 8.15), (184.55, 8.8), 2.7, 2.7),
+    ('MOUNT_H03_SO6_MIN_V2', 'PLATE_R_SPLIT_V1', (143.95, 6.5), (152.1, 6.5), 2.1, 2.1),
 ]
 SEAT_ROOT_Z = 1.5
+
+
+def seat_sketch_name(index):
+    return f'SK37_MOUNT_PLATE_SEAT_{index}_V5'
+
+
+def rounded_seat(a, b, ra, rb):
+    """Sketch the convex hull of two round ends, with two common tangents."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    axis = math.atan2(dy, dx)
+    tangent = math.acos((ra - rb) / math.hypot(dx, dy))
+
+    def point(center, radius, angle):
+        return [center[0] + radius * math.cos(axis + angle),
+                center[1] + radius * math.sin(axis + angle)]
+
+    # Split the end arcs so every arc travels less than 180 degrees.
+    boundary = [point(a, ra, -tangent), point(b, rb, -tangent), point(b, rb, 0),
+                point(b, rb, tangent), point(a, ra, tangent), point(a, ra, math.pi)]
+    points = [dict(id='origin', pos=[0., 0.], fixed=True)]
+    points += [dict(id=f'p{i}', pos=xy, fixed=True) for i, xy in enumerate([*boundary, a, b], 1)]
+    curves = [
+        dict(id='l1', type='line', a=1, b=2, construction=False),
+        dict(id='a1', type='arc', a=2, b=3, c=8, construction=False),
+        dict(id='a2', type='arc', a=3, b=4, c=8, construction=False),
+        dict(id='l2', type='line', a=4, b=5, construction=False),
+        dict(id='a3', type='arc', a=5, b=6, c=7, construction=False),
+        dict(id='a4', type='arc', a=6, b=1, c=7, construction=False),
+    ]
+    polygon_area = sum(x * v - y * u for (x, y), (u, v)
+                       in zip(boundary, boundary[1:] + boundary[:1])) / 2
+    segment_area = rb**2 * (tangent - math.sin(tangent))
+    end_angle = math.pi - tangent
+    segment_area += ra**2 * (end_angle - math.sin(end_angle))
+    sketch = dict(points=points, curves=curves, constraints=[], counters=dict(p=len(points), l=2, a=4))
+    return sketch, polygon_area + segment_area
 
 
 def sha(path):
@@ -253,11 +290,14 @@ def build(probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
-    for i, (mount, _, x, y, length, width) in enumerate(PLATE_SUPPORTS, 1):
-        feature('box', f'MOUNT_PLATE_SEAT_{i}_V5', corner=[str(x), str(y), str(SEAT_ROOT_Z)],
-                length=str(length), width=str(width),
-                height=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}',
-                operation='join', participants=[mount])
+    seat_plane = dict(type='offset', base=dict(type='origin', name='XY'), distance=str(SEAT_ROOT_Z))
+    for i, (mount, _, a, b, ra, rb) in enumerate(PLATE_SUPPORTS, 1):
+        profile, _ = rounded_seat(a, b, ra, rb)
+        sk = feature('sketch', seat_sketch_name(i), plane=seat_plane, sketch=profile)
+        feature('extrude', f'MOUNT_PLATE_SEAT_{i}_V5', sketch=sk, profiles=dict(type='all'),
+                extent=dict(convention='total_distance', direction='positive',
+                            distance=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}'),
+                operation='join', targets=[mount])
 
     doc['name'] = '46es seam v5 - flat cover and direct plate supports'
     seed = CACHE / 'seed_v5.sc'
