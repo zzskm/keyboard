@@ -1,13 +1,13 @@
 # 현행 설계 — v5
 
-PSD60 Defender에 넣는 46키 non-split hand-wired 키보드다. 아크릴 r2의 키 중심·회전·외곽을 유지한다. plate는 좌우 두 조각이며 mount 4개, spine, 분리형 Pro Micro 브래킷·게이트, 자석 커버 3조각을 조합한다. 스태빌라이저는 사용하지 않는다.
+PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유지. plate 좌우 2조각, mount 4, spine, 분리형 Pro Micro 브래킷·게이트, 자석 커버 3조각. 스태빌라이저 없음.
 
-## 기준과 변경 경로
+## 기준/변경 경로
 
-- 현행 CAD: [46es_mount_seam_v5.sc](../model/46es_mount_seam_v5.sc). `tools/build_seam_v5.py`가 [고정 v4 입력](../model/baselines/seam_v4.sc)에서 생성한다.
-- 매개변수 CSV는 CAD에서 내보낸 결과다. 생성기 수정 → CAD 재생성 → 검토·제작 출력 → 검증 → 가이드 순서로 갱신한다.
-- [조립 검토 CAD](../model/46es_assembly_review_v5.sc)는 부분 실측 케이스와 단순화된 MX·OEM 참고 형상을 추가한 파생 모델이다. 실물 적합성 보증이나 주문용 파일이 아니다.
-- 기준 좌표: GH60 PCB 앞·왼쪽 원점, X 오른쪽, Y 뒤쪽, Z=0 케이스 지지대 상면. 타이핑 경사를 정규화했으므로 책상면 기준 높이와 직접 비교하지 않는다.
+- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 [`model/baselines/seam_v4.sc`](../model/baselines/seam_v4.sc)에서 생성.
+- `parameters_seam_v5.csv`는 CAD 내보내기 결과. 변경 순서: 생성기 → CAD → 검토/제작 출력 → 검증 → 가이드.
+- [`46es_assembly_review_v5.sc`](../model/46es_assembly_review_v5.sc): 조립 검토용 파생(부분 실측/단순 MX·OEM 참고). 실물 보증·주문용 아님.
+- 좌표: GH60 PCB 앞·왼쪽 원점, X 오른쪽/Y 뒤쪽/Z 위. **Z=0 = 케이스 지지대 상면**(타이핑 경사 정규화).
 
 ## 현행 치수
 

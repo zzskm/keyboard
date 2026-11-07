@@ -1,35 +1,30 @@
 # 46es — PSD60용 46키 hand-wired 키보드
 
-**현행 설계는 v5다.** non-split 키보드이며 plate만 제작·조립을 위해 좌우로 나뉜다. 46sp는 별도 참고 키보드다. 현재 상태는 **시험 출력 전**이며 실물 적합성 검증은 남아 있다.
+**현행 설계 v5**, non-split. plate만 제작/조립을 위해 좌우 분할. 46sp는 별도 참고. 상태: **시험 출력 전**(실물 검증 필요).
 
-## Source of Truth (SOT)
+## SOT
 
-- **SOT(편집 대상):** `tools/build_seam_v5.py` (v5 케이스 생성기). 이 파일의 생성 규칙이 현행 형상의 기준이다.
-- **생성물(.sc):** `model/46es_mount_seam_v5.sc` 등 생성된 CAD 파일은 출력물이다. 직접 편집하지 말고 생성기를 수정한 뒤 재생성한다. (`AGENTS.md` §4)
-- **비교/회귀 기준:** `model/baselines/`의 파일들은 회귀 검증용 기준이지 SOT가 아니다. (`model/baselines/README.md` 참조)
-- **검토/생산 구분:** `model/review_v5/`는 조립 검토용, `model/print_v5/`는 실제 제작 세트다. 서로 대체하지 않는다.
+- **편집 원본:** `tools/build_seam_v5.py`
+- **생성 CAD(직접 편집 금지):** `model/46es_mount_seam_v5.sc` 등
+- **회귀 기준( SOT 아님):** `model/baselines/`
+- **구분:** `model/review_v5/`=조립 검토, `model/print_v5/`=제작 세트
 
-| 목적 | 기준 자료 |
+| 목적 | 문서 |
 |---|---|
-| 작업 절차·변경 검증 기준 | [작업 지침](AGENTS.md) |
-| 현재 구조·치수·결정 이유 | [설계 기준](docs/design.md) |
-| 제작 파일·재료·수량·시험 순서 | [v5 제작 세트](model/print_v5/README.md) — 주문 1 시험 → 통과 후 주문 2 |
-| 미확인 항목·검증·재생성 | [검증과 다음 작업](docs/validation.md) |
-| 조립 과정 | [게시 가이드](https://zzskm.github.io/keyboard-46es/) · [가이드 생성 방법](guide/README.md) |
-| 편집 CAD·파생 파일·비교 기준 | [모델 안내](model/README.md) |
-| 실측 기록 | [측정 자료](model/measurements/README.md) |
-| 키맵 | [펌웨어 JSON](firmware/46es_kbfirmware.json) |
-| 원본 근거 | [아크릴 r2 DWG](cad/46es_r2_keyboard.dwg) · [판독 보고서](inspection/46es_r2_dwg_inspection.md) |
+| 작업 절차 | [AGENTS.md](AGENTS.md) |
+| 구조·치수·결정 | [docs/design.md](docs/design.md) |
+| 제작/시험(주문1→2) | [model/print_v5/README.md](model/print_v5/README.md) |
+| 미확인·재생성·검증 | [docs/validation.md](docs/validation.md) |
+| 조립 | [게시 가이드](https://zzskm.github.io/keyboard-46es/) · [guide/README.md](guide/README.md) |
+| 모델/보존 변형 | [model/README.md](model/README.md) |
+| 실측 | [model/measurements/README.md](model/measurements/README.md) |
+| 키맵/원본 근거 | [firmware/46es_kbfirmware.json](firmware/46es_kbfirmware.json) · [cad/46es_r2_keyboard.dwg](cad/46es_r2_keyboard.dwg) · [inspection/46es_r2_dwg_inspection.md](inspection/46es_r2_dwg_inspection.md) |
 
-다음 작업은 주문 1 쿠폰·mount 시험과 케이스 폭·키캡 높이 확인이다. 시험 결과를 반영한 뒤 v5 CAD, 출력물, 가이드를 함께 갱신한다.
+다음 작업: 주문 1 쿠폰·mount 시험, 케이스 폭·키캡 높이 확인 → v5 CAD/출력물/가이드 반영.
 
-## 파일 유지 기준
+## 유지/검사
 
-현재 입력, 사용 중인 출력물, 검증 기준, 원본 근거만 유지한다. 텍스트 파일도 같은 기준을 적용한다. 끝난 작업 로그·폐기안·중복 사본은 추가하지 않는다. 이전 버전은 [정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)에서 찾는다.
-
-`model/baselines/`의 두 CAD는 현행 생성·검증 입력이므로 남긴다. 나머지 구버전과 `.bak`는 보관 폴더로 옮기지 않는다. `manifest.json`은 Git index의 추적 파일 목록이며 설계 승인 상태를 뜻하지 않는다.
-
-저장소 루트에서 변경을 stage한 뒤 검사한다:
+현재 입력·사용 출력물·검증 기준·원본 근거만 유지. 이전 버전은 [정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es) 참조. `manifest.json`은 추적 파일 목록(승인 상태 아님).
 
 ```sh
 git add 46es
