@@ -20,9 +20,9 @@
     },
     {
       "path": "README.md",
-      "bytes": 2850,
-      "sha256": "0e83602e8d84bec9f92797f8431d2b3f77730c3ae78103357bba95adc166e51c",
-      "git_blob_sha": "6f9819859e50097f8b62d3d8975fb73324c9cbf4"
+      "bytes": 1829,
+      "sha256": "a41126cb6307ea6f1247e238102f8a6d86ebdfd82e8178356549088d02d2a80e",
+      "git_blob_sha": "952cf4efc94206f8b48f748496bad53a1faf51d9"
     },
     {
       "path": "cad/46es_r2_keyboard.dwg",
@@ -32,81 +32,81 @@
     },
     {
       "path": "docs/assembly-revision.md",
-      "bytes": 12824,
-      "sha256": "5faf3efee6a7d0d3af8390f00425e12bb2b8330e4fc70487a061583003436e94",
-      "git_blob_sha": "a7eb7f1ec4c3a4673db87594a89e873448e1e20c"
+      "bytes": 13184,
+      "sha256": "922fd25bd52d4ccf457f1446b74b30997c6206dea5e61b94f86fa3955d329f01",
+      "git_blob_sha": "df11794577fc6c11b083fe383b349bc263a099d3"
     },
     {
       "path": "docs/assembly-tolerance-2026-11-04.md",
-      "bytes": 5428,
-      "sha256": "a3f1478cd61ad09940f3fefa080575c859d32ce47081c3428aa9a6b82d872594",
-      "git_blob_sha": "3f11439b6410c9c723e3bf1c8f86343e952b05ed"
+      "bytes": 5788,
+      "sha256": "20e4e759f4cd6fe62c7e8bdbf557286684f123b44cd06a6e9032398ea81f5bb8",
+      "git_blob_sha": "4d09bedde5e675e80f1fe0fa720a69c2e8a3dd3c"
     },
     {
       "path": "docs/design.md",
-      "bytes": 5968,
-      "sha256": "788c3c883c23229e1c1116870a99a591cc8ef23f80fdd1eefa923bd93e99d6ac",
-      "git_blob_sha": "6d324d0a98e9db45e4be3b668e5bcc7d6fb4c72d"
+      "bytes": 5747,
+      "sha256": "728c5d7bb087cd6ff01f054b367b318873fbefd93f383440bf7cdd26a2153223",
+      "git_blob_sha": "20f0f591c440d08f9bd680ed2b09c4bc6be2cccb"
     },
     {
       "path": "docs/handoff-split-v1-2026-11-05.md",
-      "bytes": 22330,
-      "sha256": "a6b34f71ae0666acfb2bc14d8d2f24b17ab8c395c5e9fa73c472e0c80915b696",
-      "git_blob_sha": "71a54611395b0817aeadd3a45038e96e634cd1ea"
+      "bytes": 22690,
+      "sha256": "8f336fbca364c47a206355b9db86b308b3cd7763bdf9e06096ae09b97618edfa",
+      "git_blob_sha": "d3bf77510fae34893f2221dfd053d4af4a85a63a"
     },
     {
       "path": "docs/minimal-mount-v2-2026-11-05.md",
-      "bytes": 8034,
-      "sha256": "0f48baed532e9d21f124f0a67821149b76c13384bb872ad751b179205d602981",
-      "git_blob_sha": "d7a6962b06522c738d69949b8db897ce605f1212"
+      "bytes": 8394,
+      "sha256": "dfce2026b98143e669938f388ae8768f78bc71dc1de8f9bf3b97df785cb6262d",
+      "git_blob_sha": "3840931383df32ff2d5716fc3ece233073601448"
     },
     {
       "path": "docs/planning.md",
-      "bytes": 23355,
-      "sha256": "3914c0c41d98f3afac2917943c3bc6fc87b6327800f17323417612add77f4567",
-      "git_blob_sha": "2050ffc08d52b0711b03d4b4e0d67b9103425afe"
+      "bytes": 23715,
+      "sha256": "e6b7fb4cf4a0140c2e15f2619e75c30d77e1cbe8e1870e679a7e47ce2dd442eb",
+      "git_blob_sha": "564b5ac6187c37d103a8783ca1dcf1da312028f8"
     },
     {
       "path": "docs/side-pairs-v3-2026-11-05.md",
-      "bytes": 5866,
-      "sha256": "928ea490c23dace278804a1b64f1aa9c2b6172d1eff8b7f2e0ec27269691cc73",
-      "git_blob_sha": "0752e70c7dff045e080aef3f4ae0894019906aa0"
+      "bytes": 6226,
+      "sha256": "7be90a78e0d9957a77e3e26f51c4c68fbc83ccde728e662100c26957a3f9f8f0",
+      "git_blob_sha": "54303728aeabfd42b083cbc8e63adc5d7a017a29"
     },
     {
       "path": "docs/split-v1-change-report-2026-11-05.md",
-      "bytes": 10764,
-      "sha256": "7ff14f486a431cd258bc5dbd0b0201892ace6450c2c0bb376483840b1f16ec16",
-      "git_blob_sha": "04a0a3b1e0cde836aa58cfd9329e10d001b257ff"
+      "bytes": 11124,
+      "sha256": "c1cac9fa23ec42d218503aca16b0ca9efd0080b721d8d9b23e7ce80bfe5913cc",
+      "git_blob_sha": "caf4accedd6f3ff95a294d59414fae2e40a8c4ed"
     },
     {
       "path": "docs/split-v1-hardware-2026-11-05.md",
-      "bytes": 4486,
-      "sha256": "5ab188893402a90cbea83c9be203b24672d2e99dc610bc00ca9d137e2c5405fb",
-      "git_blob_sha": "b2b31d064c79791f6d4f634182ab796ec2cd3f9a"
+      "bytes": 4846,
+      "sha256": "02dec0e3c285744d2f1253007f1f4d4abf91efc54c686fcbf8cb00ca4caa5589",
+      "git_blob_sha": "68055daa3127d7b7ac687fe5def849c3f5caccb1"
     },
     {
       "path": "docs/split-v1-local-print-plan-2026-11-05.md",
-      "bytes": 5264,
-      "sha256": "6bfca710d251372e886508522e406606e51820b45063aba2c4f3b057a6661fb6",
-      "git_blob_sha": "a7d796a1214f2dc2162ed107a7032138d2ecd2d2"
+      "bytes": 5624,
+      "sha256": "2c96e189b4c5b427ac14308a386485355ca55969425dafe036a63c3827521f10",
+      "git_blob_sha": "878417dc0cd95d43c000fd6a6ac4e2a00772459a"
     },
     {
       "path": "docs/split-v1-progress-2026-11-05.md",
-      "bytes": 2573,
-      "sha256": "839a93de0baee9f90d8218a40c40a8a0adf6d8d4a40e7b532b8314a075221c36",
-      "git_blob_sha": "09331d2fe7a29195550f6532ca0a61f9a83be13d"
+      "bytes": 2933,
+      "sha256": "9eb2bd7aa655ae230cb5b6119d253b2f3ea44e3fb1cc31c82925d6c21e90c2c9",
+      "git_blob_sha": "fa80f8adc29ffabbaa2ab7df6ba0b3ae56f48ea4"
     },
     {
       "path": "docs/validation.md",
-      "bytes": 4164,
-      "sha256": "95fdf775c13e8a042f5b4c282fa2eecd1ffbd4af79dffbc43365497d365a2d55",
-      "git_blob_sha": "608f0dc8ad9273f4ef1edca874dd605f9ace6ea7"
+      "bytes": 5170,
+      "sha256": "a67a42cd6953ac7424903c5bf655b83e6f1d1bcaa888262d4d34009a6df1378e",
+      "git_blob_sha": "f27a7658719dc1d9b9a21e8c2af58b13f62795d7"
     },
     {
       "path": "docs/work-report-2026-11-04.md",
-      "bytes": 8278,
-      "sha256": "cc013776c4089e0a69687c219380eb856ea77f9d674ff7e3aee8f925ef647956",
-      "git_blob_sha": "9a3a2654edd1857c0a4411aafaf747bbf261ce25"
+      "bytes": 8638,
+      "sha256": "05c3b2138f87230704be5023e3be90ad4a90bfbd03b4b211ae140df910a7dabc",
+      "git_blob_sha": "3d663b950e38f967efa178954b70ac74a2eff64d"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
@@ -116,9 +116,9 @@
     },
     {
       "path": "guide/README.md",
-      "bytes": 4146,
-      "sha256": "bf0a38eb2f67acb4d8a544e4d9e4ba176bc80fbeb55f7fb940c4b5e40abed5f5",
-      "git_blob_sha": "0c61aba84d8dbb385609446cd1fdc40590df53d9"
+      "bytes": 2483,
+      "sha256": "be1093d7e501fa5da1d4118a31014bd02133ca8599be1495eb9dd536135baa6e",
+      "git_blob_sha": "8254c600223a305cce30006bd969e45d2a93dc2e"
     },
     {
       "path": "guide/assembly.py",
@@ -1226,9 +1226,9 @@
     },
     {
       "path": "model/README.md",
-      "bytes": 36708,
-      "sha256": "46e8271c1c1b89227a1bb1f50a9803a2b8bb95f385d30bf0718010eefa5a9648",
-      "git_blob_sha": "eec2c936ccd266161b61008424e822e1ce8c37a9"
+      "bytes": 2554,
+      "sha256": "3023efde41e4921f513be382f7b5b7249fa6d5422e642e592bc41ba0d9c75f2b",
+      "git_blob_sha": "0358e891f9a38934417996fbd53adb3de4ab397d"
     },
     {
       "path": "model/assembly_reference_v5.json",
@@ -1292,9 +1292,9 @@
     },
     {
       "path": "model/measurements/README.md",
-      "bytes": 3022,
-      "sha256": "129db188ed2b675f75bfc352f3de95dbc41e6f31038b80d54c01ac0a16ad576d",
-      "git_blob_sha": "a611b34ffaa3da50af346a36b9011a58a2799da3"
+      "bytes": 1182,
+      "sha256": "d15a79db1e6172a215a504a34210b1b189652cd6aae5964aa6b7d420bc390cdd",
+      "git_blob_sha": "263c2bf4baaabe1426fa368d5cb5d1dabd6b63d0"
     },
     {
       "path": "model/parameters.csv",
@@ -1328,9 +1328,9 @@
     },
     {
       "path": "model/print_v5/README.md",
-      "bytes": 8392,
-      "sha256": "eb145aec1ed6b77e74da638f862f70addaebec4972d062a98112deb6b6cf852f",
-      "git_blob_sha": "f90fa741bccbf11a2558f835a0185840ea9c8cf2"
+      "bytes": 7638,
+      "sha256": "5b1a21fe6f99ab86794c20b2c202d02e8191b49db4d8f8d7e255826a8e619bc6",
+      "git_blob_sha": "49c1ee4ce892a3521513bf6e67c5be6d1189c3cf"
     },
     {
       "path": "model/print_v5/order1/46es_v5_boss_tab.step",
@@ -1832,9 +1832,9 @@
     },
     {
       "path": "model/samples/46es_sw_hole_sample.sc",
-      "bytes": 987541,
-      "sha256": "db856be9deb2ca7a414ab66ac969a4b05920917b12fc72499115f45ae12efbe9",
-      "git_blob_sha": "151b9eed68208462a4f5559258b67757696d7cbf"
+      "bytes": 2711,
+      "sha256": "f6188608f06065f50fb91f9c7e3cb3901eeaccdfde415b242877a331a57c67fc",
+      "git_blob_sha": "7ddd8ab075bcc202f473f863ffa2a88cf6d61c4c"
     },
     {
       "path": "model/samples/46es_sw_hole_sample.step",
@@ -1862,9 +1862,9 @@
     },
     {
       "path": "model/samples/README.md",
-      "bytes": 4412,
-      "sha256": "ff449f4bd6a80e8b0f22d533104c23bc2c11b25e711b2962d65608248357aef3",
-      "git_blob_sha": "7d4385717227c49feecc962516f124e368fa4a7a"
+      "bytes": 2019,
+      "sha256": "ae0c46430cc1526cc14ec71ff99a7b37ea5a706a122550c039aa331c0fad57fd",
+      "git_blob_sha": "b189624b9854d8827781b4630b0796903179c366"
     },
     {
       "path": "scripts/layout_checks.py",
@@ -1904,9 +1904,9 @@
     },
     {
       "path": "tools/check_repository.py",
-      "bytes": 8485,
-      "sha256": "4011b9a9f685adadfca8537c43d36f246264e57841b71ad9b2f09c31b0be3efe",
-      "git_blob_sha": "e41442c477f4c14ae04daf99eb648582781d83d4"
+      "bytes": 8898,
+      "sha256": "666d5c4fa3c3c8a1e0cc7124f0a41cd89c0171cad6040f689d57a728fa91104b",
+      "git_blob_sha": "da972dba8e2a81d06adbcf9523cb8932e47d2181"
     },
     {
       "path": "tools/export_print_v5.py",

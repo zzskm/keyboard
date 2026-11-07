@@ -1,6 +1,19 @@
 # 검증과 다음 작업
 
-현행 설계는 v5이며 아직 주문 전이다. 저장된 CAD 검사 통과와 실물 제작 통과를 구분한다.
+현행 **v5, 주문 전(시험 출력 대기)**. CAD 검사 통과 ≠ 실물 통과.
+
+## 변경 유형별 확인
+
+| 변경 | 최소 확인 | 비고 |
+|---|---|---|
+| 문서/링크 | `python -B 46es/tools/check_repository.py`; stage 후 `update_manifest.py --check` | CAD/실물 불필요 |
+| 정적 검사/manifest 로직 | 위 + 관련 동작 확인 | CAD 재생성 불필요 |
+| v5 형상/생성기/샘플 원본 | `build_seam_v5.py` → `export_seam_v5_review.py` → `export_print_v5.py`/`--trial` → `verify_seam_v5.py`; 필요 시 `build_assembly_reference_v5.py` → `verify_assembly_reference_v5.py` | SolidCraft/NumPy/SciPy. 실물 별도 |
+| 가이드 spec/3D/자산 | `guide/build_guide.py`; 상호작용 시 `guide/check_browser.py`(Playwright) | `guide/out`, `.cache`는 빌드 갱신 |
+| 출력물/주문 세트 | STL 연결성·모서리·부피/경계/방향/해시, 제작 안내·manifest | 업체 출력 품질 별도 |
+| 실물 시험 | 아래 목록 기록, 통과/수정/보류 | CAD와 별개 |
+
+미실행은 `미실행`, 실물은 `실물 확인 대기`로 표기. 과거 `ok` JSON 재사용 금지.
 
 ## 실물 확인 목록
 
@@ -13,7 +26,7 @@
 | 케이스 내측 폭 | 전체 폭 285.781의 실제 접촉과 중심 맞춤 확인. 현재 대략값이면 편측 약 0.11 여유 |
 | 키캡 스커트 높이 | r2 upper plate 윗면 → 스커트 밑면을 쉴 때·끝까지 눌렀을 때 측정. 쉴 때 간격 g이면 `v5_keycap_bottom_above_seat = 2 + g` |
 | 케이스 테두리 높이 | 지지대 상면 기준 앞·뒤 측정. 현재 14는 대략값 |
-| 배선·Pro Micro·USB | 실제 부품·플러그·배선 돌출과 분해 여유 확인. 배선은 가이드 3D 형상에 없음 |
+| 배선·Pro Micro·USB | 실제 부품·플러그·배선 돌출과 분해 여유 확인. 배선은 가이드 3D 형상이 없음 |
 | 본 출력 후 커버 | 얇은 앞·뒤 베젤(약 1.16–2.76)의 강도·휨, 위 다리 들뜸, 키캡 풀러 접근, 투명도·기포 확인 |
 
 주문 1 통과 후 주문 2를 넣는다. 시험으로 형상을 바꾸면 출력물·검증·가이드를 다시 만든다. 커버 창 여유 1.0은 현재 요구이므로 시험 실패를 이유로 자동 축소하지 않는다.
