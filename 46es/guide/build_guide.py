@@ -498,19 +498,20 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--spec", default="guide_v5.json")
-    ap.add_argument("--out", default="out")
+    ap.add_argument("--out", help="output directory (default: out, or out_assembly_review in assembly-only mode)")
     ap.add_argument("--cli", default=str(DEFAULT_CLI))
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--skip-renders", action="store_true", help="use cached renders only, fail if one is missing")
     ap.add_argument("--only", default="", help="comma-separated render ids to (re)build; others must be cached")
     ap.add_argument("--clean-img", action="store_true", help="delete PNGs in OUT/img that this build does not use")
+    ap.add_argument("--assembly-only", action="store_true", help="build a local assembly review without the static CAD snapshots")
     a = ap.parse_args()
 
     spec_path = (HERE / a.spec).resolve() if not Path(a.spec).is_absolute() else Path(a.spec)
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
     base = spec_path.parent
     model = (base / spec["model"]).resolve()
-    out = Path(a.out) if Path(a.out).is_absolute() else (HERE / a.out)
+    out = HERE / (a.out or ("out_assembly_review" if a.assembly_only else "out"))
     cli = Path(a.cli)
     if not model.exists():
         die(f"model not found: {model}")
@@ -535,7 +536,7 @@ def main():
     ctx = Ctx(spec, ev, names, groups)
     ctx.mrows = measurements((base / spec["measurements"]).resolve())
 
-    renders = spec["renders"]
+    renders = [] if a.assembly_only else spec["renders"]
     ids = [r["id"] for r in renders]
     if len(set(ids)) != len(ids):
         die("duplicate render ids")
@@ -569,8 +570,17 @@ def main():
             if p.stem not in results:
                 p.unlink()
                 print(f"removed unused {p.name}")
-    assembly.prepare(ctx, base, out, cli, model, model_sha, CACHE, expand, run, die)
-    page = build_page(spec, ctx, model.name, model_sha, len(results))
+    assembly.prepare(ctx, base, out, cli, model, model_sha, CACHE, expand, run, die,
+                     assembly_only=a.assembly_only)
+    page_spec = spec
+    if a.assembly_only:
+        section = next(section for section in spec['sections'] if section['type'] == 'assembly')
+        phases = [dict(phase, steps=[dict(step, render=None) for step in phase['steps']])
+                  for phase in section['phases']]
+        page_spec = dict(spec, sections=[dict(section, phases=phases)],
+                         page=dict(spec['page'], hero=None, noindex=True,
+                                   lede='조립 시각 검토용 · 현재 CAD의 3D 모델과 조립도를 표시합니다.'))
+    page = build_page(page_spec, ctx, model.name, model_sha, len(results))
     (out / "index.html").write_text(page, encoding="utf-8", newline="\n")
     print(f"wrote {out / 'index.html'} ({len(page.encode('utf-8'))} bytes), {len(results)} images, {fresh} rendered now")
 

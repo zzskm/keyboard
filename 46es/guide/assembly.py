@@ -6,7 +6,7 @@ import struct
 from pathlib import Path
 
 
-def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
+def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, assembly_only=False):
     config = ctx.spec.get('interactive')
     if not config:
         return
@@ -116,6 +116,9 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die):
     prepare_comparison(base, out, die)
     from illustrations import prepare as draw_illustrations
     draw_illustrations(out, data)
+    if assembly_only:
+        for step in steps:
+            step['image'] = step['illustration']
     (out / 'assembly.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
     for name in ('assembly.js', 'viewer.js', 'assembly.css', 'comparison.js'):
         shutil.copyfile(Path(__file__).parent / 'assets' / name, out / name)

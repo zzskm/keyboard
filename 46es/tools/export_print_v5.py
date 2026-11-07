@@ -8,13 +8,13 @@ python tools/export_print_v5.py
   -> inspection/data/seam-v5-mjf-thin-wall.json (thin wall scan, mapped back to assembly coordinates)
 
 Use --trial to export the four reinforced mounts and four test coupons in model/print_v5/order1/.
-Spine, bracket and gate are identical bodies in v4 and v5 (verify_seam_v5 proves the
-BRep equality); they are exported again here only so that order 2 is one folder.
+Both order sets record the source CAD hash for every part.
 """
 import argparse
 import hashlib
 import json
 from pathlib import Path
+from shutil import copyfile
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -27,7 +27,7 @@ from check_stl import check  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
-CACHE = ROOT / 'guide/.cache/v5'
+CACHE = ROOT / '.cache/print_v5'
 # file stem -> (body, material, flip about X for printing); all order-2 parts print top face down (print_v5 README)
 PARTS = {
     'plate_L': ('PLATE_L_SPLIT_V1', 'MJF PA12S-HP 검정', True),
@@ -121,11 +121,10 @@ def export(parts, order, sources, out, scratch):
                             stl_volume_mm3=round(c['signed_volume'], 4), stl_rel_volume_error=round(rel, 6),
                             print_bbox_mm=[round(s, 3) for s in size], bed_zmin=round(c['bbox']['min'][2], 4),
                             stl_sha256=sha(stl), step_sha256=sha(stl.with_suffix('.step'))))
-    if trial:
-        for row in records:
-            row['source_sha256'] = input_hashes[body_sources[row['body']]]
+    for row in records:
+        row['source_sha256'] = input_hashes[body_sources[row['body']]]
     record_path = scratch / ('seam-v5-trial-print-set.json' if trial else 'seam-v5-print-set.json')
-    record_path.write_text(json.dumps(records, indent=1, ensure_ascii=False), encoding='utf-8')
+    record_path.write_text(json.dumps(records, indent=1, ensure_ascii=False), encoding='utf-8', newline='\n')
     thin = scratch / ('seam-v5-trial-thin-wall.json' if trial else 'seam-v5-mjf-thin-wall.json')
     subprocess.run([sys.executable, '-I', str(ROOT / 'inspection/scripts/thin_wall_scan.py'), '--limit', '1.0', '--warn', '1.5',
                     '--json', str(thin), '--map', str(record_path), str(ev_path),
@@ -140,17 +139,44 @@ def export(parts, order, sources, out, scratch):
             raise ValueError(f"{r['file']}: wall {wall} mm is below {limit} mm")
         rows.append(dict(file=r['file'], material=r['material'], volume_cm3=round(r['cad_volume_mm3'] / 1000, 2),
                          size=r['print_bbox_mm'], wall_min_mm=t['wall_min_mm'], min_mm=t['min_mm']))
-    if any(sha(path) != digest for path, digest in input_hashes.items()):
-        raise ValueError('print sources changed during export')
-    # Publish only after both sources, all meshes and the wall scan succeed.
-    for row in records:
-        for extension in ('.step', '.stl'):
-            filename = row['file'] + extension
-            (scratch / filename).replace(out / filename)
-    for path in (record_path, thin):
-        path.replace(ROOT / 'inspection/data' / path.name)
+    targets = {scratch / (row['file'] + extension): out / (row['file'] + extension)
+               for row in records for extension in ('.step', '.stl')}
+    for path in (thin, record_path):
+        targets[path] = ROOT / 'inspection/data' / path.name
+    publish(order, scratch, targets, input_hashes)
     print(json.dumps(dict(ok=True, source_sha={str(p.relative_to(ROOT)): digest for p, digest in input_hashes.items()},
                           parts=rows), indent=1, ensure_ascii=False))
+
+
+def publish(order, scratch, targets, input_hashes):
+    """Replace one validated set and restore any files replaced before an I/O error."""
+    lock = CACHE / f'{order}.publishing'
+    lock.mkdir()
+    try:
+        backups = scratch / 'previous'
+        backups.mkdir()
+        existing = set()
+        for destination in targets.values():
+            if destination.exists():
+                copyfile(destination, backups / destination.name)
+                existing.add(destination)
+        if any(sha(path) != digest for path, digest in input_hashes.items()):
+            raise ValueError('print sources changed during export')
+
+        replaced = []
+        try:
+            for source, destination in targets.items():
+                source.replace(destination)
+                replaced.append(destination)
+        except (OSError, KeyboardInterrupt):
+            for destination in reversed(replaced):
+                if destination in existing:
+                    (backups / destination.name).replace(destination)
+                else:
+                    destination.unlink()
+            raise
+    finally:
+        lock.rmdir()
 
 
 if __name__ == '__main__':

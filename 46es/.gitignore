@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# CAD scratch and local dependencies
+/.cache/
+
 # guide generator: render cache and local output
 guide/.cache/
 guide/out/
