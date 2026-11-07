@@ -35,8 +35,11 @@ def read(path):
 
 def curve_points(curve, samples=1024):
     if curve['kind']=='line': return [curve['start'],curve['end']]
-    if curve['kind']=='rational_spline':
-        pts=curve['homogeneous']; knots=curve['knots']; degree=len(knots)-len(pts)-1
+    if curve['kind'] in ('spline', 'rational_spline'):
+        pts = curve.get('homogeneous')
+        if pts is None:
+            pts = [[*p, 1.0] for p in curve['points']]
+        knots=curve['knots']; degree=len(knots)-len(pts)-1
         out=[]
         for j in range(samples+1):
             t=knots[degree]+(knots[len(pts)]-knots[degree])*j/samples

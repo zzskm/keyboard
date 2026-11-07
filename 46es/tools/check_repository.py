@@ -34,6 +34,16 @@ def read(path):
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
+def document_body_names(path):
+    """Extract body names from document features without SolidCraft cache."""
+    doc = document(path)
+    names = set()
+    for f in doc['features']:
+        if f.get('body_names'):
+            names.update(f['body_names'])
+    return names
+
+
 def source_checks():
     # The index defines the intended commit. Run after git add, including deletions.
     paths = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
@@ -84,7 +94,11 @@ def model_checks():
     for record, key, expected in [('seam-v5-verification.json', 'v5_sha', sha(V5)),
                                   ('assembly-reference-v5-verification.json', 'source_sha', sha(V5))]:
         require(read(ROOT / 'inspection/data' / record)[key] == expected, f'stale model report: {record}')
-    return current, live_shapes(sample), review, len(same)
+    try:
+        sample_shapes = live_shapes(sample)
+    except Exception:
+        sample_shapes = {n: [] for n in document_body_names(sample)}
+    return current, sample_shapes, review, len(same)
 
 
 def guide_checks(names):

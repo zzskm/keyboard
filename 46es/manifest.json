@@ -878,9 +878,9 @@
     },
     {
       "path": "inspection/scripts/read_sc_cache.py",
-      "bytes": 3644,
-      "sha256": "d7454fe8686d418a8784ee53211b15be71a4e0135b80cc01099b091860c7ae1a",
-      "git_blob_sha": "d0d527922443d9a7c2673e0518a2778d20873242"
+      "bytes": 3750,
+      "sha256": "fa2d9a502cd32e0a928576cad6c8573e060a2f8e324b2fba60e80164bd3a3f12",
+      "git_blob_sha": "475df5be5d22ba15ead6dd007383694b1e3570ad"
     },
     {
       "path": "inspection/scripts/thin_wall_scan.py",
@@ -1105,12 +1105,6 @@
       "git_blob_sha": "5468df0ea7022f6a1459c2e08f1585f3677ecfeb"
     },
     {
-      "path": "model/46es_mount_minimal_v2.sc.bak",
-      "bytes": 6960939,
-      "sha256": "299517072bfc4f0328225dccab76dec0515674e09dba6a22020ad86670b5374d",
-      "git_blob_sha": "5468df0ea7022f6a1459c2e08f1585f3677ecfeb"
-    },
-    {
       "path": "model/46es_mount_minimal_v2_REVIEW_ONLY.step",
       "bytes": 1570022,
       "sha256": "f9c9c1a6d020aba53b3b0e39200f72359f1ea6435a799548fbd59f34aebf3d39",
@@ -1147,12 +1141,6 @@
       "git_blob_sha": "0b116018841b5abccdc67364446935cb483781db"
     },
     {
-      "path": "model/46es_mount_side_pairs_v3.sc.bak",
-      "bytes": 7302583,
-      "sha256": "54c897bef1da7550d0369a7ada85dd5355284cc3809d6c94cab4d53be0f82527",
-      "git_blob_sha": "adab4c654279671666088fb3af68d5380eb55517"
-    },
-    {
       "path": "model/46es_mount_side_pairs_v3_REVIEW_ONLY.step",
       "bytes": 1579990,
       "sha256": "fb4a87063222f9e93313d4482293fc2e4d9df9a8a1af342a1159c9e798ee6a09",
@@ -1175,12 +1163,6 @@
       "bytes": 6635817,
       "sha256": "3ccfcea5cbddedf776c15c14f75efd3fe7eca30d2ff2f1ad769be1cda712681e",
       "git_blob_sha": "75ac24d823f85fae0dafa4b63ad62efdc5f917e1"
-    },
-    {
-      "path": "model/46es_mount_split_v1.sc.bak",
-      "bytes": 6635584,
-      "sha256": "eb009db1572772a9814433bab2ec8853598f0b2b1980e170c652c71ddde05c12",
-      "git_blob_sha": "9fd030c19deafddcf12f3db1553e4d1581b88af5"
     },
     {
       "path": "model/46es_mount_split_v1_REVIEW_ONLY.step",
