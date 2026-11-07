@@ -17,10 +17,12 @@ Phase 1의 CAD와 주문 1 디지털 검증을 완료했다. 제작 조건과 �
 - 주문 1에는 현행 v5에서 재생성한 마운트·이음 쿠폰과 행 C 1.7 mm의 B 쿠폰·자석 포켓이 있는 보스 탭을 함께 사용한다. 원본 CAD와 STL/STEP 해시는 [시험 출력 기록](../inspection/data/seam-v5-trial-print-set.json)에 연결한다.
 - 실물 확인 대기 항목은 마운트 강성, 실제 5핀·납땜·배선, PSD60 체결과 7곳의 받침 접촉이다.
 
-## 2단계 — Ctrl bracket 개선 (개요)
-- 대상: `CTRL_BRACKET_SPLIT_V1`, `CTRL_GATE_SPLIT_V1`(및 plate 체결/PCB/USB/너트 포켓). 현행은 v4 바디 유지(`print_v5` 기준).
-- 검토: Pro Micro 삽입/탈거 방향, USB 플러그·케이블 여유, PCB 부품/납땜면 간섭, M2 체결/너트 접근, 출력 방향·강성, 1단계 mount 형상과의 간섭.
-- 산출: 단순·직선 브래킷/게이트 형상, 필요 시 체결 위치 조정, 가이드·BOM·검증 갱신.
+## 2단계 — Ctrl bracket 개선
+
+- `build_seam_v5.py`에서 `CTRL_LIP_*_SPLIT_V1` 4개, `CTRL_STOP_SPLIT_V1`, `CTRL_GATE_STOP_FINGER`를 억제했다. 브래킷·게이트가 단순·직선 형상으로 단순화됨.
+- Pro Micro 삽입/탈거 경로에서 얇은 립과 스톱을 제거해 끼움·탈착 여유를 확보했다. USB 플러그·케이블 여유, M2 체결/너트 접근, 출력 방향·강성은 기존 유지(`CTRL_ROOF_WIRING_WINDOW`, `CTRL_GATE_M2_CLEAR`, 너트 포켓 보존).
+- 1단계 마운트 형상과의 간섭은 `verify_seam_v5.py`에서 `overlaps: 0`, `contacts: 113`로 확인.
+- `verify_seam_v5.py`에서 `SAME_AS_V4`에서 제외(볼륨 변경). 가이드·BOM·검증 갱신 필요.
 
 ## 3단계 — Mount + Ctrl/Spine 병합 (개요)
 - 대상 후보: `MOUNT_*`, `PLATE_SPINE_V1`, ctrl bracket/gate 간 역할 통합.

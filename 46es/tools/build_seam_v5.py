@@ -313,6 +313,19 @@ def build(probe=False):
         web = next(f for f in doc['features'] if f.get('name') == web_name)
         web['suppressed'] = True
 
+    # Phase 2: CTRL bracket/gate simplification — remove lips, stop and stop finger
+    # for simpler, straighter Pro Micro insertion/removal and USB/cable clearance.
+    for ctrl_name in (
+        'CTRL_LIP_F_LOW_SPLIT_V1',
+        'CTRL_LIP_F_UP_SPLIT_V1',
+        'CTRL_LIP_B_LOW_SPLIT_V1',
+        'CTRL_LIP_B_UP_SPLIT_V1',
+        'CTRL_STOP_SPLIT_V1',
+        'CTRL_GATE_STOP_FINGER',
+    ):
+        ctrl = next(f for f in doc['features'] if f.get('name') == ctrl_name)
+        ctrl['suppressed'] = True
+
     seat_plane = dict(type='offset', base=dict(type='origin', name='XY'), distance=str(SEAT_ROOT_Z))
     for i, (mount, _, a, b, ra, rb) in enumerate(PLATE_SUPPORTS, 1):
         profile, _ = rounded_seat(a, b, ra, rb)

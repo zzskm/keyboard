@@ -20,7 +20,7 @@ FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
 SWITCH_BOUNDS = {'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}  # follow the 1.7 seat
-CHANGED = SWITCH_BOUNDS | {seat[0] for seat in PLATE_SUPPORTS} | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD'}
+CHANGED = SWITCH_BOUNDS | {seat[0] for seat in PLATE_SUPPORTS} | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'}
 # Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
 # the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
 DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
@@ -188,7 +188,7 @@ def support_contacts(params, shapes):
 PRINT_V5 = ROOT / 'model/print_v5/order2'
 PRINT_SET_FILES = {'46es_v5_plate_L', '46es_v5_plate_R', '46es_v5_spine', '46es_v5_ctrl_bracket', '46es_v5_ctrl_gate',
                    '46es_v5_cover_L', '46es_v5_cover_T', '46es_v5_cover_R'}
-SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1', '46es_v5_ctrl_bracket': 'CTRL_BRACKET_SPLIT_V1', '46es_v5_ctrl_gate': 'CTRL_GATE_SPLIT_V1'}
+SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1'}
 MJF_MAX = (370.0, 276.0)
 
 
