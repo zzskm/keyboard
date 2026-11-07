@@ -2,7 +2,7 @@
  "changed_vs_unchanged": {
   "overlaps": [],
   "unchecked": [],
-  "pairs_checked": 167,
+  "pairs_checked": 177,
   "contacts": [
    "COVER_L_DRAFT_TBD | REF_SO1_MAGNET",
    "COVER_L_DRAFT_TBD | REF_SO2_MAGNET",
@@ -10,7 +10,10 @@
    "COVER_R_DRAFT_TBD | REF_SO5_MAGNET",
    "COVER_T_DRAFT_TBD | REF_SO3_MAGNET",
    "COVER_T_DRAFT_TBD | REF_SO6_MAGNET",
-   "PLATE_L_SPLIT_V1 | CTRL_BRACKET_SPLIT_V1",
+   "CTRL_BRACKET_SPLIT_V1 | REF_M2_GATE",
+   "CTRL_BRACKET_SPLIT_V1 | REF_M2_PLATE_1_NUT",
+   "CTRL_BRACKET_SPLIT_V1 | REF_M2_PLATE_2_NUT",
+   "CTRL_GATE_SPLIT_V1 | REF_M2_GATE_NUT",
    "PLATE_L_SPLIT_V1 | PLATE_SPINE_V1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_2",
@@ -58,12 +61,14 @@
  "among_changed": {
   "overlaps": [],
   "unchecked": [],
-  "pairs_checked": 162,
+  "pairs_checked": 169,
   "contacts": [
    "COVER_L_DRAFT_TBD | REF_LEGMAG_L_COVER",
    "COVER_R_DRAFT_TBD | REF_LEGMAG_R_COVER",
+   "CTRL_BRACKET_SPLIT_V1 | CTRL_GATE_SPLIT_V1",
    "PLATE_L_SPLIT_V1 | COVER_L_DRAFT_TBD",
    "PLATE_L_SPLIT_V1 | COVER_T_DRAFT_TBD",
+   "PLATE_L_SPLIT_V1 | CTRL_BRACKET_SPLIT_V1",
    "PLATE_L_SPLIT_V1 | MOUNT_H02_SO3_MIN_V2",
    "PLATE_L_SPLIT_V1 | MOUNT_L_PAIR_V3",
    "PLATE_L_SPLIT_V1 | PLATE_R_SPLIT_V1",

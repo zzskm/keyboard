@@ -68,20 +68,20 @@
   "body": "CTRL_BRACKET_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 1415.5932,
-  "stl_triangles": 2558,
+  "cad_volume_mm3": 1224.0262,
+  "stl_triangles": 2456,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 1415.6282,
-  "stl_rel_volume_error": 2.5e-05,
+  "stl_volume_mm3": 1224.0612,
+  "stl_rel_volume_error": 2.9e-05,
   "print_bbox_mm": [
    35.681,
    28.6,
    7.0
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "c481b7e538f0a05ca586dfc8fa65a197059c506f968991657d630f718df8431a",
-  "step_sha256": "81d47832b0bf74427cd39e06f9ad29f16b288a48f1ab8338a7de26974316a79f"
+  "stl_sha256": "db5b255d3ff2c0d918b8289c8b5b4362148e87faf1ac8de982a7f8b3d97916e4",
+  "step_sha256": "cda0def853402c1aa7834f4cd5ebd542e82e1c9b774baa6b6fc193ea825380a8"
  },
  {
   "order": "order2",
@@ -89,20 +89,20 @@
   "body": "CTRL_GATE_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 186.4739,
-  "stl_triangles": 1714,
+  "cad_volume_mm3": 140.8739,
+  "stl_triangles": 1700,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 186.476,
-  "stl_rel_volume_error": 1.1e-05,
+  "stl_volume_mm3": 140.876,
+  "stl_rel_volume_error": 1.5e-05,
   "print_bbox_mm": [
    7.919,
-   11.0,
-   7.6
+   7.0,
+   3.2
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "cae74026095ffe182789b2304997ae0e62735c964c2a68e5d9ffc05e198cc60b",
-  "step_sha256": "0ba6126ecc087f721eabbb2005f5721a65a564c8baf097686f9a76e9ee335381"
+  "stl_sha256": "83348c9c36cca73ea1e006c7c3d0d62e99b1dd8b95f410aa516e1a8f79335f54",
+  "step_sha256": "8757e89cc6b780757ec9b9ee2dec92172d7666fd9022426f57e6de44b3a8e763"
  },
  {
   "order": "order2",

@@ -2,10 +2,10 @@
   "version": "v5",
   "generator": "tools/build_assembly_reference_v5.py",
   "source": "46es_mount_seam_v5.sc",
-  "source_sha": "f45c302aa70c590d7bba6e46a397f6e102cea42a4508343f1f3426d5da39049d",
+  "source_sha": "629197ec34e7c37dac434dea4270e5c7e9e44921d277549444b540ae74c5ede6",
   "measurement_sha": "7d0ddf7c509903db706e2a0cef6506bb90d9e1e67abac1c18636e22f483bebf0",
   "generator_sha": "52f6593ca7b44ce75bb4f3f82c6ce0f05adbb65be78a51c5f76fbbf31e6f140a",
-  "output_sha": "2f21d9e6420851d077b2a2967d13c8a0f9c85cb0630bbabd07a2d3dd3582f0ff",
+  "output_sha": "4f2eb010492608dbd6d757f2cc3c17c0134b97738b253b562e4781e973a1532e",
   "keys": [
     {
       "x": 110.46542391096345,
