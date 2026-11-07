@@ -35,6 +35,11 @@ def read(path):
 
 def curve_points(curve, samples=1024):
     if curve['kind']=='line': return [curve['start'],curve['end']]
+    if curve['kind']=='surface_intersection':
+        leader=curve.get('leader', {})
+        if leader.get('kind')=='polyline' and len(leader.get('points', [])) >= 2:
+            return leader['points']
+        raise ValueError('surface_intersection has no sampled leader')
     if curve['kind'] in ('spline', 'rational_spline'):
         pts = curve.get('homogeneous')
         if pts is None:

@@ -13,7 +13,8 @@ from pathlib import Path
 import subprocess
 import sys
 
-from build_seam_v5 import PLATE_SUPPORTS
+from build_seam_v5 import PLATE_SUPPORT_MOUNTS
+from cad_eval_cache import evaluation
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
@@ -41,7 +42,7 @@ def main():
         stem = OUT / f'46es_v5_{part}_REVIEW_ONLY'
         script.append(dict(command='file.export_stl', params=dict(path=str(stem) + '.stl', bodies=[body], quality='fine')))
         script.append(dict(command='file.export_step', params=dict(path=str(stem) + '.step', bodies=[body])))
-    mounts = sorted({seat[0] for seat in PLATE_SUPPORTS})
+    mounts = sorted(PLATE_SUPPORT_MOUNTS)
     script.append(dict(command='file.export_step', params=dict(
         path=str(OUT / '46es_v5_changed_REVIEW_ONLY.step'), bodies=[b for b, _, _ in PARTS.values()] + mounts + MAGNETS)))
     script.append(dict(command='parameters.export', params=dict(path=str(ROOT / 'model/parameters_seam_v5.csv'),
@@ -50,9 +51,8 @@ def main():
     cache.mkdir(parents=True, exist_ok=True)
     (cache / 'export.json').write_text(json.dumps(script), encoding='utf-8')
     subprocess.run([CLI, 'run', str(cache / 'export.json'), '--in', str(MODEL), '--quiet'], check=True)
-    ev = cache / 'eval_v5_export.json'
-    subprocess.run([CLI, 'eval', '--in', str(MODEL), '--json-out', str(ev)], check=True, capture_output=True)
-    bodies = {b['name']: b for b in json.loads(ev.read_text(encoding='utf-8'))['bodies']}
+    evaluated, _ = evaluation(MODEL, cache, CLI)
+    bodies = {b['name']: b for b in evaluated['bodies']}
     files = []
     for part, (body, material, wall) in PARTS.items():
         stem = OUT / f'46es_v5_{part}_REVIEW_ONLY'

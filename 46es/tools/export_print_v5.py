@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 sys.path.insert(0, str(ROOT / 'inspection/scripts'))
 from orient_print_stl import orient  # noqa: E402
 from check_stl import check  # noqa: E402
+from cad_eval_cache import evaluation  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
@@ -94,8 +95,8 @@ def export(parts, order, sources, out, scratch):
         command_path.write_text(json.dumps(script), encoding='utf-8')
         subprocess.run([CLI, 'run', str(command_path), '--in', str(source), '--quiet'], check=True)
         ev_path = raw / (source.stem + '_eval.json')
-        subprocess.run([CLI, 'eval', '--in', str(source), '--json-out', str(ev_path)], check=True, capture_output=True)
-        evaluated = json.loads(ev_path.read_text(encoding='utf-8'))
+        evaluated, _ = evaluation(source, ROOT / 'guide/.cache/v5', CLI)
+        ev_path.write_text(json.dumps(evaluated), encoding='utf-8')
         errors = [f['name'] for f in evaluated['timeline'] if f.get('error')]
         if errors:
             raise ValueError(f'{source.name}: timeline errors: {errors}')
@@ -106,9 +107,21 @@ def export(parts, order, sources, out, scratch):
     records = []
     for part, (body, material, flip) in parts.items():
         stl = scratch / f'46es_v5_{part}.stl'
-        orient(str(raw / f'{part}.stl'), str(stl), flip)
+        raw_path = raw / f'{part}.stl'
+        raw_mesh = check(str(raw_path))
+        if len(raw_mesh['components']) != 1 or raw_mesh['bad_edge_count'] != 0:
+            diagnostics = ROOT / 'guide/.cache/v5/print_diagnostics'
+            diagnostics.mkdir(parents=True, exist_ok=True)
+            copyfile(raw_path, diagnostics / f'{part}_raw.stl')
+            raise AssertionError((part, 'SolidCraft raw STL', len(raw_mesh['components']), raw_mesh['bad_edge_count']))
+        orient(str(raw_path), str(stl), flip)
         m = check(str(stl))
-        assert len(m['components']) == 1 and m['bad_edge_count'] == 0, (part, len(m['components']), m['bad_edge_count'])
+        if len(m['components']) != 1 or m['bad_edge_count'] != 0:
+            diagnostics = ROOT / 'guide/.cache/v5/print_diagnostics'
+            diagnostics.mkdir(parents=True, exist_ok=True)
+            copyfile(raw_path, diagnostics / f'{part}_raw.stl')
+            copyfile(stl, diagnostics / f'{part}_oriented.stl')
+            raise AssertionError((part, 'oriented STL', len(m['components']), m['bad_edge_count']))
         c = m['components'][0]
         cad = bodies[body]['volume_mm3']
         rel = abs(c['signed_volume'] - cad) / cad
