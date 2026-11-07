@@ -10,7 +10,7 @@ from cad_model import live_shapes
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from build_seam_v5 import top_levels  # noqa: E402
+from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORTS, top_levels  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_assembly_review_v5.sc'
@@ -110,11 +110,30 @@ def main():
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=controller, against=['CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'],
         clearance=0.1, min_volume=0.000001)))
+    mounts = sorted({seat[0] for seat in PLATE_SUPPORTS})
+    pins = [n for n in bodies if n.startswith(('REF_MX_GUIDE', 'REF_MX_CONTACT'))]
+    pin_search_radius = 1.0
+    script.extend(dict(command='inspect.clearance', params=dict(
+        bodies=[mount], against=pins, clearance=pin_search_radius, min_volume=0.000001))
+        for mount in mounts)
     (CACHE / 'keycap_check.json').write_text(json.dumps(script), encoding='utf-8')
     out = CACHE / 'keycap_check_out.json'
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
-    rest, rest_plate, moved, pressed, pressed_plate, controller_fit = json.loads(out.read_text(encoding='utf-8'))
+    rest, rest_plate, moved, pressed, pressed_plate, controller_fit, *pin_checks = json.loads(out.read_text(encoding='utf-8'))
+    assert len(pin_checks) == len(mounts)
+    pin_fit = {}
+    for mount, result in zip(mounts, pin_checks):
+        assert not result['overlaps'] and not result['unchecked'], (mount, result)
+        closest = min(result['near'], key=lambda pair: pair['distance_mm'], default=None)
+        distance = closest['distance_mm'] if closest else pin_search_radius
+        assert distance >= MOUNT_PIN_CLEARANCE - TOL, (mount, closest)
+        reference = None
+        if closest:
+            reference = closest['b'] if closest['a'] == mount else closest['a']
+        pin_fit[mount] = dict(pairs_checked=result['pairs_checked'],
+                              min_distance_mm=round(distance, 4) if closest else None,
+                              closest_reference=reference)
     assert len(moved['bodies']) >= 46
     assert not controller_fit['overlaps'] and not controller_fit['unchecked'], controller_fit
     states = {}
@@ -144,7 +163,10 @@ def main():
     result = dict(
         controller=dict(bodies=len(controller), pads_per_face=24, socket_side='-X',
                         component_face='-Z', solder_face='+Z', bracket_gate_overlap_count=0),
-        ok=True, model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],
+        ok=True,
+        mount_switch_pin_fit=dict(target_mm=MOUNT_PIN_CLEARANCE, search_radius_mm=pin_search_radius,
+                                  mounts=pin_fit),
+        model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],
         rim_Z=rim, cover_top_Z=cover_top, cover_above_rim_mm=round(protrusion, 6),
         cover_levels={n: {str(z): a for z, a in lv.items()} for n, lv in levels.items()},
         keycap=dict(target_mm=TARGET, case_target_mm=TARGET_CASE, press_mm=PRESS, **states,

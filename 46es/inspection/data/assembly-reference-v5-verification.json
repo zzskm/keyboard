@@ -8,8 +8,34 @@
     "bracket_gate_overlap_count": 0
   },
   "ok": true,
-  "model_sha": "01cd7afb4c9742c13a8aef18e8eb36cdfe0a5a8e9a6f847d70d960f53840fc9d",
-  "source_sha": "24fb580afa120aff12bc5346f05f304b256ab37a3bbdbb4baf4b12f2ddf9b9c5",
+  "mount_switch_pin_fit": {
+    "target_mm": 0.4,
+    "search_radius_mm": 1.0,
+    "mounts": {
+      "MOUNT_H02_SO3_MIN_V2": {
+        "pairs_checked": 1,
+        "min_distance_mm": 0.9558,
+        "closest_reference": "REF_MX_GUIDE (9)"
+      },
+      "MOUNT_H03_SO6_MIN_V2": {
+        "pairs_checked": 3,
+        "min_distance_mm": null,
+        "closest_reference": null
+      },
+      "MOUNT_L_PAIR_V3": {
+        "pairs_checked": 18,
+        "min_distance_mm": 0.6,
+        "closest_reference": "REF_MX_GUIDE (31)"
+      },
+      "MOUNT_R_PAIR_V3": {
+        "pairs_checked": 31,
+        "min_distance_mm": 0.6,
+        "closest_reference": "REF_MX_GUIDE (52)"
+      }
+    }
+  },
+  "model_sha": "2f21d9e6420851d077b2a2967d13c8a0f9c85cb0630bbabd07a2d3dd3582f0ff",
+  "source_sha": "f45c302aa70c590d7bba6e46a397f6e102cea42a4508343f1f3426d5da39049d",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.0,
   "cover_above_rim_mm": 5.0,

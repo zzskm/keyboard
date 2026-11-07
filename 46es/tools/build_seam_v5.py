@@ -50,6 +50,14 @@ PLATE_SUPPORTS = [
 ]
 SEAT_ROOT_Z = 1.5
 
+# KS-3X1 drawing XY, with conservative cylindrical guides and rectangular contacts.
+# Both reference pin families extend to Z 2.7 at the v5 switch seat (Z 11.3).
+MX_GUIDES = ((0.0, 1.95), (-5.08, 0.875), (5.08, 0.875))
+MX_CONTACTS = ((-3.81, 2.54), (2.54, 5.08))
+MX_CONTACT_SIZE = (1.15, 0.5)
+MX_PIN_DEPTH_FROM_SEAT = 8.6
+MOUNT_PIN_CLEARANCE = 0.4
+
 
 def seat_sketch_name(index):
     return f'SK37_MOUNT_PLATE_SEAT_{index}_V5'
@@ -292,6 +300,19 @@ def build(probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
+    # Phase 1-B: MOUNT_L_PAIR_V3 / MOUNT_R_PAIR_V3 T자 단순화 — 불필요 WEB 형상 제거
+    # Phase 1-C: MOUNT_H03_SO6_MIN_V2 앞/하단 정리 — 두 WEB 제거
+    # Phase 1-D: MOUNT_H02_SO3_MIN_V2 뒤/상단 개선 — WEB 제거
+    for web_name in (
+        'WEB_MOUNT_H05_SO1_MIN_V2_EXTRUDE',
+        'WEB_MOUNT_H06_SO5_MIN_V2_0_EXTRUDE',
+        'WEB_MOUNT_H03_SO6_MIN_V2_0_EXTRUDE',
+        'WEB_MOUNT_H03_SO6_MIN_V2_1_EXTRUDE',
+        'WEB_MOUNT_H02_SO3_MIN_V2_0_EXTRUDE',
+    ):
+        web = next(f for f in doc['features'] if f.get('name') == web_name)
+        web['suppressed'] = True
+
     seat_plane = dict(type='offset', base=dict(type='origin', name='XY'), distance=str(SEAT_ROOT_Z))
     for i, (mount, _, a, b, ra, rb) in enumerate(PLATE_SUPPORTS, 1):
         profile, _ = rounded_seat(a, b, ra, rb)
@@ -300,6 +321,27 @@ def build(probe=False):
                 extent=dict(convention='total_distance', direction='positive',
                             distance=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}'),
                 operation='join', targets=[mount])
+
+    # Removing the H02 web exposed a 0.95 mm lip under the spine shim.
+    # Fill beneath the lip, retaining the shim's trimmed edge and top datum.
+    feature('box', 'MOUNT_H02_SHIM_LIP_BACKING_V5',
+            corner=[131.85, 'split_support_Y - split_support_size/2', 2.5],
+            length='1.7', width='split_support_size', height='0.8',
+            operation='join', participants=['MOUNT_H02_SO3_MIN_V2'])
+
+    # Open each recess to the edge of the rail instead of leaving thin slivers
+    # between individual pin pockets. The load path remains continuous below Z 2.1.
+    reliefs = (
+        ('MOUNT_L_PAIR_V3', 10, (7.0, 51.8), (27.0, 61.2)),
+        ('MOUNT_L_PAIR_V3', 11, (8.4, 71.0), (27.5, 77.95)),
+        ('MOUNT_R_PAIR_V3', 18, (254.0, 60.1), (273.0, 67.0)),
+    )
+    floor = f'v4_plate_top_Z - TBD_upper_plate_T - {MX_PIN_DEPTH_FROM_SEAT} - 0.6'
+    for mount, index, (x, y), (x_max, y_max) in reliefs:
+        feature('box', f'MOUNT_SWITCH_RELIEF_{index}_V5', corner=[x, y, floor],
+                length=str(round(x_max - x, 3)), width=str(round(y_max - y, 3)),
+                height=f'TBD_frame_T + 0.05 - ({floor})',
+                operation='cut', participants=[mount])
 
     doc['name'] = '46es seam v5 - flat cover and direct plate supports'
     seed = CACHE / 'seed_v5.sc'

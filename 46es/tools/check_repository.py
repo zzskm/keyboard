@@ -34,16 +34,6 @@ def read(path):
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
-def document_body_names(path):
-    """Extract body names from document features without SolidCraft cache."""
-    doc = document(path)
-    names = set()
-    for f in doc['features']:
-        if f.get('body_names'):
-            names.update(f['body_names'])
-    return names
-
-
 def source_checks():
     # The index defines the intended commit. Run after git add, including deletions.
     paths = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
@@ -92,13 +82,10 @@ def model_checks():
         require(sha(path) == ref[key], f'stale assembly reference: {key}')
     review = live_shapes(inputs['output_sha'])
     for record, key, expected in [('seam-v5-verification.json', 'v5_sha', sha(V5)),
-                                  ('assembly-reference-v5-verification.json', 'source_sha', sha(V5))]:
+                                  ('assembly-reference-v5-verification.json', 'source_sha', sha(V5)),
+                                  ('assembly-reference-v5-verification.json', 'model_sha', ref['output_sha'])]:
         require(read(ROOT / 'inspection/data' / record)[key] == expected, f'stale model report: {record}')
-    try:
-        sample_shapes = live_shapes(sample)
-    except Exception:
-        sample_shapes = {n: [] for n in document_body_names(sample)}
-    return current, sample_shapes, review, len(same)
+    return current, live_shapes(sample), review, len(same)
 
 
 def guide_checks(names):
@@ -131,7 +118,8 @@ def guide_checks(names):
 
 
 def print_checks(current, sample):
-    from export_print_v5 import PARTS, TRIAL_PARTS
+    from export_print_v5 import MODEL, SAMPLE, PARTS, TRIAL_PARTS
+    model_sha, sample_sha = sha(MODEL), sha(SAMPLE)
     for order, record, wall, expected in [
         ('order1', 'seam-v5-trial-print-set.json', 'seam-v5-trial-thin-wall.json', TRIAL_PARTS),
         ('order2', 'seam-v5-print-set.json', 'seam-v5-mjf-thin-wall.json', PARTS),
@@ -147,6 +135,9 @@ def print_checks(current, sample):
             body, material, flip = expected[name.removeprefix('46es_v5_')]
             require((p['body'], p['material'], p['print_flip_about_X']) == (body, material, flip), f'wrong print mapping: {name}')
             require(body in current or body in sample, f'CAD body missing: {body}')
+            if order == 'order1':
+                require(p.get('source_sha256') == (sample_sha if body in sample else model_sha),
+                        f'stale trial CAD source: {name}')
             for ext, key in [('.stl', 'stl_sha256'), ('.step', 'step_sha256')]:
                 require(sha(folder / (name + ext)) == p[key], f'output hash differs: {name}{ext}')
             scan = scans[name]

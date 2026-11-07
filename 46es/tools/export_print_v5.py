@@ -17,6 +17,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -64,8 +65,6 @@ def main():
     order = 'order1' if args.trial else 'order2'
     out = ROOT / 'model/print_v5' / order
     out.mkdir(parents=True, exist_ok=True)
-    raw = CACHE / ('print_v5_' + order + '_raw')
-    raw.mkdir(parents=True, exist_ok=True)
     sources = {MODEL: {k: v for k, v in parts.items() if v[0] not in ('SW_HOLE_SAMPLE', 'BOSS_TAB_SAMPLE')}}
     if args.trial:
         from cad_model import document
@@ -73,24 +72,40 @@ def main():
         if upper != '1.7 mm':
             raise ValueError(f'trial row C must match v5 upper layer 1.7 mm, got {upper}')
         sources[SAMPLE] = {k: v for k, v in parts.items() if v[0] in ('SW_HOLE_SAMPLE', 'BOSS_TAB_SAMPLE')}
+    CACHE.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(dir=CACHE, prefix=f'print_v5_{order}_') as scratch:
+        export(parts, order, sources, out, Path(scratch))
+
+
+def export(parts, order, sources, out, scratch):
+    trial = order == 'order1'
+    raw = scratch / 'raw'
+    raw.mkdir()
+    input_hashes = {path: sha(path) for path in sources}
+    body_sources = {body: source for source, mapped in sources.items()
+                    for body, _, _ in mapped.values()}
     bodies = {}
     for source, source_parts in sources.items():
         script = []
         for part, (body, _, _) in source_parts.items():
             script.append(dict(command='file.export_stl', params=dict(path=str(raw / f'{part}.stl'), bodies=[body], quality='fine')))
-            script.append(dict(command='file.export_step', params=dict(path=str(out / f'46es_v5_{part}.step'), bodies=[body])))
+            script.append(dict(command='file.export_step', params=dict(path=str(scratch / f'46es_v5_{part}.step'), bodies=[body])))
         command_path = raw / (source.stem + '_export.json')
         command_path.write_text(json.dumps(script), encoding='utf-8')
         subprocess.run([CLI, 'run', str(command_path), '--in', str(source), '--quiet'], check=True)
         ev_path = raw / (source.stem + '_eval.json')
         subprocess.run([CLI, 'eval', '--in', str(source), '--json-out', str(ev_path)], check=True, capture_output=True)
-        bodies.update({b['name']: b for b in json.loads(ev_path.read_text(encoding='utf-8'))['bodies']})
+        evaluated = json.loads(ev_path.read_text(encoding='utf-8'))
+        errors = [f['name'] for f in evaluated['timeline'] if f.get('error')]
+        if errors:
+            raise ValueError(f'{source.name}: timeline errors: {errors}')
+        bodies.update({b['name']: b for b in evaluated['bodies']})
     # Both source models use assembly coordinates; combine their non-overlapping body names for mapping.
     ev_path = raw / 'eval.json'
     ev_path.write_text(json.dumps({'bodies': list(bodies.values())}), encoding='utf-8')
     records = []
     for part, (body, material, flip) in parts.items():
-        stl = out / f'46es_v5_{part}.stl'
+        stl = scratch / f'46es_v5_{part}.stl'
         orient(str(raw / f'{part}.stl'), str(stl), flip)
         m = check(str(stl))
         assert len(m['components']) == 1 and m['bad_edge_count'] == 0, (part, len(m['components']), m['bad_edge_count'])
@@ -105,20 +120,37 @@ def main():
                             cad_volume_mm3=round(cad, 4), stl_triangles=m['triangles'], stl_components=1, stl_bad_edges=0,
                             stl_volume_mm3=round(c['signed_volume'], 4), stl_rel_volume_error=round(rel, 6),
                             print_bbox_mm=[round(s, 3) for s in size], bed_zmin=round(c['bbox']['min'][2], 4),
-                            stl_sha256=sha(stl), step_sha256=sha(out / f'46es_v5_{part}.step')))
-    record_path = ROOT / ('inspection/data/seam-v5-trial-print-set.json' if args.trial else 'inspection/data/seam-v5-print-set.json')
+                            stl_sha256=sha(stl), step_sha256=sha(stl.with_suffix('.step'))))
+    if trial:
+        for row in records:
+            row['source_sha256'] = input_hashes[body_sources[row['body']]]
+    record_path = scratch / ('seam-v5-trial-print-set.json' if trial else 'seam-v5-print-set.json')
     record_path.write_text(json.dumps(records, indent=1, ensure_ascii=False), encoding='utf-8')
-    thin = ROOT / ('inspection/data/seam-v5-trial-thin-wall.json' if args.trial else 'inspection/data/seam-v5-mjf-thin-wall.json')
+    thin = scratch / ('seam-v5-trial-thin-wall.json' if trial else 'seam-v5-mjf-thin-wall.json')
     subprocess.run([sys.executable, '-I', str(ROOT / 'inspection/scripts/thin_wall_scan.py'), '--limit', '1.0', '--warn', '1.5',
                     '--json', str(thin), '--map', str(record_path), str(ev_path),
-                    *[str(out / (r['file'] + '.stl')) for r in records]], check=True, capture_output=True)
+                    *[str(scratch / (r['file'] + '.stl')) for r in records]], check=True, capture_output=True)
     scan = {t['file']: t for t in json.loads(thin.read_text(encoding='utf-8'))['parts']}
     rows = []
     for r in records:
         t = scan[r['file']]
+        wall = t['wall_min_mm']
+        limit = 0.8 if r['material'].startswith('8001') else 1.0
+        if wall is not None and wall < limit - 0.001:
+            raise ValueError(f"{r['file']}: wall {wall} mm is below {limit} mm")
         rows.append(dict(file=r['file'], material=r['material'], volume_cm3=round(r['cad_volume_mm3'] / 1000, 2),
                          size=r['print_bbox_mm'], wall_min_mm=t['wall_min_mm'], min_mm=t['min_mm']))
-    print(json.dumps(dict(ok=True, source_sha={str(p.relative_to(ROOT)): sha(p) for p in sources}, parts=rows), indent=1, ensure_ascii=False))
+    if any(sha(path) != digest for path, digest in input_hashes.items()):
+        raise ValueError('print sources changed during export')
+    # Publish only after both sources, all meshes and the wall scan succeed.
+    for row in records:
+        for extension in ('.step', '.stl'):
+            filename = row['file'] + extension
+            (scratch / filename).replace(out / filename)
+    for path in (record_path, thin):
+        path.replace(ROOT / 'inspection/data' / path.name)
+    print(json.dumps(dict(ok=True, source_sha={str(p.relative_to(ROOT)): digest for p, digest in input_hashes.items()},
+                          parts=rows), indent=1, ensure_ascii=False))
 
 
 if __name__ == '__main__':

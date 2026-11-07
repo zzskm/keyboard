@@ -12,6 +12,7 @@ import re
 import subprocess
 import zipfile
 
+from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT
 from make_key_dxf import load_keys, rect
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -273,16 +274,16 @@ def build():
            (.675,-.575),(2.25,-.575),(2.25,.575),(.675,.575),(.675,2.25),
            (-.675,2.25),(-.675,.575),(-2.25,.575)]
     layer('REF_MX_STEM',16.3+DZ,[located(cross,k) for k in keys],4)
-    guides=[(located([(x,0)],k)[0],r) for k in keys for x,r in [(0,1.925),(-4.95,.8),(4.95,.8)]]
+    pin_tip_z = round(seat_Z - MX_PIN_DEPTH_FROM_SEAT, 6)
+    pin_height = round(5.5 + DZ - pin_tip_z, 6)
+    guides=[(located([(x,0)],k)[0],r) for k in keys for x,r in MX_GUIDES]
     # Separate reference solids avoid an expensive 138-tool boolean union.
-    extrusion('REF_MX_GUIDE',sketch('REF_MX_GUIDES',2.4+DZ,circles=guides),3.1,
+    extrusion('REF_MX_GUIDE',sketch('REF_MX_GUIDES',pin_tip_z,circles=guides),pin_height,
               bodies=names('REF_MX_GUIDE',138))
-    pins=[]
-    for k in keys:
-        for x,y in [(-3.77,2.7),(2.7,5.2)]:
-            pins.append(located([(x-.43,y-.1),(x+.43,y-.1),(x+.43,y+.1),(x-.43,y+.1)],k))
-    pin_names=names('REF_MX_CONTACT',92)
-    extrusion('REF_MX_CONTACT',sketch('REF_MX_CONTACT',2.4+DZ,pins),3.1,bodies=pin_names)
+    pins = [rect(k['x'], k['y'], *MX_CONTACT_SIZE, k['rot'], off=offset)
+            for k in keys for offset in MX_CONTACTS]
+    extrusion('REF_MX_CONTACT',sketch('REF_MX_CONTACT',pin_tip_z,pins),pin_height,
+              bodies=names('REF_MX_CONTACT',92))
 
     # OEM profile values from KeyV2/oem.scad. Three alpha rows use OEM R2/R3/R4;
     # thumbs and the bottom arrow row use R5. Exact keyset row assignment is assumed.

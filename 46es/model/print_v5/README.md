@@ -2,7 +2,7 @@
 
 **주문 1 시험 → 통과 후 주문 2 본 출력.** STL/STEP 포함. CAD/실물 검증 완료·발주 완료 아님. ([design](../../docs/design.md), [validation](../../docs/validation.md))
 
-주문 1 CAD 기준 해시: [`inspection/data/seam-v5-trial-print-set.json`](../../inspection/data/seam-v5-trial-print-set.json).
+주문 1의 부품별 CAD 원본과 STL/STEP 해시는 [시험 출력 기록](../../inspection/data/seam-v5-trial-print-set.json)에 있다.
 
 ## 주문 1 — 시험 (`order1/`)
 
@@ -11,8 +11,8 @@
 | `46es_v5_sw_hole_coupon` | B 쿠폰: 홀 13.7–14.3 A/B/C, M2·M3/CB/육각. **C upper 1.7=v5 plate**(55.74 cm³) | MJF 검정 | 1 | 홀 면 아래 | 145.35×74.15×10 |
 | `46es_v5_boss_tab` | 커버 보스+자석 포켓/평면 포켓(Ø3.2/3.3/3.4), 투명 표면 견본 | **8001 투명** | 1 | 보스 위 | 30×30×11.5 |
 | `46es_v5_seam_coupon_L/R` | plate 앞 이음 부분 조각 | MJF 검정 | 각 1 | plate 윗면 아래 | 24.90/18.87 ×21.57×8 |
-| `46es_v5_mount_L/R` | 좌/우 mount(H+SO, 받침 2곳) | MJF 검정 | 각 1 | 밑면 아래 | 30.59×91.83×8 / 40.17×92.89×8 |
-| `46es_v5_mount_H02_SO3` | 가운데 뒤 mount, 받침 1곳 | MJF 검정 | 1 | 밑면 아래 | 12.88×50.74×8 |
+| `46es_v5_mount_L/R` | 좌/우 mount(H+SO, 받침 2곳, 5핀 회피 포켓) | MJF 검정 | 각 1 | 밑면 아래 | 30.59×91.83×8 / 40.17×92.89×8 |
+| `46es_v5_mount_H02_SO3` | 가운데 뒤 mount, 받침 1곳, shim 받침 보강 | MJF 검정 | 1 | 밑면 아래 | 12.88×50.74×8 |
 | `46es_v5_mount_H03_SO6` | 가운데 앞 mount, 받침 2곳 | MJF 검정 | 1 | 밑면 아래 | 69.82×13.08×8 |
 
 mount 4개는 통과 시 본 조립 사용. 시험물은 대상 부품과 동일 재료/색.
