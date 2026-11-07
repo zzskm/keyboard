@@ -25,17 +25,16 @@ python -B 46es/tools/check_repository.py
 python -I 46es/tools/update_manifest.py --check
 ```
 
-## 보존된 과거/참고 변형 (현행 제작 경로 아님)
+## 보존된 원본과 참고 모델
 
 삭제/이동 전 코드·문서·검사 의존성 확인.
 
 | 항목 | 상태 |
 |---|---|
 | `46es_draft_sketches.sc`, `parameters.csv`, `measure_psd60.html`, `jigs/` | 초기 스케치/측정/지그 기록 |
-| `46es_mount_split_v1*`, `review_split_v1/`, `../scripts/split_v1*`, `../inspection/scripts/verify_split_v1.py` | split v1 실험/검토 |
-| `46es_mount_minimal_v2*`, `review_minimal_v2/`, `../inspection/scripts/verify_minimal_v2.py` | minimal v2 실험/검토 |
-| `46es_mount_side_pairs_v3*`, `review_side_pairs_v3/`, `../inspection/scripts/verify_side_pairs_v3.py` | side-pairs v3 실험/검토 |
 | `46es_mount_tolerance*`, `46es_assembly_tolerance*` | 2026-11-04 조립 여유 검토 |
 | `reference_r2/` | DWG/r2 비교 참고 |
+
+split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `9a945ee`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 9a945ee -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다.
 
 현재 판단 기준: [`../README.md`](../README.md), [`../docs/design.md`](../docs/design.md), [`../docs/validation.md`](../docs/validation.md), [`print_v5/README.md`](print_v5/README.md).

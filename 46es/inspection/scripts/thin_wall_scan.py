@@ -226,7 +226,7 @@ def main():
                   'asm', g.get('at_assembly'), '->', g.get('to_assembly'), 'dir', g['dir_print'])
     if args.json:
         json.dump({'limit_mm': args.limit, 'warn_mm': args.warn, 'spacing_mm': args.spacing,
-                   'parts': report}, open(args.json, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+                   'parts': report}, open(args.json, 'w', encoding='utf-8', newline='\n'), ensure_ascii=False, indent=1)
 
 
 if __name__ == '__main__':

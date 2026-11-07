@@ -194,7 +194,7 @@ MJF_MAX = (370.0, 276.0)
 
 def check_print_set(bodies, v4_bodies):
     """print_v5/order2 STL/STEP files: hashes as recorded, one component, no open edges, volume = CAD, MJF 1.0 / resin 0.8
-    walls, box on the bed and inside the MJF build volume; spine, bracket and gate keep the v4 volumes."""
+    walls, box on the bed and inside the MJF build volume; the spine keeps the v4 volume."""
     parts = json.loads((ROOT / 'inspection/data/seam-v5-print-set.json').read_text(encoding='utf-8'))
     thin = {t['file']: t for t in json.loads((ROOT / 'inspection/data/seam-v5-mjf-thin-wall.json').read_text(encoding='utf-8'))['parts']}
     assert {p['file'] for p in parts} == PRINT_SET_FILES == set(thin), (set(thin), {p['file'] for p in parts})

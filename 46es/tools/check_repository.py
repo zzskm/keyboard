@@ -135,9 +135,8 @@ def print_checks(current, sample):
             body, material, flip = expected[name.removeprefix('46es_v5_')]
             require((p['body'], p['material'], p['print_flip_about_X']) == (body, material, flip), f'wrong print mapping: {name}')
             require(body in current or body in sample, f'CAD body missing: {body}')
-            if order == 'order1':
-                require(p.get('source_sha256') == (sample_sha if body in sample else model_sha),
-                        f'stale trial CAD source: {name}')
+            require(p.get('source_sha256') == (sample_sha if body in sample else model_sha),
+                    f'stale {order} CAD source: {name}')
             for ext, key in [('.stl', 'stl_sha256'), ('.step', 'step_sha256')]:
                 require(sha(folder / (name + ext)) == p[key], f'output hash differs: {name}{ext}')
             scan = scans[name]

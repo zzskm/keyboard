@@ -22,6 +22,19 @@ python -m http.server 8766 --bind 127.0.0.1 --directory 46es/guide/out
 
 `.cache/`, `out/`, `out_*/`는 생성물(Git 제외). 배포: `index.html,img/,models/,vendor/,assembly.json,JS/CSS` 복사. 게시 저장소=`zzskm.github.io/keyboard-46es/`(이 저장소 커밋만으로 게시 갱신 아님).
 
+## 시각 검토
+
+형상·체결·배치·조립 순서·부품 설명이 바뀌면 변경 단계와 완성 상태를 확인한다. 먼저 조립 검토 CAD를 갱신하고 위 검사를 실행한다. 다음 명령은 현행 CAD에서 로컬 조립 뷰를 빌드한 뒤 브라우저에서 지정한 단계와 마지막 단계를 열고, 2D 조립도와 3D 캡처를 남긴다. 시각 검토용 빌드는 게시 가이드의 정적 CAD 스냅샷 생성을 생략한다. Playwright와 Chrome이 필요하며 다른 Chromium 실행 파일은 `BROWSER_EXECUTABLE`로 지정한다.
+
+```sh
+# 예시: 마운트와 컨트롤러 변경 검토
+python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --views iso bottom
+```
+
+명령이 출력하는 `guide/.cache/visual-review/`의 실행 폴더에는 로컬 `site/`, 캡처와 `review.json`이 들어간다. 기록은 원본 CAD·검토 CAD 해시, 실제 단계 ID·제목, 이미지 파일을 묶는다. 캡처 후에는 부품 표시·강조·수량, 체결 방향, 설치 및 분해 접근 공간을 눈으로 확인하고 변경 보고에 판정을 적는다. 예를 들어 마운트 변경이면 장착 단계와 plate를 얹은 상태를 함께 확인한다. 자동 캡처 직후 기록 상태는 `pending_manual_review`다.
+
+가이드 화면·3D 조작을 바꿨다면 아래의 전체 브라우저 검사로 데스크톱·모바일과 3D 실패 대체 화면도 확인한다. 기존 게시 자산으로 UI만 확인했다면 `UI 미리보기`, 실행할 수 없었다면 `미실행`, 가이드에 영향이 없는 정리라면 `대상 없음`으로 보고한다.
+
 ## spec
 
 `groups`=CAD 바디 패턴+`@그룹`. `renders`=표시/카메라/단면. 본문 토큰 `{{p:}} {{v:}} {{d:}} {{n:}}`. yaw 0=−Y(앞), −π/2=+X. 조립 단계 ID/구매품 ID는 체크·진행 기록에 쓰이므로 변경 금지. 3D 단계는 `assembly_v5.json`(`show,focus,needs,view,hardwareStages`). 배선은 3D 형상 없음, 케이스/하드웨어/키캡은 참고. `assets/vendor/`=Three.js 0.180.0+MIT(오프라인). 3D 뷰어는 버튼 클릭 시 로드.
