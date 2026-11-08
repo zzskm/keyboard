@@ -20,7 +20,7 @@ import sys
 import zipfile
 
 import ezdxf
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import LineString, Point, Polygon, box
 from shapely.ops import polygonize, unary_union
 
 from make_key_dxf import load_keys, rect
@@ -42,6 +42,8 @@ COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 
 FRONT_MOUNT = 'MOUNT_H03_SO6_MIN_V2'
 SEAT_ROOT_Z = 1.5
+LEFT_SEAT_ROOT_Z = 2.85
+M3_LAND_ROOT_Z = 2.6
 
 # KS-3X1 drawing XY, with conservative cylindrical guides and rectangular contacts.
 # Both reference pin families extend to Z 2.7 at the v5 switch seat (Z 11.3).
@@ -209,6 +211,120 @@ def mount_cadcraft_profiles():
     if len(rear_seats) != 1 or len(rear_shims) != 1:
         raise ValueError('CADCraft Rear plate and shim support profiles are missing')
     supports['REAR'] = [Polygon(rear_seats[0].get_points('xy'))]
+    rear_existing = [entity for entity in entities
+                     if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_SUPPORT_EXISTING']
+    if len(rear_existing) != 1:
+        raise ValueError('CADCraft Rear legacy support profile is missing')
+    rear_old = Polygon(rear_existing[0].get_points('xy'))
+    rear_head_recesses = [Polygon(entity.get_points('xy')) for entity in entities
+                          if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_HEAD_RECESSES']
+    rear_head_keepouts = unary_union([shape for shape in rear_head_recesses if shape.intersects(rear_old)])
+    rear_support_trim = rear_old.difference(supports['REAR'][0]).difference(rear_head_keepouts).buffer(0)
+    rear_support_trim = unary_union([shape for shape in
+                                     (list(rear_support_trim.geoms) if hasattr(rear_support_trim, 'geoms') else [rear_support_trim])
+                                     if shape.geom_type == 'Polygon' and shape.area > 0.01])
+    if not rear_support_trim.is_valid:
+        raise ValueError('CADCraft Rear legacy support trim is invalid')
+
+    boss_circles = [entity for entity in entities
+                    if entity.dxftype() == 'CIRCLE' and entity.dxf.layer == 'L_SO_SUPPORT_EXISTING']
+    boss_octagons = [entity for entity in entities
+                     if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'L_SO_SUPPORT_OCTAGON']
+    if len(boss_circles) != 6 or len(boss_octagons) != 6 or not all(entity.closed for entity in boss_octagons):
+        raise ValueError('All six M3 support lands need round reference and closed octagonal profiles')
+    support_envelopes = [entity for entity in entities
+                         if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'M3_SUPPORT_ENVELOPES']
+    if len(support_envelopes) != 6 or not all(entity.closed for entity in support_envelopes):
+        raise ValueError('All six M3 support envelopes must be closed DXF profiles')
+    hole_layers = {'L_THROUGH_HOLES', 'R_THROUGH_HOLES', 'REAR_THROUGH_HOLES', 'FRONT_THROUGH_HOLES'}
+    head_layers = {'L_HEAD_RECESSES', 'R_HEAD_RECESSES', 'REAR_HEAD_RECESSES', 'FRONT_HEAD_RECESSES'}
+    all_holes = [Polygon(entity.get_points('xy')) for entity in entities
+                 if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer in hole_layers]
+    all_heads = [Polygon(entity.get_points('xy')) for entity in entities
+                 if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer in head_layers]
+    anchor_map = {
+        'SO1': ((6.494, 6.520), LEFT_MOUNT),
+        'SO2': ((6.494, 87.945), LEFT_MOUNT),
+        'SO3': ((130.881, 87.945), REAR_MOUNT),
+        'SO4': ((250.420, 89.007), RIGHT_MOUNT),
+        'SO5': ((278.519, 6.520), RIGHT_MOUNT),
+        'SO6': ((130.881, 6.520), FRONT_MOUNT),
+    }
+    standoff_lands = []
+    seen_bosses = set()
+    seen_octagons = set()
+    seen_envelopes = set()
+    outline_suffix = {LEFT_MOUNT: 'L', RIGHT_MOUNT: 'R', REAR_MOUNT: 'REAR',
+                      'MOUNT_H03_SO6_MIN_V2': 'FRONT'}
+    for circle in boss_circles:
+        center = (circle.dxf.center.x, circle.dxf.center.y)
+        point = Point(center)
+        name = min(anchor_map, key=lambda key: Point(anchor_map[key][0]).distance(point))
+        anchor, target = anchor_map[name]
+        if point.distance(Point(anchor)) > 0.005 or name in seen_bosses:
+            raise ValueError(f'{name} support land has a duplicate or misplaced anchor: {center}')
+        seen_bosses.add(name)
+        if abs(circle.dxf.radius - 5.2) > 0.005:
+            raise ValueError(f'{name} support land radius changed unexpectedly: {circle.dxf.radius}')
+        octagon_entity = min(boss_octagons,
+                             key=lambda entity: Polygon(entity.get_points('xy')).centroid.distance(point))
+        octagon_key = octagon_entity.dxf.handle
+        if octagon_key in seen_octagons:
+            raise ValueError(f'{name} shares an octagon with another M3 support land')
+        seen_octagons.add(octagon_key)
+        octagon = Polygon(octagon_entity.get_points('xy'))
+        if len(octagon.exterior.coords) != 9 or not octagon.is_valid or point.distance(octagon.centroid) > 0.005:
+            raise ValueError(f'{name} octagon is not anchored at its M3 bore: {center}')
+        af = 2 * octagon.boundary.distance(point)
+        if abs(af - 8.5) > 0.005:
+            raise ValueError(f'{name} support octagon must be AF 8.5 mm on the 0.5 mm snap grid: {af}')
+        round_land = Point(center).buffer(circle.dxf.radius + 0.2, quad_segs=32)
+        if not round_land.buffer(0.005).covers(octagon):
+            raise ValueError(f'{name} octagon exceeds its 5.2 mm reference land: {center}')
+        matching_hole = min(all_holes, key=lambda shape: shape.centroid.distance(point))
+        matching_head = min(all_heads, key=lambda shape: shape.centroid.distance(point))
+        if matching_hole.centroid.distance(point) > 0.005 or matching_head.centroid.distance(point) > 0.005:
+            raise ValueError(f'{name} anchor does not match its through-hole and head seat: {center}')
+        wall = octagon.boundary.distance(matching_head.boundary)
+        if wall < 1.0:
+            raise ValueError(f'{name} octagonal land leaves less than 1 mm to the head seat: {wall}')
+        envelope_entity = min(support_envelopes,
+                              key=lambda entity: Polygon(entity.get_points('xy')).centroid.distance(point))
+        envelope_key = envelope_entity.dxf.handle
+        if envelope_key in seen_envelopes:
+            raise ValueError(f'{name} shares an extension envelope with another M3 land')
+        seen_envelopes.add(envelope_key)
+        envelope = Polygon(envelope_entity.get_points('xy'))
+        expected_envelope = octagon.buffer(1.2, join_style='mitre')
+        if not envelope.is_valid or envelope.centroid.distance(point) > 0.005 or \
+                envelope.symmetric_difference(expected_envelope).area > 0.02:
+            raise ValueError(f'{name} support envelope must preserve a 1.2 mm web around its AF8.5 land')
+        suffix = outline_suffix[target]
+        vertices = sorted(octagon.exterior.coords[:-1],
+                          key=lambda v: math.atan2(v[1] - center[1], v[0] - center[0]))
+        octagon = Polygon(vertices)
+        web_rim = octagon.buffer(1.2, join_style='mitre')
+        web_inside = octagon.buffer(-0.85, join_style='mitre')
+        trim_rim = octagon.buffer(1.5, join_style='mitre')
+        if suffix == 'R':
+            expanded_outline = unary_union([outlines[suffix], envelope]).buffer(0)
+            if expanded_outline.geom_type != 'Polygon' or not expanded_outline.is_valid:
+                raise ValueError(f'{name} support envelope disconnects the Right mount outline')
+            outlines[suffix] = expanded_outline
+            web = None
+        elif suffix == 'FRONT':
+            # Stop short of the controller bracket in Y and keep 1.1 mm to the seam nut in X.
+            web = web_rim.intersection(box(-10, -10, 135.75, 11.15)).difference(web_inside)
+            trim_rim = trim_rim.intersection(box(-10, -10, 135.85, 120))
+        elif suffix == 'L':
+            web = Polygon(web_rim.exterior.coords, [web_inside.exterior.coords])
+        else:
+            web = web_rim.difference(web_inside)
+        trim = (trim_rim.difference(octagon) if suffix == 'FRONT'
+                else Polygon(trim_rim.exterior.coords, [octagon.exterior.coords]))
+        standoff_lands.append((name, center, target, web, trim))
+    if seen_bosses != set(anchor_map) or len(seen_octagons) != len(anchor_map) or len(seen_envelopes) != 6:
+        raise ValueError('Each of the six M3 standoff centers needs one octagonal land and support envelope')
     # The plate has a downturned inner lip along the left edge. Keep the
     # bearing pads clear of its measured footprint while retaining the datum.
     inner_lip_clearance = Polygon([(1.7, -10), (300, -10), (300, 110), (1.7, 110)])
@@ -246,13 +362,21 @@ def mount_cadcraft_profiles():
     for suffix, outline in outlines.items():
         saved = basis['outline_sections'][suffix]['polygons']
         old_footprint = unary_union([Polygon(points) for points in saved])
-        overlap = 0.2 if suffix in {'R', 'REAR', 'FRONT'} else 0.02
-        addition = outline.difference(old_footprint).buffer(overlap).intersection(outline)
-        addition = addition.difference(reliefs[suffix]).buffer(0)
+        missing = outline.difference(old_footprint)
+        overlap = 0.02 if suffix == 'L' else 0.2
+        addition = missing.buffer(overlap).intersection(outline).difference(reliefs[suffix]).buffer(0)
         addition = addition.simplify(0.08, preserve_topology=True).buffer(0)
         parts = list(addition.geoms) if hasattr(addition, 'geoms') else [addition]
-        additions[suffix] = unary_union([part for i, part in enumerate(parts, 1)
-                                          if part.geom_type == 'Polygon' and part.area > (20.0 if suffix == 'R' else 10.0)])
+        fills = unary_union([part for part in parts
+                             if part.geom_type == 'Polygon' and part.area > (20.0 if suffix == 'R' else 10.0)])
+        additions[suffix] = list(fills.geoms) if hasattr(fills, 'geoms') else [fills]
+        if suffix == 'R':
+            # The SO5 fill meets the inset source clip. Increase overlap there to close the narrow seam.
+            first = next(i for i, part in enumerate(additions[suffix]) if part.bounds[1] < 2.0)
+            joined = missing.buffer(0.35).intersection(outline).difference(reliefs[suffix])
+            joined = joined.simplify(0.08, preserve_topology=True).buffer(0)
+            additions[suffix][first] = max(joined.geoms,
+                                           key=lambda part: part.intersection(additions[suffix][first]).area)
 
     keys = load_keys(.693, .667)
     key46 = keys[45]
@@ -261,6 +385,7 @@ def mount_cadcraft_profiles():
     switch11 = Polygon(rect(key11['x'], key11['y'], 16.5, 16.5, key11['rot']))
     return dict(outlines=outlines, clip_outlines=clip_outlines, supports=supports, additions=additions,
                 rear_shim=Polygon(rear_shims[0].get_points('xy')),
+                rear_support_trim=rear_support_trim, standoff_lands=standoff_lands,
                 switch11=switch11, switch46=switch46,
                 nut_clearance=Point(139.5, 6.6).buffer(2.55, quad_segs=24),
                 mount_names=mount_names)
@@ -514,6 +639,28 @@ def build(probe=False):
                     operation='cut', targets=[mount])
 
     cadcraft = mount_cadcraft_profiles()
+    standoff_lands = {name: (target, web, trim) for name, _, target, web, trim in cadcraft['standoff_lands']}
+
+    def land_extrude(name, z, profile, distance, operation, target):
+        outer, inner = polygons_for_sketch(profile)
+        land_plane = dict(type='offset', base=frame_plane, distance=z)
+        land_sketch = sketch(f'SK_{name}', land_plane, [outer, inner])
+        # Select the outside loop explicitly. Selecting all regions would also cut the land.
+        profiles = dict(type='curves', loops=[[f'l{i}' for i in range(1, len(outer) + 1)]])
+        feature('extrude', name, sketch=land_sketch, profiles=profiles,
+                extent=dict(convention='total_distance', direction='positive', distance=distance),
+                operation=operation, targets=[target])
+
+    def land_web(name, target, web):
+        # SO6 can end flush. The other webs avoid coplanar faces with the existing upper surface.
+        distance = 'TBD_frame_T - 0.75' if name == 'SO6' else 'TBD_frame_T - 0.80'
+        land_extrude(f'MOUNT_CADCRAFT_{name}_FOOT_WEB', '0.75', web, distance, 'join', target)
+
+    def land_trim(name, target, trim):
+        distance = 'TBD_frame_T - 2.55' if name in {'SO1', 'SO2', 'SO3'} else 'TBD_frame_T - 2.6'
+        land_extrude(f'MOUNT_CADCRAFT_{name}_OCTAGON_TRIM_V7', str(M3_LAND_ROOT_Z),
+                     trim, distance, 'cut', target)
+
     basis_path = ROOT / 'model/mounts_cadcraft_phase1_basis.json'
     basis = json.loads(basis_path.read_text(encoding='utf-8'))
     if basis['basis_model_sha256'] != '214fd0b5177c33c5fd5ec65036e8af159e74a5ac4ce52e487582ebfdc3b66cc6':
@@ -535,8 +682,7 @@ def build(probe=False):
                 extent=dict(convention='total_distance', direction='positive', distance=clip_overrun),
                 operation='intersect', targets=[mount])
 
-        additions = cadcraft['additions'][suffix]
-        parts = list(additions.geoms) if hasattr(additions, 'geoms') else [additions]
+        parts = cadcraft['additions'][suffix]
         start_z = SEAT_ROOT_Z if suffix == 'REAR' else 0.0
         addition_plane = dict(type='offset', base=frame_plane, distance=str(start_z))
         for i, part in enumerate(parts, 1):
@@ -547,8 +693,25 @@ def build(probe=False):
                     extent=dict(convention='total_distance', direction='positive',
                                 distance=f'TBD_frame_T - {start_z}'),
                     operation='join', targets=[mount])
+        if suffix == 'L':
+            for name in ('SO1', 'SO2'):
+                target, web, _ = standoff_lands[name]
+                land_web(name, target, web)
 
     seat_plane = dict(type='offset', base=frame_plane, distance=str(SEAT_ROOT_Z))
+    # Remove the raised old Rear seat outside the replacement profile above the frame.
+    # The frame, head seat and the independent spine shim datum are preserved.
+    rear_trim = cadcraft['rear_support_trim']
+    if not rear_trim.is_empty:
+        rear_plane = dict(type='offset', base=frame_plane, distance='TBD_frame_T + 0.03')
+        rear_trim_sketch = sketch('SK_MOUNT_CADCRAFT_REAR_SUPPORT_LEGACY_TRIM_V7', rear_plane,
+                                  polygons_for_sketch(rear_trim))
+        feature('extrude', 'MOUNT_CADCRAFT_REAR_SUPPORT_LEGACY_TRIM_V7',
+                sketch=rear_trim_sketch, profiles=dict(type='all'),
+                extent=dict(convention='total_distance', direction='positive',
+                            distance='v4_plate_top_Z - TBD_plate_T - TBD_frame_T + 0.02'),
+                operation='cut', targets=[REAR_MOUNT])
+
     support_indices = {suffix: 0 for suffix in cadcraft['supports']}
     for suffix, support_shapes in cadcraft['supports'].items():
         mount = cadcraft['mount_names'][suffix]
@@ -558,7 +721,16 @@ def build(probe=False):
             if suffix == 'FRONT' and index == 1:
                 support_shape = support_shape.difference(cadcraft['nut_clearance'])
             name = f'MOUNT_CADCRAFT_{suffix}_SUPPORT_{index}_V6'
-            support_sketch = sketch(f'SK_{name}', seat_plane, polygons_for_sketch(support_shape))
+            support_root = SEAT_ROOT_Z
+            support_plane = seat_plane
+            if suffix == 'L':
+                anchor = f'SO{index}'
+                target, _, trim = standoff_lands[anchor]
+                land_trim(anchor, target, trim)
+                # Join the bearing pad above the octagon relief floor, keeping the plate datum at Z 8.
+                support_root = LEFT_SEAT_ROOT_Z
+                support_plane = dict(type='offset', base=frame_plane, distance=str(support_root))
+            support_sketch = sketch(f'SK_{name}', support_plane, polygons_for_sketch(support_shape))
             if suffix == 'FRONT' and index == 1:
                 x0, y0, x1, y1 = cadcraft['supports'][suffix][index - 1].bounds
                 feature('box', f'{name}_BBOX', corner=[x0, y0, str(SEAT_ROOT_Z)],
@@ -574,7 +746,7 @@ def build(probe=False):
                 continue  # This profile produces no geometry change in the SolidCraft body.
             feature('extrude', name, sketch=support_sketch, profiles=dict(type='all'),
                     extent=dict(convention='total_distance', direction='positive',
-                                distance=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}'),
+                                distance=f'v4_plate_top_Z - TBD_plate_T - {support_root}'),
                     operation='join', targets=[mount])
 
     right_support_collision = cadcraft['supports']['R'][1].intersection(cadcraft['switch46']).buffer(0.15)
@@ -634,6 +806,12 @@ def build(probe=False):
             extent=dict(convention='total_distance', direction='positive',
                         distance=f'TBD_frame_T + 0.05 - ({floor})'),
             operation='cut', targets=[RIGHT_MOUNT])
+
+    for name in ('SO3', 'SO4', 'SO5', 'SO6'):
+        target, web, trim = standoff_lands[name]
+        if web is not None:
+            land_web(name, target, web)
+        land_trim(name, target, trim)
 
     doc['name'] = '46es seam v5 - flat cover and direct plate supports'
     seed = CACHE / 'seed_v5.sc'

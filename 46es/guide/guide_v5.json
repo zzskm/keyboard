@@ -604,7 +604,7 @@
           "z": "받침 윗면 Z 8",
           "color": "#9aa0a8",
           "title": "mount 4개.",
-          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 끝을 둥글게 다듬은 일체형 받침 7곳의 평면이 plate 밑면에 닿는다. 좌측 두 받침은 스탠드오프 보스 쪽이 넓다."
+          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 일체형 받침 7곳이 plate 밑면에 닿는다. SO1–SO6 체결 홀 외곽은 맞은편 면 사이 8.5 mm의 팔각형이다. Rear는 새 plate 받침과 spine shim 기준면을 사용한다. Front V 홈은 스위치 회피 공간이다."
         },
         {
           "z": "Z 0 기준",
@@ -1172,8 +1172,8 @@
               "id": "standoff",
               "title": "mount에 지지대 고정",
               "render": "st-mounts",
-              "text": "케이스 밖에서 한다. 각 mount 포켓에 M3 지지대를 넣고 아래에서 M3×5로 조인다. 좌 pair는 SO1·SO2, 우 pair는 SO4·SO5, 중앙은 SO3, 앞은 SO6이다.",
-              "check": "지지대가 포켓 바닥(Z 2)에 붙어 있고 돌지 않는다."
+              "text": "케이스 밖에서 팔각형 랜드 중앙의 육각 포켓에 M3 지지대를 넣고 아래에서 M3×5로 조인다. 좌 pair는 SO1·SO2, 우 pair는 SO4·SO5, Rear는 SO3, Front는 SO6이다.",
+              "check": "지지대가 육각 포켓 바닥(Z 2)에 밀착되고 아래 나사 머리가 원형 받침면에 고르게 닿는다. 조인 지지대는 돌지 않는다."
             },
             {
               "id": "case-loose",
@@ -1209,7 +1209,7 @@
               "id": "trial",
               "title": "plate 임시 장착으로 위치 맞추기",
               "render": "st-trial",
-              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. 중앙 spine 받침의 shim과 새 plate 받침의 접촉을 따로 확인한다.",
+              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. Rear의 spine shim과 새 plate 받침의 접촉을 각각 확인한다. Front V 홈에서 스위치와 mount 사이 여유를 본다.",
               "check": "나사 없이 지지대 구멍 6곳이 맞고, plate가 받침 위에서 흔들리지 않는다.",
               "fix": "pair의 두 지지대 간격이 plate와 다르면 mount 쪽 포켓을 줄로 넓힌다(열린 항목 4)."
             },

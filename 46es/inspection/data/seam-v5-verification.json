@@ -1,7 +1,7 @@
 {
  "ok": true,
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "62cdb7de1ca742804658cdc118166b730540e3653e74a3309f565c6a97d47b81",
+ "v5_sha": "d63488e093a272a52dd9951e29125081b0d2105db691f2a50480f5be15464e13",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
  "print_set": [
   {
@@ -181,8 +181,8 @@
   "REF_LEGMAG_R_COVER",
   "REF_LEGMAG_R_PLATE"
  ],
- "timeline": 518,
- "sketches": 100,
+ "timeline": 540,
+ "sketches": 111,
  "params": 211,
  "new_params": [
   "v5_cover_top_Z",
@@ -270,6 +270,68 @@
    "top_Z": 8.0,
    "profile_area_mm2": 73.725,
    "contact_area_mm2": 73.725
+  }
+ ],
+ "standoff_lands": [
+  {
+   "name": "SO1",
+   "mount": "MOUNT_L_PAIR_V3",
+   "center": [
+    6.494,
+    6.52
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
+  },
+  {
+   "name": "SO2",
+   "mount": "MOUNT_L_PAIR_V3",
+   "center": [
+    6.494,
+    87.945
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
+  },
+  {
+   "name": "SO3",
+   "mount": "MOUNT_H02_SO3_MIN_V2",
+   "center": [
+    130.881,
+    87.945
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
+  },
+  {
+   "name": "SO4",
+   "mount": "MOUNT_R_PAIR_V3",
+   "center": [
+    250.42,
+    89.007
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
+  },
+  {
+   "name": "SO5",
+   "mount": "MOUNT_R_PAIR_V3",
+   "center": [
+    278.519,
+    6.52
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
+  },
+  {
+   "name": "SO6",
+   "mount": "MOUNT_H03_SO6_MIN_V2",
+   "center": [
+    130.881,
+    6.52
+   ],
+   "flats": 8,
+   "across_flats_mm": 8.5
   }
  ],
  "leg_magnets": {

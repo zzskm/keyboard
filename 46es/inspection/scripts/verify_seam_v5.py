@@ -5,12 +5,15 @@ Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
 """
 import csv, hashlib, json, math, subprocess, sys
 from pathlib import Path
+
+from shapely.geometry import LineString, Point
+from shapely.ops import unary_union
 from cad_model import ROOT, live_shapes, document
 from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z,  # noqa: E402
+from build_seam_v5 import (COVERS, LEFT_SEAT_ROOT_Z, M3_LAND_ROOT_Z, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z,  # noqa: E402
                            horizontal_faces, mount_cadcraft_profiles, top_levels)
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
@@ -276,6 +279,30 @@ def cover_levels(params, bodies, flat_bodies):
     return levels
 
 
+def verify_standoff_lands(shapes):
+    tolerance = 0.004
+    lands = []
+    for name, center, mount, _, trim in mount_cadcraft_profiles()['standoff_lands']:
+        boundary = trim.interiors[0]
+        lines = []
+        for solid in shapes[mount]:
+            for shell in solid['shells']:
+                for edge in shell['edges']:
+                    if edge['curve']['kind'] != 'line':
+                        continue
+                    a, b = (shell['vertices'][i] for i in edge['vertices'])
+                    if max(abs(a[2] - M3_LAND_ROOT_Z), abs(b[2] - M3_LAND_ROOT_Z)) <= tolerance:
+                        lines.append(LineString([a[:2], b[:2]]))
+        flats = unary_union(lines).buffer(tolerance)
+        sides = [LineString([a, b]) for a, b in zip(boundary.coords, boundary.coords[1:])]
+        assert len(sides) == 8
+        assert all(flats.intersection(side).length >= 0.995 * side.length for side in sides), name
+        across_flats = [round(2 * side.distance(Point(center)), 3) for side in sides]
+        assert all(abs(af - 8.5) <= 0.005 for af in across_flats), (name, across_flats)
+        lands.append(dict(name=name, mount=mount, center=center, flats=len(sides), across_flats_mm=8.5))
+    return lands
+
+
 def support_contact_plan(params):
     """Build bearing probes so contacts and assembly clearances share one CLI model load."""
     z = params['v4_plate_top_Z'] - params['TBD_plate_T']
@@ -301,10 +328,11 @@ def support_contact_plan(params):
             support_number += 1
             feature_name = f'MOUNT_CADCRAFT_{suffix}_SUPPORT_{index}_V6'
             probe_name = f'SEAT_PROBE_{support_number}'
+            root = LEFT_SEAT_ROOT_Z if suffix == 'L' else SEAT_ROOT_Z
             commands.append(dict(command='solid.extrude', params=dict(
                 name=probe_name, body_name=probe_name,
                 sketch=f'SK_{feature_name}', profiles='all',
-                start_offset=z - SEAT_ROOT_Z - 0.05, distance=0.1, operation='new')))
+                start_offset=z - root - 0.05, distance=0.1, operation='new')))
             probes[probe_name] = (mount, plate, support.area, feature_name)
     commands.append(dict(command='inspect.clearance', params=dict(
         bodies=list(probes), against=plates, clearance=0.01, min_volume=0.000001)))
@@ -506,7 +534,7 @@ def main():
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
                   params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
-                  plate_supports=seats,
+                  plate_supports=seats, standoff_lands=verify_standoff_lands(new),
                   leg_magnets=walls,
                   clearance=clearance_summary, mount_screw_interface=clearance['mount_screw_interface'],
                   plate_files_unchanged=exports.get('plate_files_unchanged_since_previous_export'), parts=parts)
