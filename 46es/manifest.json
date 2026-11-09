@@ -291,8 +291,8 @@
     {
       "path": "inspection/data/seam-v5-verification.json",
       "bytes": 14740,
-      "sha256": "c8e91057bbf96cd3bec5cf61f9ecb84620f618e162c62c065ed8a3d5da445e10",
-      "git_blob_sha": "d56d00e33a7099137e91dc8a4d798d36bdcf76d8"
+      "sha256": "dc63136f63f0b17ea09b0f77dabf3e9b116a7f5bb45d5b55de21d8b8a9ead581",
+      "git_blob_sha": "64b7be5a7970689e5fb0160cd60f5753362a2161"
     },
     {
       "path": "inspection/derived/46es_r2_keyboard_modelspace.dxf",
@@ -1046,9 +1046,9 @@
     },
     {
       "path": "tools/build_seam_v5.py",
-      "bytes": 38419,
-      "sha256": "aed2f2463a089a21f08021773da4fa00123fb5b896fd0e2ef560f51719f71614",
-      "git_blob_sha": "254c3ac9f453c93d94ef745263e44c66c233e004"
+      "bytes": 45061,
+      "sha256": "42b9514b1ecc95b75eaba5e597849f37094589257618fda650c6bd1537a939a5",
+      "git_blob_sha": "27c2bbd9309d694c7510406a026e19eeceb14639"
     },
     {
       "path": "tools/cad_eval_cache.py",
