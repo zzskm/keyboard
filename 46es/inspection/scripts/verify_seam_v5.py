@@ -13,7 +13,8 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, horizontal_faces, top_levels  # noqa: E402
+from build_seam_v5 import COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, horizontal_faces, top_levels, ctrl_params  # noqa: E402
+import ctrl_v5  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 
@@ -25,17 +26,22 @@ V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
 # The assumed switch envelopes and the Wilmore housing stand-in are reference-only and no longer evaluated in production.
 REMOVED = REMOVED_BODIES
-CHANGED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'}
+CHANGED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1',
+                                       'REF_M2_PLATE_1', 'REF_M2_PLATE_2', 'REF_M2_PLATE_1_NUT', 'REF_M2_PLATE_2_NUT'}
 # Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
 # the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
 DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
-ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}
+ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE', *ctrl_v5.TRIALS}
 NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_legmag_skin_min', 'v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z',
               'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_cover_top_above_rim',
               'v5_key_margin', 'v5_legmag_plate_clr', 'v5_legpad_L', 'v5_lip_relief_clr',
-              'v5_legmag_L_X', 'v5_legmag_L_Y', 'v5_legmag_R_X', 'v5_legmag_R_Y'}
+              'v5_legmag_L_X', 'v5_legmag_L_Y', 'v5_legmag_R_X', 'v5_legmag_R_Y'} | {name for name, _, _ in ctrl_params()}
 CHANGED_PARAMS = {'TBD_cover_T', 'TBD_upper_plate_T'}
 MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
+# v4 plate gate reliefs removed with the gate (boxes inside solid plate, Z 8-10); the moved screw holes keep their volume
+PLATE_L_GATE_RELIEF_MM3 = 8.319 * 7.4 * 2.0 + 1.9 * 4.0 * 2.0
+COUPON_L_GATE_RELIEF_MM3 = ((120.7 - 118.0) * 7.4 * 2.0          # gate relief part (the coupon trim starts at X 118)
+                            + math.pi * 1.2 ** 2 * 2.2 + math.pi * 2.2 ** 2 * 2.8)   # v4 hole: clear Z 8-10.2, head Z 10.2-13
 CACHE = ROOT / 'guide/.cache/v5'
 
 
@@ -370,7 +376,7 @@ def support_contacts(params, shapes, plan, results):
 
 # ---------------------------------------------------------------- order-2 print set (3rd pass, tools/export_print_v5.py)
 PRINT_V5 = ROOT / 'model/print_v5/order2'
-PRINT_SET_FILES = {'46es_v5_plate_L', '46es_v5_plate_R', '46es_v5_spine', '46es_v5_ctrl_bracket', '46es_v5_ctrl_gate',
+PRINT_SET_FILES = {'46es_v5_plate_L', '46es_v5_plate_R', '46es_v5_spine', '46es_v5_ctrl_bracket',
                    '46es_v5_cover_L', '46es_v5_cover_T', '46es_v5_cover_R'}
 SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1'}
 MJF_MAX = (370.0, 276.0)
@@ -457,16 +463,27 @@ def main():
     v4_eval = json.loads(v4_eval_path.read_text(encoding='utf-8'))
     v4_bodies = {b['name']: b for b in v4_eval['bodies']}
     for n in DERIVED:
-        assert abs(bodies[n]['volume_mm3'] - v4_bodies[n]['volume_mm3']) < 1e-3, n
+        # the left coupon copies the plate before the new bracket screw holes: it loses the v4 hole at (125, 17)
+        # and the gate relief part, nothing else
+        expected = v4_bodies[n]['volume_mm3'] + (COUPON_L_GATE_RELIEF_MM3 if n == 'SEAM_COUPON_L_V4' else 0.0)
+        assert abs(bodies[n]['volume_mm3'] - expected) < 0.05, (n, bodies[n]['volume_mm3'], expected)
         assert all(abs(bodies[n]['bbox'][k][i] - v4_bodies[n]['bbox'][k][i]) < 1e-6 for k in ('min', 'max') for i in range(3)), n
     flat_eval = CACHE / 'eval_v5_flat_Z18.json'
     if not flat_eval.exists():
         subprocess.run([CLI, 'eval', '--in', str(FLAT), '--json-out', str(flat_eval)], check=True, capture_output=True)
     flat_bodies = {b['name']: b for b in json.loads(flat_eval.read_text(encoding='utf-8'))['bodies']}
     flat_shapes = live_shapes(FLAT)
-    for n in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):   # the 2nd pass touches the covers only
-        assert abs(bodies[n]['volume_mm3'] - flat_bodies[n]['volume_mm3']) < 1e-6, n
-        assert flat_shapes[n] == new[n], n
+    # the 2nd pass touches the covers only; phase 2 (2026-11-09) moves the left plate's two bracket screw holes and
+    # drops the gate reliefs, so PLATE_L may differ from the snapshot by exactly that
+    assert abs(bodies['PLATE_R_SPLIT_V1']['volume_mm3'] - flat_bodies['PLATE_R_SPLIT_V1']['volume_mm3']) < 1e-6
+    # PLATE_R is re-evaluated with PLATE_L in some shared cuts, so its cached BRep may list the same faces in another
+    # order with float noise: compare the evaluated solid instead of the cache bytes
+    fr, nr = flat_bodies['PLATE_R_SPLIT_V1'], bodies['PLATE_R_SPLIT_V1']
+    assert all(fr[k] == nr[k] for k in ('faces', 'edges', 'vertices', 'face_types')), 'PLATE_R topology changed'
+    assert abs(fr['area_mm2'] - nr['area_mm2']) < 1e-6 and all(
+        abs(fr['bbox'][k][i] - nr['bbox'][k][i]) < 1e-6 for k in ('min', 'max') for i in range(3)), 'PLATE_R changed'
+    plate_l_delta = bodies['PLATE_L_SPLIT_V1']['volume_mm3'] - flat_bodies['PLATE_L_SPLIT_V1']['volume_mm3']
+    assert abs(plate_l_delta - PLATE_L_GATE_RELIEF_MM3) < 0.05, plate_l_delta
     levels = cover_levels(params, bodies, flat_bodies)
     support_plan = support_contact_plan(params)
 
@@ -531,7 +548,8 @@ def main():
                          for k in ('changed_vs_unchanged', 'among_changed')}
     result = dict(ok=True, v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
                   timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')),
-                  derived_same_volume_box=sorted(DERIVED), plates_same_as_flat_Z18=True,
+                  derived_same_volume_box=sorted(DERIVED), plate_R_same_as_flat_Z18='evaluated solid',
+                  plate_L_delta_from_flat_Z18_mm3=round(plate_l_delta, 3),
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
                   params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,

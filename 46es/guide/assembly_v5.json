@@ -10,7 +10,6 @@
         "PLATE_R_SPLIT_V1",
         "PLATE_SPINE_V1",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "COVER_L_DRAFT_TBD",
         "COVER_T_DRAFT_TBD",
         "COVER_R_DRAFT_TBD"
@@ -24,7 +23,6 @@
         "PLATE_R_SPLIT_V1",
         "PLATE_SPINE_V1",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "COVER_L_DRAFT_TBD",
         "COVER_T_DRAFT_TBD",
         "COVER_R_DRAFT_TBD"
@@ -38,7 +36,6 @@
         "PLATE_R_SPLIT_V1": "1 · 끼움 확인",
         "PLATE_SPINE_V1": "1 · 끼움 확인",
         "CTRL_BRACKET_SPLIT_V1": "1 · 끼움 확인",
-        "CTRL_GATE_SPLIT_V1": "1 · 끼움 확인",
         "COVER_L_DRAFT_TBD": "1 · 끼움 확인",
         "COVER_T_DRAFT_TBD": "1 · 끼움 확인",
         "COVER_R_DRAFT_TBD": "1 · 끼움 확인"
@@ -52,8 +49,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "출력물의 서포트와 거친 면을 정리한다.",
@@ -349,8 +345,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "케이스 밖의 plate에 스위치 46개를 위에서 끼운다.",
@@ -367,21 +362,17 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller"
       ],
       "focus": [
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller"
       ],
       "needs": {
         "CTRL_BRACKET_SPLIT_V1": 1,
-        "CTRL_GATE_SPLIT_V1": 1,
         "controller": 1,
         "m2-6": 2,
-        "m2-5": 1,
-        "m2-nuts": 3
+        "m2-nuts": 2
       },
       "view": "bottom",
       "note": "검은 칩과 USB 소켓이 붙은 부품면은 케이스 바닥을 향합니다. 금색 패드가 보이는 납땜면은 plate를 향합니다.",
@@ -392,13 +383,12 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "아랫면에 브래킷을 M2×6 2조로 단다.",
-        "검은 칩과 USB 소켓이 있는 면을 케이스 바닥 쪽으로 둔다. USB 쪽에서 PCB를 브래킷 홈으로 밀어 넣는다.",
-        "게이트는 M2×5를 아래에서 위로 조인다."
+        "Pro Micro 뒤쪽 모서리 위 스위치 두 개(1·23번)의 Pro Micro 쪽 PCB 다리를 자른다.",
+        "맨 Pro Micro를 +X 끝부터 넣고 USB 쪽을 눌러 끼워 보고 다시 뺀다. 최종 장착은 배선 뒤."
       ]
     },
     "glue": {
@@ -411,7 +401,6 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller"
       ],
       "focus": [
@@ -431,8 +420,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "이음 가까운 키를 눌러 단차·삐걱임을 확인한다.",
@@ -449,7 +437,6 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller",
         "usb"
       ],
@@ -470,8 +457,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "4행 × 12열 매트릭스를 다이오드와 함께 배선한다.",
@@ -498,7 +484,6 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller",
         "m3-upper"
       ],
@@ -518,8 +503,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "중앙 shim을 놓고 plate 모듈을 지지대에 얹는다.",
@@ -545,7 +529,6 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller",
         "m3-upper",
         "COVER_L_DRAFT_TBD",
@@ -572,8 +555,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "커버 L·T·R의 보스를 맞춰 내려놓는다.",
@@ -642,7 +624,6 @@
         "m2-6",
         "switches",
         "CTRL_BRACKET_SPLIT_V1",
-        "CTRL_GATE_SPLIT_V1",
         "controller",
         "m3-upper",
         "COVER_L_DRAFT_TBD",
@@ -666,8 +647,7 @@
         "REF_M2_PLATE_6",
         "REF_M2_SEAM_FRONT",
         "REF_M2_PLATE_1",
-        "REF_M2_PLATE_2",
-        "REF_M2_GATE"
+        "REF_M2_PLATE_2"
       ],
       "quick": [
         "배열에 맞춰 키캡 46개를 끼운다. 스태빌라이저는 쓰지 않는다.",
@@ -694,7 +674,6 @@
       "REF_M2_PLATE_6"
     ],
     "m2-5": [
-      "REF_M2_GATE",
       "REF_M2_SEAM_FRONT"
     ],
     "m2-nuts": [
@@ -704,7 +683,6 @@
       "REF_M2_PLATE_4_NUT",
       "REF_M2_PLATE_5_NUT",
       "REF_M2_PLATE_6_NUT",
-      "REF_M2_GATE_NUT",
       "REF_M2_SEAM_FRONT_NUT"
     ],
     "case-screws": [

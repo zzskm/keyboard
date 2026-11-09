@@ -120,7 +120,7 @@ def prepare(out, data):
     for scope in ('all', 'plate', 'cover'):
         old = [p for p in r2['parts'] if scope == 'all' or p['id'] in
                ({'P2', 'P3'} if scope == 'plate' else {'P4', 'P5'})]
-        prefixes = {'all': ('PLATE_', 'COVER_', 'MOUNT_', 'CTRL_BRACKET', 'CTRL_GATE'),
+        prefixes = {'all': ('PLATE_', 'COVER_', 'MOUNT_', 'CTRL_BRACKET'),
                     'plate': ('PLATE_',), 'cover': ('COVER_',)}[scope]
         current = [p for p in data['parts'] if p['id'].startswith(prefixes)]
         for name, parts in [('r2', old), ('v5', current)]:

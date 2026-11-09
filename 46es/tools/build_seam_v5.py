@@ -3,8 +3,9 @@
 The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
-(tools/mounts_v5.py); the v4 frame/mask/pair chain and the reference-only
-switch envelopes and Wilmore housing are suppressed in the production model.
+(tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
+snap, no gate); the v4 frame/mask/pair chain, the v4 bracket/gate chain and the
+reference-only switch envelopes and Wilmore housing are suppressed in the production model.
 
 Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into guide/.cache/v5 without replacing the current CAD
@@ -28,6 +29,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        MX_GUIDES, MX_CONTACTS, MX_CONTACT_SIZE, MX_PIN_DEPTH_FROM_SEAT, MOUNT_PIN_CLEARANCE,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
+import ctrl_v5
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = Path('C:/Program Files/SolidCraft/solidcraft-cli.exe')
@@ -45,6 +47,14 @@ SEAT_ROOT_Z = PAD_ROOT_Z
 LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
+# v4 bracket, gate, their plate cuts and reference screws; replaced by tools/ctrl_v5.py (2026-11-09).
+LEGACY_CTRL = ('CTRL_SPLIT_ROOF_V1', 'CTRL_RAIL_F_SPLIT_V1', 'CTRL_RAIL_B_SPLIT_V1', 'CTRL_STOP_SPLIT_V1',
+               'CTRL_LIP_F_LOW_SPLIT_V1', 'CTRL_LIP_F_UP_SPLIT_V1', 'CTRL_LIP_B_LOW_SPLIT_V1', 'CTRL_LIP_B_UP_SPLIT_V1',
+               *(f'CTRL_MOUNT_{i}_{part}' for i in (1, 2) for part in ('BOSS', 'CLEAR', 'HEAD', 'NUT_SK', 'NUT_POCKET')),
+               'CTRL_GATE_MOUNT_EAR', 'CTRL_GATE_CAP', 'CTRL_GATE_STOP_FINGER', 'CTRL_GATE_M2_CLEAR', 'SK_CTRL_GATE_NUT',
+               'CTRL_GATE_NUT_POCKET', 'CTRL_ROOF_WIRING_WINDOW', 'PLATE_CTRL_GATE_CAP_RELIEF_V1',
+               'PLATE_CTRL_GATE_FINGER_RELIEF_V1')
+LEGACY_CTRL_REFS = ('REF_M2_PLATE_1', 'REF_M2_PLATE_2', 'REF_M2_GATE')   # feature-name prefixes
 
 # v4 bodies that only existed to carve the old mounts; every feature touching them is suppressed.
 LEGACY_MOUNT_BODIES = ('MOUNT_R_SPLIT_V1', 'MOUNT_L_SPLIT_V1', 'MOUNT_H01_SO2_MIN_V2', 'MOUNT_H02_SO3_MIN_V2',
@@ -55,7 +65,7 @@ LEGACY_MOUNT_BODIES = ('MOUNT_R_SPLIT_V1', 'MOUNT_L_SPLIT_V1', 'MOUNT_H01_SO2_MI
 REFERENCE_FEATURES = {7: 'HOUSING_OUTER_REF_WIL', 8: 'HOUSING_CAVITY_TBD', 10: 'HOUSING_POSTS_CAND',
                       11: 'HOUSING_USB_CUT_TBD', 242: 'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED',
                       243: 'REF_SWITCH_LATCH_BOUND_ASSUMED', 244: 'REF_SWITCH_UPPER_BOUND_ASSUMED'}
-REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}
+REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01', 'CTRL_GATE_SPLIT_V1', 'REF_M2_GATE', 'REF_M2_GATE_NUT'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}
 
 
 def sha(path):
@@ -252,6 +262,72 @@ def check_mounts(evaluated, mounts):
     return report
 
 
+def strip_ctrl(doc):
+    """Suppress the v4 controller bracket, gate, plate gate reliefs and their reference screws."""
+    names = []
+    for f in doc['features']:
+        name = f.get('name', '')
+        if name in LEGACY_CTRL or name.startswith(LEGACY_CTRL_REFS):
+            f['suppressed'] = True
+            names.append(name)
+    missing = set(LEGACY_CTRL) - set(names)
+    assert not missing, missing
+    return names
+
+
+def ctrl_params():
+    """Documentation parameters for the snap bracket (the sketches are fixed numbers from tools/ctrl_v5.py).
+
+    Every number in the comments comes from ctrl_v5 constants or its bracket report, so a design change
+    cannot leave a stale comment behind."""
+    c = ctrl_v5
+    (x1, y1), (x2, y2) = c.M2_XY
+    a, t = c.TRIALS['CTRL_SNAP_TRIAL_A'], c.TRIALS['CTRL_SNAP_TRIAL_C']
+    report = c.bracket()['report']
+    (cx, _), (cl, _), _ = c.COMPONENTS['CRYSTAL']
+    crystal_end = c.PCB_L - (cx + cl)
+    pad12_end = c.PCB_L - (c.PAD_X0 + 11 * c.PAD_PITCH + c.PAD_R)
+    m2_offset = c.PCB_Y + c.PCB_W / 2 - y1
+    assert abs(m2_offset - (y2 - c.PCB_Y - c.PCB_W / 2)) < 1e-9, c.M2_XY
+    return [
+        ('ctrl5_hook_e', c.HOOK_E, '[v5 2단계 2026-11-09 시험 후보] 스냅 암 립이 PCB 긴 변 아래로 겹치는 깊이(PCB 가운데 놓임). '
+         f"주문 1 시험편 A {a['hook_e']} / C {t['hook_e']}. 탄성 암 X {c.ARM_ROOT_X - c.ARM_FREE_X:.1f}·두께 {c.ARM_T_ROOT:.1f}(MJF 벽), "
+         f"립까지 {report['lip_arm_mm']}, 삽입 변형률 약 {report['insert_strain_pct']:.1f}%(외팔보 계산, 실물 미확인)"),
+        ('ctrl5_end_d', c.END_D, '[v5 2단계 시험 후보] +X 끝 립·받침이 PCB 끝을 덮는 길이. 패드 열 사이에서만 덮고 '
+         f'크리스털(끝에서 {crystal_end:.1f}) 양옆으로 나눔. 12번 패드 링 끝 ↔ PCB 끝 {pad12_end:.2f}(검토 모델 참고 배치, M15 미실측). '
+         f"시험편 A {a['end_d']} / C {t['end_d']}"),
+        ('ctrl5_stop_gap', c.STOP_GAP, f"[v5 2단계 시험 후보] 암 끝 바깥면 ↔ 레일. 해제 이동 겸 과변형 제한(시험편 C {t['stop_gap']})"),
+        ('ctrl5_clr_z', c.CLR_Z, f'[v5 2단계 설계 후보] PCB 면 ↔ 립·받침 Z 여유(편측). 립 윗면 Z {c.CATCH_Z:.2f}, 받침 Z {c.SUPPORT_Z:.2f}'),
+        ('ctrl5_M2_1_X', x1, '[v5 2단계 2026-11-09] 브래킷 M2 앞(옛 125, 17: 배선 5번 패드 위 0.8에 너트 보스). 미배선 1–4번 구역, 패드 열 사이'),
+        ('ctrl5_M2_1_Y', round(y1, 6), f'[v5 2단계 2026-11-09] 브래킷 M2 앞 Y = PCB 중심선 − {m2_offset:.1f}'),
+        ('ctrl5_M2_2_X', x2, '[v5 2단계 2026-11-09] 브래킷 M2 뒤(옛 125, 25)'),
+        ('ctrl5_M2_2_Y', round(y2, 6), f'[v5 2단계 2026-11-09] 브래킷 M2 뒤 Y = PCB 중심선 + {m2_offset:.1f}'),
+    ]
+
+
+def check_ctrl(evaluated):
+    """The generator's Pro Micro frame matches the document; each bracket is one closed body of the expected volume."""
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
+    c = ctrl_v5
+    for name, value in [('TBD_ctrl_X', c.PCB_X), ('TBD_ctrl_Y', c.PCB_Y), ('TBD_ctrl_L', c.PCB_L), ('TBD_ctrl_W', c.PCB_W),
+                        ('TBD_ctrl_pcb_Z', c.PCB_Z), ('REF_ctrl_pcb_T', c.PCB_T), ('TBD_ctrl_clr', c.CLR),
+                        ('TBD_usb_plug_W', c.PLUG_W), ('split_bracket_gap', c.ROOF_GAP), ('split_bracket_T', c.ROOF_T),
+                        ('split_M2_plate_seat_Z', c.M2_SEAT_Z), ('split_M2_clear_D', c.M2_CLEAR_D),
+                        ('split_M2_head_D', c.M2_HEAD_D)]:
+        assert abs(values[name] - value) < 1e-4, (name, values[name], value)
+    assert abs(values['TBD_frame_T'] + values['TBD_standoff_H'] - c.PLATE_BOTTOM) < 1e-9
+    assert 'CTRL_GATE_SPLIT_V1' not in bodies and 'REF_M2_GATE' not in bodies
+    report = {}
+    for body, design in [(c.BODY, c.bracket())] + [(n, c.bracket(**s)) for n, s in c.TRIALS.items()]:
+        b = bodies[body]
+        expected = c.expected_volume(design)
+        assert b['closed'], b
+        assert abs(b['volume_mm3'] - expected) / expected < 0.015, (body, b['volume_mm3'], expected)
+        report[body] = dict(volume_mm3=round(b['volume_mm3'], 3), estimate_mm3=round(expected, 3), bbox=b['bbox'])
+    return report
+
+
 def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
@@ -352,26 +428,24 @@ def build(probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
-    # Phase 2: CTRL bracket/gate simplification — remove lips, stop and stop finger
-    # for simpler, straighter Pro Micro insertion/removal and USB/cable clearance.
-    for ctrl_name in (
-        'CTRL_LIP_F_LOW_SPLIT_V1',
-        'CTRL_LIP_F_UP_SPLIT_V1',
-        'CTRL_LIP_B_LOW_SPLIT_V1',
-        'CTRL_LIP_B_UP_SPLIT_V1',
-        'CTRL_STOP_SPLIT_V1',
-        'CTRL_GATE_STOP_FINGER',
-    ):
-        ctrl = next(f for f in doc['features'] if f.get('name') == ctrl_name)
-        ctrl['suppressed'] = True
+    # Phase 2 (2026-11-09): the v4 bracket/gate chain is suppressed; tools/ctrl_v5.py builds the snap bracket,
+    # its two plate screw holes and the reference M2 screws, plus two order-1 trial variants beside the coupons.
+    suppressed_ctrl = strip_ctrl(doc)
+    for name, expr, comment in ctrl_params():
+        new_param(name, expr, comment)
 
     # Mounts: the v4 frame → split → mask → pair chain is suppressed; the four bodies are
     # rebuilt under their existing names straight from the CADCraft drawing.
     suppressed = strip_legacy(doc)
     mounts = mount_profiles()
     emit_mounts(feature, sketch, mounts)
+    ctrl_report = dict(production=ctrl_v5.check())
+    ctrl_v5.emit(feature, sketch)
+    for body, spec in ctrl_v5.TRIALS.items():
+        ctrl_report[body] = ctrl_v5.check(ctrl_v5.bracket(spec['hook_e'], spec['end_d'], spec['stop_gap']))
+        ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
 
-    doc['name'] = '46es seam v5 - flat cover, drawing-built mounts and direct plate supports'
+    doc['name'] = '46es seam v5 - flat cover, drawing-built mounts, snap controller bracket'
     seed = CACHE / 'seed_v5.sc'
     write_seed(doc, container, seed)
     pending = CACHE / 'v5.sc'
@@ -386,12 +460,14 @@ def build(probe=False):
         assert set(faces) == {round(top_z, 4)}, (name, faces)
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
     mount_report = check_mounts(evaluated, mounts)
+    ctrl_report['bodies'] = check_ctrl(evaluated)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
-                suppressed_legacy=len(suppressed), run_seconds=round(elapsed, 1),
+                suppressed_legacy=len(suppressed) + len(suppressed_ctrl), run_seconds=round(elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
-                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report)
+                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
+                ctrl=ctrl_report)
     if not probe:
         pending.replace(OUTPUT)
         info['output_sha'] = sha(OUTPUT)

@@ -302,9 +302,9 @@
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",
-   "stl_sha256": "e40b74ffc2b568aacd00a8e86526eba0ad37a8c4456914e7f7eb45d58d229dae",
-   "facets": 9098,
-   "samples": 1013784,
+   "stl_sha256": "1db1eeca8c0475bc0a2ef814ca5b998ea5f47bf8b96ea0596e808b44d0159ff2",
+   "facets": 8978,
+   "samples": 1000601,
    "min_mm": 0.026,
    "wall_min_mm": 1.0,
    "below_limit": [
@@ -349,12 +349,12 @@
      "at_print": [
       129.26,
       87.445,
-      8.417
+      8.333
      ],
      "to_print": [
       129.08,
       87.4,
-      8.417
+      8.333
      ],
      "dir_print": [
       -0.97,
@@ -376,18 +376,18 @@
     },
     {
      "min_mm": 0.79,
-     "points": 8899,
+     "points": 8901,
      "wall_min_mm": 1.047,
      "wall_points_below_limit": 0,
      "at_print": [
       115.58,
       77.977,
-      8.017
+      8.467
      ],
      "to_print": [
       115.731,
       78.753,
-      8.017
+      8.467
      ],
      "dir_print": [
       0.191,
@@ -412,7 +412,7 @@
   },
   {
    "file": "46es_v5_plate_R_REVIEW_ONLY",
-   "stl_sha256": "5fa959daa0f64109ec33defc71f48d24c8408a48c1210325b87dcda13e43e087",
+   "stl_sha256": "19c2afbd6b895b99e356fcd67a188e0d7ffbd4921a3ca778287aaa6df2a68b71",
    "facets": 5872,
    "samples": 1097140,
    "min_mm": 0.026,
@@ -459,12 +459,12 @@
      "at_print": [
       137.131,
       9.837,
-      12.867
+      10.867
      ],
      "to_print": [
       137.315,
       9.837,
-      12.867
+      10.867
      ],
      "dir_print": [
       1.0,

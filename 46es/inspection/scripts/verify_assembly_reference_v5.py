@@ -11,6 +11,8 @@ from cad_model import live_shapes
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
 from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, top_levels  # noqa: E402
+import ctrl_v5  # noqa: E402
+BRACKET = ctrl_v5.BODY
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_assembly_review_v5.sc'
@@ -98,6 +100,18 @@ def main():
             lo, hi = pad['bbox']['min'], pad['bbox']['max']
             disc_volume = math.pi * ((hi[0] - lo[0]) / 2)**2 * (hi[2] - lo[2])
             assert pad['volume_mm3'] < 0.8 * disc_volume, pad['name']
+    # the reference board is drawn from tools/ctrl_v5.py; its evaluated bodies sit where the bracket checks assume
+    frame = ctrl_v5.frame()
+    for name, ((x, y), (length, width), depth) in ctrl_v5.COMPONENTS.items():
+        box = bodies[f'REF_PROMICRO_{name}']['bbox']
+        assert all(abs(a - b) < TOL for a, b in zip(box['min'][:2] + box['max'][:2],
+                   (frame['x0'] + x, frame['y0'] + y, frame['x0'] + x + length, frame['y0'] + y + width))), name
+        assert abs(box['min'][2] - (frame['zc'] - depth)) < TOL, name
+    centers = sorted((round((b['bbox']['min'][0] + b['bbox']['max'][0]) / 2, 4), round((b['bbox']['min'][1] + b['bbox']['max'][1]) / 2, 4))
+                     for n, b in bodies.items() if n.startswith('REF_PROMICRO_PADS_COMPONENT_'))
+    expected = sorted((round(p['center'][0], 4), round(p['center'][1], 4)) for p in ctrl_v5.pads())
+    assert len(centers) == len(expected) == 24
+    assert all(abs(a[0] - b[0]) < 1e-3 and abs(a[1] - b[1]) < 1e-3 for a, b in zip(centers, expected)), 'pad layout'
     assert bodies['REF_PROMICRO_USB']['bbox']['min'][0] < pcb['min'][0]
     assert bodies['REF_PROMICRO_MCU']['bbox']['min'][2] < pcb['min'][2]
 
@@ -108,8 +122,7 @@ def main():
                                                           clearance=3, nearest=2)),
               dict(command='inspect.clearance', params=dict(bodies=[c + ' (2)' for c in CAPS], against=PLATES, clearance=2, nearest=1))]
     script.append(dict(command='inspect.clearance', params=dict(
-        bodies=controller, against=['CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'],
-        clearance=0.1, min_volume=0.000001)))
+        bodies=controller, against=[BRACKET], clearance=0.1, min_volume=0.000001)))
     mounts = sorted(PLATE_SUPPORT_MOUNTS)
     pins = [n for n in bodies if n.startswith(('REF_MX_GUIDE', 'REF_MX_CONTACT'))]
     pin_search_radius = 1.0
@@ -122,12 +135,35 @@ def main():
                        *[n for n in bodies if n.startswith('REF_MX_LOWER')]]
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=mount_obstacles, min_volume=0.000001)))
+    # Switch legs that reach the Pro Micro: the K1 +x and K23 -x PCB pegs of the 5-pin switches overlap the board's
+    # back corners (they are clipped in assembly, tools/ctrl_v5.py CLIPPED_PEGS). Everything else must clear the
+    # board, and the bracket must clear every switch part except those two pegs, and the case.
+    switch_parts = [n for n in bodies if n.startswith(('REF_MX_LOWER', 'REF_MX_GUIDE', 'REF_MX_CONTACT'))]
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=['REF_PROMICRO_PCB'], against=switch_parts, min_volume=0.000001)))
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=[BRACKET], against=switch_parts + [HOUSING], clearance=0.3, min_volume=0.000001)))
     (CACHE / 'keycap_check.json').write_text(json.dumps(script), encoding='utf-8')
     out = CACHE / 'keycap_check_out.json'
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
     rest, rest_plate, moved, pressed, pressed_plate, controller_fit, *mount_checks = json.loads(out.read_text(encoding='utf-8'))
-    *pin_checks, mount_fit = mount_checks
+    *pin_checks, mount_fit, peg_fit, bracket_fit = mount_checks
+    pcb_box = bodies['REF_PROMICRO_PCB']['bbox']
+
+    def corner_peg(name):
+        lo, hi = bodies[name]['bbox']['min'], bodies[name]['bbox']['max']
+        return name.startswith('REF_MX_GUIDE') and hi[0] - lo[0] < 2.0 and lo[1] > pcb_box['max'][1] - 1.5
+    pegs = sorted({n for o in peg_fit['overlaps'] for n in (o['a'], o['b']) if n != 'REF_PROMICRO_PCB'})
+    assert len(pegs) == 2 and all(corner_peg(n) for n in pegs), peg_fit['overlaps']
+    assert not peg_fit['unchecked'], peg_fit
+    peg_overlap = {n: dict(x=[round(bodies[n]['bbox']['min'][0], 2), round(bodies[n]['bbox']['max'][0], 2)],
+                           tip_Z=round(bodies[n]['bbox']['min'][2], 3),
+                           depth_into_pcb_mm=round(pcb_box['max'][2] - bodies[n]['bbox']['min'][2], 3)) for n in pegs}
+    bracket_hits = [o for o in bracket_fit['overlaps'] if not ({o['a'], o['b']} & set(pegs))]
+    assert not bracket_hits and not bracket_fit['unchecked'], bracket_hits
+    bracket_near = sorted(((n['distance_mm'], n['b'] if n['a'] == BRACKET else n['a']) for n in bracket_fit['near']
+                           if not ({n['a'], n['b']} & set(pegs))), key=lambda x: x[0])[:5]
     assert len(pin_checks) == len(mounts)
     assert not mount_fit['overlaps'] and not mount_fit['unchecked'], mount_fit
     pin_fit = {}
@@ -170,7 +206,11 @@ def main():
     right_edge = max(bodies[p]['bbox']['max'][0] for p in PLATES + COVERS)
     result = dict(
         controller=dict(bodies=len(controller), pads_per_face=24, socket_side='-X',
-                        component_face='-Z', solder_face='+Z', bracket_gate_overlap_count=0),
+                        component_face='-Z', solder_face='+Z', bracket_overlap_count=0,
+                        switch_pegs_into_pcb=peg_overlap,
+                        bracket_switch_case_min=[[round(d, 3), n] for d, n in bracket_near],
+                        note='The two corner pegs (K1 +x, K23 -x) are clipped in assembly; the bracket is checked '
+                             'against every other switch part and the case with a 0.3 mm search radius.'),
         ok=True,
         mount_review_fit=dict(overlaps=0, unchecked=0, pairs_checked=mount_fit['pairs_checked']),
         mount_switch_pin_fit=dict(target_mm=MOUNT_PIN_CLEARANCE, search_radius_mm=pin_search_radius,

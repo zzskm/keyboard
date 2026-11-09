@@ -2,10 +2,10 @@
   "version": "v5",
   "generator": "tools/build_assembly_reference_v5.py",
   "source": "46es_mount_seam_v5.sc",
-  "source_sha": "b10ac3cc1e7e758eef5911316821eb465b5873ec6bb3c2260d9e667cec0ef13a",
+  "source_sha": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af",
   "measurement_sha": "7d0ddf7c509903db706e2a0cef6506bb90d9e1e67abac1c18636e22f483bebf0",
-  "generator_sha": "2ad23b78e09155c66ba35b7ced8ddec3018edbe8d3ae88dbdc8f7352822cc347",
-  "output_sha": "1870affea66455fa0cb858cdcee063dafa0fa055db1f8238a0fdd15a531bbe59",
+  "generator_sha": "2bc02cd54efdbe82561d1b5e7bb8961364fbce118aeb740c1479b35af55af40c",
+  "output_sha": "6d4b868afd123bf1196dec5dfce7cd2481d274897da96989cfe7df43312f4710",
   "keys": [
     {
       "x": 110.46542391096345,
@@ -476,5 +476,5 @@
   "cover_top_above_rim": 5.0,
   "rim_ref_Z": 14.0,
   "housing": "REF_HOUSING_PSD60_MEASURED",
-  "body_count": 539
+  "body_count": 538
 }

@@ -5,7 +5,32 @@
     "socket_side": "-X",
     "component_face": "-Z",
     "solder_face": "+Z",
-    "bracket_gate_overlap_count": 0
+    "bracket_overlap_count": 0,
+    "switch_pegs_into_pcb": {
+      "REF_MX_GUIDE (3)": {
+        "x": [
+          114.58,
+          116.33
+        ],
+        "tip_Z": 2.7,
+        "depth_into_pcb_mm": 0.86
+      },
+      "REF_MX_GUIDE (68)": {
+        "x": [
+          145.44,
+          147.19
+        ],
+        "tip_Z": 2.7,
+        "depth_into_pcb_mm": 0.86
+      }
+    },
+    "bracket_switch_case_min": [
+      [
+        0.3,
+        "REF_MX_LOWER (23)"
+      ]
+    ],
+    "note": "The two corner pegs (K1 +x, K23 -x) are clipped in assembly; the bracket is checked against every other switch part and the case with a 0.3 mm search radius."
   },
   "ok": true,
   "mount_review_fit": {
@@ -39,8 +64,8 @@
       }
     }
   },
-  "model_sha": "1870affea66455fa0cb858cdcee063dafa0fa055db1f8238a0fdd15a531bbe59",
-  "source_sha": "b10ac3cc1e7e758eef5911316821eb465b5873ec6bb3c2260d9e667cec0ef13a",
+  "model_sha": "6d4b868afd123bf1196dec5dfce7cd2481d274897da96989cfe7df43312f4710",
+  "source_sha": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.0,
   "cover_above_rim_mm": 5.0,
@@ -165,7 +190,7 @@
     "min_distance_mm": 0.3,
     "target_mm": 0.25,
     "cap_bottom_rest_Z": 17.3,
-    "plate_top_Z": 13.000000000007192,
+    "plate_top_Z": 13.000000000025926,
     "travel_to_plate_mm": 4.3,
     "note": "Reference caps: bottom Z 17.30 = seat Z 11.30 + 6.0 (r2 based: on a 2T upper plate a fully pressed cap has almost no play -> about seat + 2 at bottom-out, about seat + 6 at rest). Pressed 4 mm they stop 0.30 above the plate top (Z 13); v5 upper layer 1.7 provides that 0.3 over r2. Real check since the 2nd pass (2026-11-06)."
   },
@@ -183,7 +208,7 @@
       "in_D_min": 95.334,
       "keycap_wall_min": 1.0
     },
-    "right_edge_X": 285.388,
+    "right_edge_X": 285.38800000001004,
     "wall_X": 285.307,
     "right_edge_overlap_mm": 0.081,
     "centred_gap_each_side_mm": 0.109,

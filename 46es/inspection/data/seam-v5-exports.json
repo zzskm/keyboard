@@ -1,6 +1,6 @@
 {
  "model": "46es_mount_seam_v5.sc",
- "model_sha": "b10ac3cc1e7e758eef5911316821eb465b5873ec6bb3c2260d9e667cec0ef13a",
+ "model_sha": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af",
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
@@ -70,21 +70,21 @@
    "body": "PLATE_L_SPLIT_V1",
    "material": "MJF PA12S-HP 검정",
    "wall_limit_mm": 1.0,
-   "cad_volume_mm3": 38120.821,
+   "cad_volume_mm3": 38259.142,
    "bbox": {
     "max": [
-     142.9,
-     94.96699999999991,
-     13.000000000000007
+     142.89999999999998,
+     94.96700000000493,
+     13.000000000000385
     ],
     "min": [
-     -0.39300000000128,
-     -0.3670000000000613,
-     4.999999999999029
+     -0.392999999998888,
+     -0.3670000000001481,
+     4.999999999997329
     ]
    },
-   "stl_sha256": "e40b74ffc2b568aacd00a8e86526eba0ad37a8c4456914e7f7eb45d58d229dae",
-   "step_sha256": "ed1c5ab517bafa63efc9c01f4befa0e4269831a7c1dd629dcc309489c516a62d"
+   "stl_sha256": "1db1eeca8c0475bc0a2ef814ca5b998ea5f47bf8b96ea0596e808b44d0159ff2",
+   "step_sha256": "afdf9462732dc034b31093c1653e6b660ef866ab3f496e7ae659dcb5e721ed05"
   },
   {
    "file": "46es_v5_plate_R_REVIEW_ONLY",
@@ -94,18 +94,18 @@
    "cad_volume_mm3": 40636.401,
    "bbox": {
     "max": [
-     285.3879999999903,
-     94.96700000002282,
-     13.000000000007192
+     285.38800000001004,
+     94.96700000000004,
+     13.000000000025926
     ],
     "min": [
-     131.13099999999991,
-     -0.3670000000011664,
-     5.000000000025524
+     131.1310000000001,
+     -0.3670000000033139,
+     5.000000000005961
     ]
    },
-   "stl_sha256": "5fa959daa0f64109ec33defc71f48d24c8408a48c1210325b87dcda13e43e087",
-   "step_sha256": "b728b7c7a5849c60c3e2d471f4d2dfd84cbcc30115974b8d80bfce4d2e169257"
+   "stl_sha256": "19c2afbd6b895b99e356fcd67a188e0d7ffbd4921a3ca778287aaa6df2a68b71",
+   "step_sha256": "654111e10cd59f9d84d9625a4ea4622f22acef3c31126e7ca2d39900880dc6d7"
   }
  ],
  "plate_files_unchanged_since_previous_export": {
@@ -120,7 +120,7 @@
  },
  "combined_step": {
   "file": "46es_v5_changed_REVIEW_ONLY.step",
-  "sha256": "eeb712073f87dbb0931dd2a04ac75c2fda0bf937bed88a21f0cac804b07eb073"
+  "sha256": "a93e98a7c1b72fcc0b90ca84be724a19cf0374af4f20d4bb254e8b13aa8a9c0d"
  },
- "csv_sha256": "1af7994609111e27c5e0a9365cd7418f2dc0e18156c65de878a30126c871cfe8"
+ "csv_sha256": "9c60c230f579a70d359c2f0af1974d5b6c12144598a036054e09373ecb3de9ae"
 }

@@ -13,6 +13,7 @@ import subprocess
 import zipfile
 
 from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT
+import ctrl_v5
 from make_key_dxf import load_keys, rect
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,14 +193,20 @@ def build():
                        operation='join' if targets else 'new_body',**options)
 
     # Native illustrative geometry based on the attached Arduino Pro Micro reference.
-    # All placement follows the existing board envelope; production rails, gate and
-    # the cable/plug keepout remain in the source model.
+    # Pads and component-side parts come from tools/ctrl_v5.py, the same definition the snap
+    # bracket is checked against; the bracket and the cable/plug keepout remain in the source model.
     origin = ('TBD_ctrl_X', 'TBD_ctrl_Y')
     pcb_bottom = 'TBD_ctrl_pcb_Z'
     pcb_top = f'{pcb_bottom} + REF_ctrl_pcb_T'
     pad_height = 0.04
-    pad_hole, pad_outer = 0.48, 0.87
-    pads = [(3.8 + pin * 2.54, y) for y in (1.27, 16.73) for pin in range(12)]
+    pad_hole, pad_outer = 0.48, ctrl_v5.PAD_R
+    pads = [(ctrl_v5.PAD_X0 + pin * ctrl_v5.PAD_PITCH, y)
+            for y in (ctrl_v5.PAD_EDGE, round(ctrl_v5.PCB_W - ctrl_v5.PAD_EDGE, 6)) for pin in range(12)]
+
+    def part(name):
+        """Box placed from the PCB corner, from its depth below the component face up into the pad layer."""
+        (x, y), (length, width), depth = ctrl_v5.COMPONENTS[name]
+        return x, y, f'{pcb_bottom} - {depth}', length, width, round(depth + pad_height, 6)
     pcb, usb = 'REF_PROMICRO_PCB', 'REF_PROMICRO_USB'
     appearance = doc['appearances']['bodies']
 
@@ -228,20 +235,20 @@ def build():
             extent=dict(convention='total_distance', direction='positive', distance='REF_ctrl_pcb_T'),
             operation='cut', targets=drilled_bodies)
 
-    ctrl_box(usb, -0.75, 5.2, f'{pcb_bottom} - 2.2', 6.15, 7.6, 2.24, [146, 158, 168])
+    ctrl_box(usb, *part('USB'), [146, 158, 168])
     ctrl_box('PROMICRO_USB_OPENING', -0.95, 5.95, f'{pcb_bottom} - 1.9',
              4.95, 6.1, 1.58, cut=usb)
     ctrl_box('REF_PROMICRO_USB_TONGUE', -0.37, 6.8, f'{pcb_bottom} - 0.95',
              4.24, 4.4, 0.39, [41, 46, 53])
     chip = 'REF_PROMICRO_MCU'
-    sk = sketch(chip, f'{pcb_bottom} - 0.9', [rect(19.15, 9, 6.85, 6.85, 45)], xy_origin=origin)
-    extrusion(chip, sk, 0.94, bodies=[chip])
+    (mx, my), side, depth = ctrl_v5.MCU
+    sk = sketch(chip, f'{pcb_bottom} - {depth}', [rect(mx, my, side, side, 45)], xy_origin=origin)
+    extrusion(chip, sk, round(depth + pad_height, 6), bodies=[chip])
     appearance[chip] = dict(name='Custom', color=[39, 44, 51], opacity=1.0)
-    ctrl_box('REF_PROMICRO_REGULATOR', 8.9, 7.8, f'{pcb_bottom} - 0.85', 2.7, 2.4, 0.89, [51, 54, 60])
-    for suffix, y in [('A', 4), ('B', 12.2)]:
-        ctrl_box(f'REF_PROMICRO_CAP_{suffix}', 8.4, y, f'{pcb_bottom} - 1.25',
-                 3.65, 1.8, 1.29, [202, 170, 83])
-    ctrl_box('REF_PROMICRO_CRYSTAL', 29.1, 6.55, f'{pcb_bottom} - 0.9', 3.2, 4.9, 0.94, [165, 171, 175])
+    ctrl_box('REF_PROMICRO_REGULATOR', *part('REGULATOR'), [51, 54, 60])
+    for suffix in ('A', 'B'):
+        ctrl_box(f'REF_PROMICRO_CAP_{suffix}', *part(f'CAP_{suffix}'), [202, 170, 83])
+    ctrl_box('REF_PROMICRO_CRYSTAL', *part('CRYSTAL'), [165, 171, 175])
     hidden = doc['visibility'].setdefault('hidden_bodies', [])
     if 'CTRL_KEEPOUT_TBD' not in hidden:
         hidden.append('CTRL_KEEPOUT_TBD')

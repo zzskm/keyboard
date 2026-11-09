@@ -1,4 +1,4 @@
-"""Export the v5 order-2 print set (plate L/R, spine, controller bracket + gate, cover L/T/R) from
+"""Export the v5 order-2 print set (plate L/R, spine, controller bracket, cover L/T/R) from
 model/46es_mount_seam_v5.sc into model/print_v5/order2/ in print orientation, with both current order sets under print_v5.
 
 python tools/export_print_v5.py
@@ -7,7 +7,7 @@ python tools/export_print_v5.py
   -> inspection/data/seam-v5-print-set.json     (hashes, dimensions and CAD/STL volumes)
   -> inspection/data/seam-v5-mjf-thin-wall.json (thin wall scan, mapped back to assembly coordinates)
 
-Use --trial to export the four reinforced mounts and four test coupons in model/print_v5/order1/.
+Use --trial to export the four mounts, four test coupons and the three snap brackets (A/B/C) in model/print_v5/order1/.
 Both order sets record the source CAD hash for every part.
 """
 import argparse
@@ -35,7 +35,6 @@ PARTS = {
     'plate_R': ('PLATE_R_SPLIT_V1', 'MJF PA12S-HP 검정', True),
     'spine': ('PLATE_SPINE_V1', 'MJF PA12S-HP 검정', True),
     'ctrl_bracket': ('CTRL_BRACKET_SPLIT_V1', 'MJF PA12S-HP 검정', True),
-    'ctrl_gate': ('CTRL_GATE_SPLIT_V1', 'MJF PA12S-HP 검정', True),
     'cover_L': ('COVER_L_DRAFT_TBD', '8001 레진 투명', True),
     'cover_T': ('COVER_T_DRAFT_TBD', '8001 레진 투명', True),
     'cover_R': ('COVER_R_DRAFT_TBD', '8001 레진 투명', True),
@@ -49,6 +48,10 @@ TRIAL_PARTS = {
     'mount_R': ('MOUNT_R_PAIR_V3', 'MJF PA12S-HP 검정', False),
     'mount_H02_SO3': ('MOUNT_H02_SO3_MIN_V2', 'MJF PA12S-HP 검정', False),
     'mount_H03_SO6': ('MOUNT_H03_SO6_MIN_V2', 'MJF PA12S-HP 검정', False),
+    # snap bracket engagement trial (tools/ctrl_v5.py TRIALS): B = production, A shallower, C deeper
+    'ctrl_bracket': ('CTRL_BRACKET_SPLIT_V1', 'MJF PA12S-HP 검정', True),
+    'ctrl_snap_A': ('CTRL_SNAP_TRIAL_A', 'MJF PA12S-HP 검정', True),
+    'ctrl_snap_C': ('CTRL_SNAP_TRIAL_C', 'MJF PA12S-HP 검정', True),
 }
 SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
 MJF_MAX = (370.0, 276.0, 360.0)
@@ -60,7 +63,7 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument('--trial', action='store_true', help='export the eight order-1 test parts')
+    parser.add_argument('--trial', action='store_true', help='export the eleven order-1 test parts')
     args = parser.parse_args()
     parts = TRIAL_PARTS if args.trial else PARTS
     order = 'order1' if args.trial else 'order2'
