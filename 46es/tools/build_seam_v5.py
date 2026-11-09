@@ -173,6 +173,143 @@ def top_levels(model, bodies=COVERS, tol=1e-4):
 
 
 # ------------------------------------------------------------------------------------ document helpers
+def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1, fill_L=0.0):
+    """키 블록 실루엣 창. make_key_dxf.py::silhouette_polys와 동일 로직."""
+    import numpy as np
+    from scipy import ndimage
+
+    cell_val = float(cell)
+    close_r_val = float(close_r)
+    min_rail_val = float(min_rail)
+    res_val = float(res)
+    fill_L_val = float(fill_L)
+
+    x0, x1, y0, y1 = edge
+    xs = np.arange(x0 - 2, x1 + 2, res_val)
+    ys = np.arange(y0 - 2, y1 + 2, res_val)
+    blocks = [[k for k in keys if k["rot"] < 0], [k for k in keys if k["rot"] >= 0]]
+    r = close_r_val / res_val
+
+    def closing(B):
+        p = int(r) + 2
+        Bp = np.pad(B, p)
+        D = ndimage.distance_transform_edt(~Bp) <= r
+        E = ndimage.distance_transform_edt(D) > r
+        return E[p:-p, p:-p]
+
+    def seg_closing(B):
+        if fill_L_val <= 0:
+            return B
+        n = int(round(fill_L_val / res_val)) | 1
+        p = n + 2
+        Bp = np.pad(B, p)
+        C = ndimage.binary_closing(Bp, np.ones((1, n), bool)) | ndimage.binary_closing(Bp, np.ones((n, 1), bool))
+        return C[p:-p, p:-p]
+
+    def _raster_cells(block_keys, cell_size, xs_arr, ys_arr, res_val):
+        U = np.zeros((len(ys_arr), len(xs_arr)), dtype=bool)
+        for k in block_keys:
+            w = k["env_u"] * 19.05 - (19.05 - cell_size)
+            pts = rect(k["x"], k["y"], w, cell_size, k["rot"])
+            n = len(pts)
+            area = sum(pts[i][0] * pts[(i + 1) % n][1] - pts[(i + 1) % n][0] * pts[i][1] for i in range(n))
+            sgn = 1 if area > 0 else -1
+            jx0 = max(0, int((min(p[0] for p in pts) - xs_arr[0]) / res_val) - 1)
+            jx1 = min(len(xs_arr), int((max(p[0] for p in pts) - xs_arr[0]) / res_val) + 2)
+            iy0 = max(0, int((min(p[1] for p in pts) - ys_arr[0]) / res_val) - 1)
+            iy1 = min(len(ys_arr), int((max(p[1] for p in pts) - ys_arr[0]) / res_val) + 2)
+            Xs, Ys = np.meshgrid(xs_arr[jx0:jx1], ys_arr[iy0:iy1])
+            m = np.ones(Xs.shape, dtype=bool)
+            for i in range(n):
+                (ax, ay), (bx, by) = pts[i], pts[(i + 1) % n]
+                m &= sgn * ((bx - ax) * (Ys - ay) - (by - ay) * (Xs - ax)) >= 0
+            U[iy0:iy1, jx0:jx1] |= m
+        return U
+
+    U = np.zeros((len(ys), len(xs)), dtype=bool)
+    for block in blocks:
+        Ub = closing(seg_closing(_raster_cells(block, cell_val, xs, ys, res_val)))
+        Ub = ndimage.binary_fill_holes(Ub)
+        U |= Ub
+    X, Y = np.meshgrid(xs, ys)
+    U &= (X >= x0 + min_rail_val) & (X <= x1 - min_rail_val) & (Y >= y0 + min_rail_val) & (Y <= y1 - min_rail_val)
+    labels, n = ndimage.label(U)
+    polys = []
+    for lab in range(1, n + 1):
+        M = labels == lab
+        if M.sum() * res_val * res_val < 50:
+            continue
+        polys.append(_trace_boundary(M, xs, ys, res_val, tol=0.15))
+    return polys, U, res_val
+
+
+def _trace_boundary(M, xs, ys, res, tol):
+    import numpy as np
+    H, W = M.shape
+    P = np.zeros((H + 2, W + 2), dtype=bool)
+    P[1:-1, 1:-1] = M
+    edges = {}
+
+    def add(a, b):
+        edges.setdefault(a, []).append(b)
+        edges.setdefault(b, []).append(a)
+
+    dv = P[1:, :] != P[:-1, :]
+    for i, j in zip(*np.nonzero(dv)):
+        add((i + 1, j), (i + 1, j + 1))
+    dh = P[:, 1:] != P[:, :-1]
+    for i, j in zip(*np.nonzero(dh)):
+        add((i, j + 1), (i + 1, j + 1))
+    seen = set()
+    best = []
+    for start in edges:
+        if start in seen:
+            continue
+        loop = [start]
+        seen.add(start)
+        prev, cur = None, start
+        while True:
+            nbrs = [p for p in edges[cur] if p != prev]
+            if not nbrs:
+                break
+            nxt = nbrs[0]
+            if nxt == start:
+                break
+            loop.append(nxt)
+            seen.add(nxt)
+            prev, cur = cur, nxt
+        if len(loop) > len(best):
+            best = loop
+    pts = [(xs[0] - res / 2 + (j - 1) * res, ys[0] - res / 2 + (i - 1) * res) for i, j in best]
+    return _dp(pts, tol)
+
+
+def _dp(pts, tol):
+    import math
+
+    def dp_open(p):
+        if len(p) < 3:
+            return p
+        (ax, ay), (bx, by) = p[0], p[-1]
+        L = math.hypot(bx - ax, by - ay) or 1e-9
+        dmax, idx = 0, 0
+        for i in range(1, len(p) - 1):
+            d = abs((bx - ax) * (ay - p[i][1]) - (ax - p[i][0]) * (by - ay)) / L
+            if d > dmax:
+                dmax, idx = d, i
+        if dmax > tol:
+            return dp_open(p[:idx + 1])[:-1] + dp_open(p[idx:])
+        return [p[0], p[-1]]
+
+    n = len(pts)
+    i0 = 0
+    i1 = max(range(n), key=lambda i: (pts[i][0] - pts[0][0]) ** 2 + (pts[i][1] - pts[0][1]) ** 2)
+    a = dp_open(pts[i0:i1 + 1])
+    b = dp_open(pts[i1:] + pts[:1])
+    out = a[:-1] + b[:-1]
+    return out
+
+
 def read_source():
     with zipfile.ZipFile(SOURCE) as archive:
         return json.loads(archive.read('document.json')), archive.read('container.json')
@@ -436,7 +573,7 @@ def build(probe=False):
               '확정: 2 + g', before='TBD_cover_T')
     new_param('v5_keycap_bottom_rest_Z', 'v4_plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat',
               '[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3', before='TBD_cover_T')
-    new_param('v5_skirt_cover_H', 1.7, '[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
+    new_param('v5_skirt_cover_H', 1.2, '[v5 2026-11-09 시험 후보 Z18.5] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
               '대안 1.2(턱 Z 18.5) / 0.7(Z 18)', before='TBD_cover_T')
     new_param('v5_cover_top_Z', 'v5_keycap_bottom_rest_Z + v5_skirt_cover_H',
               'Single flat cover top at Z 19', before='TBD_cover_T')
@@ -468,6 +605,12 @@ def build(probe=False):
     # --- 3. key margin (documentation parameter; sketch rectangles are fixed numbers) -----------
     new_param('v5_key_margin', KEY_MARGIN, '[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. '
               'SK35_COVER_KEY_MARGIN_V5_* 사각형은 이 값으로 만든 고정 숫자(tools/build_seam_v5.py에서 재생성)')
+    # --- 3b. 커버 창 단순화 파라미터 (v5 2026-11-09) ---------------------------------------
+    new_param('v5_cover_silhouette_cell', 16.0, '[v5 2026-11-09] 커버 창 실루엣 래스터 셀 크기. 키 블록마다 회전 셀(cell) 사각형을 합침')
+    new_param('v5_cover_silhouette_close_r', 0.0, '[v5 2026-11-09] 오목 모서리 둥글림 반경(0 = 둥글림 없음, 직각 계단 유지)')
+    new_param('v5_cover_silhouette_fill_L', 16.0, '[v5 2026-11-09] 가로/세로 선분 닫힘 길이. 이보다 좁은 틈·쐐기를 직선으로 메움(계단 모서리 유지)')
+    new_param('v5_cover_silhouette_min_rail', 1.6, '[v5 2026-11-09] 커버 외곽 안쪽 최소 살 폭. 창이 이보다 좁게 다가가면 개방')
+    new_param('v5_cover_silhouette_res', 0.1, '[v5 2026-11-09] 래스터 해상도')
     # --- 2. leg magnets ------------------------------------------------------------------------------
     new_param('v5_legmag_plate_clr', 0.15, '[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, '
               '헐거우면 에폭시로 채움(plate 재출력 없음)')
@@ -481,10 +624,27 @@ def build(probe=False):
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
     keys = load_keys(.693, .667)
-    groups = margin_groups(keys)
-    for i, group in enumerate(groups, 1):
-        sk = sketch(f'SK35_COVER_KEY_MARGIN_V5_{i}', top_plane, group)
-        feature('extrude', f'COVER_KEY_MARGIN_V5_{i}', sketch=sk, profiles=dict(type='all'),
+    # 커버 창 단순화: 기존 개별 키 마진 그룹 대신 실루엣 통합 윤곽 사용 (v5 2026-11-09)
+    in_w, in_d, gap_c = 286.381, 95.934, 0.3
+    edge = (-.693 + gap_c, in_w - .693 - gap_c, -.667 + gap_c, in_d - .667 - gap_c)
+    # 파라미터 값 가져오기 (문자열 표현식이면 그대로, 숫자면 float로)
+    def get_param_val(name):
+        p = params[name]
+        v = p.get('expr', p.get('value'))
+        try:
+            return float(v)
+        except (ValueError, TypeError):
+            return v
+    polys, U, res = silhouette_polys(keys,
+                                     cell=get_param_val('v5_cover_silhouette_cell'),
+                                     close_r=get_param_val('v5_cover_silhouette_close_r'),
+                                     min_rail=get_param_val('v5_cover_silhouette_min_rail'),
+                                     edge=edge,
+                                     res=get_param_val('v5_cover_silhouette_res'),
+                                     fill_L=get_param_val('v5_cover_silhouette_fill_L'))
+    for i, poly in enumerate(polys, 1):
+        sk = sketch(f'SK35_COVER_SILHOUETTE_V5_{i}', top_plane, [poly])
+        feature('extrude', f'COVER_SILHOUETTE_V5_{i}', sketch=sk, profiles=dict(type='all'),
                 extent=dict(convention='total_distance', direction='negative',
                             distance='TBD_cover_T + TBD_cover_lip_H + 0.5'),
                 operation='cut', targets=list(COVERS))

@@ -184,8 +184,8 @@
   "v5_skirt_cover_H"
  ],
  "changed_params": {
-  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)",
-  "TBD_upper_plate_T": "1.7 mm"
+  "TBD_upper_plate_T": "1.7 mm",
+  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)"
  },
  "cover_Z": [
   11.5,
