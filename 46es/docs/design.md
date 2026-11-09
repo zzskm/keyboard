@@ -4,7 +4,7 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 
 ## 기준/변경 경로
 
-- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 [`model/baselines/seam_v4.sc`](../model/baselines/seam_v4.sc)에서 생성.
+- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 [`model/baselines/seam_v4.sc`](../model/baselines/seam_v4.sc)에서 생성. mount 4개는 [`model/mounts_cadcraft_phase1.dxf`](../model/mounts_cadcraft_phase1.dxf)의 평면 윤곽을 `tools/mounts_v5.py`가 직접 돌출한다(옛 v4 mount 사슬·참고 바디는 억제). mount만 고칠 때는 `python 46es/tools/build_seam_v5.py --mounts`로 수 초 안에 확인한다.
 - `parameters_seam_v5.csv`는 CAD 내보내기 결과. 변경 순서: 생성기 → CAD → 검토/제작 출력 → 검증 → 가이드.
 - [`46es_assembly_review_v5.sc`](../model/46es_assembly_review_v5.sc): 조립 검토용 파생(부분 실측/단순 MX·OEM 참고). 실물 보증·주문용 아님.
 - 좌표: GH60 PCB 앞·왼쪽 원점, X 오른쪽/Y 뒤쪽/Z 위. **Z=0 = 케이스 지지대 상면**(타이핑 경사 정규화).
@@ -17,7 +17,7 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 | 스위치 상부 개구 / 걸쇠 홀 층 / 아래 릴리프 | 1.7 / 1.5 / 1.8 mm |
 | 스위치 착좌 | Z 11.3 mm. 14.0 mm 홀은 시험 출발값 |
 | 커버 윗면 / 본체 두께 | 평면 Z 19.0 mm / 6.0 mm |
-| mount–plate 접촉면 | Z 8.0 mm, 둥근 일체형 받침 7곳(총 약 355 mm²) |
+| mount–plate 접촉면 | Z 8.0 mm, 도면대로 돌출한 일체형 받침 7곳(좌 2·우 2·Rear 1·Front 2) |
 | 커버 다리 자석 포켓 위 살 | 3.9 mm |
 | 커버 창과 참고 키캡 간격 | 1.0 mm. 쉴 때·4 mm 눌림 모두 |
 | 참고 키캡 밑면 | 착좌 +6.0 = Z 17.3 mm. 실측 확정값 아님 |
@@ -33,9 +33,11 @@ r2 DWG의 P4·P5는 각각 윗면이 평평하고, 세 조각의 윤곽은 거�
 
 PSD60 → mount 4개 → M3 스탠드오프 6개 → plate L/R → 커버 순서다. 좌우 mount에 각각 2곳, 중앙 뒤에 1곳, 중앙 앞에 2곳의 평평한 받침면을 뒀다. 좌측 두 받침은 SO1·SO2 보스 외곽 쪽이 넓어지고, 나머지 받침은 mount 길이 방향을 따라 양끝을 둥글게 마감했다. 타건 하중을 plate 밑면에서 mount로 직접 전달한다. 받침은 스위치와 체결부를 피해서 배치하고 사이를 열어 배선 공간을 확보했다. plate·스위치·배선·컨트롤러는 한 모듈로 들어낼 수 있다. 브래킷은 plate 아랫면에 고정하고 게이트로 Pro Micro 이탈을 막는다. Phase 2에서 브래킷 립·스톱과 게이트 스톱 핑거를 제거해 단순·직선화했다(`build_seam_v5.py` Phase 2 억제 목록).
 
-SO1–SO6 체결 홀의 외곽 랜드는 맞은편 면 사이 8.5 mm의 팔각형이다. 기존 육각 지지대 포켓, 원형 나사 관통홀과 머리 받침면을 사용한다. Rear에서 새 plate 좌석 밖에 남던 옛 받침의 돌출부를 정리했고 spine shim 기준면을 보존했다. Front의 V 홈은 스위치 회피 공간으로 유지했다.
+mount 4개는 CADCraft 도면(`model/mounts_cadcraft_phase1.dxf`)의 외곽·받침·Rear shim 윤곽을 그대로 Z 0–3 / Z 1.5–8 / Z 2.5–3.95로 돌출해 만든다. 체결부는 도면이 아니라 매개변수에서 만든다. SO1–SO6: 관통홀 Ø(`TBD_so_screw_D`+`TBD_so_clr`)=3.4, 윗면 육각 포켓 AF 5.4×깊이 1(지지대 착좌면 Z 2), 그 둘레 AF 8.5 팔각형은 회피부·케이스 체결부가 들어오지 않는 보존 구역이다(별도 홈은 두지 않는다). 케이스 나사 H01–H06: 방향별 장공 폭 2.4(H05만 직선부 1.8, 나머지 2.0), H05를 뺀 다섯 곳에 윗면 머리 자리 폭 4.4×깊이 1. 도면의 홀·머리 자리 레이어는 이 매개변수 형상과 일치하는지 검사만 한다.
 
-마운트 네 개의 WEB 5개를 덜어냈다. 좌우 마운트는 M3 체결점 두 곳을 잇는 직선 레일과 한쪽으로 뻗는 가지로 구성한다. 오른쪽 레일은 SO4·SO5 배치에 맞춰 기울이고, H06 바깥쪽은 PSD60 참고 벽과 여유를 둔다. Rear는 H02와 SO3 사이 외곽을 직선으로 연결한다. 얕은 핀 회피부는 좌우 마운트의 다섯 키 위치에 두었다. Z 8의 plate 받침과 Z 3.95의 spine shim 받침 높이를 유지한다. [마운트 개선 계획과 전후 평면도](mount-redesign-plan.md)
+스위치 핀 회피부는 r2 배열과 KS-3X1 핀 위치에서 계산한다. 외곽에 0.4 mm 안으로 닿는 핀이 있는 키마다 핀 외곽+0.6의 사각 포켓을 바닥 Z 2.1까지 판다. 포켓과 외곽 사이 벽이 1 mm 미만이면 그 변을 열고, 육각 포켓과는 1 mm를 지키며, 케이스 머리 자리와 1 mm 미만으로 가까우면 둘을 1 mm 클로징으로 이어 접선 필렛으로 만든다(18번, 단순 합집합은 칼날 모양 재료를 남겼다). 여유 영역이 몸체에 1 mm 미만으로만 걸치는 핀은 사각 포켓 대신 핀 둘레 r(핀+0.4+0.6)의 둥근 스캘럽을 판다(33번, 사각이면 옆면에 머리카락 폭 틈이 생긴다). 현행 배열에서는 좌 10·11, 우 18·33·46이다. 생성기는 모든 Z 구간에서 절삭 옆에 1 mm 미만 두께의 재료 조각이 남으면 멈춘다. 받침이 스위치 몸체(13.98+0.15)와 겹치는 곳은 Z 4.95 위를 잘라 낸다(좌 11, 우 46). Front 받침 1에는 앞 이음 M2 너트 자리 Ø5.1을 뚫는다.
+
+Rear의 spine shim 받침 윗면은 `split_spine_bottom_Z - split_support_gap` = Z 3.95다. 생성 결과는 `inspection/scripts/verify_seam_v5.py`가 주문 1 STL의 Z 1.0·2.5·3.6·6.0 단면을 도면 기준 프로파일과 비교해 확인한다(대칭 차 0.5 mm²·경계 0.1 mm 이내). [마운트 개선 계획과 평면도](mount-redesign-plan.md)
 
 plate 앞 이음은 dovetail 반턱(상면 쪽 2.4 mm)과 M2×5 나사 1개로 결합한다. tab/포켓 여유는 편측 0.15 mm이므로 이음 쿠폰으로 확인한다. 중앙·뒤쪽은 spine의 M2 나사 4개가 잡는다. spine 배선 홈은 Y 49/64/72, 폭 3 × 높이 2 mm다. 이음의 단차·삐걱임과 접착 필요 여부는 배선 전에 확인한다.
 
@@ -70,5 +72,6 @@ r2 현물 커버는 체결 상태에서 테두리 위로 최소 3 mm 돌출된�
 | 2026-11-07 | `7b252f3` | **커버를 평판 Z 19(6T)로 되돌림**, mount–plate 받침 7곳 추가 | **사용자 결정(2026-11-09 확인).** r2 P4·P5가 평판이라 r2 외관을 따름. 두 단 커버·안전마진(위 두 행)은 이 결정으로 폐기. 다리 자석 포켓 위 살은 3.9로 늘어 안전마진 문제도 해소. 투명 레진 커버 부피는 두 단 커버보다 큼(수용) |
 | 2026-11-07 | `f41bda4`, `91ec26c`, `9c79cb5` | Phase 1 mount: WEB 5개 억제, 팔각 랜드 8.5, 직선 레일, 핀 회피부 | [개선 계획](mount-redesign-plan.md) 1단계 |
 | 2026-11-07 | `7744368` | Phase 2: Ctrl 브래킷 립 4·스톱·게이트 핑거 억제 | [개선 계획](mount-redesign-plan.md) 2단계 |
+| 2026-11-09 | `decision:` mount 도면 직접 돌출 | **mount 4개를 DXF에서 직접 돌출하는 구조로 재구축.** 팔각 랜드 둘레 홈(0.3 mm 링·우측 1.5 mm 해자) 폐지, 핀 회피부를 배열에서 계산, Rear spine 받침 Z 3.95 복원, 우측 두 번째 plate 받침 생성, v4 mount 사슬·REF 스위치 외피·Wilmore 하우징을 생산 모델에서 억제 | 사용자 보고(2026-11-09): 우측이 옛 형상으로 회귀, Front에 V자 홈 반복, 타임라인이 느림. 원인은 옛 바디 위에 clip∩old+fill 패치를 겹치는 생성 방식(DXF 윗레일 폭 10.67 → 생성 9.3–10.4, x≈155에 0.3 mm 슬롯, Rear 받침 3.95 → 3.3, 우측 받침 2 미생성). 0.3 mm 링 홈은 MJF로 출력되지 않아 폐지. 평가 시간 48 s → 약 16 s, mount 단독 2 s |
 
 정리로 현행 트리에서 뺀 v1~v4 문서·검토 출력·검증 기록은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에서 찾는다. 예: `git show 46es-pre-cleanup-2026-11-06:46es/docs/v5-plan-two-level-cover-2026-11-06.md`.

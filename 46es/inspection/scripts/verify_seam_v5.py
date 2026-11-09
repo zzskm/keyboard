@@ -1,4 +1,4 @@
-"""Audit the flat v5 cover, plate supports, baseline BRep, and current print exports.
+"""Audit the flat v5 cover, drawing-built mounts, plate supports, baseline BRep, and current print exports.
 
 Run with python -B 46es/inspection/scripts/verify_seam_v5.py.
 Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
@@ -13,8 +13,9 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import (COVERS, LEFT_SEAT_ROOT_Z, M3_LAND_ROOT_Z, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z,  # noqa: E402
-                           horizontal_faces, mount_cadcraft_profiles, top_levels)
+from build_seam_v5 import COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, horizontal_faces, top_levels  # noqa: E402
+from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
+from mesh_section import read_stl, align, compare, section  # noqa: E402
 
 CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 V4 = ROOT / 'model/baselines/seam_v4.sc'
@@ -22,8 +23,9 @@ V5 = ROOT / 'model/46es_mount_seam_v5.sc'
 FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
-SWITCH_BOUNDS = {'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}  # follow the 1.7 seat
-CHANGED = SWITCH_BOUNDS | set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'}
+# The assumed switch envelopes and the Wilmore housing stand-in are reference-only and no longer evaluated in production.
+REMOVED = REMOVED_BODIES
+CHANGED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'CTRL_GATE_SPLIT_V1'}
 # Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
 # the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
 DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
@@ -279,28 +281,37 @@ def cover_levels(params, bodies, flat_bodies):
     return levels
 
 
-def verify_standoff_lands(shapes):
-    tolerance = 0.004
-    lands = []
-    for name, center, mount, _, trim in mount_cadcraft_profiles()['standoff_lands']:
-        boundary = trim.interiors[0]
-        lines = []
-        for solid in shapes[mount]:
-            for shell in solid['shells']:
-                for edge in shell['edges']:
-                    if edge['curve']['kind'] != 'line':
-                        continue
-                    a, b = (shell['vertices'][i] for i in edge['vertices'])
-                    if max(abs(a[2] - M3_LAND_ROOT_Z), abs(b[2] - M3_LAND_ROOT_Z)) <= tolerance:
-                        lines.append(LineString([a[:2], b[:2]]))
-        flats = unary_union(lines).buffer(tolerance)
-        sides = [LineString([a, b]) for a, b in zip(boundary.coords, boundary.coords[1:])]
-        assert len(sides) == 8
-        assert all(flats.intersection(side).length >= 0.995 * side.length for side in sides), name
-        across_flats = [round(2 * side.distance(Point(center)), 3) for side in sides]
-        assert all(abs(af - 8.5) <= 0.005 for af in across_flats), (name, across_flats)
-        lands.append(dict(name=name, mount=mount, center=center, flats=len(sides), across_flats_mm=8.5))
-    return lands
+TRIAL_STL = {'L': 'mount_L', 'R': 'mount_R', 'REAR': 'mount_H02_SO3', 'FRONT': 'mount_H03_SO6'}
+
+
+def verify_mounts(bodies):
+    """Each printed mount equals the drawing: sections of the order-1 STL at four heights, the AF 8.5 keep-clear
+    land around every hex pocket, the hex pocket wall, and the evaluated volume against the layered profile."""
+    out = {}
+    for suffix, profile in mount_profiles().items():
+        mount = profile['mount']
+        stl = ROOT / 'model/print_v5/order1' / f'46es_v5_{TRIAL_STL[suffix]}.stl'
+        tris = align(read_stl(stl), profile['outline'].bounds)
+        sections = compare(tris, expected_sections(profile))
+        assert all(level['ok'] for level in sections.values()), (mount, sections)
+        top = section(tris, 2.95)
+        lands = {}
+        for name, land in profile['lands'].items():
+            zone = land.difference(profile['hexes'][name].buffer(0.02)).difference(profile['bores'][name])
+            assert top.buffer(0.02).covers(zone), (name, 'the octagonal land is cut')
+            cuts = list(profile['reliefs'].values()) + list(profile['heads'].values()) + list(profile['slots'].values())
+            wall = min([profile['hexes'][name].boundary.distance(profile['outline'].boundary)]
+                       + [profile['hexes'][name].distance(c) for c in cuts])
+            assert wall >= MIN_WALL - 1e-6, (name, wall)
+            lands[name] = dict(center=list(SO_ANCHORS[name][1]), across_flats_mm=LAND_AF,
+                               land_area_mm2=round(land.area, 3), hex_pocket_wall_min_mm=round(wall, 3))
+        expected = expected_volume(profile)
+        assert abs(bodies[mount]['volume_mm3'] - expected) / expected < 0.002, (mount, bodies[mount]['volume_mm3'], expected)
+        reliefs = {str(k): [round(v, 3) for v in r.bounds] for k, r in profile['reliefs'].items()}
+        out[mount] = dict(stl=stl.name, sections={str(z): v for z, v in sections.items()}, lands=lands,
+                          pin_reliefs=reliefs, plate_pads=len(profile['pads']),
+                          volume_mm3=round(bodies[mount]['volume_mm3'], 3), layered_volume_mm3=round(expected, 3))
+    return out
 
 
 def support_contact_plan(params):
@@ -311,29 +322,20 @@ def support_contact_plan(params):
     commands = [dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=plates, clearance=0.01, min_volume=0.000001))]
     probes = {}
-    cadcraft = mount_cadcraft_profiles()
     support_number = 0
-    for suffix, shapes_for_mount in cadcraft['supports'].items():
-        mount = cadcraft['mount_names'][suffix]
+    for suffix, profile in mount_profiles().items():
+        mount = profile['mount']
         plate = PLATE_SUPPORT_MOUNTS[mount]
-        for index, support in enumerate(shapes_for_mount, 1):
-            if suffix == 'R' and index == 2:
-                continue  # SolidCraft reports this face as part of the existing rail.
-            if suffix == 'R' and index == 2:
-                support = support.difference(cadcraft['switch46'].buffer(0.15))
-            if suffix == 'L' and index == 2:
-                support = support.difference(cadcraft['switch11'].buffer(0.15, quad_segs=1, join_style='mitre'))
-            if suffix == 'FRONT' and index == 1:
-                support = support.difference(cadcraft['nut_clearance'])
+        top = layers(profile)[-1][2]                      # pad tops: pads minus fasteners, nut and switch bodies
+        for index, pad in enumerate(profile['pads'], 1):
             support_number += 1
-            feature_name = f'MOUNT_CADCRAFT_{suffix}_SUPPORT_{index}_V6'
+            feature_name = f'MOUNT_{suffix}_PAD_{index}'
             probe_name = f'SEAT_PROBE_{support_number}'
-            root = LEFT_SEAT_ROOT_Z if suffix == 'L' else SEAT_ROOT_Z
             commands.append(dict(command='solid.extrude', params=dict(
                 name=probe_name, body_name=probe_name,
                 sketch=f'SK_{feature_name}', profiles='all',
-                start_offset=z - root - 0.05, distance=0.1, operation='new')))
-            probes[probe_name] = (mount, plate, support.area, feature_name)
+                start_offset=z - SEAT_ROOT_Z - 0.05, distance=0.1, operation='new')))
+            probes[probe_name] = (mount, plate, pad.intersection(top).area, feature_name)
     commands.append(dict(command='inspect.clearance', params=dict(
         bodies=list(probes), against=plates, clearance=0.01, min_volume=0.000001)))
     return dict(commands=commands, probes=probes, mounts=mounts, plates=plates, z=z)
@@ -354,8 +356,7 @@ def support_contacts(params, shapes, plan, results):
         faces = sorted(area for solid in shapes[mount] for height, area in horizontal_faces(solid)
                        if abs(height - z) < 5e-4 and area > 1e-6)
         assert len(faces) == len(expected), (mount, faces, expected)
-        area_tol = 0.02 if mount == 'MOUNT_H03_SO6_MIN_V2' else 0.001
-        assert all(abs(a - b) < area_tol for a, b in zip(faces, expected)), (mount, faces, expected)
+        assert all(abs(a - b) < 0.01 for a, b in zip(faces, expected)), (mount, faces, expected)
     seats = []
     for probe, (mount, plate, area, feature_name) in probes.items():
         assert frozenset((mount, plate)) in contacts, (mount, plate, contact)
@@ -422,8 +423,8 @@ def main():
     assert all(f['name'] != 'COVER_DROP_V5' for f in v5['features'])
 
     old, new = live_shapes(V4), live_shapes(V5)
-    assert set(new) - set(old) == ADDED and not set(old) - set(new)
-    same = [n for n in old if n not in CHANGED | DERIVED]
+    assert set(new) - set(old) == ADDED and set(old) - set(new) == REMOVED, (set(new) ^ set(old))
+    same = [n for n in old if n in new and n not in CHANGED | DERIVED]
     assert all(old[n] == new[n] for n in same), 'an untouched body changed'
     assert all(old[n] != new[n] for n in CHANGED)
     for n in CHANGED | ADDED:
@@ -436,8 +437,7 @@ def main():
     errors = [t['name'] for t in ev['timeline'] if t.get('error')]
     warnings = [t['name'] for t in ev['timeline'] if t.get('warning')]
     dof = [s['name'] for s in ev['sketches'] if s.get('dof') != 0]
-    expected_warning = lambda name: name == 'HOUSING_POSTS_CAND' or name.startswith('MOUNT_CADCRAFT_')
-    assert not errors and not dof and all(expected_warning(name) for name in warnings), (errors, dof, warnings)
+    assert not errors and not dof and not warnings, (errors, dof, warnings)
     bodies = {b['name']: b for b in ev['bodies']}
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}
     covers = [n for n in bodies if n.startswith('COVER_')]
@@ -530,11 +530,12 @@ def main():
                                  unchecked=len(clearance[k]['unchecked']))
                          for k in ('changed_vs_unchanged', 'among_changed')}
     result = dict(ok=True, v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
+                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')),
                   derived_same_volume_box=sorted(DERIVED), plates_same_as_flat_Z18=True,
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
                   params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
-                  plate_supports=seats, standoff_lands=verify_standoff_lands(new),
+                  plate_supports=seats, mounts=verify_mounts(bodies), removed=sorted(REMOVED),
                   leg_magnets=walls,
                   clearance=clearance_summary, mount_screw_interface=clearance['mount_screw_interface'],
                   plate_files_unchanged=exports.get('plate_files_unchanged_since_previous_export'), parts=parts)

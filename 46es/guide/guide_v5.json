@@ -604,7 +604,7 @@
           "z": "받침 윗면 Z 8",
           "color": "#9aa0a8",
           "title": "mount 4개.",
-          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 일체형 받침 7곳이 plate 밑면에 닿는다. SO1–SO6 체결 홀 외곽은 맞은편 면 사이 8.5 mm의 팔각형이다. Rear는 새 plate 받침과 spine shim 기준면을 사용한다. Front V 홈은 스위치 회피 공간이다."
+          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 일체형 받침 7곳이 plate 밑면에 닿는다. SO1–SO6 체결 홀 외곽은 맞은편 면 사이 8.5 mm의 팔각형이다. Rear는 새 plate 받침과 spine shim 기준면(Z 3.95)을 사용한다. 핀 회피부는 스위치 배열에서 계산해 좌 10·11, 우 18·33·46 위치에 둔다."
         },
         {
           "z": "Z 0 기준",
@@ -1209,7 +1209,7 @@
               "id": "trial",
               "title": "plate 임시 장착으로 위치 맞추기",
               "render": "st-trial",
-              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. Rear의 spine shim과 새 plate 받침의 접촉을 각각 확인한다. Front V 홈에서 스위치와 mount 사이 여유를 본다.",
+              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. Rear의 spine shim과 새 plate 받침의 접촉을 각각 확인한다. 좌·우 mount의 핀 회피부에서 스위치 다리와 mount 사이 여유를 본다.",
               "check": "나사 없이 지지대 구멍 6곳이 맞고, plate가 받침 위에서 흔들리지 않는다.",
               "fix": "pair의 두 지지대 간격이 plate와 다르면 mount 쪽 포켓을 줄로 넓힌다(열린 항목 4)."
             },

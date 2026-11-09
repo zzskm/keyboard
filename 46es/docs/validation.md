@@ -37,6 +37,7 @@
 SolidCraft CLI와 Python NumPy·SciPy가 설치된 Windows 환경에서 실행한다. 현재 CAD 도구는 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`를 사용한다. 가이드만 `--cli`로 경로를 지정할 수 있다.
 
 ```sh
+python 46es/tools/build_seam_v5.py --mounts   # mount만 바꿀 때: 수 초, 도면 단면 비교
 python 46es/tools/build_seam_v5.py
 python 46es/tools/export_seam_v5_review.py
 python 46es/tools/export_print_v5.py
@@ -49,7 +50,7 @@ python 46es/guide/build_guide.py
 
 `--trial`은 현행 모델의 mount·이음 쿠폰과 `model/samples/46es_sw_hole_sample.sc`의 B 쿠폰·보스 탭을 내보낸다. 샘플 행 C `SMP_upper`는 1.7이어야 한다. 두 주문의 내보내기는 `46es/.cache/print_v5/`에서 CAD 재평가, STL 검사와 벽 스캔을 마친 뒤 각 세트를 교체한다. 각 부품 기록에 실제 내보내기에 사용한 CAD와 STL/STEP 해시가 들어간다. 현행 CAD 해시가 바뀌면 그 모델을 사용한 두 세트를 갱신한다.
 
-`verify_seam_v5.py`는 고정 기준 CAD의 해시·미변경 바디·CSV·커버 높이·벽·간격·주문 2 출력물을 검사한다. 받침은 plate 밑면과의 접촉 면적 및 간섭을 CAD에서 검사하고, 실제 하중·공차·배선은 시험 조립에서 확인한다. 검증 결과 JSON은 다시 실행할 때 생성되는 기록이며 수동으로 통과 상태를 고치지 않는다.
+`verify_seam_v5.py`는 고정 기준 CAD의 해시·미변경 바디·CSV·커버 높이·벽·간격·주문 2 출력물을 검사한다. mount 4개는 주문 1 STL의 단면(Z 1.0·2.5·3.6·6.0)을 `model/mounts_cadcraft_phase1.dxf`와 매개변수로 만든 기준 프로파일과 비교하고, 팔각 랜드 보존·육각 포켓 벽·층별 부피를 확인한다. 받침은 plate 밑면과의 접촉 면적 및 간섭을 CAD에서 검사하고, 실제 하중·공차·배선은 시험 조립에서 확인한다. 검증 결과 JSON은 다시 실행할 때 생성되는 기록이며 수동으로 통과 상태를 고치지 않는다.
 
 `verify_assembly_reference_v5.py`는 마운트 4개를 46키의 센터·양쪽 다리·금속 단자 참고 형상과 3D 비교한다. 설계 하한은 0.4 mm다. 참고 형상에 납땜과 배선은 포함되지 않으므로 실제 간섭과 강성은 위 실물 시험에서 확인한다. 변경이 조립에 영향을 주면 [가이드 시각 검토](../guide/README.md#시각-검토)에서 해당 단계와 완성 상태까지 확인한다.
 

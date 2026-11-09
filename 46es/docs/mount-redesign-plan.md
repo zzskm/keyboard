@@ -11,25 +11,19 @@
 
 ## 1단계 — Mount 개선
 
-- SO1–SO6 랜드 외곽은 AF 8.5 mm로 통일한다. 육각 지지대 포켓, 원형 관통홀과 나사 머리 받침면을 보존한다.
-- Rear의 옛 받침은 새 좌석 밖으로 돌출된 부분을 프레임 상면 위에서 정리한다. 새 plate 좌석과 spine shim 기준면을 유지한다.
-- Front V 홈은 스위치 회피에 사용한다. SO6 보강은 컨트롤러 브래킷과 이음 너트에 여유를 둔다.
+2026-11-09 재구축(`decision:` 커밋). Phase 1(`f41bda4`·`91ec26c`·`9c79cb5`)은 v4 바디 위에 T자 레일·CADCraft clip·fill을 겹치는 패치 방식이었고, 그 결과 오른쪽 윗레일이 도면보다 좁게(10.67 → 9.3–10.4 mm) 남고 Front 아랫변 x≈155에 0.3 mm 슬롯이 재생성될 때마다 생겼다. Rear의 spine 받침(Z 3.95)은 clip에 잘려 3.3이 됐고, 오른쪽 두 번째 plate 받침은 만들어지지 않았다. 현행 구조는 다음과 같다.
 
-### 외곽과 체결부
+- `tools/mounts_v5.py`가 `model/mounts_cadcraft_phase1.dxf`의 외곽(레이어 `0`·`L_OUTLINE`·`R_OUTLINE`·`REAR_OUTLINE`), 받침(레이어 `0` 폐폴리라인·`REAR_PLATE_SEATS`), `REAR_SHIM`을 그대로 돌출한다. 도면이 곧 결과다. 도면 수정은 한 곳이다: Front 윗변(H03 머리 자리 위)을 Y 13.595에서 13.75로 올려 MJF 벽 1.0을 확보했다(옛 생성기는 이 변을 코드에서 0.15 올렸다). 생성기는 포켓·홀과 외곽 사이 벽이 1.0 미만이면 도면 수정을 요구하며 멈춘다.
+- SO1–SO6 관통홀·육각 지지대 포켓(AF 5.4, Z 2–3)과 케이스 나사 장공·머리 자리는 문서 매개변수(`TBD_so_*`, `TBD_case_*`, `CAND_H0*`)로 만든다. 도면의 `*_THROUGH_HOLES`·`*_HEAD_RECESSES`는 이 형상과 일치해야 하며 생성에는 쓰지 않는다. AF 8.5 팔각 랜드는 다른 절삭이 들어오지 않는 보존 구역이고, 9c79cb5의 둘레 홈(0.3 mm 링, 우측 1.5 mm 해자)은 폐지했다.
+- 핀 회피부는 키 배열과 KS-3X1 핀 위치에서 계산한다(좌 10·11, 우 18·33·46). 도면의 `*_RELIEFS` 레이어는 참고용이다. 머리 자리와 가까운 포켓(우 18)은 1 mm 클로징으로 이어 접선 필렛을 만들고, 몸체에 1 mm 미만으로만 걸치는 핀(우 33)은 둥근 스캘럽으로 판다. 받침과 스위치 몸체가 겹치는 곳(좌 11, 우 46)은 Z 4.95 위만 잘라 프레임을 남긴다. 생성기는 절삭 옆에 1 mm 미만 두께의 재료 조각(칼날·깃털 모서리)이 남으면 위치를 적고 멈춘다.
+- 옛 v4 mount 사슬(FRAME·CASE·SO·MASK·MIN_V2·PAIR_V3 등 103 피처)과 참고 전용 `REF_SWITCH_*_BOUND_ASSUMED`·Wilmore 하우징은 생산 모델에서 억제한다. 조립 검토 모델은 하우징 피처를 실측 PSD60 값으로 다시 켠다. 전체 평가는 48 s에서 약 16 s로, `--mounts` 단독 빌드는 약 2 s다.
 
-- 기존 WEB 5개 억제에 이어 좌우 마운트의 외곽을 M3 체결점 두 곳을 잇는 직선 레일과 M2 체결점을 향한 가지 하나로 정리했다. 오른쪽 레일은 SO4·SO5를 따라 기울였고, H06 바깥쪽은 PSD60 참고 벽과 여유를 두도록 다듬었다.
-- Rear의 안쪽으로 들어가던 외곽은 기존 프레임과 축소 마스크가 겹치는 경계에서 생긴 구간이다. H02와 SO3 사이를 직선으로 연결하고 spine shim 받침과 그 하부 보강을 유지했다.
-- 왼쪽 10·11번과 오른쪽 18·33·46번의 r2 배열 위치에 핀 여유를 두었다. 회피부의 바닥은 조립 기준면에서 2.1 mm 위에 있다. 그림의 원형·장공 주변 돌출은 M2/M3 체결부이며, 짙은 받침은 Z 8 mm의 plate 접촉부다.
+![네 마운트의 평면도: 도면 외곽·받침(회색), 육각 포켓·머리 자리(연갈색), 관통홀(흰색), 핀 회피부(파랑, 키 번호), AF 8.5 랜드(빨강).](mount-phase1-outline.png)
 
-![세 마운트의 변경 전후 평면도. 모든 패널의 방향과 축척이 같다.](mount-phase1-outline.png)
+### 검증
 
-### 디지털 검증과 실물 시험
-
-- 스위치 착좌면 Z 11.3을 기준으로 46키의 센터·다리·금속 단자를 모델링했다. KS-3X1 도면의 XY 배치와 착좌면 아래 8.6 mm의 참고 깊이를 사용했다. 마운트 4개를 비교한 결과 핀 겹침은 0건이었다. 1.0 mm 탐색 범위에서 확인된 최단 여유는 L 0.567 mm, R 0.527 mm다. Rear와 Front에는 탐색 범위 안의 가까운 쌍이 없어 설계 하한 0.4 mm를 만족한다. [Gateron KS-3X1 Yellow 도면](https://cdn.shopify.com/s/files/1/0565/8070/2297/files/SPEC-KS-3Y10B050NW-X1-Yellow_Switch.pdf?v=1675841028), [조립 검증 기록](../inspection/data/assembly-reference-v5-verification.json)
-- SolidCraft 솔리드 비교에서 대상 세 바디만 변경됐다. 조립 좌표계의 STL 단면을 겹쳐 변경 대상 3개 마운트의 체결부 10곳에서 홀과 나사 머리 지지면을 확인했다. Z 0 체결 기준면, Z 8 plate 받침, Z 3.95 Rear 심 받침도 확인했다. 비교 면적 차이는 최대 0.004 mm² 미만이었다.
-- 조립 위치에서 검사한 마운트와 나사·스탠드오프, plate·spine, Pro Micro 및 스위치 하부의 비의도 체적 겹침과 미검사 쌍은 0건이다. 설계한 H06 바깥선은 측정 PSD60 벽 X=285.307 mm에서 0.257 mm 안쪽이다. 별도 Wilmore 케이스 참고 형상은 PSD60와 다른 치수이며, 그 비교에서는 오른쪽 외곽과 0.081 mm 겹친다. 케이스 치수 기록상 중심 정렬 시 편측 폭 여유는 0.109 mm다. Rear 연결부의 Z 0–17 mm 수직 이동 범위는 참고 케이스와 겹치지 않으며, SO3 하부 M3와의 최소 간격은 0.630 mm다. 실제 케이스의 공차와 탈착은 실물 확인 대기다.
-- 현행 CAD 해시 `62cdb7de`에서 `standoff`, `trial`, `module`, `keycap` 단계의 조립도와 iso/top 캡처를 다시 만들고 수동 확인했다. 마운트 위치·체결 방향, plate 받침, 스위치·키캡 배치가 임시 조립부터 완성까지 이어지고, 화면에 빠진 마운트나 잘못된 체결 방향이 없었다.
-- 주문 1의 마운트 4개는 각각 단일 연결 메시이며 비정상 모서리가 0개다. STL 벽 검사 최소값은 L 1.500 mm, R 1.121 mm, Rear/H02 1.203 mm, Front/H03 1.047 mm다. 모두 MJF 설계 하한 1.0 mm 이상이다. [시험 출력 기록](../inspection/data/seam-v5-trial-print-set.json), [시험 출력 벽 검사](../inspection/data/seam-v5-trial-thin-wall.json)
+- `build_seam_v5.py --mounts`: 매개변수만 있는 문서에 mount 4개를 만들고 STL 단면(Z 1.0·2.5·3.6·6.0)을 도면 기준 프로파일과 비교한다. `verify_seam_v5.py`는 같은 비교를 주문 1 STL로 수행하고, 팔각 랜드 보존, 육각 포켓 벽(≥ 1.0), 층별 기대 부피, 받침 7곳의 plate 접촉, SO2 체결부 단면을 검사한다.
+- `verify_assembly_reference_v5.py`는 마운트 4개를 46키 센터·다리·단자 참고 형상과 3D 비교한다(하한 0.4 mm). 벽 두께는 주문 1 STL 스캔(MJF 1.0)을 따른다. 수치는 [검증 기록](../inspection/data/seam-v5-verification.json)과 [조립 검증 기록](../inspection/data/assembly-reference-v5-verification.json)에 있다.
 - 실제 5핀·납땜·배선, Rear 탈착 공간, PSD60 체결, 받침 접촉과 마운트 강성은 [실물 확인 목록](validation.md#실물-확인-목록)에서 관리한다.
 
 ## 2단계 — Ctrl bracket 개선
@@ -37,7 +31,7 @@
 - `build_seam_v5.py`에서 `CTRL_LIP_*_SPLIT_V1` 4개, `CTRL_STOP_SPLIT_V1`, `CTRL_GATE_STOP_FINGER`를 억제했다. 브래킷·게이트가 단순·직선 형상으로 단순화됨.
 - Pro Micro 삽입/탈거 경로에서 얇은 립과 스톱을 제거해 끼움·탈착 여유를 확보했다. USB 플러그·케이블 여유, M2 체결/너트 접근, 출력 방향·강성은 기존 유지(`CTRL_ROOF_WIRING_WINDOW`, `CTRL_GATE_M2_CLEAR`, 너트 포켓 보존).
 - 1단계 마운트 형상과의 간섭은 `verify_seam_v5.py`에서 `overlaps: 0`, `contacts: 113`로 확인.
-- `verify_seam_v5.py`에서 `SAME_AS_V4`에서 제외(볼륨 변경). 가이드·BOM·검증 갱신 필요.
+- `verify_seam_v5.py`의 `SAME_AS_V4`에서 제외(볼륨 변경).
 
 ## 3단계 — Mount + Ctrl/Spine 병합 (개요)
 - 대상 후보: `MOUNT_*`, `PLATE_SPINE_V1`, ctrl bracket/gate 간 역할 통합.
@@ -46,6 +40,6 @@
 - 선행: 1·2단계 완료, 간섭·강성·조립성 확인.
 
 ## 공통 검증
-- CAD: `build_seam_v5.py` → review/export(`--trial`) → `verify_seam_v5.py`; 필요 시 assembly ref/verify → guide. mount/스위치 하부, plate/SO/M3/USB/ctrl 간섭 3D 확인.
+- CAD: `build_seam_v5.py`(mount만이면 `--mounts` 먼저) → review/export(`--trial`) → `verify_seam_v5.py` → assembly ref/verify → guide. mount/스위치 하부, plate/SO/M3/USB/ctrl 간섭 3D 확인.
 - 정적: `python -B 46es/tools/check_repository.py`; stage 후 `update_manifest.py`/`--check`.
 - 실물/미실행: `docs/validation.md`에 `미실행`/`실물 확인 대기` 기록. 주문 1 시험물 변경 시 혼용 금지, 해시/manifest 갱신.

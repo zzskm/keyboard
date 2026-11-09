@@ -78,9 +78,9 @@ def main():
     # production bodies identical to the v5 source
     old, new = live_shapes(SOURCE), live_shapes(MODEL)
     common = [n for n in old if n in new]
-    # the generator replaces the Wilmore stand-in and suppresses the old switch placeholders (features 242-244)
+    # the production model already drops the Wilmore stand-in and the old switch placeholders (features 242-244)
     gone = set(old) - set(new)
-    assert gone == {'REF_HOUSING_WILMORE_NOT_PSD60'} | {n for n in old if n.startswith('REF_SW_ASSUMED_')}, gone
+    assert gone == set(), gone
     assert all(old[n] == new[n] for n in common), 'production CAD changed in the review copy'
 
     controller = [name for name in bodies if name.startswith('REF_PROMICRO_')]

@@ -57,7 +57,7 @@ def source_checks():
 
 
 def model_checks():
-    from verify_seam_v5 import V4, V5, FLAT, V4_SHA, FLAT_SHA, CHANGED, DERIVED, ADDED
+    from verify_seam_v5 import V4, V5, FLAT, V4_SHA, FLAT_SHA, CHANGED, DERIVED, ADDED, REMOVED
     require(sha(V4) == V4_SHA, 'v4 baseline changed')
     require(sha(FLAT) == FLAT_SHA, 'flat baseline changed')
     doc = document(V5)
@@ -66,8 +66,8 @@ def model_checks():
         rows = {r['name']: r['expression'] for r in csv.DictReader(f)}
     require(params == rows, 'current parameter CSV differs from CAD')
     baseline, current, flat = map(live_shapes, (V4, V5, FLAT))
-    require(set(current) - set(baseline) == ADDED and not set(baseline) - set(current), 'CAD body set changed')
-    same = [n for n in baseline if n not in CHANGED | DERIVED]
+    require(set(current) - set(baseline) == ADDED and set(baseline) - set(current) == REMOVED, 'CAD body set changed')
+    same = [n for n in baseline if n in current and n not in CHANGED | DERIVED]
     require(all(baseline[n] == current[n] for n in same), 'untouched CAD body differs')
     for n in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):
         require(current[n] == flat[n], f'plate differs from regression baseline: {n}')

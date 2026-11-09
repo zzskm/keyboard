@@ -2,10 +2,14 @@
 
 The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
-per piece. Integral mount seats support the switch plate from underneath.
+per piece. The four mounts are extruded directly from the CADCraft drawing
+(tools/mounts_v5.py); the v4 frame/mask/pair chain and the reference-only
+switch envelopes and Wilmore housing are suppressed in the production model.
 
 Run from the repository root with python 46es/tools/build_seam_v5.py.
-Use --probe to build into guide/.cache/v5 without replacing the current CAD.
+  --probe   build into guide/.cache/v5 without replacing the current CAD
+  --mounts  build only the four mounts into guide/.cache/v5/mounts_v5.sc from a
+            parameter-only document and check their sections (seconds, for mount iteration)
 """
 # SOURCE OF TRUTH - Edit this file. Do NOT hand-edit generated .sc files.
 # Regenerate outputs with: python tools/build_seam_v5.py (and export scripts as needed)
@@ -13,26 +17,28 @@ import argparse
 import copy
 import hashlib
 import json
-import math
 from pathlib import Path
 import subprocess
 import sys
+import time
 import zipfile
 
-import ezdxf
-from shapely.geometry import LineString, Point, Polygon, box
-from shapely.ops import polygonize, unary_union
-
 from make_key_dxf import load_keys, rect
+from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT, PLATE_SUPPORT_MOUNTS,  # noqa: F401
+                       MX_GUIDES, MX_CONTACTS, MX_CONTACT_SIZE, MX_PIN_DEPTH_FROM_SEAT, MOUNT_PIN_CLEARANCE,
+                       PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
+                       profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = Path('C:/Program Files/SolidCraft/solidcraft-cli.exe')
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/v5'
+MOUNTS_ONLY = CACHE / 'mounts_v5.sc'
 KEY_MARGIN = 1.0
 LEGMAG_SKIN_MIN = 1.3
 CAP_1U = 18.05
+SEAT_ROOT_Z = PAD_ROOT_Z
 # Leg-end magnet pairs (lower legs only, user 2026-11-06). Chosen on a 0.05 mm raster so that
 # cover pocket Ø3.2 and plate pocket Ø3.3 keep >= 1.2 mm to the v5 window, the 16.5 openings
 # and the part edges, as close to the leg tip as that allows.
@@ -40,355 +46,16 @@ LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 
-FRONT_MOUNT = 'MOUNT_H03_SO6_MIN_V2'
-SEAT_ROOT_Z = 1.5
-LEFT_SEAT_ROOT_Z = 2.85
-M3_LAND_ROOT_Z = 2.6
-
-# KS-3X1 drawing XY, with conservative cylindrical guides and rectangular contacts.
-# Both reference pin families extend to Z 2.7 at the v5 switch seat (Z 11.3).
-MX_GUIDES = ((0.0, 1.95), (-5.08, 0.875), (5.08, 0.875))
-MX_CONTACTS = ((-3.81, 2.54), (2.54, 5.08))
-MX_CONTACT_SIZE = (1.15, 0.5)
-MX_PIN_DEPTH_FROM_SEAT = 8.6
-MOUNT_PIN_CLEARANCE = 0.4
-
-LEFT_MOUNT = 'MOUNT_L_PAIR_V3'
-RIGHT_MOUNT = 'MOUNT_R_PAIR_V3'
-REAR_MOUNT = 'MOUNT_H02_SO3_MIN_V2'
-PLATE_SUPPORT_MOUNTS = {
-    LEFT_MOUNT: 'PLATE_L_SPLIT_V1',
-    RIGHT_MOUNT: 'PLATE_R_SPLIT_V1',
-    REAR_MOUNT: 'PLATE_L_SPLIT_V1',
-    FRONT_MOUNT: 'PLATE_R_SPLIT_V1',
-}
-
-
-def right_rail_x(y):
-    """Centre of the rail through SO5 and SO4 in assembly coordinates."""
-    return 278.519 + (250.42 - 278.519) * (y - 6.52) / (89.007 - 6.52)
-
-
-def mount_outline_profiles():
-    """Plan profiles at the frame datum, outside the retained hardware bores."""
-    def rectangle(x0, y0, x1, y1):
-        return [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
-
-    # Each T uses a straight rail through the two M3 pods and a single branch
-    # to an offset case M2. The open steps in the join polygons leave the
-    # existing case M2 pockets and their bearing faces in place.
-    return (
-        (LEFT_MOUNT, 'L', [
-            [(1.15, 9.6), (10.9, 9.6), (10.9, 61.55), (21.9, 61.55),
-             (21.9, 71.15), (10.9, 71.15), (10.9, 84.65), (1.15, 84.65),
-             (1.15, 41.8), (7.3, 41.8), (7.3, 34.5), (1.15, 34.5)],
-        ], [
-            rectangle(-2, 9.6, 1.15, 32.85),
-            rectangle(-2, 43.35, 1.15, 84.65),
-            rectangle(10.9, 9.6, 32, 61.55),
-            rectangle(10.9, 71.15, 32, 84.65),
-        ]),
-        (RIGHT_MOUNT, 'R', [
-            [(right_rail_x(9.6) - 5.3, 9.6), (right_rail_x(9.6) + 5.7, 9.6),
-             (right_rail_x(22.05) + 5.7, 22.05), (283.8, 22.05),
-             (283.8, 34.7), (277.9, 34.7), (277.9, 43.4),
-             (right_rail_x(43.4) + 5.7, 43.4), (right_rail_x(63.0) + 5.7, 63.0),
-             (256.9, 63.0), (256.9, 70.4), (right_rail_x(70.4) + 5.7, 70.4),
-             (right_rail_x(85.5) + 5.7, 85.5), (right_rail_x(85.5) - 5.3, 85.5)],
-        ], [
-            [(243, 9.6), (right_rail_x(9.6) - 5.3, 9.6),
-             (right_rail_x(85.5) - 5.3, 85.5), (243, 85.5)],
-            [(right_rail_x(9.6) + 5.7, 9.6), (287, 9.6), (287, 22.05),
-             (right_rail_x(22.05) + 5.7, 22.05)],
-            [(right_rail_x(43.4) + 5.7, 43.4), (287, 43.4), (287, 85.5),
-             (right_rail_x(85.5) + 5.7, 85.5), (right_rail_x(71.85) + 5.7, 71.85),
-             (264.65, 71.85), (264.65, 63.0), (right_rail_x(63.0) + 5.7, 63.0)],
-            # Keep the H06 pod inside the measured PSD60 wall (X 285.307).
-            rectangle(285.05, 33, 287, 43.4),
-        ]),
-        (REAR_MOUNT, 'REAR', [
-            # Straight line from the H02 shoulder to the SO3 pod.
-            [(131.6, 51.4), (133.65, 51.4), (135.05, 84.65), (132.0, 84.65)],
-        ], []),
-    )
-
-
-def polygons_for_sketch(geometry):
-    """Return closed 2D rings for SolidCraft's nested profile detection."""
-    if geometry.is_empty:
-        return []
-    shapes = list(geometry.geoms) if hasattr(geometry, 'geoms') else [geometry]
-    rings = []
-    for shape in shapes:
-        if shape.geom_type != 'Polygon' or shape.area <= 1e-8:
-            continue
-        rings.append([[float(x), float(y)] for x, y in list(shape.exterior.coords)[:-1]])
-        rings.extend([[float(x), float(y)] for x, y in list(ring.coords)[:-1]]
-                     for ring in shape.interiors)
-    return rings
-
-
-def mount_cadcraft_profiles():
-    """Read the checked-in lightweight CAD and the saved v5 body footprints."""
-    dxf_path = ROOT / 'model/mounts_cadcraft_phase1.dxf'
-    basis_path = ROOT / 'model/mounts_cadcraft_phase1_basis.json'
-    basis = json.loads(basis_path.read_text(encoding='utf-8'))
-    if sha(dxf_path) != basis['source_dxf_sha256']:
-        raise ValueError('CADCraft DXF changed; refresh mounts_cadcraft_phase1_basis.json first')
-
-    drawing = ezdxf.readfile(dxf_path)
-    entities = list(drawing.modelspace())
-
-    def line_outline(layers, xmin, xmax):
-        lines = []
-        for entity in entities:
-            if entity.dxftype() != 'LINE' or entity.dxf.layer not in layers:
-                continue
-            start, end = entity.dxf.start, entity.dxf.end
-            line = LineString([(start.x, start.y), (end.x, end.y)])
-            if xmin <= line.bounds[0] and line.bounds[2] <= xmax:
-                lines.append(line)
-        profiles = list(polygonize(unary_union(lines)))
-        outline = unary_union(profiles)
-        if outline.geom_type != 'Polygon' or not outline.is_valid:
-            raise ValueError(f'CADCraft outline is not one closed polygon: {layers}')
-        return outline
-
-    outlines = {
-        'L': line_outline({'0', 'L_OUTLINE'}, -5, 40),
-        'FRONT': line_outline({'0'}, 120, 200),
-    }
-    outlines['FRONT'] = outlines['FRONT'].buffer(-0.1, join_style='mitre')
-    # The CADCraft top shoulder is just under the 1 mm MJF wall limit after
-    # the clip inset. Raise this one straight edge by 0.15 mm; the H03 head
-    # bearing and other datum faces stay fixed.
-    front_top = max(y for _, y in outlines['FRONT'].exterior.coords)
-    outlines['FRONT'] = Polygon([
-        (x, y + 0.15 if abs(y - front_top) < 1e-6 else y)
-        for x, y in outlines['FRONT'].exterior.coords
-    ])
-    # The L clip shares three snapped perimeter lines with the legacy BRep.
-    # Exact coincidence makes SolidCraft retry the Boolean and produces
-    # non-manifold STL edges. Move only those clip-mask vertices to the next
-    # 0.5 mm snap outside the existing body; the mount's datum faces stay fixed.
-    outlines['L'] = Polygon([
-        (11.0 if abs(x - 10.9) < 0.001 else
-         3.5 if abs(x - 3.41887) < 0.001 else x, y)
-        for x, y in outlines['L'].exterior.coords
-    ])
-    if not outlines['L'].is_valid:
-        raise ValueError('Adjusted CADCraft L outline is invalid')
-    for suffix, layer in [('R', 'R_OUTLINE'), ('REAR', 'REAR_OUTLINE')]:
-        matches = [entity for entity in entities
-                   if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == layer]
-        if len(matches) != 1 or not matches[0].closed:
-            raise ValueError(f'CADCraft layer {layer} must have one closed outline')
-        outlines[suffix] = Polygon(matches[0].get_points('xy'))
-        if not outlines[suffix].is_valid:
-            raise ValueError(f'CADCraft outline is invalid: {layer}')
-        if suffix == 'R':
-            # Keep the clip clear of legacy rails and curved BRep edges.
-            outlines[suffix] = outlines[suffix].buffer(-0.1, join_style='mitre')
-        elif suffix == 'REAR':
-            outlines[suffix] = outlines[suffix].buffer(-0.1, join_style='mitre')
-
-    supports = {suffix: [] for suffix in ('L', 'R', 'REAR', 'FRONT')}
-    for entity in entities:
-        if entity.dxftype() != 'LWPOLYLINE' or entity.dxf.layer != '0' or not entity.closed:
-            continue
-        polygon = Polygon(entity.get_points('xy'))
-        x0, y0, x1, y1 = polygon.bounds
-        if x1 < 40:
-            supports['L'].append(polygon)
-        elif x0 > 240:
-            supports['R'].append(polygon)
-        elif x0 > 120 and x1 < 200:
-            supports['FRONT'].append(polygon)
-    rear_seats = [entity for entity in entities
-                  if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_PLATE_SEATS']
-    rear_shims = [entity for entity in entities
-                  if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_SHIM']
-    if len(rear_seats) != 1 or len(rear_shims) != 1:
-        raise ValueError('CADCraft Rear plate and shim support profiles are missing')
-    supports['REAR'] = [Polygon(rear_seats[0].get_points('xy'))]
-    rear_existing = [entity for entity in entities
-                     if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_SUPPORT_EXISTING']
-    if len(rear_existing) != 1:
-        raise ValueError('CADCraft Rear legacy support profile is missing')
-    rear_old = Polygon(rear_existing[0].get_points('xy'))
-    rear_head_recesses = [Polygon(entity.get_points('xy')) for entity in entities
-                          if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'REAR_HEAD_RECESSES']
-    rear_head_keepouts = unary_union([shape for shape in rear_head_recesses if shape.intersects(rear_old)])
-    rear_support_trim = rear_old.difference(supports['REAR'][0]).difference(rear_head_keepouts).buffer(0)
-    rear_support_trim = unary_union([shape for shape in
-                                     (list(rear_support_trim.geoms) if hasattr(rear_support_trim, 'geoms') else [rear_support_trim])
-                                     if shape.geom_type == 'Polygon' and shape.area > 0.01])
-    if not rear_support_trim.is_valid:
-        raise ValueError('CADCraft Rear legacy support trim is invalid')
-
-    boss_circles = [entity for entity in entities
-                    if entity.dxftype() == 'CIRCLE' and entity.dxf.layer == 'L_SO_SUPPORT_EXISTING']
-    boss_octagons = [entity for entity in entities
-                     if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'L_SO_SUPPORT_OCTAGON']
-    if len(boss_circles) != 6 or len(boss_octagons) != 6 or not all(entity.closed for entity in boss_octagons):
-        raise ValueError('All six M3 support lands need round reference and closed octagonal profiles')
-    support_envelopes = [entity for entity in entities
-                         if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == 'M3_SUPPORT_ENVELOPES']
-    if len(support_envelopes) != 6 or not all(entity.closed for entity in support_envelopes):
-        raise ValueError('All six M3 support envelopes must be closed DXF profiles')
-    hole_layers = {'L_THROUGH_HOLES', 'R_THROUGH_HOLES', 'REAR_THROUGH_HOLES', 'FRONT_THROUGH_HOLES'}
-    head_layers = {'L_HEAD_RECESSES', 'R_HEAD_RECESSES', 'REAR_HEAD_RECESSES', 'FRONT_HEAD_RECESSES'}
-    all_holes = [Polygon(entity.get_points('xy')) for entity in entities
-                 if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer in hole_layers]
-    all_heads = [Polygon(entity.get_points('xy')) for entity in entities
-                 if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer in head_layers]
-    anchor_map = {
-        'SO1': ((6.494, 6.520), LEFT_MOUNT),
-        'SO2': ((6.494, 87.945), LEFT_MOUNT),
-        'SO3': ((130.881, 87.945), REAR_MOUNT),
-        'SO4': ((250.420, 89.007), RIGHT_MOUNT),
-        'SO5': ((278.519, 6.520), RIGHT_MOUNT),
-        'SO6': ((130.881, 6.520), FRONT_MOUNT),
-    }
-    standoff_lands = []
-    seen_bosses = set()
-    seen_octagons = set()
-    seen_envelopes = set()
-    outline_suffix = {LEFT_MOUNT: 'L', RIGHT_MOUNT: 'R', REAR_MOUNT: 'REAR',
-                      'MOUNT_H03_SO6_MIN_V2': 'FRONT'}
-    for circle in boss_circles:
-        center = (circle.dxf.center.x, circle.dxf.center.y)
-        point = Point(center)
-        name = min(anchor_map, key=lambda key: Point(anchor_map[key][0]).distance(point))
-        anchor, target = anchor_map[name]
-        if point.distance(Point(anchor)) > 0.005 or name in seen_bosses:
-            raise ValueError(f'{name} support land has a duplicate or misplaced anchor: {center}')
-        seen_bosses.add(name)
-        if abs(circle.dxf.radius - 5.2) > 0.005:
-            raise ValueError(f'{name} support land radius changed unexpectedly: {circle.dxf.radius}')
-        octagon_entity = min(boss_octagons,
-                             key=lambda entity: Polygon(entity.get_points('xy')).centroid.distance(point))
-        octagon_key = octagon_entity.dxf.handle
-        if octagon_key in seen_octagons:
-            raise ValueError(f'{name} shares an octagon with another M3 support land')
-        seen_octagons.add(octagon_key)
-        octagon = Polygon(octagon_entity.get_points('xy'))
-        if len(octagon.exterior.coords) != 9 or not octagon.is_valid or point.distance(octagon.centroid) > 0.005:
-            raise ValueError(f'{name} octagon is not anchored at its M3 bore: {center}')
-        af = 2 * octagon.boundary.distance(point)
-        if abs(af - 8.5) > 0.005:
-            raise ValueError(f'{name} support octagon must be AF 8.5 mm on the 0.5 mm snap grid: {af}')
-        round_land = Point(center).buffer(circle.dxf.radius + 0.2, quad_segs=32)
-        if not round_land.buffer(0.005).covers(octagon):
-            raise ValueError(f'{name} octagon exceeds its 5.2 mm reference land: {center}')
-        matching_hole = min(all_holes, key=lambda shape: shape.centroid.distance(point))
-        matching_head = min(all_heads, key=lambda shape: shape.centroid.distance(point))
-        if matching_hole.centroid.distance(point) > 0.005 or matching_head.centroid.distance(point) > 0.005:
-            raise ValueError(f'{name} anchor does not match its through-hole and head seat: {center}')
-        wall = octagon.boundary.distance(matching_head.boundary)
-        if wall < 1.0:
-            raise ValueError(f'{name} octagonal land leaves less than 1 mm to the head seat: {wall}')
-        envelope_entity = min(support_envelopes,
-                              key=lambda entity: Polygon(entity.get_points('xy')).centroid.distance(point))
-        envelope_key = envelope_entity.dxf.handle
-        if envelope_key in seen_envelopes:
-            raise ValueError(f'{name} shares an extension envelope with another M3 land')
-        seen_envelopes.add(envelope_key)
-        envelope = Polygon(envelope_entity.get_points('xy'))
-        expected_envelope = octagon.buffer(1.2, join_style='mitre')
-        if not envelope.is_valid or envelope.centroid.distance(point) > 0.005 or \
-                envelope.symmetric_difference(expected_envelope).area > 0.02:
-            raise ValueError(f'{name} support envelope must preserve a 1.2 mm web around its AF8.5 land')
-        suffix = outline_suffix[target]
-        vertices = sorted(octagon.exterior.coords[:-1],
-                          key=lambda v: math.atan2(v[1] - center[1], v[0] - center[0]))
-        octagon = Polygon(vertices)
-        web_rim = octagon.buffer(1.2, join_style='mitre')
-        web_inside = octagon.buffer(-0.85, join_style='mitre')
-        trim_rim = octagon.buffer(1.5, join_style='mitre')
-        if suffix == 'R':
-            expanded_outline = unary_union([outlines[suffix], envelope]).buffer(0)
-            if expanded_outline.geom_type != 'Polygon' or not expanded_outline.is_valid:
-                raise ValueError(f'{name} support envelope disconnects the Right mount outline')
-            outlines[suffix] = expanded_outline
-            web = None
-        elif suffix == 'FRONT':
-            # Stop short of the controller bracket in Y and keep 1.1 mm to the seam nut in X.
-            web = web_rim.intersection(box(-10, -10, 135.75, 11.15)).difference(web_inside)
-            trim_rim = trim_rim.intersection(box(-10, -10, 135.85, 120))
-        elif suffix == 'L':
-            web = Polygon(web_rim.exterior.coords, [web_inside.exterior.coords])
-        else:
-            web = web_rim.difference(web_inside)
-        trim = (trim_rim.difference(octagon) if suffix == 'FRONT'
-                else Polygon(trim_rim.exterior.coords, [octagon.exterior.coords]))
-        standoff_lands.append((name, center, target, web, trim))
-    if seen_bosses != set(anchor_map) or len(seen_octagons) != len(anchor_map) or len(seen_envelopes) != 6:
-        raise ValueError('Each of the six M3 standoff centers needs one octagonal land and support envelope')
-    # The plate has a downturned inner lip along the left edge. Keep the
-    # bearing pads clear of its measured footprint while retaining the datum.
-    inner_lip_clearance = Polygon([(1.7, -10), (300, -10), (300, 110), (1.7, 110)])
-    supports['L'] = [shape.intersection(inner_lip_clearance) for shape in supports['L']]
-    for suffix, count in [('L', 2), ('R', 2), ('REAR', 1), ('FRONT', 2)]:
-        if len(supports[suffix]) != count or any(not shape.is_valid for shape in supports[suffix]):
-            raise ValueError(f'CADCraft {suffix} supports must contain {count} valid profiles')
-    supports['L'].sort(key=lambda shape: shape.bounds[1])
-    supports['R'].sort(key=lambda shape: -shape.bounds[3])
-    supports['FRONT'].sort(key=lambda shape: shape.bounds[0])
-    # This CADCraft pad is a snapped rectangle; preserve that bounding profile
-    # and model its nut clearance as a separate cylindrical Boolean.
-    x0, y0, x1, y1 = supports['FRONT'][0].bounds
-    supports['FRONT'][0] = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
-
-    mount_names = {'L': LEFT_MOUNT, 'R': RIGHT_MOUNT,
-                   'REAR': REAR_MOUNT, 'FRONT': 'MOUNT_H03_SO6_MIN_V2'}
-    relief_layers = {suffix: f'{suffix}_RELIEFS' for suffix in outlines}
-    reliefs = {suffix: unary_union([
-        Polygon(entity.get_points('xy')) for entity in entities
-        if entity.dxftype() == 'LWPOLYLINE' and entity.dxf.layer == relief_layers[suffix]
-    ]) for suffix in outlines}
-    clip_outlines = dict(outlines)
-    for suffix in ('R', 'REAR', 'FRONT'):
-        old_footprint = unary_union([Polygon(points)
-                                     for points in basis['outline_sections'][suffix]['polygons']])
-        old_outer = Polygon(old_footprint.exterior.coords)
-        safe_region = old_outer.buffer(-0.15, join_style='round').simplify(
-            0.08, preserve_topology=True).buffer(0)
-        clip_outlines[suffix] = outlines[suffix].intersection(safe_region)
-        if clip_outlines[suffix].geom_type != 'Polygon' or not clip_outlines[suffix].is_valid:
-            raise ValueError(f'CADCraft {suffix} clip must remain one valid polygon inside the legacy outline')
-
-    additions = {}
-    for suffix, outline in outlines.items():
-        saved = basis['outline_sections'][suffix]['polygons']
-        old_footprint = unary_union([Polygon(points) for points in saved])
-        missing = outline.difference(old_footprint)
-        overlap = 0.02 if suffix == 'L' else 0.2
-        addition = missing.buffer(overlap).intersection(outline).difference(reliefs[suffix]).buffer(0)
-        addition = addition.simplify(0.08, preserve_topology=True).buffer(0)
-        parts = list(addition.geoms) if hasattr(addition, 'geoms') else [addition]
-        fills = unary_union([part for part in parts
-                             if part.geom_type == 'Polygon' and part.area > (20.0 if suffix == 'R' else 10.0)])
-        additions[suffix] = list(fills.geoms) if hasattr(fills, 'geoms') else [fills]
-        if suffix == 'R':
-            # The SO5 fill meets the inset source clip. Increase overlap there to close the narrow seam.
-            first = next(i for i, part in enumerate(additions[suffix]) if part.bounds[1] < 2.0)
-            joined = missing.buffer(0.35).intersection(outline).difference(reliefs[suffix])
-            joined = joined.simplify(0.08, preserve_topology=True).buffer(0)
-            additions[suffix][first] = max(joined.geoms,
-                                           key=lambda part: part.intersection(additions[suffix][first]).area)
-
-    keys = load_keys(.693, .667)
-    key46 = keys[45]
-    switch46 = Polygon(rect(key46['x'], key46['y'], 13.98, 13.98, key46['rot']))
-    key11 = keys[10]
-    switch11 = Polygon(rect(key11['x'], key11['y'], 16.5, 16.5, key11['rot']))
-    return dict(outlines=outlines, clip_outlines=clip_outlines, supports=supports, additions=additions,
-                rear_shim=Polygon(rear_shims[0].get_points('xy')),
-                rear_support_trim=rear_support_trim, standoff_lands=standoff_lands,
-                switch11=switch11, switch46=switch46,
-                nut_clearance=Point(139.5, 6.6).buffer(2.55, quad_segs=24),
-                mount_names=mount_names)
+# v4 bodies that only existed to carve the old mounts; every feature touching them is suppressed.
+LEGACY_MOUNT_BODIES = ('MOUNT_R_SPLIT_V1', 'MOUNT_L_SPLIT_V1', 'MOUNT_H01_SO2_MIN_V2', 'MOUNT_H02_SO3_MIN_V2',
+                       'MOUNT_H03_SO6_MIN_V2', 'MOUNT_H04_SO4_MIN_V2', 'MOUNT_L_PAIR_V3', 'MOUNT_R_PAIR_V3',
+                       'MASK_MOUNT_')
+# Reference-only solids (not printed, not used by the production checks). The review model
+# (tools/build_assembly_reference_v5.py) re-enables the housing features with measured PSD60 values.
+REFERENCE_FEATURES = {7: 'HOUSING_OUTER_REF_WIL', 8: 'HOUSING_CAVITY_TBD', 10: 'HOUSING_POSTS_CAND',
+                      11: 'HOUSING_USB_CUT_TBD', 242: 'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED',
+                      243: 'REF_SWITCH_LATCH_BOUND_ASSUMED', 244: 'REF_SWITCH_UPPER_BOUND_ASSUMED'}
+REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}
 
 
 def sha(path):
@@ -477,11 +144,117 @@ def top_levels(model, bodies=COVERS, tol=1e-4):
     return levels
 
 
+# ------------------------------------------------------------------------------------ document helpers
+def read_source():
+    with zipfile.ZipFile(SOURCE) as archive:
+        return json.loads(archive.read('document.json')), archive.read('container.json')
+
+
+def helpers(doc):
+    """feature()/sketch() closures that append native timeline features to doc."""
+    def feature(kind, name, **kwargs):
+        fid = doc['next_id']; doc['next_id'] += 1
+        doc['features'].append(dict(id=fid, type=kind, name=name, suppressed=False, **kwargs))
+        return fid
+
+    def sketch(name, plane, polygons):
+        points = [dict(id='origin', pos=[0., 0.], fixed=True)]
+        curves = []
+        for poly in polygons:
+            first = len(points)
+            for x, y in poly:
+                points.append(dict(id=f'p{len(points)}', pos=[float(x), float(y)], fixed=True))
+            for j in range(len(poly)):
+                curves.append(dict(id=f'l{len(curves) + 1}', type='line', construction=False,
+                                   a=first + j, b=first + (j + 1) % len(poly)))
+        return feature('sketch', name, plane=plane,
+                       sketch=dict(points=points, curves=curves, constraints=[],
+                                   counters=dict(p=len(points), l=len(curves))))
+
+    return feature, sketch
+
+
+def write_seed(doc, container, path):
+    with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr('document.json', json.dumps(doc, ensure_ascii=False))
+        archive.writestr('container.json', container)
+
+
+def evaluate(seed, pending):
+    """run + eval through the CLI; returns the evaluation and the wall time of the run."""
+    started = time.perf_counter()
+    run('run', '--in', seed, '--save', pending, '--quiet')
+    elapsed = time.perf_counter() - started
+    report = pending.with_name(f'eval_{pending.stem}.json')
+    run('eval', '--in', pending, '--json-out', report)
+    evaluated = json.loads(report.read_text(encoding='utf-8'))
+    failed = [f for f in evaluated['timeline'] if f.get('error')]
+    assert not failed, failed
+    (CACHE / f'eval_{pending.stem}_{sha(pending)[:16]}.json').write_bytes(report.read_bytes())
+    return evaluated, elapsed
+
+
+def strip_legacy(doc):
+    """Suppress the v4 mount chain and the reference-only solids; returns the suppressed feature names."""
+    def legacy(body):
+        return isinstance(body, str) and body.startswith(LEGACY_MOUNT_BODIES)
+
+    suppressed = []
+    for f in doc['features']:
+        if f.get('suppressed'):
+            continue
+        refs = set()
+        for key in ('targets', 'participants', 'body_names', 'bodies', 'tools'):
+            if isinstance(f.get(key), list):
+                refs |= set(f[key])
+        refs |= {f[key] for key in ('target', 'body') if isinstance(f.get(key), str)}
+        if not any(legacy(b) for b in refs):
+            continue
+        others = {b for b in refs if not legacy(b)}
+        if others:
+            # shared feature: keep it for the other bodies (the ring/lap hardware removal)
+            assert f['type'] == 'remove', (f['id'], f['name'], others)
+            f['bodies'] = [b for b in f['bodies'] if not legacy(b)]
+            continue
+        f['suppressed'] = True
+        suppressed.append(f['name'])
+    by_id = {f['id']: f for f in doc['features']}
+    for fid, name in REFERENCE_FEATURES.items():
+        assert by_id[fid]['name'] == name, (fid, by_id[fid]['name'])
+        by_id[fid]['suppressed'] = True
+        suppressed.append(name)
+    return suppressed
+
+
+def check_mounts(evaluated, mounts):
+    """Every mount is one closed body whose volume and box follow the drawing and the parameters."""
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
+    for name, (_, anchor, _) in SO_ANCHORS.items():
+        index = name[2]
+        evaluated_anchor = (values[f'REF_SO_dX{index}'] - values['TBD_pcb0_dx'], values[f'REF_SO_dY{index}'] - values['TBD_pcb0_dy'])
+        assert all(abs(a - b) < 1e-6 for a, b in zip(anchor, evaluated_anchor)), (name, anchor, evaluated_anchor)
+    assert abs(values['v4_plate_top_Z'] - values['TBD_plate_T'] - PAD_TOP_Z) < 1e-9
+    assert abs(values['split_spine_bottom_Z'] - values['split_support_gap'] - SHIM_TOP_Z) < 1e-9
+    assert abs(values['split_flange_W'] - 2.0) < 1e-9 and abs(values['split_flange_H'] - 3.0) < 1e-9
+    assert abs(-values['TBD_pcb0_dx'] + values['TBD_plate_gap'] + values['split_flange_W'] - PLATE_FLANGE_INNER[0]) < 1e-9
+    report = {}
+    for suffix, profile in mounts.items():
+        body = bodies[profile['mount']]
+        expected = expected_volume(profile)
+        x0, y0, x1, y1 = profile['outline'].bounds
+        box_ok = all(abs(a - b) < 0.01 for a, b in zip(body['bbox']['min'][:2] + body['bbox']['max'][:2], (x0, y0, x1, y1)))
+        top = PAD_TOP_Z if profile['pads'] else values['TBD_frame_T']
+        assert body['closed'] and box_ok and abs(body['bbox']['min'][2]) < 1e-6 and abs(body['bbox']['max'][2] - top) < 1e-6, body
+        assert abs(body['volume_mm3'] - expected) / expected < 0.002, (profile['mount'], body['volume_mm3'], expected)
+        report[profile['mount']] = dict(volume_mm3=round(body['volume_mm3'], 3), expected_mm3=round(expected, 3),
+                                        bbox=body['bbox'])
+    return report
+
+
 def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(SOURCE) as archive:
-        doc = json.loads(archive.read('document.json'))
-        container = archive.read('container.json')
+    doc, container = read_source()
     params = {p['name']: p for p in doc['params']}
 
     def new_param(name, expr, comment, unit='mm', before=None):
@@ -517,6 +290,7 @@ def build(probe=False):
                         '작동한다(사용자 확인) → 출력 공차를 감수하지 않도록 0.3 얇게. 스위치 착좌 Z 11 → 11.3, 14.0 홀 층 1.5 유지, '
                         '아래 릴리프 TBD_sw_notch_H 1.5 → 1.8')
     # Assumed switch envelopes (v4 features 242-244) were fixed to the v4 seat Z 11; make them follow the seat.
+    # They are suppressed in the production model (strip_legacy) and stay suppressed in the review model.
     by_id = {f['id']: f for f in doc['features']}
     seat_shift = '(2 - TBD_upper_plate_T)'
     for fid, name, key, old, new in [
@@ -538,25 +312,7 @@ def build(probe=False):
         new_param(f'v5_legmag_{s}_X', x, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2)')
         new_param(f'v5_legmag_{s}_Y', y, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽)')
 
-    def feature(kind, name, **kwargs):
-        fid = doc['next_id']; doc['next_id'] += 1
-        doc['features'].append(dict(id=fid, type=kind, name=name, suppressed=False, **kwargs))
-        return fid
-
-    def sketch(name, plane, polygons):
-        points = [dict(id='origin', pos=[0., 0.], fixed=True)]
-        curves = []
-        for poly in polygons:
-            first = len(points)
-            for x, y in poly:
-                points.append(dict(id=f'p{len(points)}', pos=[x, y], fixed=True))
-            for j in range(len(poly)):
-                curves.append(dict(id=f'l{len(curves) + 1}', type='line', construction=False,
-                                   a=first + j, b=first + (j + 1) % len(poly)))
-        return feature('sketch', name, plane=plane,
-                       sketch=dict(points=points, curves=curves, constraints=[],
-                                   counters=dict(p=len(points), l=len(curves))))
-
+    feature, sketch = helpers(doc)
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
     keys = load_keys(.693, .667)
@@ -596,19 +352,6 @@ def build(probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
-    # Phase 1-B: MOUNT_L_PAIR_V3 / MOUNT_R_PAIR_V3 T자 단순화 — 불필요 WEB 형상 제거
-    # Phase 1-C: MOUNT_H03_SO6_MIN_V2 앞/하단 정리 — 두 WEB 제거
-    # Phase 1-D: MOUNT_H02_SO3_MIN_V2 뒤/상단 개선 — WEB 제거
-    for web_name in (
-        'WEB_MOUNT_H05_SO1_MIN_V2_EXTRUDE',
-        'WEB_MOUNT_H06_SO5_MIN_V2_0_EXTRUDE',
-        'WEB_MOUNT_H03_SO6_MIN_V2_0_EXTRUDE',
-        'WEB_MOUNT_H03_SO6_MIN_V2_1_EXTRUDE',
-        'WEB_MOUNT_H02_SO3_MIN_V2_0_EXTRUDE',
-    ):
-        web = next(f for f in doc['features'] if f.get('name') == web_name)
-        web['suppressed'] = True
-
     # Phase 2: CTRL bracket/gate simplification — remove lips, stop and stop finger
     # for simpler, straighter Pro Micro insertion/removal and USB/cable clearance.
     for ctrl_name in (
@@ -622,221 +365,33 @@ def build(probe=False):
         ctrl = next(f for f in doc['features'] if f.get('name') == ctrl_name)
         ctrl['suppressed'] = True
 
-    frame_plane = dict(type='origin', name='XY')
-    for mount, suffix, rails, trims in mount_outline_profiles():
-        for i, polygon in enumerate(rails, 1):
-            name = f'MOUNT_OUTLINE_{suffix}_RAIL_{i}_V5'
-            sk = sketch(f'SK_{name}', frame_plane, [polygon])
-            feature('extrude', name, sketch=sk, profiles=dict(type='all'),
-                    extent=dict(convention='total_distance', direction='positive',
-                                distance='TBD_frame_T'),
-                    operation='join', targets=[mount])
-        for i, polygon in enumerate(trims, 1):
-            name = f'MOUNT_OUTLINE_{suffix}_TRIM_{i}_V5'
-            sk = sketch(f'SK_{name}', frame_plane, [polygon])
-            feature('extrude', name, sketch=sk, profiles=dict(type='all'),
-                    extent=dict(convention='total_distance', direction='positive', distance='5'),
-                    operation='cut', targets=[mount])
+    # Mounts: the v4 frame → split → mask → pair chain is suppressed; the four bodies are
+    # rebuilt under their existing names straight from the CADCraft drawing.
+    suppressed = strip_legacy(doc)
+    mounts = mount_profiles()
+    emit_mounts(feature, sketch, mounts)
 
-    cadcraft = mount_cadcraft_profiles()
-    standoff_lands = {name: (target, web, trim) for name, _, target, web, trim in cadcraft['standoff_lands']}
-
-    def land_extrude(name, z, profile, distance, operation, target):
-        outer, inner = polygons_for_sketch(profile)
-        land_plane = dict(type='offset', base=frame_plane, distance=z)
-        land_sketch = sketch(f'SK_{name}', land_plane, [outer, inner])
-        # Select the outside loop explicitly. Selecting all regions would also cut the land.
-        profiles = dict(type='curves', loops=[[f'l{i}' for i in range(1, len(outer) + 1)]])
-        feature('extrude', name, sketch=land_sketch, profiles=profiles,
-                extent=dict(convention='total_distance', direction='positive', distance=distance),
-                operation=operation, targets=[target])
-
-    def land_web(name, target, web):
-        # SO6 can end flush. The other webs avoid coplanar faces with the existing upper surface.
-        distance = 'TBD_frame_T - 0.75' if name == 'SO6' else 'TBD_frame_T - 0.80'
-        land_extrude(f'MOUNT_CADCRAFT_{name}_FOOT_WEB', '0.75', web, distance, 'join', target)
-
-    def land_trim(name, target, trim):
-        distance = 'TBD_frame_T - 2.55' if name in {'SO1', 'SO2', 'SO3'} else 'TBD_frame_T - 2.6'
-        land_extrude(f'MOUNT_CADCRAFT_{name}_OCTAGON_TRIM_V7', str(M3_LAND_ROOT_Z),
-                     trim, distance, 'cut', target)
-
-    basis_path = ROOT / 'model/mounts_cadcraft_phase1_basis.json'
-    basis = json.loads(basis_path.read_text(encoding='utf-8'))
-    if basis['basis_model_sha256'] != '214fd0b5177c33c5fd5ec65036e8af159e74a5ac4ce52e487582ebfdc3b66cc6':
-        raise ValueError('CADCraft profiles were based on a different pre-CADCraft v5 model')
-
-    for suffix, outline in cadcraft['clip_outlines'].items():
-        mount = cadcraft['mount_names'][suffix]
-        # L/R source bodies have tiny z offsets near their frame faces. Let
-        # intersection cutters pass 0.1 mm beyond both faces to avoid coplanar
-        # Boolean caps that tessellate as detached or non-manifold STL facets.
-        overrun_clip = suffix in {'L', 'R', 'REAR', 'FRONT'}
-        clip_plane = (dict(type='offset', base=frame_plane, distance='-0.1')
-                      if overrun_clip else frame_plane)
-        clip_overrun = 'TBD_frame_T + 0.2' if overrun_clip else 'TBD_frame_T'
-        outline_sketch = sketch(f'SK_MOUNT_CADCRAFT_{suffix}_CLIP_V6', clip_plane,
-                                polygons_for_sketch(outline))
-        feature('extrude', f'MOUNT_CADCRAFT_{suffix}_CLIP_V6', sketch=outline_sketch,
-                profiles=dict(type='all'),
-                extent=dict(convention='total_distance', direction='positive', distance=clip_overrun),
-                operation='intersect', targets=[mount])
-
-        parts = cadcraft['additions'][suffix]
-        start_z = SEAT_ROOT_Z if suffix == 'REAR' else 0.0
-        addition_plane = dict(type='offset', base=frame_plane, distance=str(start_z))
-        for i, part in enumerate(parts, 1):
-            addition_sketch = sketch(f'SK_MOUNT_CADCRAFT_{suffix}_FILL_{i}_V6', addition_plane,
-                                     polygons_for_sketch(part))
-            feature('extrude', f'MOUNT_CADCRAFT_{suffix}_FILL_{i}_V6', sketch=addition_sketch,
-                    profiles=dict(type='all'),
-                    extent=dict(convention='total_distance', direction='positive',
-                                distance=f'TBD_frame_T - {start_z}'),
-                    operation='join', targets=[mount])
-        if suffix == 'L':
-            for name in ('SO1', 'SO2'):
-                target, web, _ = standoff_lands[name]
-                land_web(name, target, web)
-
-    seat_plane = dict(type='offset', base=frame_plane, distance=str(SEAT_ROOT_Z))
-    # Remove the raised old Rear seat outside the replacement profile above the frame.
-    # The frame, head seat and the independent spine shim datum are preserved.
-    rear_trim = cadcraft['rear_support_trim']
-    if not rear_trim.is_empty:
-        rear_plane = dict(type='offset', base=frame_plane, distance='TBD_frame_T + 0.03')
-        rear_trim_sketch = sketch('SK_MOUNT_CADCRAFT_REAR_SUPPORT_LEGACY_TRIM_V7', rear_plane,
-                                  polygons_for_sketch(rear_trim))
-        feature('extrude', 'MOUNT_CADCRAFT_REAR_SUPPORT_LEGACY_TRIM_V7',
-                sketch=rear_trim_sketch, profiles=dict(type='all'),
-                extent=dict(convention='total_distance', direction='positive',
-                            distance='v4_plate_top_Z - TBD_plate_T - TBD_frame_T + 0.02'),
-                operation='cut', targets=[REAR_MOUNT])
-
-    support_indices = {suffix: 0 for suffix in cadcraft['supports']}
-    for suffix, support_shapes in cadcraft['supports'].items():
-        mount = cadcraft['mount_names'][suffix]
-        for support_shape in support_shapes:
-            support_indices[suffix] += 1
-            index = support_indices[suffix]
-            if suffix == 'FRONT' and index == 1:
-                support_shape = support_shape.difference(cadcraft['nut_clearance'])
-            name = f'MOUNT_CADCRAFT_{suffix}_SUPPORT_{index}_V6'
-            support_root = SEAT_ROOT_Z
-            support_plane = seat_plane
-            if suffix == 'L':
-                anchor = f'SO{index}'
-                target, _, trim = standoff_lands[anchor]
-                land_trim(anchor, target, trim)
-                # Join the bearing pad above the octagon relief floor, keeping the plate datum at Z 8.
-                support_root = LEFT_SEAT_ROOT_Z
-                support_plane = dict(type='offset', base=frame_plane, distance=str(support_root))
-            support_sketch = sketch(f'SK_{name}', support_plane, polygons_for_sketch(support_shape))
-            if suffix == 'FRONT' and index == 1:
-                x0, y0, x1, y1 = cadcraft['supports'][suffix][index - 1].bounds
-                feature('box', f'{name}_BBOX', corner=[x0, y0, str(SEAT_ROOT_Z)],
-                        length=str(x1 - x0), width=str(y1 - y0),
-                        height=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}',
-                        operation='join', participants=[mount])
-                feature('cylinder', f'{name}_NUT_CLEARANCE', axis=[0., 0., 1.],
-                        base=[139.5, 6.6, str(SEAT_ROOT_Z)],
-                        height=f'v4_plate_top_Z - TBD_plate_T - {SEAT_ROOT_Z}',
-                        radius='2.55', operation='cut', participants=[mount])
-                continue
-            if suffix == 'R' and index == 2:
-                continue  # This profile produces no geometry change in the SolidCraft body.
-            feature('extrude', name, sketch=support_sketch, profiles=dict(type='all'),
-                    extent=dict(convention='total_distance', direction='positive',
-                                distance=f'v4_plate_top_Z - TBD_plate_T - {support_root}'),
-                    operation='join', targets=[mount])
-
-    right_support_collision = cadcraft['supports']['R'][1].intersection(cadcraft['switch46']).buffer(0.15)
-    if not right_support_collision.is_empty and right_support_collision.area > 0.01:
-        clearance_plane = dict(type='offset', base=frame_plane, distance=str(SEAT_ROOT_Z))
-        clearance_sketch = sketch('SK_MOUNT_CADCRAFT_R_SUPPORT_SWITCH_CLEARANCE_V6', clearance_plane,
-                                  polygons_for_sketch(right_support_collision))
-        feature('extrude', 'MOUNT_CADCRAFT_R_SUPPORT_SWITCH_CLEARANCE_V6',
-                sketch=clearance_sketch, profiles=dict(type='all'),
-                extent=dict(convention='total_distance', direction='positive', distance='6.5'),
-                operation='cut', targets=[RIGHT_MOUNT])
-
-    left_support_collision = cadcraft['supports']['L'][1].intersection(
-        cadcraft['switch11'].buffer(0.15, quad_segs=1, join_style='mitre'))
-    if not left_support_collision.is_empty and left_support_collision.area > 0.01:
-        switch_bottom = 'TBD_frame_T + TBD_standoff_H - 3'
-        clearance_plane = dict(type='offset', base=frame_plane, distance=f'{switch_bottom} - 0.05')
-        clearance_sketch = sketch('SK_MOUNT_CADCRAFT_L_SWITCH11_BODY_CLEARANCE_V6', clearance_plane,
-                                  polygons_for_sketch(left_support_collision))
-        feature('extrude', 'MOUNT_CADCRAFT_L_SWITCH11_BODY_CLEARANCE_V6',
-                sketch=clearance_sketch, profiles=dict(type='all'),
-                extent=dict(convention='total_distance', direction='positive',
-                            distance=f'v4_plate_top_Z - TBD_plate_T - ({switch_bottom}) + 0.1'),
-                operation='cut', targets=[LEFT_MOUNT])
-
-    shim_plane = dict(type='offset', base=frame_plane, distance='2.5')
-    shim_sketch = sketch('SK_MOUNT_CADCRAFT_REAR_SHIM_V6', shim_plane,
-                         polygons_for_sketch(cadcraft['rear_shim']))
-    feature('extrude', 'MOUNT_CADCRAFT_REAR_SHIM_V6', sketch=shim_sketch, profiles=dict(type='all'),
-            extent=dict(convention='total_distance', direction='positive', distance='0.8'),
-            operation='join', targets=[REAR_MOUNT])
-
-    # Open the pin recesses to the rail edges. Keep a continuous 2.1 mm floor.
-    reliefs = (
-        (LEFT_MOUNT, '10', (8.5, 53.55), (12.5, 58.35)),
-        (LEFT_MOUNT, '11', (9.5, 72.55), (12.5, 75.5)),
-        (RIGHT_MOUNT, '33_GUIDE', (246.0, 72.55), (252.3, 75.5)),
-        (RIGHT_MOUNT, '33_CONTACT', (246.0, 78.1), (249.2, 79.85)),
-        (RIGHT_MOUNT, '46_GUIDES', (274.25, 18.5), (277.25, 21.5)),
-        (RIGHT_MOUNT, '46_CONTACT', (264.0, 24.05), (274.0, 25.85)),
-    )
-    floor = f'v4_plate_top_Z - TBD_upper_plate_T - {MX_PIN_DEPTH_FROM_SEAT} - 0.6'
-    for mount, index, (x, y), (x_max, y_max) in reliefs:
-        feature('box', f'MOUNT_SWITCH_RELIEF_{index}_V5', corner=[x, y, floor],
-                length=str(round(x_max - x, 3)), width=str(round(y_max - y, 3)),
-                height=f'TBD_frame_T + 0.05 - ({floor})',
-                operation='cut', participants=[mount])
-
-    # The key 18 guide and contact share one opening. Angle its inside edge
-    # away from the H04 head recess and step out to reach the contact.
-    relief_plane = dict(type='offset', base=frame_plane, distance=floor)
-    key18 = sketch('SK_MOUNT_SWITCH_RELIEF_18_V5', relief_plane, [
-        [(262.55, 61.5), (273.0, 61.5), (273.0, 66.35), (264.1, 66.35),
-         (264.1, 64.45), (263.14, 64.45), (262.55, 63.3)],
-    ])
-    feature('extrude', 'MOUNT_SWITCH_RELIEF_18_V5', sketch=key18, profiles=dict(type='all'),
-            extent=dict(convention='total_distance', direction='positive',
-                        distance=f'TBD_frame_T + 0.05 - ({floor})'),
-            operation='cut', targets=[RIGHT_MOUNT])
-
-    for name in ('SO3', 'SO4', 'SO5', 'SO6'):
-        target, web, trim = standoff_lands[name]
-        if web is not None:
-            land_web(name, target, web)
-        land_trim(name, target, trim)
-
-    doc['name'] = '46es seam v5 - flat cover and direct plate supports'
+    doc['name'] = '46es seam v5 - flat cover, drawing-built mounts and direct plate supports'
     seed = CACHE / 'seed_v5.sc'
-    with zipfile.ZipFile(seed, 'w', zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr('document.json', json.dumps(doc, ensure_ascii=False))
-        archive.writestr('container.json', container)
+    write_seed(doc, container, seed)
     pending = CACHE / 'v5.sc'
-    run('run', '--in', seed, '--save', pending, '--quiet')
-    report = CACHE / 'eval_v5.json'
-    run('eval', '--in', pending, '--json-out', report)
-    evaluated = json.loads(report.read_text(encoding='utf-8'))
-    failed = [f for f in evaluated['timeline'] if f.get('error')]
-    assert not failed, failed
-    (CACHE / f'eval_{pending.stem}_{sha(pending)[:16]}.json').write_bytes(report.read_bytes())
+    evaluated, elapsed = evaluate(seed, pending)
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
+    assert not REMOVED_BODIES & set(bodies), REMOVED_BODIES & set(bodies)
     top_z = values['v5_cover_top_Z']
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
     levels = top_levels(pending)
     for name, faces in levels.items():
         assert set(faces) == {round(top_z, 4)}, (name, faces)
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
+    mount_report = check_mounts(evaluated, mounts)
+    active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
-                bodies=evaluated['body_count'], timeline=len(evaluated['timeline']),
-                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels)
+                bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
+                suppressed_legacy=len(suppressed), run_seconds=round(elapsed, 1),
+                evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
+                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report)
     if not probe:
         pending.replace(OUTPUT)
         info['output_sha'] = sha(OUTPUT)
@@ -846,8 +401,49 @@ def build(probe=False):
     return info
 
 
+def build_mounts():
+    """Fast loop for mount work: the four mounts alone, from a parameter-only copy of the v4 document."""
+    sys.path.insert(0, str(ROOT / 'inspection/scripts'))
+    from mesh_section import read_stl, compare
+    CACHE.mkdir(parents=True, exist_ok=True)
+    doc, container = read_source()
+    doc['features'] = []
+    doc['next_id'] = 1
+    doc['visibility'] = {key: [] for key in doc['visibility']}
+    doc['appearances'] = {'bodies': {}}
+    doc['name'] = '46es v5 mounts only - drawing check'
+    upper = next(p for p in doc['params'] if p['name'] == 'TBD_upper_plate_T')
+    upper['expr'] = '1.7 mm'                     # the pin relief floor follows the v5 seat
+    feature, sketch = helpers(doc)
+    mounts = mount_profiles()
+    emit_mounts(feature, sketch, mounts)
+    seed = CACHE / 'seed_mounts_v5.sc'
+    write_seed(doc, container, seed)
+    evaluated, elapsed = evaluate(seed, MOUNTS_ONLY)
+    report = check_mounts(evaluated, mounts)
+    stl_dir = CACHE / 'mounts_stl'
+    stl_dir.mkdir(exist_ok=True)
+    script = [dict(command='file.export_stl', params=dict(path=str(stl_dir / f'{suffix}.stl'), bodies=[p['mount']], quality='fine'))
+              for suffix, p in mounts.items()]
+    (CACHE / 'mounts_export.json').write_text(json.dumps(script), encoding='utf-8')
+    run('run', str(CACHE / 'mounts_export.json'), '--in', MOUNTS_ONLY, '--quiet')
+    sections = {}
+    for suffix, p in mounts.items():
+        sections[p['mount']] = compare(read_stl(stl_dir / f'{suffix}.stl'), expected_sections(p))
+    ok = all(level['ok'] for body in sections.values() for level in body.values())
+    warnings = [f['name'] for f in evaluated['timeline'] if f.get('warning')]
+    info = dict(model=str(MOUNTS_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
+                evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])), warnings=warnings,
+                bodies=report, sections=sections, sections_ok=ok)
+    (CACHE / 'mounts_v5.json').write_text(json.dumps(info, indent=1, ensure_ascii=False), encoding='utf-8')
+    print(json.dumps(info, ensure_ascii=False, indent=1))
+    assert ok, 'mount sections differ from the drawing'
+    return info
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--probe', action='store_true', help='build into guide/.cache/v5/v5.sc only and print the checks')
+    ap.add_argument('--mounts', action='store_true', help='build and check only the four mounts (guide/.cache/v5/mounts_v5.sc)')
     a = ap.parse_args()
-    build(probe=a.probe)
+    build_mounts() if a.mounts else build(probe=a.probe)

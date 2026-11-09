@@ -19,8 +19,8 @@
     "mounts": {
       "MOUNT_H02_SO3_MIN_V2": {
         "pairs_checked": 1,
-        "min_distance_mm": null,
-        "closest_reference": null
+        "min_distance_mm": 0.9558,
+        "closest_reference": "REF_MX_GUIDE (9)"
       },
       "MOUNT_H03_SO6_MIN_V2": {
         "pairs_checked": 3,
@@ -29,18 +29,18 @@
       },
       "MOUNT_L_PAIR_V3": {
         "pairs_checked": 17,
-        "min_distance_mm": 0.5667,
+        "min_distance_mm": 0.6,
         "closest_reference": "REF_MX_GUIDE (32)"
       },
       "MOUNT_R_PAIR_V3": {
-        "pairs_checked": 31,
-        "min_distance_mm": 0.5267,
-        "closest_reference": "REF_MX_GUIDE (138)"
+        "pairs_checked": 32,
+        "min_distance_mm": 0.5582,
+        "closest_reference": "REF_MX_CONTACT (66)"
       }
     }
   },
-  "model_sha": "7dd5f1720e227e9d289e43e5a1d1ad8fc365dedf36c02f162fe3509d94176b62",
-  "source_sha": "d63488e093a272a52dd9951e29125081b0d2105db691f2a50480f5be15464e13",
+  "model_sha": "1870affea66455fa0cb858cdcee063dafa0fa055db1f8238a0fdd15a531bbe59",
+  "source_sha": "b10ac3cc1e7e758eef5911316821eb465b5873ec6bb3c2260d9e667cec0ef13a",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.0,
   "cover_above_rim_mm": 5.0,

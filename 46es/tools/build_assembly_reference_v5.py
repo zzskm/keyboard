@@ -128,6 +128,7 @@ def build():
     names = {'REF_HOUSING_WILMORE_NOT_PSD60': housing_name}
     for i in range(5, 11):
         doc['features'][i] = replace(isolate(doc['features'][i]), names)
+        doc['features'][i]['suppressed'] = False      # the production model suppresses the reference housing
     doc['features'][5]['name'] = 'SK40_HOUSING_PROFILE_PSD60_REF'
     doc['features'][6]['name'] = 'HOUSING_OUTER_PSD60_NOMINAL_REF'
     doc['features'][7]['sketch'] = cavity['id']

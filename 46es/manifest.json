@@ -44,21 +44,21 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 9052,
-      "sha256": "2e1ce7f5c53a57bcd9cb9eef2e065db0d5cebd222f334bc9a7e6f3dd08cbf195",
-      "git_blob_sha": "bb335a9d899333fdef156c786075cc32777263c5"
+      "bytes": 11430,
+      "sha256": "16b6403ec5531bef155a3ecf82442ee0db916655e1487801bba60e22ec0f8507",
+      "git_blob_sha": "d690743b221c4e966ee7fb9b9a2fd9632333fdb8"
     },
     {
       "path": "docs/mount-phase1-outline.png",
-      "bytes": 181979,
-      "sha256": "a09a0933c22e1d71568c60b08b7be3e237c693ba1db4fae7544023a5cc4e2987",
-      "git_blob_sha": "7e803cc6e03c4cf6e25f9d25b7334cbb0ac07755"
+      "bytes": 141406,
+      "sha256": "e695bfa3811ab0b7749459b0eeeaeff9e1a30346bef78f27cb4311b15476bd45",
+      "git_blob_sha": "c828a6bdb4eb0ee78e413f3c63d1ebedf4c7234e"
     },
     {
       "path": "docs/mount-redesign-plan.md",
-      "bytes": 6402,
-      "sha256": "2ee15700db8652aefcf5ee290f6828684e617fa7b64e9f26db71d034736bccc0",
-      "git_blob_sha": "44de604862a3844d744a3423cb5af551952eaf1d"
+      "bytes": 5917,
+      "sha256": "06fd38b3aca6d4063d9cad68cf78e197d08eb763e2d766d76b13a1572b0cca4f",
+      "git_blob_sha": "d304f1e591b4c86c33df25856b6170b81678d3df"
     },
     {
       "path": "docs/planning.md",
@@ -68,9 +68,9 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 6241,
-      "sha256": "7a47b4eedd138f55dcefdcc4703bfe720ae9708c694dd8792f9ee595b5ac85fc",
-      "git_blob_sha": "d1123b99a3690627b184f4610a051904019f89bd"
+      "bytes": 6572,
+      "sha256": "f1cc0bfe61dab09fc04a2e00b9dc21d09130593681a154bd54527686d31e6c62",
+      "git_blob_sha": "f37bb08c8169d8c5cd3f8a480ba44d1d2f9e27ad"
     },
     {
       "path": "docs/work-report-2026-11-04.md",
@@ -194,9 +194,9 @@
     },
     {
       "path": "guide/guide_v5.json",
-      "bytes": 60531,
-      "sha256": "14c0d1ef3400564ad9b5a8da1bff5ebfce3a1f22b2b6b87d9abb87278d13c6b5",
-      "git_blob_sha": "9bb3c43c7989e917a7eb97ef0830e8591c97cc23"
+      "bytes": 60615,
+      "sha256": "63be7204760e5995432c319106414006677d3d15c8ee37036f454eac4232dd9f",
+      "git_blob_sha": "f419bd3176b5cf1b3e8596b5cce41cc333173f11"
     },
     {
       "path": "guide/illustrations.py",
@@ -230,9 +230,9 @@
     },
     {
       "path": "inspection/data/assembly-reference-v5-verification.json",
-      "bytes": 4503,
-      "sha256": "467fb9fc2cd8d4c975a3072a2ac9898cf572acabb5a496a88deb201fe1f89391",
-      "git_blob_sha": "706ef695b7c55d7fb79899f28dab7fb4e52639f2"
+      "bytes": 4517,
+      "sha256": "e15f57be4b679c55e08b98850d2169c735eedb5345e95c0adf55f48772c77757",
+      "git_blob_sha": "947a1473fbe7f0af7cc21820d86b72352b1af9c6"
     },
     {
       "path": "inspection/data/assembly_tolerance_check.json",
@@ -272,15 +272,15 @@
     },
     {
       "path": "inspection/data/seam-v5-clearance.json",
-      "bytes": 6436,
-      "sha256": "6252fbff26902dcb257b5549b763430114f4bf1748f5e34edfc8e6320c75e77f",
-      "git_blob_sha": "97c7240621fc3261d0364c3e72cb46d856e9696c"
+      "bytes": 4125,
+      "sha256": "1ed09829d5be4cc705f65c5a475a3c11e0f192af0d4e9f9f8a2eb24b577e4b50",
+      "git_blob_sha": "4e94ead5d8d5ccbbf426e3613de9bc9b1682dd88"
     },
     {
       "path": "inspection/data/seam-v5-exports.json",
       "bytes": 3237,
-      "sha256": "fb1674b33182dcf4d7d0365f7f19569497ecae3abf6547581d1cbf3d9f31b4e9",
-      "git_blob_sha": "17c513e2ae2c0025e4bc12ee71b3157dd8873bc5"
+      "sha256": "5a04798ab5b9c0c8101bf082646b248acd76d079bbae1c4e511137205d744a0d",
+      "git_blob_sha": "84fa3616b15d8b04ba9800dbdbdcb79a0b4de32e"
     },
     {
       "path": "inspection/data/seam-v5-mjf-thin-wall.json",
@@ -291,8 +291,8 @@
     {
       "path": "inspection/data/seam-v5-print-set.json",
       "bytes": 5203,
-      "sha256": "6605ace1e09d71c88c790a845903831113dcf83d0430f2c897ae6c0d5254a348",
-      "git_blob_sha": "4469e9631503c5340c8d1feebfba8451880b7c57"
+      "sha256": "c59da22df23293206bf2c167d96c4048c6c3975d2367b7de0ed5282af8e49e81",
+      "git_blob_sha": "c44a9f36a3205f05bbb9c812e9e558e8e6399263"
     },
     {
       "path": "inspection/data/seam-v5-thin-wall.json",
@@ -302,21 +302,21 @@
     },
     {
       "path": "inspection/data/seam-v5-trial-print-set.json",
-      "bytes": 5235,
-      "sha256": "daf0e9b68663275f2b8232f071213ad99b1e8186f71b14cd5aeaf3bcc3556f2a",
-      "git_blob_sha": "43a672d33b778aae74cf01604ae4add5eb5e95cb"
+      "bytes": 5232,
+      "sha256": "b6b0d9dc697f1cae4722619d9f740f73a7b6c780ec6f4c184dc4b7e574b554b0",
+      "git_blob_sha": "8c25faea5dff095394139b49a7333c5ef608e8c1"
     },
     {
       "path": "inspection/data/seam-v5-trial-thin-wall.json",
-      "bytes": 21965,
-      "sha256": "77a6055bbb940e3899499fce6bfc103b97ae7a40b0af1f43438dcca448ea75a2",
-      "git_blob_sha": "49b9fadd1c3705e5d9dbc9bbb16bc31fcb3d0143"
+      "bytes": 5109,
+      "sha256": "10797075e23e8316c63c46fb5a4af2ba554df6232b753fa090d18080261a5364",
+      "git_blob_sha": "da750cef0dedec7066270b1b4aad53a6dc4128ed"
     },
     {
       "path": "inspection/data/seam-v5-verification.json",
-      "bytes": 9801,
-      "sha256": "303bb2b8af0110438f79e48afe768dfadc01763b37811cc9ef77515811f756e3",
-      "git_blob_sha": "0d87df081fa7ff0a1a14570c6d7518bf0df2e5c5"
+      "bytes": 14088,
+      "sha256": "bc5a701ddb199c0a8a0f7a9c1daaef62e7ed3ad6b4a542e3761f3890686cb6ed",
+      "git_blob_sha": "2ae70e3987460a3123c0e7d6f2991fe8892f7e1d"
     },
     {
       "path": "inspection/derived/46es_r2_keyboard_modelspace.dxf",
@@ -451,6 +451,12 @@
       "git_blob_sha": "753ca6689bc2626ff70daf65ce0f98cabc274f6e"
     },
     {
+      "path": "inspection/scripts/mesh_section.py",
+      "bytes": 2997,
+      "sha256": "7c69262938f66efa01516da9406edb837710b29f4864437630a0d7d38c7d52ad",
+      "git_blob_sha": "d344252e618250f9309d0bc466c586d11c93284c"
+    },
+    {
       "path": "inspection/scripts/panel_to_dxf.py",
       "bytes": 2672,
       "sha256": "e16dabe7af4fd892af87bac81d9aaa079ec3d4bf460f25e8f1944c9964ac08ef",
@@ -470,15 +476,15 @@
     },
     {
       "path": "inspection/scripts/verify_assembly_reference_v5.py",
-      "bytes": 13587,
-      "sha256": "372110b5f5a68fcc31fe9df4dbe2a5d738cad756c506f48830e18fb2b662656a",
-      "git_blob_sha": "def145dcdcbd34278525b6feaededa00be88eb20"
+      "bytes": 13506,
+      "sha256": "011470ccf076edecdb7513e3220a64a866433ec50028510b9114355ebc9809f0",
+      "git_blob_sha": "25bd92b380cb3995184f9560004e542b621847de"
     },
     {
       "path": "inspection/scripts/verify_seam_v5.py",
-      "bytes": 30830,
-      "sha256": "054232dc3a841e409bdf234f9cc570a397d6f77e2993250739608b640cea51c8",
-      "git_blob_sha": "a7452508115bffc674efbd5ebf25f3f31330e072"
+      "bytes": 31313,
+      "sha256": "c7b4b5d29e6a37b38b3a9157eedb38ebe5fb60c16dcab782f1e3c1cbcaff0288",
+      "git_blob_sha": "885b40ed4d82c1aa14e24def42d99fc44aa37695"
     },
     {
       "path": "inspection/switch_tester/README.md",
@@ -638,9 +644,9 @@
     },
     {
       "path": "model/46es_assembly_review_v5.sc",
-      "bytes": 11543815,
-      "sha256": "7dd5f1720e227e9d289e43e5a1d1ad8fc365dedf36c02f162fe3509d94176b62",
-      "git_blob_sha": "49385a13c29553b78a7eb443bdadae1507aa5719"
+      "bytes": 9144449,
+      "sha256": "1870affea66455fa0cb858cdcee063dafa0fa055db1f8238a0fdd15a531bbe59",
+      "git_blob_sha": "f6a44fef4c7bfcde3af9af8b0dc50fdc47953f90"
     },
     {
       "path": "model/46es_assembly_tolerance_iso.png",
@@ -656,9 +662,9 @@
     },
     {
       "path": "model/46es_mount_seam_v5.sc",
-      "bytes": 10751246,
-      "sha256": "d63488e093a272a52dd9951e29125081b0d2105db691f2a50480f5be15464e13",
-      "git_blob_sha": "b39b4f16558d66f630cbc19af0c708762d5aefdc"
+      "bytes": 7935352,
+      "sha256": "b10ac3cc1e7e758eef5911316821eb465b5873ec6bb3c2260d9e667cec0ef13a",
+      "git_blob_sha": "18bd4e5d7637a8dc35195dc56553818f1edf4abc"
     },
     {
       "path": "model/46es_mount_tolerance_top.png",
@@ -668,15 +674,15 @@
     },
     {
       "path": "model/README.md",
-      "bytes": 2545,
-      "sha256": "0ffd6e7d1ec404ea59d6f32b500d70b611eddeba8b1c478789cce6c2f213d5f2",
-      "git_blob_sha": "9642cff161cad5cc82eb3e8023ec9ee2528de923"
+      "bytes": 2861,
+      "sha256": "3f7cc66f77ccf6ec5a0d23ad9f216465c8dc3ea3ae5025234a7ea1f8b9f47392",
+      "git_blob_sha": "caa8a7e652bfe8c21c83bb3a25584231efe1093e"
     },
     {
       "path": "model/assembly_reference_v5.json",
       "bytes": 9978,
-      "sha256": "5956f56a738025482a012d0264787a304dd80fa63ca53170449cb17bbce3946d",
-      "git_blob_sha": "539aeec166ac4ca3b61096268cd360b6ad1bd468"
+      "sha256": "24d48f27ea7eb23c761d4455716a788a16e9326c9324e546b6c9c86e578411b3",
+      "git_blob_sha": "193b9e569054a82cb4a0861e6d141ac8455cbbb3"
     },
     {
       "path": "model/baselines/README.md",
@@ -740,15 +746,9 @@
     },
     {
       "path": "model/mounts_cadcraft_phase1.dxf",
-      "bytes": 73308,
-      "sha256": "a117630f8e5d998f2f200d1aa960f06ca7191c2b459e9ad959501df3e72b1546",
-      "git_blob_sha": "08482cb9733b99145fd107d17ad9d749bd7bfea6"
-    },
-    {
-      "path": "model/mounts_cadcraft_phase1_basis.json",
-      "bytes": 109688,
-      "sha256": "e7616d8edf6428ba7d8678d0566b159d135f66488aceb18cec747db8a90fa8c6",
-      "git_blob_sha": "07eeaa23426efed14b63b43adc62af7e5db6075a"
+      "bytes": 73256,
+      "sha256": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
+      "git_blob_sha": "f1fe6ba4d8f5226b085e70944d589c8b45959f54"
     },
     {
       "path": "model/parameters.csv",
@@ -764,9 +764,9 @@
     },
     {
       "path": "model/print_v5/README.md",
-      "bytes": 7818,
-      "sha256": "c1d188137402bec1cae7bb1303b43466eb65c3b47163f0481c239d7a2010ee37",
-      "git_blob_sha": "61cc349c4915fc36b03f093cf2050b4e40e91de9"
+      "bytes": 7919,
+      "sha256": "b9938ea0f4f30fdafe22cb3587504951abb1a85157c09bcc4e49664670427c82",
+      "git_blob_sha": "2955567da7cf53b99ad37c4ea9ca8bb5f2e98975"
     },
     {
       "path": "model/print_v5/order1/46es_v5_boss_tab.step",
@@ -782,51 +782,51 @@
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_H02_SO3.step",
-      "bytes": 124230,
-      "sha256": "2b142ef2ee73be33d731718bc4078950c95121e3f353aa7f465b01ba8a72ac61",
-      "git_blob_sha": "db505dabc530fd5c35d6bf3eb6808c86e8c188f2"
+      "bytes": 58160,
+      "sha256": "f4ca865b9a2a3a6f64b5da3ae64bc797b713640c70054d97dda6943dee5359e8",
+      "git_blob_sha": "bdcd81c200944d9a474aaf2efd2a0f8637b75cb3"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_H02_SO3.stl",
-      "bytes": 155884,
-      "sha256": "0c84c770a5500671166e91f4ce8b081bde356f3e1e051d7e83e046f735446717",
-      "git_blob_sha": "34465875bf3847f5f0b4d882696614d85a569044"
+      "bytes": 156384,
+      "sha256": "9d0b04844138d4b10c56d630be87817017345cf0ae6546165071161ccb23541b",
+      "git_blob_sha": "7910fd0017c0d6e67d1a8dd0d050bdd3881a6b22"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_H03_SO6.step",
-      "bytes": 116242,
-      "sha256": "5de0be00b6943d74ad9295fad8b1703aa0830450f55a7855b7a6c71e550bafd8",
-      "git_blob_sha": "200b3a839a118ba1d860ea20fb8d46a6d23b6821"
+      "bytes": 61306,
+      "sha256": "ed66566637ca9afdd7147bc5bad3d32f1a17b5d607bc6cd58b433b6ae0e24adb",
+      "git_blob_sha": "d4d9836a6d39a4f477a7713062fc2dfe588c85b8"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_H03_SO6.stl",
-      "bytes": 239384,
-      "sha256": "d379138010d5f25fc5f80cf6aa4390c3f4b336146c525a5090febf2dce3bd097",
-      "git_blob_sha": "6fc83bdfb2569794d2406190f16f66f6429a0165"
+      "bytes": 213884,
+      "sha256": "c20111acd67f875cd3c30200da08d8f2720c4bfe7b9fa8354e6757b30f7fcf06",
+      "git_blob_sha": "74c4db2190c7d8f7ebc19ecf7b58ca0e4f24d1e3"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_L.step",
-      "bytes": 191092,
-      "sha256": "6a37b8961c5090b6e3dc78be241f5044e40de87da37c0a71d7940c8cc9bb5dd4",
-      "git_blob_sha": "5974c435819e88be45c34955f6f8cf25fd9f012c"
+      "bytes": 92776,
+      "sha256": "fe11fe36901677cdc2b9bc314d14146a24efb69875c09fdd4b78cb253a999396",
+      "git_blob_sha": "4e4f8bd1acc29d4b2a6f82c15ae60990a4d85b64"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_L.stl",
-      "bytes": 192384,
-      "sha256": "f631c117b50a90ccbce5fd541ff47ef22b85d16095081b0553e4e7da6e5ffe19",
-      "git_blob_sha": "e3af0abbddc26390c05bf1403cfa5db3908e552c"
+      "bytes": 145084,
+      "sha256": "7676cb18626201195691e32d8d894cd6f74276f1eb9d0a37a1bde51f03940269",
+      "git_blob_sha": "79b0f638e674bf539f3bcd0b447013b4433bcc1f"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_R.step",
-      "bytes": 267774,
-      "sha256": "3caaee5899712235ec533baa9868bb87e5c3b25d8551a3ca1325cfd8ca908a43",
-      "git_blob_sha": "a25d2d3d1490193fea6e28db072677ea9d1dde5a"
+      "bytes": 159685,
+      "sha256": "5fefe33835dfe8f6804da0995ef50c3bf73a884d6c7e120f1a5e318d9a98a8ad",
+      "git_blob_sha": "d5bdfa010c9de0fa1490cc7cf920b12606e9e485"
     },
     {
       "path": "model/print_v5/order1/46es_v5_mount_R.stl",
-      "bytes": 193484,
-      "sha256": "75f0568bd01d6b2dfb36f4cc972e2088b9cb917d873ba7b4b4cac1c97708014e",
-      "git_blob_sha": "c1a43017b468ce749333c98aa2a3676dbd29fd72"
+      "bytes": 167084,
+      "sha256": "0e4bc8ba186e123e37d4b5c97d5dd1e690e24334528eff0ede9935797fc169d5",
+      "git_blob_sha": "9696d9975d13adcd4c69e99bc55c57a0b4a71095"
     },
     {
       "path": "model/print_v5/order1/46es_v5_seam_coupon_L.step",
@@ -1016,9 +1016,9 @@
     },
     {
       "path": "model/review_v5/46es_v5_changed_REVIEW_ONLY.step",
-      "bytes": 2083441,
-      "sha256": "3bd1dc284b5938cdf665d30278315ec8c5bd936e65fca2aca1a3ecdd0180c5f7",
-      "git_blob_sha": "8f2c934565633e17fc7972a0fb005fe1f0c24a40"
+      "bytes": 1740289,
+      "sha256": "eeb712073f87dbb0931dd2a04ac75c2fda0bf937bed88a21f0cac804b07eb073",
+      "git_blob_sha": "5c5052c0a31215900bccd81c707b72fac6fb780b"
     },
     {
       "path": "model/review_v5/46es_v5_cover_L_REVIEW_ONLY.step",
@@ -1124,9 +1124,9 @@
     },
     {
       "path": "tools/build_assembly_reference_v5.py",
-      "bytes": 19761,
-      "sha256": "52f6593ca7b44ce75bb4f3f82c6ce0f05adbb65be78a51c5f76fbbf31e6f140a",
-      "git_blob_sha": "095600d229013cc8c5825a288650c68ba33d56c9"
+      "bytes": 19871,
+      "sha256": "2ad23b78e09155c66ba35b7ced8ddec3018edbe8d3ae88dbdc8f7352822cc347",
+      "git_blob_sha": "54b8604dca414acb9da9f840a715184bf8ae5357"
     },
     {
       "path": "tools/build_r2_reference.py",
@@ -1136,9 +1136,9 @@
     },
     {
       "path": "tools/build_seam_v5.py",
-      "bytes": 48502,
-      "sha256": "93121dc07cf7144f75d09334f10bd99731dd5ac4051a7e4d306c37dc0084c641",
-      "git_blob_sha": "cdf8118110fa073a5bbd1c5fc16e9e95950b2d4b"
+      "bytes": 24887,
+      "sha256": "33403eafdca0b9b7b4207b5973c6c992d122ba507df8ac28b6dee31a22ee85a7",
+      "git_blob_sha": "3b6b544ba2ce8b8b8e079035b40863cd21986e3f"
     },
     {
       "path": "tools/cad_eval_cache.py",
@@ -1148,9 +1148,9 @@
     },
     {
       "path": "tools/check_repository.py",
-      "bytes": 8813,
-      "sha256": "8f07311d7c4f523860dcc444b6a32631f1e4507f8d45e783b620519a027dfd8c",
-      "git_blob_sha": "0031513dede6441301746acb98660e598f9a5fe9"
+      "bytes": 8846,
+      "sha256": "9a968690f6d88761a0f61f52a968d4626e45dcb0584fd8617874dcc75d52bc2b",
+      "git_blob_sha": "057eaa10f999e1a4487d44516bedffdab7bf045f"
     },
     {
       "path": "tools/export_print_v5.py",
@@ -1177,10 +1177,22 @@
       "git_blob_sha": "03ef2bcc5d2c783aecfa91e8de63d5dc5f4df592"
     },
     {
+      "path": "tools/mounts_v5.py",
+      "bytes": 27953,
+      "sha256": "3f125b5b114905d3f80971b8412a4440f029312b6b6de9de2ddfb20bad4a4d6e",
+      "git_blob_sha": "73e2161ec630d3defa8c352163005debe30f8fc7"
+    },
+    {
       "path": "tools/orient_print_stl.py",
       "bytes": 1454,
       "sha256": "bdb7153ca9f2435fe90877618d4fd2c5f3bda1d1e9de4b790a5f00eea29710e9",
       "git_blob_sha": "57a829d42e86e02adfd755cf71bf6dc1056d33bb"
+    },
+    {
+      "path": "tools/plot_mount_outlines.py",
+      "bytes": 3065,
+      "sha256": "9c09163431d8614f75829fd18a10e4c3665a66f793a63798ca0406150b7f6e46",
+      "git_blob_sha": "1918347f9f9538e42e7c0e25a650557cedb7b6cb"
     },
     {
       "path": "tools/update_manifest.py",

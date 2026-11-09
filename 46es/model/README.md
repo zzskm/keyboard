@@ -6,7 +6,8 @@
 
 | 구분 | 경로 | 역할 |
 |---|---|---|
-| 편집 원본 | [`../tools/build_seam_v5.py`](../tools/build_seam_v5.py) | v5 생성 규칙 |
+| 편집 원본 | [`../tools/build_seam_v5.py`](../tools/build_seam_v5.py), [`../tools/mounts_v5.py`](../tools/mounts_v5.py) | v5 생성 규칙. mount는 도면 돌출 + 매개변수 체결부 |
+| mount 도면 | [`mounts_cadcraft_phase1.dxf`](mounts_cadcraft_phase1.dxf) | CADCraft 평면 원본: 외곽·받침·Rear shim은 생성 입력, 홀·머리 자리 레이어는 검사 대상, `*_RELIEFS`는 참고 |
 | 현행 CAD | [`46es_mount_seam_v5.sc`](46es_mount_seam_v5.sc) | 생성 결과 |
 | 매개변수 | [`parameters_seam_v5.csv`](parameters_seam_v5.csv) | CAD 내보내기(독립 원본 아님) |
 | 조립 검토 | [`46es_assembly_review_v5.sc`](46es_assembly_review_v5.sc), [`assembly_reference_v5.json`](assembly_reference_v5.json) | 파생/검토용. 실물·주문용 아님 |
