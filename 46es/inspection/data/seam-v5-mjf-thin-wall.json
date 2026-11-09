@@ -5,9 +5,9 @@
  "parts": [
   {
    "file": "46es_v5_plate_L",
-   "stl_sha256": "20f119009131fd9fb68fca9a15f1cec4460050c8d7315e5b242eee60f00a6d7d",
-   "facets": 8978,
-   "samples": 1000603,
+   "stl_sha256": "6d717b7051a81c74b7a86c2f5a9c8027a4267e3714ea777890d6e7ca031db5a1",
+   "facets": 8996,
+   "samples": 1006571,
    "min_mm": 0.026,
    "wall_min_mm": 1.0,
    "below_limit": [
@@ -74,12 +74,12 @@
      "at_print": [
       129.653,
       7.522,
-      4.667
+      4.583
      ],
      "to_print": [
       129.473,
       7.567,
-      4.667
+      4.583
      ],
      "dir_print": [
       -0.97,
@@ -101,12 +101,12 @@
      "at_assembly": [
       129.26,
       87.445,
-      8.333
+      8.417
      ],
      "to_assembly": [
       129.08,
       87.4,
-      8.333
+      8.417
      ],
      "box_assembly": [
       [
@@ -129,12 +129,12 @@
      "at_print": [
       115.973,
       16.99,
-      4.533
+      4.983
      ],
      "to_print": [
       116.124,
       16.214,
-      4.533
+      4.983
      ],
      "dir_print": [
       0.191,
@@ -156,12 +156,12 @@
      "at_assembly": [
       115.58,
       77.977,
-      8.467
+      8.017
      ],
      "to_assembly": [
       115.731,
       78.753,
-      8.467
+      8.017
      ],
      "box_assembly": [
       [
@@ -181,9 +181,9 @@
   },
   {
    "file": "46es_v5_plate_R",
-   "stl_sha256": "1c077bb5b46aae93f3b511182c7b2c7502fd3187977ae667f974797e34bcb1b0",
-   "facets": 5872,
-   "samples": 1097072,
+   "stl_sha256": "c8c1502ad7fc2f08569d6f22465bbfe790fb89aaa5396caf01c8239659d6ec05",
+   "facets": 5880,
+   "samples": 1105463,
    "min_mm": 0.026,
    "wall_min_mm": 1.047,
    "below_limit": [

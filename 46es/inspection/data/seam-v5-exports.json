@@ -1,6 +1,6 @@
 {
  "model": "46es_mount_seam_v5.sc",
- "model_sha": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af",
+ "model_sha": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d",
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
@@ -70,57 +70,57 @@
    "body": "PLATE_L_SPLIT_V1",
    "material": "MJF PA12S-HP 검정",
    "wall_limit_mm": 1.0,
-   "cad_volume_mm3": 38259.142,
+   "cad_volume_mm3": 38511.142,
    "bbox": {
     "max": [
      142.89999999999998,
-     94.96700000000493,
-     13.000000000000385
+     94.96700000000018,
+     13.0
     ],
     "min": [
-     -0.392999999998888,
-     -0.3670000000001481,
-     4.999999999997329
+     -0.39299999999880786,
+     -0.36700000000015875,
+     0.49999999999999994
     ]
    },
-   "stl_sha256": "1db1eeca8c0475bc0a2ef814ca5b998ea5f47bf8b96ea0596e808b44d0159ff2",
-   "step_sha256": "afdf9462732dc034b31093c1653e6b660ef866ab3f496e7ae659dcb5e721ed05"
+   "stl_sha256": "99c3a78e267509deee4b1ec3ef8eee6bddf623c0de95436173e97f7cc36b8317",
+   "step_sha256": "0d6b4814ceb5bfa274dcced16cc27bccea032feecc1a8685a89e5562a1bb8dcf"
   },
   {
    "file": "46es_v5_plate_R_REVIEW_ONLY",
    "body": "PLATE_R_SPLIT_V1",
    "material": "MJF PA12S-HP 검정",
    "wall_limit_mm": 1.0,
-   "cad_volume_mm3": 40636.401,
+   "cad_volume_mm3": 40762.401,
    "bbox": {
     "max": [
      285.38800000001004,
-     94.96700000000004,
+     94.967,
      13.000000000025926
     ],
     "min": [
      131.1310000000001,
      -0.3670000000033139,
-     5.000000000005961
+     0.5
     ]
    },
-   "stl_sha256": "19c2afbd6b895b99e356fcd67a188e0d7ffbd4921a3ca778287aaa6df2a68b71",
-   "step_sha256": "654111e10cd59f9d84d9625a4ea4622f22acef3c31126e7ca2d39900880dc6d7"
+   "stl_sha256": "f2325c2086e8028f7bb5bdded1aab232f969349fac7e83486b4a6c379d931dfb",
+   "step_sha256": "a306533d5c9136ee904e57f0223f24c96783f879c71afdceb2de45395ab7e490"
   }
  ],
  "plate_files_unchanged_since_previous_export": {
   "plate_L": {
-   ".stl": true,
-   ".step": true
+   ".stl": false,
+   ".step": false
   },
   "plate_R": {
-   ".stl": true,
-   ".step": true
+   ".stl": false,
+   ".step": false
   }
  },
  "combined_step": {
   "file": "46es_v5_changed_REVIEW_ONLY.step",
-  "sha256": "a93e98a7c1b72fcc0b90ca84be724a19cf0374af4f20d4bb254e8b13aa8a9c0d"
+  "sha256": "5054499e4e9cff190cd3bd79b2e47703d8e77392224d072eb92b9d05634e294a"
  },
- "csv_sha256": "9c60c230f579a70d359c2f0af1974d5b6c12144598a036054e09373ecb3de9ae"
+ "csv_sha256": "5acd985bea4e652b4d7216d6650906fb1690479e80bd6ed735f736ace1f48886"
 }

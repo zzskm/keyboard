@@ -1,8 +1,8 @@
 {
  "changed_vs_unchanged": {
   "total_pairs": 940,
-  "candidate_pairs": 94,
-  "pairs_pruned_by_bbox": 846,
+  "candidate_pairs": 103,
+  "pairs_pruned_by_bbox": 837,
   "intentionally_checked_by_sections": [
    [
     "MOUNT_L_PAIR_V3",
@@ -56,7 +56,7 @@
    "STANDOFF_SO5_REF | MOUNT_R_PAIR_V3",
    "STANDOFF_SO6_REF | MOUNT_H03_SO6_MIN_V2"
   ],
-  "pairs_checked": 94,
+  "pairs_checked": 103,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },

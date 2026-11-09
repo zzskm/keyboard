@@ -4,7 +4,8 @@ The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
-snap, no gate); the v4 frame/mask/pair chain, the v4 bracket/gate chain and the
+snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The v4
+frame/mask/pair chain, the v4 bracket/gate chain and the
 reference-only switch envelopes and Wilmore housing are suppressed in the production model.
 
 Run from the repository root with python 46es/tools/build_seam_v5.py.
@@ -47,6 +48,23 @@ SEAT_ROOT_Z = PAD_ROOT_Z
 LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
+# PSD60 Defender rear-wall bosses (user photo, KPrepublic product image, 2026-11-09): four half-round bosses without
+# a hole on the inner rear wall. Centres X are photo estimates (perspective fitted on H01-H06, residual <= 0.8 mm,
+# leave-one-out spread 2-4 mm), diameter about 8-10. Top assumed at the support top Z 0: r2's bottom ring P0
+# (2T, 4 mm border, M2 holes on H01/H05/H06) crossed them without notches. Not measured.
+REAR_BOSS_X = (36.0, 113.6, 170.1, 245.8)
+REAR_BOSS_D = 9.0
+REAR_BOSS_TOP_Z = 0.0
+# Bosses 1-3 lie under the rear plate flanges: a foot extends the flange down to REAR_FOOT_GAP above the boss top
+# (the gap is filled with a shim or pad at trial assembly; the plate is never trimmed). Boss 4 sits under the right
+# mount's rear corner beside SO4, where the flange is interrupted: no foot.
+REAR_FEET = {1: (37.0, 'PLATE_L_SPLIT_V1'), 2: (113.0, 'PLATE_L_SPLIT_V1'), 3: (170.0, 'PLATE_R_SPLIT_V1')}
+REAR_FOOT_L = 14.0
+REAR_FOOT_GAP = 0.5
+REAR_FOOT_OVERLAP = 0.5            # foot top reaches into the flange
+REAR_FOOT_CHORD_MARGIN = 2.0       # the boss chord under the foot stays whole for this photo error (each side)
+REAR_FLANGES = ('PLATE_FLANGE_L_REAR', 'PLATE_FLANGE_R_REAR_A', 'PLATE_FLANGE_R_REAR_B')
+PLATE_REAR_Y = 94.967              # rear plate edge (flange outer face), as in the v4 flange features
 # v4 bracket, gate, their plate cuts and reference screws; replaced by tools/ctrl_v5.py (2026-11-09).
 LEGACY_CTRL = ('CTRL_SPLIT_ROOF_V1', 'CTRL_RAIL_F_SPLIT_V1', 'CTRL_RAIL_B_SPLIT_V1', 'CTRL_STOP_SPLIT_V1',
                'CTRL_LIP_F_LOW_SPLIT_V1', 'CTRL_LIP_F_UP_SPLIT_V1', 'CTRL_LIP_B_LOW_SPLIT_V1', 'CTRL_LIP_B_UP_SPLIT_V1',
@@ -262,6 +280,77 @@ def check_mounts(evaluated, mounts):
     return report
 
 
+def rear_foot_plan(doc):
+    """Foot X spans on the rear flanges and how much photo error each boss estimate tolerates.
+
+    The flange spans come from the v4 flange features themselves, so a moved flange fails here instead of
+    leaving a foot in the air."""
+    flanges = {}
+    for f in doc['features']:
+        if f.get('name') in REAR_FLANGES and not f.get('suppressed'):
+            x0 = float(f['corner'][0])
+            assert f['corner'][1] == f'{PLATE_REAR_Y} - split_flange_W', f['corner']
+            flanges.setdefault(f['participants'][0], []).append((x0, x0 + float(f['length'])))
+    assert sum(len(v) for v in flanges.values()) == len(REAR_FLANGES), flanges
+    params = {p['name']: p['expr'] for p in doc['params']}
+    assert params['split_flange_W'] == '2 mm', params['split_flange_W']
+    wall_y = 95.934 - 0.667                     # TBD_case_in_D - TBD_pcb0_dy (Wilmore stand-in, checked after eval)
+    inner_y = PLATE_REAR_Y - 2.0
+    r = REAR_BOSS_D / 2
+    chord = (r * r - (wall_y - inner_y) ** 2) ** 0.5   # half width of the boss top at the flange inner face
+    plan = {}
+    for i, (x, plate) in REAR_FEET.items():
+        x0, x1 = x - REAR_FOOT_L / 2, x + REAR_FOOT_L / 2
+        assert any(a <= x0 and x1 <= b for a, b in flanges[plate]), (i, x0, x1, flanges[plate])
+        boss = REAR_BOSS_X[i - 1]
+        margin = (round(boss - chord - x0, 3), round(x1 - boss - chord, 3))
+        assert min(margin) >= REAR_FOOT_CHORD_MARGIN, (i, margin)
+        plan[i] = dict(plate=plate, foot_X=[x0, x1], boss_X=boss, boss_chord_half=round(chord, 3),
+                       full_chord_margin_mm=list(margin))
+    boss4 = REAR_BOSS_X[3]
+    assert not any(a < boss4 + r and boss4 - r < b for spans in flanges.values() for a, b in spans), 'boss 4 under a flange'
+    return plan
+
+
+def check_rear_feet(evaluated, plan):
+    """Plates reach down to the foot bottom; the wall line the plan assumed is the evaluated one."""
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
+    assert abs(values['TBD_case_in_D'] - values['TBD_pcb0_dy'] - (95.934 - 0.667)) < 1e-6
+    assert abs(values['v4_plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H'] - 5.0) < 1e-9
+    bottom = values['v5_rear_boss_top_Z'] + values['v5_rear_foot_gap']
+    for plate in {p['plate'] for p in plan.values()}:
+        b = bodies[plate]
+        assert b['closed'] and abs(b['bbox']['min'][2] - bottom) < 1e-6, (plate, b['bbox'])
+    return dict(foot_bottom_Z=bottom, foot_volume_mm3=round(rear_foot_volume(values), 3), feet=plan)
+
+
+def rear_foot_clearance(plan, mounts, bodies, minimum=1.0):
+    """Plan-view distance of each foot to the mounts, the switch bodies and the USB outlet keepout.
+
+    The feet hang below the plate (Z 0.5-5) where the mount frames (Z 0-3) and the switch housings live."""
+    from shapely.geometry import box as rect_box
+    from mounts_v5 import switch_pins
+    switches = [k['body'] for k in switch_pins()]
+    usb = bodies['USB_OUTLET_TBD']['bbox']
+    usb_box = rect_box(usb['min'][0], usb['min'][1], usb['max'][0], usb['max'][1])
+    out = {}
+    for i, p in plan.items():
+        foot = rect_box(p['foot_X'][0], PLATE_REAR_Y - 2.0, p['foot_X'][1], PLATE_REAR_Y)
+        d = dict(mount=min(m['outline'].distance(foot) for m in mounts.values()),
+                 switch_body=min(s.distance(foot) for s in switches), usb_outlet=usb_box.distance(foot))
+        assert min(d.values()) >= minimum, (i, d)
+        out[i] = {k: round(v, 3) for k, v in d.items()}
+    return out
+
+
+def rear_foot_volume(values):
+    """Material one foot adds below the flange bottom (Z 5)."""
+    flange_bottom = values['v4_plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
+    return values['v5_rear_foot_L'] * values['split_flange_W'] * (
+        flange_bottom - values['v5_rear_boss_top_Z'] - values['v5_rear_foot_gap'])
+
+
 def strip_ctrl(doc):
     """Suppress the v4 controller bracket, gate, plate gate reliefs and their reference screws."""
     names = []
@@ -428,6 +517,30 @@ def build(probe=False):
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
 
+    # --- rear feet on the PSD60 rear-wall bosses (2026-11-09) ----------------------------------------
+    feet = rear_foot_plan(doc)
+    for i, x in enumerate(REAR_BOSS_X, 1):
+        new_param(f'v5_rear_boss_{i}_X', x, f'[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 {i} 중심 X. 사용자 제공 '
+                  'KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22'
+                  + (' · 우 mount 뒤 모서리(SO4 옆) 밑이라 plate 다리 없음' if i == 4 else ''))
+    new_param('v5_rear_boss_D', REAR_BOSS_D, '[사진 추정·미실측 2026-11-09] 뒤 벽 보스 지름(약 8–10). 벽에 반쯤 묻힌 반원. 실측 M22')
+    new_param('v5_rear_boss_top_Z', REAR_BOSS_TOP_Z, '[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지대 윗면. 근거: r2 맨 아래 판 P0(2T, 폭 4 테두리, '
+              'H01·H05·H06 M2 구멍)가 노치 없이 이 보스 위를 지났다. 실측 M22')
+    new_param('v5_rear_foot_gap', REAR_FOOT_GAP, '[v5 설계 2026-11-09] plate 뒤 다리 끝 ↔ 보스 윗면 공칭 틈. 시험 조립에서 실제 틈을 재 '
+              'shim·점착 패드로 메운다(plate는 깎지 않는다). 딱 맞춰 만들면 지지대 6개가 정한 plate 높이와 겹친다(과구속)')
+    new_param('v5_rear_foot_L', REAR_FOOT_L, f'[v5 설계 2026-11-09] 뒤 다리 길이(X). 보스 추정 위치가 ±{REAR_FOOT_CHORD_MARGIN:g} 틀려도 '
+              '플랜지 안쪽 면에서 본 보스 윗면 폭이 다리 밑에 다 들어온다. 폭은 플랜지와 같은 split_flange_W')
+    for i, (x, plate) in REAR_FEET.items():
+        side = 'L' if plate.startswith('PLATE_L') else 'R'
+        new_param(f'v5_rear_foot_{i}_X', x, f'[v5 설계 2026-11-09] plate {side} 뒤 다리 {i} 중심 X(보스 {i} 위, 뒤 플랜지 구간 안)')
+        feature('box', f'PLATE_REAR_FOOT_{i}_V5',
+                corner=[f'v5_rear_foot_{i}_X - v5_rear_foot_L/2', f'{PLATE_REAR_Y} - split_flange_W',
+                        'v5_rear_boss_top_Z + v5_rear_foot_gap'],
+                length='v5_rear_foot_L', width='split_flange_W',
+                height=(f'v4_plate_top_Z - TBD_plate_T - split_flange_H + {REAR_FOOT_OVERLAP}'
+                        ' - v5_rear_boss_top_Z - v5_rear_foot_gap'),
+                operation='join', participants=[plate])
+
     # Phase 2 (2026-11-09): the v4 bracket/gate chain is suppressed; tools/ctrl_v5.py builds the snap bracket,
     # its two plate screw holes and the reference M2 screws, plus two order-1 trial variants beside the coupons.
     suppressed_ctrl = strip_ctrl(doc)
@@ -461,13 +574,15 @@ def build(probe=False):
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
     mount_report = check_mounts(evaluated, mounts)
     ctrl_report['bodies'] = check_ctrl(evaluated)
+    feet_report = check_rear_feet(evaluated, feet)
+    feet_report['plan_clearance_mm'] = rear_foot_clearance(feet, mounts, bodies)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
                 suppressed_legacy=len(suppressed) + len(suppressed_ctrl), run_seconds=round(elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
                 cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
-                ctrl=ctrl_report)
+                ctrl=ctrl_report, rear_feet=feet_report)
     if not probe:
         pending.replace(OUTPUT)
         info['output_sha'] = sha(OUTPUT)

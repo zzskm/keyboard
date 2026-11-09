@@ -302,9 +302,9 @@
   },
   {
    "file": "46es_v5_plate_L_REVIEW_ONLY",
-   "stl_sha256": "1db1eeca8c0475bc0a2ef814ca5b998ea5f47bf8b96ea0596e808b44d0159ff2",
-   "facets": 8978,
-   "samples": 1000601,
+   "stl_sha256": "99c3a78e267509deee4b1ec3ef8eee6bddf623c0de95436173e97f7cc36b8317",
+   "facets": 8996,
+   "samples": 1006569,
    "min_mm": 0.026,
    "wall_min_mm": 1.0,
    "below_limit": [
@@ -349,12 +349,12 @@
      "at_print": [
       129.26,
       87.445,
-      8.333
+      8.417
      ],
      "to_print": [
       129.08,
       87.4,
-      8.333
+      8.417
      ],
      "dir_print": [
       -0.97,
@@ -382,12 +382,12 @@
      "at_print": [
       115.58,
       77.977,
-      8.467
+      8.017
      ],
      "to_print": [
       115.731,
       78.753,
-      8.467
+      8.017
      ],
      "dir_print": [
       0.191,
@@ -412,9 +412,9 @@
   },
   {
    "file": "46es_v5_plate_R_REVIEW_ONLY",
-   "stl_sha256": "19c2afbd6b895b99e356fcd67a188e0d7ffbd4921a3ca778287aaa6df2a68b71",
-   "facets": 5872,
-   "samples": 1097140,
+   "stl_sha256": "f2325c2086e8028f7bb5bdded1aab232f969349fac7e83486b4a6c379d931dfb",
+   "facets": 5880,
+   "samples": 1105531,
    "min_mm": 0.026,
    "wall_min_mm": 1.047,
    "below_limit": [

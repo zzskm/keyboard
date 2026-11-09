@@ -36,7 +36,38 @@
   "mount_review_fit": {
     "overlaps": 0,
     "unchecked": 0,
-    "pairs_checked": 41
+    "pairs_checked": 42,
+    "rear_boss_within_1mm": [
+      [
+        0.0,
+        "MOUNT_R_PAIR_V3",
+        "REF_PSD_REAR_BOSS_4"
+      ]
+    ]
+  },
+  "rear_feet": {
+    "gap_target_mm": 0.5,
+    "feet": {
+      "1": {
+        "plate": "PLATE_L_SPLIT_V1",
+        "boss": "REF_PSD_REAR_BOSS_1",
+        "gap_mm": 0.5
+      },
+      "2": {
+        "plate": "PLATE_L_SPLIT_V1",
+        "boss": "REF_PSD_REAR_BOSS_2",
+        "gap_mm": 0.5
+      },
+      "3": {
+        "plate": "PLATE_R_SPLIT_V1",
+        "boss": "REF_PSD_REAR_BOSS_3",
+        "gap_mm": 0.5
+      }
+    },
+    "bosses_without_foot": [
+      "REF_PSD_REAR_BOSS_4"
+    ],
+    "note": "Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap is filled with a shim or pad at trial assembly."
   },
   "mount_switch_pin_fit": {
     "target_mm": 0.4,
@@ -64,8 +95,8 @@
       }
     }
   },
-  "model_sha": "6d4b868afd123bf1196dec5dfce7cd2481d274897da96989cfe7df43312f4710",
-  "source_sha": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af",
+  "model_sha": "24f8cc20c952e828d3042dcbc2b5ad0846931ec4671141e37bc9ca71d2f3305a",
+  "source_sha": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.0,
   "cover_above_rim_mm": 5.0,

@@ -10,7 +10,7 @@ from cad_model import live_shapes
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, top_levels  # noqa: E402
+from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X, REAR_FEET, top_levels  # noqa: E402
 import ctrl_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
@@ -20,6 +20,7 @@ SOURCE = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/reference_v5'
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 HOUSING = 'REF_HOUSING_PSD60_MEASURED'
+BOSSES = [f'REF_PSD_REAR_BOSS_{i}' for i in range(1, len(REAR_BOSS_X) + 1)]   # photo estimates, assumed top Z 0
 PLATES = ['PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1']
 CAPS = [f'REF_KEYCAP_OEM_{i:02}' for i in range(1, 47)]
 PRESS = 4.0
@@ -56,7 +57,7 @@ def main():
     assert not [f for f in ev['timeline'] if f.get('error')]
     bodies = {b['name']: b for b in ev['bodies']}
     for prefix, count in [('REF_MX_LOWER', 46), ('REF_MX_GUIDE', 138), ('REF_MX_UPPER', 46), ('REF_MX_STEM', 46),
-                          ('REF_MX_CONTACT', 92), ('REF_KEYCAP_OEM_', 46), ('REF_LEGMAG_', 4)]:
+                          ('REF_MX_CONTACT', 92), ('REF_KEYCAP_OEM_', 46), ('REF_LEGMAG_', 4), ('REF_PSD_REAR_BOSS_', 4)]:
         selected = [b for n, b in bodies.items() if n.startswith(prefix)]
         assert len(selected) == count and all(b['closed'] for b in selected), prefix
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}
@@ -131,7 +132,7 @@ def main():
         for mount in mounts)
     # The production clearance pass uses the legacy case stand-in. Check the
     # mounts against the measured PSD60 proxy and the populated review model.
-    mount_obstacles = [HOUSING, *controller,
+    mount_obstacles = [HOUSING, *BOSSES, *controller,
                        *[n for n in bodies if n.startswith('REF_MX_LOWER')]]
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=mount_obstacles, min_volume=0.000001)))
@@ -143,12 +144,18 @@ def main():
         bodies=['REF_PROMICRO_PCB'], against=switch_parts, min_volume=0.000001)))
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=[BRACKET], against=switch_parts + [HOUSING], clearance=0.3, min_volume=0.000001)))
+    # Rear feet over the rear-wall bosses: no overlap, and each foot's nearest boss is its own at the design gap.
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=PLATES, against=BOSSES, clearance=1.0, min_volume=0.000001)))
+    # Mounts on the bosses (touching is reported as a near pair at distance 0; overlaps fail mount_fit above).
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=mounts, against=BOSSES, clearance=1.0, min_volume=0.000001)))
     (CACHE / 'keycap_check.json').write_text(json.dumps(script), encoding='utf-8')
     out = CACHE / 'keycap_check_out.json'
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
     rest, rest_plate, moved, pressed, pressed_plate, controller_fit, *mount_checks = json.loads(out.read_text(encoding='utf-8'))
-    *pin_checks, mount_fit, peg_fit, bracket_fit = mount_checks
+    *pin_checks, mount_fit, peg_fit, bracket_fit, feet_fit, boss_mounts = mount_checks
     pcb_box = bodies['REF_PROMICRO_PCB']['bbox']
 
     def corner_peg(name):
@@ -180,6 +187,18 @@ def main():
                               closest_reference=reference)
     assert len(moved['bodies']) >= 46
     assert not controller_fit['overlaps'] and not controller_fit['unchecked'], controller_fit
+    assert not feet_fit['overlaps'] and not feet_fit['unchecked'], feet_fit
+    gap = params['v5_rear_foot_gap']
+    feet = {}
+    for i, (_, plate) in REAR_FEET.items():
+        boss = BOSSES[i - 1]
+        near = [n['distance_mm'] for n in feet_fit['near'] if {n['a'], n['b']} == {plate, boss}]
+        assert near and abs(min(near) - gap) < 1e-3, (i, near, gap)
+        feet[i] = dict(plate=plate, boss=boss, gap_mm=round(min(near), 4))
+    unfooted = [b for b in BOSSES if b not in {BOSSES[i - 1] for i in REAR_FEET}]
+    assert not [n for n in feet_fit['near'] if {n['a'], n['b']} & set(unfooted)], 'a plate reaches a boss without a foot'
+    assert not boss_mounts['overlaps'] and not boss_mounts['unchecked'], boss_mounts
+    boss_contacts = sorted((round(n['distance_mm'], 4), *sorted((n['a'], n['b']))) for n in boss_mounts['near'])
     states = {}
     for label, res, suffix in [('rest', rest, ''), ('pressed_4mm', pressed, ' (2)')]:
         assert res['overlaps'] == [] and res['unchecked'] == [], (label, res['overlaps'])
@@ -212,7 +231,11 @@ def main():
                         note='The two corner pegs (K1 +x, K23 -x) are clipped in assembly; the bracket is checked '
                              'against every other switch part and the case with a 0.3 mm search radius.'),
         ok=True,
-        mount_review_fit=dict(overlaps=0, unchecked=0, pairs_checked=mount_fit['pairs_checked']),
+        mount_review_fit=dict(overlaps=0, unchecked=0, pairs_checked=mount_fit['pairs_checked'],
+                              rear_boss_within_1mm=[list(c) for c in boss_contacts]),
+        rear_feet=dict(gap_target_mm=gap, feet=feet, bosses_without_foot=unfooted,
+                       note='Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap '
+                            'is filled with a shim or pad at trial assembly.'),
         mount_switch_pin_fit=dict(target_mm=MOUNT_PIN_CLEARANCE, search_radius_mm=pin_search_radius,
                                   mounts=pin_fit),
         model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],

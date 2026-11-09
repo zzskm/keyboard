@@ -58,6 +58,7 @@ def source_checks():
 
 def model_checks():
     from verify_seam_v5 import V4, V5, FLAT, V4_SHA, FLAT_SHA, CHANGED, DERIVED, ADDED, REMOVED, PLATE_L_GATE_RELIEF_MM3
+    from build_seam_v5 import REAR_FEET
     require(sha(V4) == V4_SHA, 'v4 baseline changed')
     require(sha(FLAT) == FLAT_SHA, 'flat baseline changed')
     doc = document(V5)
@@ -69,13 +70,16 @@ def model_checks():
     require(set(current) - set(baseline) == ADDED and set(baseline) - set(current) == REMOVED, 'CAD body set changed')
     same = [n for n in baseline if n in current and n not in CHANGED | DERIVED]
     require(all(baseline[n] == current[n] for n in same), 'untouched CAD body differs')
-    # Phase 2 (2026-11-09) moved PLATE_L's two bracket screw holes and filled its gate reliefs; PLATE_R is unchanged
-    # but its cached BRep may list faces in another order. verify_seam_v5 compares both against the flat snapshot with
-    # the evaluated solids; its record is tied to this V5 below (v5_sha).
+    # Phase 2 (2026-11-09) moved PLATE_L's two bracket screw holes and filled its gate reliefs; the rear feet
+    # (2026-11-09) add material below the rear flanges of both plates. verify_seam_v5 compares the evaluated solids
+    # against the flat snapshot; its record is tied to this V5 below (v5_sha).
     seam = read(ROOT / 'inspection/data/seam-v5-verification.json')
-    require(seam.get('plate_R_same_as_flat_Z18') == 'evaluated solid', 'plate R differs from regression baseline')
-    require(abs(seam.get('plate_L_delta_from_flat_Z18_mm3', 0) - PLATE_L_GATE_RELIEF_MM3) < 0.05,
-            'plate L differs from regression baseline beyond the phase 2 change')
+    deltas = seam.get('plate_delta_from_flat_Z18', {})
+    for plate, extra in (('PLATE_L_SPLIT_V1', PLATE_L_GATE_RELIEF_MM3), ('PLATE_R_SPLIT_V1', 0.0)):
+        d = deltas.get(plate, {})
+        feet = sum(1 for _, p in REAR_FEET.values() if p == plate)
+        require(d.get('feet') == feet and abs(d.get('delta_mm3', 0) - extra - feet * d.get('foot_mm3', 0)) < 0.05,
+                f'{plate} differs from regression baseline beyond the phase 2 change and the rear feet')
     sample = ROOT / 'model/samples/46es_sw_hole_sample.sc'
     sample_params = {p['name']: p['expr'] for p in document(sample)['params']}
     require(sample_params['SMP_upper'] == params['TBD_upper_plate_T'] == '1.7 mm', 'trial row C differs from plate')

@@ -5,21 +5,21 @@
   "body": "PLATE_L_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 38259.1419,
-  "stl_triangles": 8978,
+  "cad_volume_mm3": 38511.1416,
+  "stl_triangles": 8996,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 38260.5295,
+  "stl_volume_mm3": 38512.534,
   "stl_rel_volume_error": 3.6e-05,
   "print_bbox_mm": [
    143.293,
    95.334,
-   8.0
+   12.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "20f119009131fd9fb68fca9a15f1cec4460050c8d7315e5b242eee60f00a6d7d",
-  "step_sha256": "a0ea9e712544ba36df3c0918bf1c71858a1d49e8ae6050583ec47ecd20158b26",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "stl_sha256": "6d717b7051a81c74b7a86c2f5a9c8027a4267e3714ea777890d6e7ca031db5a1",
+  "step_sha256": "fe164a10b98a09fa7f8014e3312f29938cbbdc3a120592bc0f6b74f767aea3f9",
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -27,21 +27,21 @@
   "body": "PLATE_R_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 40636.4014,
-  "stl_triangles": 5872,
+  "cad_volume_mm3": 40762.4014,
+  "stl_triangles": 5880,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 40637.165,
+  "stl_volume_mm3": 40763.1758,
   "stl_rel_volume_error": 1.9e-05,
   "print_bbox_mm": [
    154.257,
    95.334,
-   8.0
+   12.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "1c077bb5b46aae93f3b511182c7b2c7502fd3187977ae667f974797e34bcb1b0",
-  "step_sha256": "99599a22f450b9186edbd97b75691784cc0ac339c4e72040081aae20952989bb",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "stl_sha256": "c8c1502ad7fc2f08569d6f22465bbfe790fb89aaa5396caf01c8239659d6ec05",
+  "step_sha256": "5194feab444fef86d052b709605d4cf886a06a2e4fb983442250f48033adb0aa",
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -63,7 +63,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "5a3c02870ad1b7f82ff499dc9718d9385ce87af856a06f9e32002e72b3b99870",
   "step_sha256": "91e30501384fd6a5e1404321411568f4021343f7b208e78037e2fb58cd9b2fa5",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -85,7 +85,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "60aa77a29fc7a3398c3e0372fb5c05504b22bd46b6447177766a43868cd7b388",
   "step_sha256": "14edf20aecbe9406f547d331c72a75e12acfa01e86c624d05387a6774e05e3ee",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -107,7 +107,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "74303736fba944271c3983d4a2dcead25ab1a1b3e4d04e8b91b69619ea6d8cc2",
   "step_sha256": "abed07eace67226f2be7cfa1ad5f7a39b743bf6e6d2099e840f94e6a512e43f3",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -129,7 +129,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "cd80e6099572e589de71e9ec18cc4b212d779334a395a67556cbfc0d647e449f",
   "step_sha256": "b98ba674f5266a2dde674b0c993384150f669fe126189a6227f590cf593b03e2",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  },
  {
   "order": "order2",
@@ -151,6 +151,6 @@
   "bed_zmin": 0.0,
   "stl_sha256": "a1eadd57bc528561b447f53886d7c38e9de9c991ba8b8cb332ded2ce9ec739c3",
   "step_sha256": "a29e76dd5406073bfcf63b39cfb5b3d514d4c6b95e47e00325198a6ffa3e61ea",
-  "source_sha256": "29b1661a8bdd5fc88c637512813a25aac658a3530626a966bbf1171169b5d6af"
+  "source_sha256": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d"
  }
 ]

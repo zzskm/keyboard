@@ -210,6 +210,21 @@ def build():
     pcb, usb = 'REF_PROMICRO_PCB', 'REF_PROMICRO_USB'
     appearance = doc['appearances']['bodies']
 
+    # PSD60 rear-wall bosses: photo estimates kept in the production parameters (tools/build_seam_v5.py REAR_BOSS_*),
+    # half discs on the measured inner rear wall from the case floor to the assumed top. Separate bodies, so the
+    # verifier can measure the plate feet and the right mount against them.
+    radius = float(params['v5_rear_boss_D']['expr']) / 2
+    half_disc = [(round(radius * math.cos(math.pi * (1 + j / 24)), 6), round(min(0.0, radius * math.sin(math.pi * (1 + j / 24))), 6))
+                 for j in range(25)]
+    housing_look = appearance.get(housing_name, dict(name='Custom', color=[195, 203, 212], opacity=1.0))
+    boss_count = sum(1 for p in params if re.fullmatch(r'v5_rear_boss_\d+_X', p))
+    assert boss_count == 4, boss_count
+    for i in range(1, boss_count + 1):
+        name = f'REF_PSD_REAR_BOSS_{i}'
+        sk = sketch(name, '-REF_PSD_support_H', [half_disc], xy_origin=(f'v5_rear_boss_{i}_X', 'REF_PSD_in_D - REF_PSD_pcb0_dy'))
+        extrusion(name, sk, 'REF_PSD_support_H + v5_rear_boss_top_Z', bodies=[name])
+        appearance[name] = copy.deepcopy(housing_look)
+
     def ctrl_box(name, x, y, z, length, width, height, color=None, cut=None):
         feature('box', name, corner=[f'{origin[0]} + ({x})', f'{origin[1]} + ({y})', z],
                 length=str(length), width=str(width), height=str(height),
