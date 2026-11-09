@@ -32,10 +32,9 @@ python -I 46es/tools/update_manifest.py --check
 
 | 항목 | 상태 |
 |---|---|
-| `46es_draft_sketches.sc`, `parameters.csv`, `measure_psd60.html`, `jigs/` | 초기 스케치/측정/지그 기록 |
-| `46es_mount_tolerance*`, `46es_assembly_tolerance*` | 2026-11-04 조립 여유 검토 |
+| `measure_psd60.html` | 실측 입력 시트. 내보낸 JSON은 `measurements/`에 원본으로 두고 채택 판단은 `measurements.csv`에 적는다 |
 | `reference_r2/` | DWG/r2 비교 참고 |
 
-split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `7744368`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 7744368 -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다. v4·v5 두 단 커버 문서, `print_v4`, `guide_v4.json`은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에 있다.
+split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `7744368`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 7744368 -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다. v4·v5 두 단 커버 문서, `print_v4`, `guide_v4.json`은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에 있다. 초기 스케치 모델(`46es_draft_sketches.sc`·`parameters.csv`), 지그 A(`jigs/`), 2026-11-04 조립 여유 렌더, 옛 B 쿠폰 STL/STEP은 태그 `46es-pre-cleanup-2026-11-09`에 있다.
 
 현재 판단 기준: [`../README.md`](../README.md), [`../docs/design.md`](../docs/design.md), [`../docs/validation.md`](../docs/validation.md), [`print_v5/README.md`](print_v5/README.md).

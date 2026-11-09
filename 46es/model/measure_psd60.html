@@ -322,7 +322,7 @@ button{font:inherit;color:inherit}
     <ol class="steps">
       <li><b>그림에서 위치 확인</b>그림의 M 라벨을 누르면 해당 카드로 간다. 칸을 누르면 그 위치가 그림에 강조된다.</li>
       <li><b>카드에 값 입력</b>이 브라우저에 자동 저장된다. Enter로 다음 칸, Shift+Enter로 이전 칸.</li>
-      <li><b>JSON 내보내기</b>복사한 텍스트를 Claude Code 세션에 그대로 붙여넣으면 <code>parameters.csv</code>·<code>.sc</code>에 반영한다.</li>
+      <li><b>JSON 내보내기</b>복사한 텍스트를 <code>model/measurements/</code>에 원본 기록으로 저장한다. 채택 여부는 <code>measurements.csv</code>에 적고, 채택한 값은 생성기 입력으로 옮겨 CAD를 다시 만든다.</li>
     </ol>
     <p class="notes">단위는 mm(각도는 °). 여러 곳을 재는 항목은 칸마다 따로 적으면 아래 집계(최소·평균·최대)가 매개변수 후보가 된다. 칸의 회색 숫자는 후보값(Wilmore STL 추정, PSD60 아님)이다.</p>
   </section>
@@ -868,7 +868,7 @@ function drawSide(){
 
 // ---------- JSON(형식은 이전 버전과 같다) ----------
 function compile(){
-  const out={schema:'46es-psd60-measurements/1',exported_at:new Date().toISOString(),units:'mm (각도 °)',note:'Claude Code 세션에 그대로 붙여넣으면 parameters.csv/.sc에 반영. params는 칸 값에서 바로 만든 후보(집계 규칙 포함)이며 최종 채택값은 검토 후 정한다.',items:{},params:{}};
+  const out={schema:'46es-psd60-measurements/1',exported_at:new Date().toISOString(),units:'mm (각도 °)',note:'model/measurements/에 원본으로 저장하고 채택 판단은 measurements.csv에 적는다. params는 칸 값에서 바로 만든 후보(집계 규칙 포함)이며 최종 채택값은 검토 후 정한다.',items:{},params:{}};
   for(const it of ITEMS){ const s=S[it.id]; if(!s) continue; const f={}; let any=false;
     for(const fd of it.fields){ const v=s.f&&s.f[fd.k]; if(v!==undefined&&v!==''){ f[fd.k]={label:fd.l,value:v,unit:fd.t==='text'?undefined:(fd.u||'mm'),param:fd.p||undefined}; any=true;
         if(fd.p&&typeof v==='number'&&!/[ (=]/.test(fd.p)) out.params[fd.p]={value:v,source:it.id+'.'+fd.k}; } }

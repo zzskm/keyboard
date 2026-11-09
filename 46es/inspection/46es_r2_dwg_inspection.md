@@ -4,7 +4,9 @@
 
 > **이 문서와 `46es/model/`의 어떤 값도 제작 확정 치수가 아니다.** DWG 값은 "DWG에 그렇게 그려져 있다"는 사실일 뿐 PSD60 하우징·실부품과 맞는다는 근거가 아니다. 최종 형상·STL은 만들지 않았다.
 
-> 정정 2026-11-04: 46sp는 별도 split keyboard 예시라 대조 대상에서 뺐다(§1, §7). 부품 구성(§5)은 [`docs/assembly-revision.md`](../docs/assembly-revision.md) 기준으로 갱신했다. r2 DWG는 3D 프린팅 리비전이 아니라 아크릴 버전의 설계 파일로 확인됐다(§1). DWG 판독 결과는 바뀌지 않았다.
+> 정정 2026-11-09: 이 보고서가 만든 `model/parameters.csv`·`model/46es_draft_sketches.sc`와 계획 문서(`docs/planning.md`·`docs/assembly-revision.md`)는 v5로 대체되어 현행 트리에서 뺐다(태그 `46es-pre-cleanup-2026-11-09`). 현행 매개변수는 [`model/parameters_seam_v5.csv`](../model/parameters_seam_v5.csv), 현행 설계는 [`docs/design.md`](../docs/design.md)다.
+
+> 정정 2026-11-04: 46sp는 별도 split keyboard 예시라 대조 대상에서 뺐다(§1, §7). 부품 구성(§5)은 당시 계획 문서 `docs/assembly-revision.md` 기준으로 갱신했다. r2 DWG는 3D 프린팅 리비전이 아니라 아크릴 버전의 설계 파일로 확인됐다(§1). DWG 판독 결과는 바뀌지 않았다.
 
 상태 표기: **확인** = 파일에서 직접 읽은 사실 · **추정** = 근거 있는 해석이지만 미검증 · **미확정/알 수 없음** = 실측 전에는 정할 수 없음 · **자리표시** = 스케치를 그리기 위해 넣은 임시값
 
@@ -98,7 +100,7 @@ Z 방향: 모델 공간 엔티티 229개 모두 Z = 0, thickness = 0, 돌출 방
 
 ### 케이스 체결 후보: DWG r2와 GH60 공개 좌표 (둘 다 추정)
 
-GH60 좌표는 planning.md의 공개 CAD 비교값이다. "DWG − (0.7, 0.6)" 열은 판 외곽이 GH60 PCB(285 × 94.6)를 가운데 두고 둘러싼다는 **가정**에 따른 변환이다.
+GH60 좌표는 [GH60 호환 치수 조사](https://note.com/skeletonkbd/n/n7fdfaac9bd8c?hl=en)의 공개 CAD 비교값이다. "DWG − (0.7, 0.6)" 열은 판 외곽이 GH60 PCB(285 × 94.6)를 가운데 두고 둘러싼다는 **가정**에 따른 변환이다.
 
 | 점 | DWG r2 | DWG − (0.7, 0.6) | GH60 공개 | ΔX, ΔY |
 |---|---|---|---|---|

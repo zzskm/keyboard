@@ -77,7 +77,7 @@ H05–H06 중심 거리: GH60 277.58, r2 DWG 279.44, Wilmore 278.49로 세 자�
 
 ## SolidCraft 하우징 대용 바디
 
-`../../model/46es_draft_sketches.sc`의 `REF_HOUSING_WILMORE_NOT_PSD60` 바디. 제작용 아님, 간섭 확인용.
+초기 스케치 모델 `model/46es_draft_sketches.sc`(태그 `46es-pre-cleanup-2026-11-09`)의 `REF_HOUSING_WILMORE_NOT_PSD60` 바디. 제작용 아님, 간섭 확인용. 현행 v5는 이 값을 `REF_WIL_` 매개변수로 이어받았고, 조립 검토 모델은 실측하지 않은 바닥 윤곽에만 쓴다(`tools/build_assembly_reference_v5.py`).
 
 | 피처 | 내용 | 따르는 매개변수 |
 |---|---|---|
