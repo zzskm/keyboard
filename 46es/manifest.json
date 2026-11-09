@@ -38,9 +38,9 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 8764,
-      "sha256": "dfb3ada517792684585190e415491f236290113d47ff0af4ee139e604b2a63ba",
-      "git_blob_sha": "97a9ff37bfedafc7d7acb93449b7af51cf7ad6af"
+      "bytes": 14769,
+      "sha256": "b82bbac99362e4d4a2af7539b79f63c10bf68e36849a7e4dad9ac88afd080c90",
+      "git_blob_sha": "211e8330a431af6a02555e7052c6707b98027f2d"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
