@@ -45,8 +45,8 @@
     {
       "path": "docs/design.md",
       "bytes": 9052,
-      "sha256": "be10718868b79ca711d92f169c55f16ef3a1a413632acd2884a32e6ba208fd84",
-      "git_blob_sha": "9a24d51d4d02ff6ee8a37db21134aa7e4eb67827"
+      "sha256": "2e1ce7f5c53a57bcd9cb9eef2e065db0d5cebd222f334bc9a7e6f3dd08cbf195",
+      "git_blob_sha": "bb335a9d899333fdef156c786075cc32777263c5"
     },
     {
       "path": "docs/mount-phase1-outline.png",
@@ -75,8 +75,8 @@
     {
       "path": "docs/work-report-2026-11-04.md",
       "bytes": 8638,
-      "sha256": "05c3b2138f87230704be5023e3be90ad4a90bfbd03b4b211ae140df910a7dabc",
-      "git_blob_sha": "3d663b950e38f967efa178954b70ac74a2eff64d"
+      "sha256": "abda357aa5f56b66ddafeab9823cb363c70973b0d5903e9043ad9dc861301cd0",
+      "git_blob_sha": "d693bf594549a36297f7e2ebc4117e10f5a72365"
     },
     {
       "path": "firmware/46es_kbfirmware.json",
@@ -669,8 +669,8 @@
     {
       "path": "model/README.md",
       "bytes": 2545,
-      "sha256": "c1e660567b3af5c3a599aac5e66de5f1d71af65f37b0511f54ba55d0fab15114",
-      "git_blob_sha": "70e1caad1870cbfaed4c70c08b66b6c883ac1015"
+      "sha256": "0ffd6e7d1ec404ea59d6f32b500d70b611eddeba8b1c478789cce6c2f213d5f2",
+      "git_blob_sha": "9642cff161cad5cc82eb3e8023ec9ee2528de923"
     },
     {
       "path": "model/assembly_reference_v5.json",

@@ -35,6 +35,6 @@ python -I 46es/tools/update_manifest.py --check
 | `46es_mount_tolerance*`, `46es_assembly_tolerance*` | 2026-11-04 조립 여유 검토 |
 | `reference_r2/` | DWG/r2 비교 참고 |
 
-split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `9a945ee`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 9a945ee -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다. v4·v5 두 단 커버 문서, `print_v4`, `guide_v4.json`은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에 있다.
+split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `7744368`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 7744368 -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다. v4·v5 두 단 커버 문서, `print_v4`, `guide_v4.json`은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에 있다.
 
 현재 판단 기준: [`../README.md`](../README.md), [`../docs/design.md`](../docs/design.md), [`../docs/validation.md`](../docs/validation.md), [`print_v5/README.md`](print_v5/README.md).
