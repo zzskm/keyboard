@@ -20,9 +20,9 @@
     },
     {
       "path": "README.md",
-      "bytes": 1829,
-      "sha256": "a41126cb6307ea6f1247e238102f8a6d86ebdfd82e8178356549088d02d2a80e",
-      "git_blob_sha": "952cf4efc94206f8b48f748496bad53a1faf51d9"
+      "bytes": 1951,
+      "sha256": "202922cad7e1482e5fca08399aa3413b38840fc45a305bd827b9dd479255537d",
+      "git_blob_sha": "47d9cfec6024151c3e10a1b9965cff26064092ef"
     },
     {
       "path": "cad/46es_r2_keyboard.dwg",
@@ -44,9 +44,9 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 6814,
-      "sha256": "05e7a23906f88ddfad896d1120772584fac5e8d9c215f3c3788c9ed7614b6179",
-      "git_blob_sha": "fd95172eb444e607f8b392538245369f553afc53"
+      "bytes": 8974,
+      "sha256": "720ca4614a69d17183aae4058c807a1252d91e6af97e6891554cebc6568bd1d3",
+      "git_blob_sha": "786dae78d158a9cd3f1831cae554de3b967a7c95"
     },
     {
       "path": "docs/mount-phase1-outline.png",
@@ -668,9 +668,9 @@
     },
     {
       "path": "model/README.md",
-      "bytes": 2423,
-      "sha256": "bfcc752937e3337f04c067462c7a0b4589911e5b05816b4fbc12b877611587c7",
-      "git_blob_sha": "fbb138650962d03549284c22581d023992c7cceb"
+      "bytes": 2545,
+      "sha256": "c1e660567b3af5c3a599aac5e66de5f1d71af65f37b0511f54ba55d0fab15114",
+      "git_blob_sha": "70e1caad1870cbfaed4c70c08b66b6c883ac1015"
     },
     {
       "path": "model/assembly_reference_v5.json",

@@ -54,3 +54,21 @@ r2 현물 커버는 체결 상태에서 테두리 위로 최소 3 mm 돌출된�
 참고 형상의 근거: [Cherry MX](https://www.thingiverse.com/thing:421524), [OEM KeyV2](https://github.com/rsheldiii/KeyV2/blob/master/src/key_profiles/oem.scad). 곡면·내부 소켓·정밀 걸쇠는 생략했다. Gateron KS-3 Milky Yellow Pro와 실제 OEM 키캡의 정밀 도면이 아니다. [r2 판독](../inspection/46es_r2_dwg_inspection.md), [Wilmore 참고 분석](../inspection/wilmore/README.md), [스위치 홀 참고 분석](../inspection/switch_tester/README.md)은 근거 자료로만 사용한다.
 
 재료·수량과 구매품은 [제작 안내](../model/print_v5/README.md), 다음 결정은 [실물 확인 목록](validation.md)을 따른다.
+
+## 결정 이력
+
+이전 결정을 바꾼 변경은 여기에 날짜·커밋·경위를 남긴다. 치수 자체는 위 표가 현행이고, 이 표는 "왜 바뀌었나"만 적는다. 경위가 기록되지 않은 변경은 `경위 미기록`으로 두고 다음 작업자가 확인한다.
+
+| 날짜 | 커밋 | 결정 | 경위·근거 |
+|---|---|---|---|
+| 2026-11-04 | `9fd75ff` | 스태빌라이저 없음, Pro Micro 중앙 하단, plate·커버는 r2 아크릴 형상 | 사용자 결정 |
+| 2026-11-05 | `67fe2c0` | 정밀 실측 대신 GH60 체결 좌표 채택, 장공·시험 출력으로 확인 | 사용자 결정. 실측 게이트 폐지 |
+| 2026-11-05 | `67fe2c0` | 재료 MJF PA12, 최소 벽 1.0 | 사용자 결정(JLC3DP 규칙) |
+| 2026-11-06 | `0880d22` | plate·mount 검정 PA12S-HP, 커버·보스 탭 투명 8001 레진 | 사용자: "mount, plate는 black, cover는 transparent resin" |
+| 2026-11-06 | `854e647` | 두 단 커버(바닥 Z 16.1 / 창 둘레 턱 Z 19), 참고 키캡 착좌 +6.0, B 쿠폰 행 C 1.7 | 사용자 결정(계획 문서 §0). 커버 부피·돌출 축소 목적 |
+| 2026-11-06 | `72d3ea1` | 안전마진: 다리 자석 포켓 위 살 1.0 → 1.3(바닥 Z 16.4) | 사용자: "의심되는 부분은 안전마진 추가" |
+| 2026-11-07 | `7b252f3` | **커버를 평판 Z 19(6T)로 되돌림**, mount–plate 받침 7곳 추가 | **경위 미기록.** r2 P4·P5가 평판이라는 근거만 있음. 두 단 커버·안전마진(위 두 행)을 되돌린 것이므로 사용자 결정 여부 확인 필요. 투명 레진 커버 부피가 다시 커짐 |
+| 2026-11-07 | `9df185a`, `a8aec48`, `166160b` | Phase 1 mount: WEB 5개 억제, 팔각 랜드 8.5, 직선 레일, 핀 회피부 | [개선 계획](mount-redesign-plan.md) 1단계 |
+| 2026-11-07 | `9a945ee` | Phase 2: Ctrl 브래킷 립 4·스톱·게이트 핑거 억제 | [개선 계획](mount-redesign-plan.md) 2단계 |
+
+정리로 현행 트리에서 뺀 v1~v4 문서·검토 출력·검증 기록은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에서 찾는다. 예: `git show 46es-pre-cleanup-2026-11-06:46es/docs/v5-plan-two-level-cover-2026-11-06.md`.
