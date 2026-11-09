@@ -44,9 +44,9 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 11430,
-      "sha256": "16b6403ec5531bef155a3ecf82442ee0db916655e1487801bba60e22ec0f8507",
-      "git_blob_sha": "d690743b221c4e966ee7fb9b9a2fd9632333fdb8"
+      "bytes": 11415,
+      "sha256": "bdc955d4cf8f7e0c0c5fcfef29114bf28fbebeac9b71fea251cf0edb22c73342",
+      "git_blob_sha": "4d1402b31ba9a174637ba4633893c9db916e897f"
     },
     {
       "path": "docs/mount-phase1-outline.png",
