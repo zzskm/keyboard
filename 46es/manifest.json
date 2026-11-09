@@ -32,9 +32,9 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 17263,
-      "sha256": "d1daae2147a1e9d9f2f837715d04edb511251eba661df97da12d7da3e38715a0",
-      "git_blob_sha": "2daed0cf354961875803af01d8b9534c084b0099"
+      "bytes": 17254,
+      "sha256": "b127c95b7eb04468676f1e054e885f324e21fef353a351af919762eba5502141",
+      "git_blob_sha": "beb66c23156829086a5846d308740be64dfe3ee4"
     },
     {
       "path": "docs/validation.md",
