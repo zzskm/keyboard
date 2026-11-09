@@ -48,6 +48,14 @@ def build(source,out):
     for f in (source/'img').glob('*.png'):
         (out/'img').mkdir(exist_ok=True);shutil.copyfile(f,out/'img'/f.name)
         with Image.open(f) as im:ctx.sizes[f.stem]=im.size
+    # Step diagrams are reused from the published build (diagrams.py needs the evaluated CAD bodies).
+    published=[d for s in data['steps'] for d in s.get('diagrams',[])]
+    wanted={g for ph in section['phases'] for s in ph['steps'] for g in s.get('diagrams',[])}
+    ctx.diagrams={g:[d for d in published if re.fullmatch(rf'{re.escape(g)}(-\d+)?\.svg',Path(d['path']).name)] for g in wanted}
+    missing=sorted(g for g in wanted if not ctx.diagrams[g])
+    if missing:
+        raise SystemExit(f'Published build has no diagrams for {missing}; rebuild with build_guide.py.')
+    shutil.copytree(source/'img'/'diagrams',out/'img'/'diagrams',dirs_exist_ok=True)
     assembly.prepare_comparison(HERE,out,guide.die)
     from illustrations import prepare as draw_illustrations
     draw_illustrations(out, data)

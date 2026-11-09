@@ -5,6 +5,7 @@ The page follows the CAD model without hand work:
   solidcraft-cli eval      -> bodies (volume, bbox), parameters, timeline errors
   solidcraft-cli snapshot  -> one PNG per render in the spec (visible bodies, camera, section)
   model/measurements.csv   -> measurement status grid and header chip
+  diagrams.py              -> wiring, pin, snap, magnet, test and keycap diagrams (SVG) from the generator sources
 The text (assembly steps, review notes) lives in the spec. Numbers in the text can be
 tokens that are filled from the model: {{p:PARAM}} parameter value, {{v:BODY}} volume in cm3,
 {{d:BODY}} bbox size, {{n:PATTERN}} number of bodies matching a pattern or @group.
@@ -31,6 +32,7 @@ import subprocess
 import sys
 from pathlib import Path
 import assembly
+import diagrams
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
@@ -340,6 +342,17 @@ def s_parts(s, ctx):
     return (sec_open(s, ctx) + f'<div class="stack">{printed}<p class="note">{auto_note}</p>{hardware}{tools}</div></section>')
 
 
+def diagram_block(ctx, item):
+    figs = ""
+    for gid in item.get("diagrams", []):
+        for d in ctx.diagrams[gid]:
+            cap = html.escape(d["caption"])
+            wide = ' class="wide"' if d["wide"] else ""
+            figs += (f'<figure{wide}><a href="{d["path"]}"><img src="{d["path"]}" width="{d["width"]}" '
+                     f'height="{d["height"]}" loading="lazy" alt="{cap}"></a><figcaption>{cap}</figcaption></figure>')
+    return f'<div class="diagrams">{figs}</div>' if figs else ""
+
+
 def step_li(ctx, st, n, group, checkbox=True):
     head = f"<h3>{ctx.text(st['title'])}</h3>"
     if checkbox:
@@ -350,6 +363,7 @@ def step_li(ctx, st, n, group, checkbox=True):
                  f'{figure(ctx, st["render"], st.get("caption"), st.get("alt"))}</div>')
     else:
         inner = body
+    inner += diagram_block(ctx, st)
     return (f'<li class="step"><span class="no">{n:02d}</span><div class="sbody">'
             f'<div class="shead">{head}</div>{inner}</div></li>')
 
@@ -570,6 +584,12 @@ def main():
             if p.stem not in results:
                 p.unlink()
                 print(f"removed unused {p.name}")
+    ctx.diagrams = diagrams.build(out, ctx)
+    for section in spec["sections"]:
+        for st in [s for ph in section.get("phases", []) for s in ph["steps"]] + section.get("steps", []):
+            unknown = set(st.get("diagrams", [])) - set(ctx.diagrams)
+            if unknown:
+                die(f"step {st.get('id', st.get('title'))}: unknown diagrams {sorted(unknown)}")
     assembly.prepare(ctx, base, out, cli, model, model_sha, CACHE, expand, run, die,
                      assembly_only=a.assembly_only)
     page_spec = spec

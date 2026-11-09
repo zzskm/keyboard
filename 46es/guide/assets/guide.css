@@ -162,3 +162,4 @@ footer p+p{margin-top:.5rem}
   .layers li{grid-template-columns:minmax(0,1fr);gap:.15rem}
   .lines div{grid-template-columns:minmax(0,1fr);gap:0}
 }
+.diagrams{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:.75rem;margin-top:1rem}.diagrams figure{margin:0;border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;background:#fff}.diagrams figure.wide{grid-column:1/-1}.diagrams img{display:block;width:100%;height:auto}.diagrams figcaption{font-size:var(--s-1);line-height:1.45;padding:.45rem .6rem;color:var(--muted)}

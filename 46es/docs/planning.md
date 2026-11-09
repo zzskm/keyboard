@@ -341,7 +341,7 @@ The user supplied 46es_r2_keyboard.dwg as an existing design file, not a newly c
 - Column pins: D7, E6, B4, B5, F4, F5, F6, F7, B1, B3, B2, B6.
 - Displayed key widths: 43 x 1u, 1 x 1.25u, 1 x 1.75u, 1 x 2u.
 - Layers 0-3 contain mappings; slots 4-15 are entirely KC_TRNS.
-- controller=1, diodeDirection=0, bootloaderSize=2 are tool-specific enum values. Their physical meaning has not been verified against the original generator.
+- controller=1, diodeDirection=0, bootloaderSize=2 are tool-specific enum values. The KBFirmware-to-QMK converter (github.com/noroadsleft/kbf_qmk_converter, `src/kbf-parse.js`, checked 2026-11-09) maps controller 1 to atmega32u4 and diodeDirection 0 to COL2ROW (diode band toward the row). The wired r2 has not been compared.
 - All display rotations are zero. JSON display coordinates are not a mechanical drawing and do not encode the assembled plate curvature, height, or angles.
 - The earlier 46sp DXF is a separate split-keyboard example. Its 45 square openings are not a 46es defect or missing-key indicator.
 

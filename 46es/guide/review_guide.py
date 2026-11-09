@@ -1,4 +1,7 @@
-"""Build the current guide and capture selected assembly steps for visual review."""
+"""Build the current guide and capture selected assembly steps for visual review.
+
+Per step: the 2D drawing, the step diagrams (wiring map, snap, ...) when it has any, and one 3D capture per --views.
+"""
 import argparse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -47,12 +50,17 @@ def capture(site, evidence, steps, views):
                     page.locator('#asm-drawing').evaluate('(image) => image.decode()')
                     drawing = f'{step_id}-drawing.png'
                     page.locator('#asm-drawing').screenshot(path=evidence / drawing)
+                    images = [drawing]
+                    diagrams = page.locator('#asm-diagrams')
+                    if diagrams.is_visible():
+                        page.wait_for_function("Array.from(document.querySelectorAll('#asm-diagrams img')).every(i => i.complete && i.naturalWidth > 0)")
+                        images.append(f'{step_id}-diagrams.png')
+                        diagrams.screenshot(path=evidence / images[-1])
                     page.locator('#asm-3d').click()
                     page.wait_for_function(
                         "document.getElementById('assembly-status').textContent.includes('3D 준비 완료')",
                         timeout=120000,
                     )
-                    images = [drawing]
                     for view in views:
                         page.locator(f'[data-view={view}]').click()
                         page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
@@ -73,7 +81,8 @@ def capture(site, evidence, steps, views):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--steps', nargs='+', required=True, help='assembly step IDs; the final step is included')
-    parser.add_argument('--views', nargs='+', choices=('iso', 'top', 'bottom', 'front'), default=['iso'])
+    parser.add_argument('--views', nargs='+', choices=('reset', 'iso', 'top', 'bottom', 'front'), default=['iso'],
+                        help='reset = view of the step itself; iso/top/bottom/front = fixed views')
     parser.add_argument('--cli', default=str(DEFAULT_CLI))
     args = parser.parse_args()
 

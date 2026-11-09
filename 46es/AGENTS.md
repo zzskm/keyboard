@@ -50,6 +50,8 @@
 | 조립 설명·화면 | `guide/guide_v5.json`, `assembly_v5.json`, 관련 자산 | 실제 조립 순서, 수량, 부품 참조, 화면·저장 상태 |
 | 파일 정리·문서 정합성 | 경로·참조·현행 문서 | 현재 기능·CAD·출력물 보존, 검사·재생성 경로 |
 
+조립 설명은 글보다 그림을 우선한다. 배선·끼움·극성처럼 순서와 방향이 중요한 내용은 `guide/diagrams.py`로 생성 원본(CAD 생성 모듈·펌웨어 JSON)에서 그리고, 손으로 그린 그림이나 수치를 옮겨 적은 그림을 두지 않는다(사용자 결정 2026-11-09).
+
 생성된 v5 CAD만 직접 고치고 끝내지 않는다. 다음 재생성에서 변경이 사라진다. GUI/MCP에서 탐색한 변경은 채택 시 재현 가능한 입력에 반영한다. 생성기에 반영할 수 없는 변경이면 자동 덮어쓰기를 막고 편집 원본과 재현 한계를 명시한다.
 
 매개변수 CSV는 현재 CAD와 일치하는 내보내기 결과다. 독립 원본처럼 고쳐 두지 않는다. 검증 결과 JSON의 숫자나 `ok`를 손으로 바꿔 통과시키지 않는다.
@@ -133,7 +135,7 @@ Git 상태에 타 작업자의 변경이 있으면 덮어쓰지 않는다. 병�
 
 `model/review_v5`는 조립 좌표의 검토 출력물이다. `model/print_v5`는 제작 세트다. 파일명이 비슷하다고 서로 대신 사용하지 않는다. 시험물과 구매 할인 쿠폰도 문서에서 구분한다.
 
-가이드 소스 수정, HTML 생성, Pages 저장소 반영, 실제 게시 확인은 각각 기록한다. 다른 저장소에 게시되는 가이드를 원본 저장소 커밋만으로 배포 완료라고 보고하지 않는다. 발주·결제·병합·게시 여부는 요청 범위와 실제 성공 결과를 따른다.
+가이드 소스 수정, HTML 생성, Pages 저장소 반영, 실제 게시 확인은 각각 기록한다. 다른 저장소에 게시되는 가이드를 원본 저장소 커밋만으로 배포 완료라고 보고하지 않는다. 게시는 `guide/publish_guide.py`로 한다(빌드·브라우저 검사·Pages 반영·게시본 확인). 가이드에 영향이 있는 변경을 main에 병합하면 같은 작업에서 게시까지 한다(사용자 결정 2026-11-09). 발주·결제·병합·게시 여부는 요청 범위와 실제 성공 결과를 따른다.
 
 ## 10. 실행 명령과 종료 보고
 
@@ -150,7 +152,7 @@ python -B 46es/inspection/scripts/verify_seam_v5.py
 # 조립 검토 모델 → 검사 → 가이드
 python 46es/tools/build_assembly_reference_v5.py
 python -B 46es/inspection/scripts/verify_assembly_reference_v5.py
-python -B 46es/guide/review_guide.py --steps standoff trial module
+python -B 46es/guide/review_guide.py --steps standoff trial module --views reset iso
 
 # 변경을 검토·stage한 뒤 파일 목록과 체크섬 갱신
 # 아래 git add는 이번 작업의 46es 변경만 있을 때 사용한다.
@@ -160,6 +162,9 @@ git add 46es/manifest.json
 python -I 46es/tools/update_manifest.py --check
 python -B 46es/tools/check_repository.py
 git diff --cached --check
+
+# main 병합·push 뒤 가이드 게시(가이드 영향이 있을 때)
+python 46es/guide/publish_guide.py
 ```
 
 다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `check_repository.py`는 의도한 커밋의 추적 파일을 기준으로 검사한다. manifest는 stage된 blob의 바이트를 기록하며 설계 승인서를 뜻하지 않는다. 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다.

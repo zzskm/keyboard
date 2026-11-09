@@ -56,6 +56,7 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
                               body=ctx.text(st.get('text', '')),
                               items=[ctx.text(x) for x in st.get('list', [])],
                               check=ctx.text(st.get('check', '')), fix=ctx.text(st.get('fix', '')),
+                              diagrams=[d for gid in st.get('diagrams', []) for d in ctx.diagrams[gid]],
                               image='img/' + st.get('render', 'hero') + '.png', **setting))
     piece_colors = config.get('piece_colors', {})
     key = hashlib.sha256(json.dumps([model_sha, [(p['id'], p['bodies']) for p in parts],
@@ -151,7 +152,7 @@ def prepare_comparison(base, out, die):
 
 DEFAULT_LABELS = dict(
     eyebrow='BUILD / 46es v5',
-    case_hint='케이스는 부분 실측을 반영한 검토 형상입니다. 테두리 Z 14 / 커버 윗면 Z 15 mm(약 1 mm 돌출). 스위치·키캡은 MX·OEM 참고 형상이며 실물 치수는 미확정입니다. 배선은 3D 형상이 없습니다.')
+    case_hint='케이스는 부분 실측을 반영한 검토 형상입니다. 테두리 Z 14 / 커버 윗면 Z 15 mm(약 1 mm 돌출). 스위치·키캡은 MX·OEM 참고 형상이며 실물 치수는 미확정입니다. 배선은 3D 형상이 없고 배선 단계의 그림으로 보여 줍니다.')
 
 
 def markup(config=None):
@@ -167,12 +168,13 @@ def markup(config=None):
 <div class="build-step-heading"><span id="asm-number" class="build-number">01</span><div><p id="asm-phase" class="eyebrow"></p><h3 id="asm-title"></h3></div><span id="asm-progress"></span></div>
 <div class="parts-tray"><div class="tray-label">이번에 사용할 부품 <span>3D에서 위치 표시</span></div><div id="asm-tray" class="tray-items"></div></div>
 <div class="assembly-layout"><div class="assembly-visual"><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span></div><img id="asm-drawing" alt="현재 단계 조립도"><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대"></div>
-<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><button type="button" data-view="iso">시점 복원</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></div></div>
-<p id="asm-picked" aria-live="polite"></p><section id="asm-controller-faces" aria-label="Pro Micro 양면" hidden></section><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
+<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><button type="button" data-view="reset">시점 복원</button><button type="button" data-view="iso">입체</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></div></div>
+<p id="asm-picked" aria-live="polite"></p><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
 <article class="assembly-instruction"><ol id="asm-actions" class="action-list"></ol><div id="asm-check" class="assembly-check"></div><details id="asm-details"><summary>세부 설명 · 안 맞을 때</summary><div id="asm-body"></div><div id="asm-fix"></div><a id="asm-detail">전체 설명에서 보기 ↗</a></details><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 확인 완료</label><button id="asm-complete-next" class="primary-button" type="button">완료하고 다음 →</button></article></div>
+<section id="asm-diagrams" class="step-diagrams" aria-label="이번 단계 그림" hidden></section>
 </div>
 <details class="parts-catalog"><summary>전체 부품 · 준비 체크 · 검색</summary><div class="assembly-parts-head"><label>목록 <select id="asm-scope"><option value="step">현재 단계</option><option value="all">전체 부품</option></select></label><label>검색 <input id="asm-search" type="search" placeholder="이름 또는 규격"></label></div><p id="asm-parts-note"></p><div id="asm-parts" class="assembly-parts"></div><p id="asm-tools" class="note"></p></details>
-<p class="reference-note">케이스·스위치·키캡·구매품은 참고 형상입니다. 배선은 3D에 없습니다. 분해 간격과 화살표는 조립 설명용이며 실물 끼움·공차를 보증하지 않습니다.</p>
+<p class="reference-note">케이스·스위치·키캡·구매품은 참고 형상입니다. 배선은 3D 대신 배선 단계의 그림으로 보여 줍니다. 분해 간격과 화살표는 조립 설명용이며 실물 끼움·공차를 보증하지 않습니다.</p>
 </div>
 <div id="compare-panel" hidden>
 <div class="compare-heading"><div><p class="eyebrow">r2 ACRYLIC → v5 PRINTED</p><h3>무엇이 달라졌을까?</h3></div><span class="build-badge">같은 시점 · 같은 축척</span></div>

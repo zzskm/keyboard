@@ -92,16 +92,6 @@ def prepare(out, data):
         draw(out, part['illustration'],
              [(p, p['color'] if part.get('preserveColors') else '#587d78', False, 0) for p in pieces],
              'bottom' if part.get('preserveColors') else 'iso', size=(1.5, .9))
-        if part['id'] == 'controller' and part.get('preserveColors'):
-            data['controllerFaces'] = []
-            items = [(p, p['color'], False, 0) for p in pieces]
-            for view, label, detail in [
-                ('bottom', '부품면 · 케이스 바닥 쪽', 'USB 소켓과 검은 칩이 보이는 면'),
-                ('top', '납땜면 · plate 쪽', '양옆의 금색 납땜 패드가 보이는 면'),
-            ]:
-                path = f'img/build/controller-{view}.png'
-                draw(out, path, items, view, size=(3.4, 1.9))
-                data['controllerFaces'].append(dict(path=path, label=label, detail=detail))
     for step in data['steps']:
         step['illustration'] = f"img/build/{step['id']}.png"
         items = []
