@@ -80,17 +80,38 @@
 
 SolidCraft CLI와 `46es/requirements.txt`의 Python 패키지(`pip install -r 46es/requirements.txt`)가 설치된 Windows 환경에서 실행한다. CLI 경로는 환경변수 `SOLIDCRAFT_CLI`, 없으면 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`다(`tools/common.py`). 가이드는 `--cli`로도 지정할 수 있다. 콘솔 출력은 스크립트가 UTF-8로 바꾸므로 `PYTHONUTF8`을 따로 설정하지 않아도 된다.
 
+이 절이 46es 명령의 유일한 목록이다. 다른 문서는 여기를 가리킨다.
+
 ```sh
-python 46es/tools/build_seam_v5.py --mounts   # mount만 바꿀 때: 수 초, 도면 단면 비교
-python 46es/tools/build_seam_v5.py --refresh-record   # 형상이 그대로인 생성기 정리 뒤: CAD 유지, 생성 기록만 갱신
-python 46es/tools/build_seam_v5.py
-python 46es/tools/export_print_v5.py
-python 46es/tools/export_print_v5.py --trial
-python -B 46es/inspection/scripts/verify_seam_v5.py
-python 46es/tools/build_assembly_reference_v5.py
-python -B 46es/inspection/scripts/verify_assembly_reference_v5.py
-python 46es/guide/build_guide.py
+python 46es/tools/pipeline.py --status                    # 단계마다 ok / 낡음(이유) / 앞 단계 뒤 재실행. SolidCraft 불필요, 수 초
+python 46es/tools/pipeline.py --run                       # 낡은 단계만 순서대로 실행(각 단계 직전에 다시 판정)
+python 46es/tools/pipeline.py --run --from verify_seam    # 그 단계와 이후 전부
+python 46es/tools/pipeline.py --run --only order1 order2  # 지정 단계만(내보내기 코드만 고쳤을 때)
 ```
+
+`pipeline.py`의 단계와 그 단계가 실행하는 명령(따로 실행해도 같다):
+
+```sh
+python 46es/tools/build_seam_v5.py                         # seam: 현행 CAD, 시험편 A·C 모델, CSV, 생성 기록
+python 46es/tools/export_print_v5.py                       # order2
+python 46es/tools/export_print_v5.py --trial               # order1
+python -B 46es/inspection/scripts/verify_seam_v5.py        # verify_seam
+python 46es/tools/build_assembly_reference_v5.py           # assembly
+python -B 46es/inspection/scripts/verify_assembly_reference_v5.py   # verify_assembly
+python -B 46es/guide/review_guide.py --steps standoff trial module --views reset iso   # review(캡처만, 판정은 사람)
+```
+
+파이프라인 밖의 명령:
+
+```sh
+python 46es/tools/build_seam_v5.py --mounts           # mount만 바꿀 때: 수 초, 도면 단면 비교
+python 46es/tools/build_seam_v5.py --refresh-record   # 형상이 그대로인 생성기 정리 뒤: CAD 유지, 생성 기록만 갱신
+python 46es/guide/build_guide.py                      # 로컬 가이드 전체 빌드(guide/out, 옵션은 guide/README.md)
+python -B 46es/tools/finish.py                        # 커밋 전 마무리(아래 「CAD 없이 할 수 있는 검사」)
+python 46es/guide/publish_guide.py                    # main 병합·push 뒤 가이드 게시(guide/README.md 「게시」)
+```
+
+낡음 판정은 커밋된 기록으로 한다. seam은 생성 기록의 입력 지문·출력 해시, order1·order2는 주문 기록의 원본 CAD·STL/STEP 해시, 두 검증 단계는 기록의 `inputs`(검증 스크립트 자신과 읽은 파일의 지문), assembly는 `assembly_reference_v5.json`의 해시, review는 현재 검토 모델·가이드 spec으로 찍은 `guide/.cache/visual-review/` 캡처가 있는지다. 내보내기 코드(`export_print_v5.py`와 STL 스크립트)는 지문을 남기지 않으므로 고쳤으면 `--only order1 order2`로 다시 내보낸다. 생성기 코드만 바뀌어 seam이 낡았으면 `--status`가 `--refresh-record`를 안내한다. 실행한 단계의 벽시계 시간은 `46es/.cache/pipeline-timings.json`에 쌓이고 `--status`에 마지막 시간이 보인다.
 
 `build_seam_v5.py`는 현행 CAD와 함께 스냅 시험편 A·C만 담은 `model/ctrl_trials_v5.sc`, 매개변수 CSV, 생성 기록을 만든다. `--trial`은 현행 모델의 mount·이음 쿠폰·브래킷 B, `ctrl_trials_v5.sc`의 시험편 A·C, `model/samples/46es_sw_hole_sample.sc`의 B 쿠폰·보스 탭을 내보낸다. 샘플 행 C `SMP_upper`는 1.7이어야 한다. 두 주문의 내보내기는 `46es/.cache/print_v5/`에서 CAD 재평가, STL 검사와 벽 스캔을 마친 뒤 각 세트를 교체한다. 각 부품 기록에 실제 내보내기에 사용한 CAD와 STL/STEP 해시가 들어간다. 현행 CAD 해시가 바뀌면 그 모델을 사용한 두 세트를 갱신한다.
 
@@ -104,11 +125,14 @@ python 46es/guide/build_guide.py
 python -B 46es/tools/check_repository.py
 python -B 46es/tools/smoke_test.py
 python -B 46es/tools/finish.py      # 커밋 전: stage 범위 → 위 두 검사 → git diff --cached --check → 작성자 → 보고 틀
+git config core.hooksPath .githooks # clone마다 한 번: 46es를 건드리는 커밋에 finish.py --hook(스모크·보고 틀 제외)을 건다
 ```
 
 `check_repository.py`는 현행 경로·문서 링크·가이드 부품 참조·생성 기록·CAD/CSV·입출력 해시·시험/본 출력 STL의 연결성·모서리·부피·기록을 검사한다. `smoke_test.py`는 생성기의 순수 Python 형상(mount 윤곽의 층별 부피, 브래킷 금지 영역·벽, 커버 창)을 다시 계산해 커밋된 검증 기록·주문 1 부피와 비교한다(약 15 s). 둘 다 SolidCraft의 재평가·간섭 계산이나 브라우저 조작을 대신하지 않는다. 가이드 브라우저 검사는 [가이드 안내](../guide/README.md)를 따른다.
 
 생성기만 정리하고 형상이 그대로면 `build_seam_v5.py --refresh-record`를 쓴다. 캐시에 다시 빌드해 커밋된 CAD의 문서와 모든 바디 BRep가 같을 때만 생성 기록의 입력 지문을 갱신하고 CAD는 그대로 둔다. 다시 빌드한 CAD는 형상이 같아도 zip 바이트가 달라, 교체하면 그 해시에 묶인 주문 1·2 기록·검증·검토 모델이 모두 낡은 것이 되기 때문이다. 하나라도 다르면 실패하므로 그때는 전체 재생성을 한다.
+
+검증 기록에는 검증 스크립트와 읽은 파일의 지문(`inputs`)이 들어간다. 검증기를 고치고 다시 실행하지 않으면 `check_repository.py`가 예전 `ok`를 낡은 것으로 막는다(AGENTS.md §6).
 
 CI는 두 검사로 현행 경로·문서·출력물 불일치와 생성 논리 회귀를 차단한다. 추적 파일 목록과 바이트는 git이 관리하므로 별도 목록 파일을 두지 않는다(`manifest.json`은 2026-11-10 폐지).
 

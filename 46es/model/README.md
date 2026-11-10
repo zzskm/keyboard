@@ -20,11 +20,7 @@
 
 ## 재생성·검증
 
-CAD 재생성/검증은 [`../docs/validation.md`](../docs/validation.md). CAD 없는 정적 검사:
-
-```sh
-python -B 46es/tools/check_repository.py
-```
+CAD 재생성·검증·정적 검사 명령은 [validation.md 「재생성」](../docs/validation.md#재생성-저장소-루트) 한 곳에 있다(`pipeline.py`가 단계를 순서대로 실행).
 
 ## 보존된 원본과 참고 모델
 

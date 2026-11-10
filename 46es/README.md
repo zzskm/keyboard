@@ -26,6 +26,4 @@
 
 현재 입력·사용 출력물·검증 기준·원본 근거만 유지. 이전 버전은 태그 `46es-pre-cleanup-2026-11-06`([정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)) 참조. 결정을 바꾼 경위는 [design.md 결정 이력](docs/design.md#결정-이력).
 
-```sh
-python -B 46es/tools/check_repository.py
-```
+검사·재생성 명령: [validation.md 「재생성」](docs/validation.md#재생성-저장소-루트). CAD 없이 하는 검사는 `check_repository.py`, 낡은 단계 확인은 `pipeline.py --status`다.

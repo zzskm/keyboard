@@ -8,9 +8,9 @@
 
 SolidCraft CLI + Python NumPy·Matplotlib·Shapely·ezdxf 필요(`SOLIDCRAFT_CLI` 또는 기본 `C:/Program Files/SolidCraft/solidcraft-cli.exe`, `--cli` 변경).
 
+검토 CAD 갱신·검사는 [validation.md 「재생성」](../docs/validation.md#재생성-저장소-루트)의 `pipeline.py`(assembly·verify_assembly·review 단계)로 한다. 그 뒤 로컬 가이드:
+
 ```sh
-python 46es/tools/build_assembly_reference_v5.py
-python -B 46es/inspection/scripts/verify_assembly_reference_v5.py
 python 46es/guide/build_guide.py
 python -m http.server 8766 --bind 127.0.0.1 --directory 46es/guide/out
 ```
@@ -40,7 +40,7 @@ python 46es/guide/publish_guide.py --dry-run  # 빌드·브라우저 검사만
 python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --views iso bottom
 ```
 
-명령이 출력하는 `guide/.cache/visual-review/`의 실행 폴더에는 로컬 `site/`, 캡처와 `review.json`이 들어간다. 기록은 원본 CAD·검토 CAD 해시, 실제 단계 ID·제목, 이미지 파일을 묶는다. 캡처 후에는 부품 표시·강조·수량, 체결 방향, 설치 및 분해 접근 공간을 눈으로 확인하고 변경 보고에 판정을 적는다. 예를 들어 마운트 변경이면 장착 단계와 plate를 얹은 상태를 함께 확인한다. 자동 캡처 직후 기록 상태는 `pending_manual_review`다.
+명령이 출력하는 `guide/.cache/visual-review/`의 실행 폴더에는 로컬 `site/`, 캡처와 `review.json`이 들어간다. 기록은 원본 CAD·검토 CAD·가이드 spec 해시(`pipeline.py --status`의 review 단계가 이것으로 판정), 실제 단계 ID·제목, 이미지 파일을 묶는다. 캡처 후에는 부품 표시·강조·수량, 체결 방향, 설치 및 분해 접근 공간을 눈으로 확인하고 변경 보고에 판정을 적는다. 예를 들어 마운트 변경이면 장착 단계와 plate를 얹은 상태를 함께 확인한다. 자동 캡처 직후 기록 상태는 `pending_manual_review`다.
 
 가이드 화면·3D 조작을 바꿨다면 아래의 전체 브라우저 검사로 데스크톱·모바일과 3D 실패 대체 화면도 확인한다. 기존 게시 자산으로 UI만 확인했다면 `UI 미리보기`, 실행할 수 없었다면 `미실행`, 가이드에 영향이 없는 정리라면 `대상 없음`으로 보고한다.
 
