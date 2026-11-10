@@ -1027,6 +1027,22 @@
   }
  },
  "trials": {
+  "BOSS_TAB_SAMPLE": {
+   "shape_sha256": "6fe0335271f684239359ba0d11b2224362d242d1a03346e9c4cf4cb1372a9870",
+   "volume_mm3": 5307.155,
+   "bbox": [
+    [
+     160.0,
+     -300.0,
+     0.0
+    ],
+    [
+     190.0,
+     -270.0,
+     7.5
+    ]
+   ]
+  },
   "CTRL_SNAP_TRIAL_A": {
    "shape_sha256": "7da26920d75129bc153fe4a3ea0e149c4fe788e95c1a4d4b53ab74b8582b3b45",
    "volume_mm3": 1562.579,
@@ -1184,6 +1200,22 @@
      264.0,
      -38.8,
      13.0
+    ]
+   ]
+  },
+  "SW_HOLE_SAMPLE": {
+   "shape_sha256": "2aba53d630bcf35b1c9a4c5f4c81817621dcc6ccfa1cb7870fd22ef7b85f64cb",
+   "volume_mm3": 28313.943,
+   "bbox": [
+    [
+     -0.0,
+     -300.0,
+     0.0
+    ],
+    [
+     145.35,
+     -225.85,
+     5.0
     ]
    ]
   }

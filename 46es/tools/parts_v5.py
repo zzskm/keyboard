@@ -11,8 +11,7 @@ from dataclasses import dataclass
 from common import ROOT
 
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
-TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C, rear rest variants, seam coupons (build_seam_v5.py)
-SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C, rear rest variants, seam and B coupons, boss tab
 
 MJF = 'MJF PA12S-HP 검정'
 RESIN = '8001 레진 투명'
@@ -65,8 +64,9 @@ PARTS = (
     ]),
     # order 1: test parts. Snap bracket trial (tools/ctrl_v5.py TRIALS): B = production, A shallower, C deeper
     *_rows('order1', [
-        ('sw_hole_coupon', 'SW_HOLE_SAMPLE', SAMPLE, MJF, True),
-        ('boss_tab', 'BOSS_TAB_SAMPLE', SAMPLE, RESIN, False),
+        # B coupon and boss tab (tools/coupon_v5.py): the guide describes them in its trial table, not as parts
+        ('sw_hole_coupon', 'SW_HOLE_SAMPLE', TRIALS, MJF, True),
+        ('boss_tab', 'BOSS_TAB_SAMPLE', TRIALS, RESIN, False),
         # front seam coupons (tools/seam_v5.py COUPONS): S0 = v4 dovetail (control), S1 = production half-lap,
         # S2 = wider locating clearance and nut pocket
         ('seam_coupon_S0_L', 'SEAM_COUPON_S0_L', TRIALS, MJF, True),

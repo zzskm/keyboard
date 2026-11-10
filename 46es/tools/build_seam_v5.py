@@ -19,7 +19,7 @@ hardware, and since the 2026-11-10 seam redesign the front seam and its coupons;
 (their outlines and openings are the r2 drawing's sketches).
 
 Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C, rear rest
-height variants and seam coupons),
+height variants, seam coupons, and the B coupon and boss tab of tools/coupon_v5.py),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
 Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into .cache/v5 without replacing the current CAD
@@ -48,6 +48,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER, SEAM_NUT_CLEARANCE,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
+import coupon_v5
 import cover_v5
 import cover_pattern_v5
 import hardware_v5
@@ -116,7 +117,8 @@ REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_PO
 # Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
 BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/cover_v5.py',
-                'tools/cover_pattern_v5.py', 'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/make_key_dxf.py',
+                'tools/cover_pattern_v5.py', 'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/coupon_v5.py',
+                'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
                 'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
@@ -708,7 +710,8 @@ def check_ctrl(evaluated, trials):
     report = {}
     assert not set(c.TRIALS) & set(bodies), 'snap trials belong in model/ctrl_trials_v5.sc'
     bodies.update({b['name']: b for b in trials['bodies']})
-    assert set(c.TRIALS) | set(REAR_REST_TRIALS) | set(seam_coupon_bodies()) == {b['name'] for b in trials['bodies']}, trials['bodies']
+    assert set(c.TRIALS) | set(REAR_REST_TRIALS) | set(seam_coupon_bodies()) | set(coupon_v5.BODIES) == \
+        {b['name'] for b in trials['bodies']}, trials['bodies']
     for body, design in [(c.BODY, c.bracket())] + [(n, c.bracket(**s)) for n, s in c.TRIALS.items()]:
         b = bodies[body]
         expected = c.expected_volume(design)
@@ -925,6 +928,7 @@ def build(probe=False):
     seam_report = check_seam(evaluated, trials)
     rest_report = check_rear_rests(evaluated, trials, rests)
     rest_report['plan_clearance_mm'] = rear_rest_clearance(rests, mounts, bodies)
+    coupon_report = coupon_v5.check(trials, values)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), base_sha=sha(BASE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
@@ -933,7 +937,7 @@ def build(probe=False):
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
                 cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, cover_pattern=pattern_report,
                 mounts=mount_report,
-                ctrl=ctrl_report, rear_rests=rest_report, seam=seam_report)
+                ctrl=ctrl_report, rear_rests=rest_report, seam=seam_report, coupons=coupon_report)
     if not probe:
         pending.replace(OUTPUT)
         trials_pending.replace(TRIALS_OUTPUT)
@@ -969,20 +973,24 @@ def refresh_record():
 
 def trials_document(rests=True):
     """Parameter-only copy of the base document holding the order-1 snap trials A and C and the rear rest height
-    variants and the seam coupon pairs (tools/seam_v5.py). They are free bodies (no plate cut, no reference screws),
-    so they need the parameters and nothing else."""
+    variants, the seam coupon pairs (tools/seam_v5.py), the B coupon and the boss tab (tools/coupon_v5.py). They are
+    free bodies (no plate cut, no reference screws), so they need the parameters and nothing else: the base's, the
+    cover parameters (cover thickness, leg magnet clearance) and the coupons' own SMP_*."""
     doc, container = read_source()
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
     doc['appearances'] = {'bodies': {}}
-    doc['name'] = '46es v5 order-1 trials: snap brackets A/C, rear rest height variants, seam coupons'
+    doc['name'] = '46es v5 order-1 trials: snap brackets A/C, rear rest height variants, seam coupons, B coupon, boss tab'
     feature, sketch = helpers(doc)
     for body, spec in ctrl_v5.TRIALS.items():
         ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
     if rests:
         emit_rear_rest_trials(feature, doc)
         seam_v5.emit_coupons(feature, sketch, doc)
+        cover_params(doc)
+        coupon_v5.add_params(doc)
+        coupon_v5.emit(feature, sketch, doc)
     return doc, container
 
 

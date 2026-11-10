@@ -98,9 +98,9 @@ def model_checks():
         require(set(shapes) == set(expected), f'CAD body set differs from the v5 baseline: {sorted(set(shapes) ^ set(expected))}')
         differ = sorted(n for n in shapes if shape_digest(shapes[n]) != expected[n]['shape_sha256'])
         require(not differ, f'CAD bodies differ from the v5 baseline (verify_seam_v5.py --accept): {differ}')
-    sample = ROOT / 'model/samples/46es_sw_hole_sample.sc'
-    sample_params = {p['name']: p['expr'] for p in document(sample)['params']}
-    require(sample_params['SMP_upper'] == params['TBD_upper_plate_T'] == '1.7 mm', 'trial row C differs from plate')
+    coupon_params = {p['name']: p['expr'] for p in document(TRIALS)['params']}
+    require(params['TBD_upper_plate_T'] == '1.7 mm' and coupon_params['SMP_upper'] == 'TBD_upper_plate_T'
+            and coupon_params['SMP_T'] == 'TBD_plate_T', 'B coupon row C does not follow the plate layers')
     ref = read(ROOT / 'model/assembly_reference_v5.json')
     inputs = {'source_sha': V5, 'output_sha': ROOT / 'model/46es_assembly_review_v5.sc',
               'generator_sha': ROOT / ref['generator'],
@@ -113,16 +113,17 @@ def model_checks():
                                   ('assembly-reference-v5-verification.json', 'source_sha', sha(V5)),
                                   ('assembly-reference-v5-verification.json', 'model_sha', ref['output_sha'])]:
         require(read(ROOT / 'inspection/data' / record)[key] == expected, f'stale model report: {record}')
-    return current, live_shapes(sample), review, len(current) + len(trials)
+    return current, review, len(current) + len(trials)
 
 
 def printed_checks(printed):
-    """The guide's printed-part table against tools/parts_v5.py: the same bodies (the two sample-model coupons are
-    described in model/samples/README.md instead), the orders named in each note, and the STL orientation."""
-    from parts_v5 import PARTS, SAMPLE, SAME_PRINT
+    """The guide's printed-part table against tools/parts_v5.py: the same bodies (the B coupon and the boss tab are
+    in the guide's trial table instead), the orders named in each note, and the STL orientation."""
+    from parts_v5 import PARTS, SAME_PRINT
+    from coupon_v5 import BODIES as COUPONS
     registry = {}
     for part in PARTS:
-        if part.source != SAMPLE:
+        if part.body not in COUPONS:
             registry.setdefault(part.body, []).append(part)
     guide = {body: p for p in printed for body in p['bodies']}
     for copy, original in SAME_PRINT.items():        # shown beside the part whose file prints them
@@ -171,9 +172,9 @@ def guide_checks(names):
     return len(steps)
 
 
-def print_checks(current, sample):
-    from parts_v5 import MODEL, SAMPLE, TRIALS, PARTS, ORDERS, by_file
-    shapes = {MODEL: current, SAMPLE: sample, TRIALS: live_shapes(TRIALS)}
+def print_checks(current):
+    from parts_v5 import MODEL, TRIALS, PARTS, ORDERS, by_file
+    shapes = {MODEL: current, TRIALS: live_shapes(TRIALS)}
     hashes = {path: sha(path) for path in shapes}
     for order, paths in ORDERS.items():
         parts = read(paths['record'])
@@ -288,9 +289,9 @@ def main():
     count = source_checks()
     build_checks()
     verifier_checks()
-    current, sample, review, unchanged = model_checks()
+    current, review, unchanged = model_checks()
     steps = guide_checks(list(review))
-    prints = print_checks(current, sample)
+    prints = print_checks(current)
     doc_numbers = print_readme_checks() + design_checks()
     print(f'OK: {count} tracked files; links/JSON/Python; {unchanged} CAD bodies as in the v5 baseline; {steps} guide steps; '
           f'{prints} print meshes; {doc_numbers} document numbers')

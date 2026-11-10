@@ -1,19 +1,19 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:a7dfa4e9cce976aae1792f4ca200c5f9ab28635797cb9f4b6472344003f333cb",
-  "tools/parts_v5.py": "ast:9009a600ffc32586e1ec814ab3c19191714b7bb4c271972fa241df1807801970",
-  "model/46es_mount_seam_v5.sc": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
-  "model/ctrl_trials_v5.sc": "c704067a31e40a0c4270f76b3ccd415fdd50e24dfe5d90e13b503a900c8284be",
+  "inspection/scripts/verify_seam_v5.py": "ast:fa43b70a862299fa72e0465d36faaeb7f2a44a7d6021f44f62a9147c9caa9ad6",
+  "tools/parts_v5.py": "ast:839720f6bedcab1815303d58dc2dc8c632f4a6606ae74d9b17d691526c492c6c",
+  "model/46es_mount_seam_v5.sc": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
+  "model/ctrl_trials_v5.sc": "45461325d905aed2d034f9b8da07f7c04dd2ca1e5785905ad19a808aea39ca8a",
   "model/parameters_seam_v5.csv": "f3b581f3845ed2130bb1bdea7f49c72369322d07589d5c23ee68c5850f341523",
-  "inspection/data/seam-v5-baseline.json": "07bcdefff6bb1ddf385f94e420d467c8b3ed20f7af02ebdf61315e267f5f4ea1",
-  "inspection/data/seam-v5-print-set.json": "e055f4b9f3daf55dcee8afde52d86246e938e91a1d09f4983ef5781dd887ecb5",
+  "inspection/data/seam-v5-baseline.json": "d7071142d8ed3a819d3d8b6c7fe834b9e2f312e0acd373f6787efa89655d05db",
+  "inspection/data/seam-v5-print-set.json": "205ab54dc63a381bb203c21cec4c5ea71a7ad271d2f6f1cd05b536d9cf2b1809",
   "inspection/data/seam-v5-mjf-thin-wall.json": "3d9874834b9a173fca1a7230dc4076a784a6d4f3a82f6b390704d16d40e92816",
-  "inspection/data/seam-v5-trial-print-set.json": "7d74ef81c5496cb987dd5a25326efc1883c568d995a2438ad5091666e3f83e11"
+  "inspection/data/seam-v5-trial-print-set.json": "f91c64fd7238dcd1c13cf6dc0571d04f413baa6f6b621c21637f7e0d5395f6cd"
  },
- "v5_sha": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
- "baseline_sha": "07bcdefff6bb1ddf385f94e420d467c8b3ed20f7af02ebdf61315e267f5f4ea1",
- "baseline_bodies": 74,
+ "v5_sha": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
+ "baseline_sha": "d7071142d8ed3a819d3d8b6c7fe834b9e2f312e0acd373f6787efa89655d05db",
+ "baseline_bodies": 76,
  "print_set": [
   {
    "file": "46es_v5_plate_L",

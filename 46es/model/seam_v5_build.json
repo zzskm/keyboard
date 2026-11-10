@@ -5,7 +5,8 @@
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
   "model/seam_v5_base.json": "af492ddb93c29c88e456976af79410a87f0288525c7f9038fb0a48d53523b910",
-  "tools/build_seam_v5.py": "ast:3caaefa676db0f2f02a6ff3109117ef402f95576d6c7e22c81d853f6443440bb",
+  "tools/build_seam_v5.py": "ast:ccdd149008fb157ae3623de1af7c0d4ce518b49111e28391bc724da7f4593a8c",
+  "tools/coupon_v5.py": "ast:cac1fe415a604120ec5a202db785976180251a44d80e99981126afb9c42d2950",
   "tools/cover_pattern_v5.py": "ast:6986e5f351504d0e626b0624845c3b00b3deb53d33df583957bfe0563c3364c4",
   "tools/cover_v5.py": "ast:71675a63b6a44021ce62c6ee5fbf7e35c29cb07d265f32194407963470998046",
   "tools/ctrl_v5.py": "ast:1f0f4e73fff0ea917f889020f0fc6ddd55a32a12f63f6b8730a836e1af92082c",
@@ -16,7 +17,7 @@
   "tools/spine_v5.py": "ast:ccbb0d545f5d59e578b6a3e0e9bc565e7d2f8d25b4b2fad44754095b9e418fe5"
  },
  "output": "model/46es_mount_seam_v5.sc",
- "output_sha": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
+ "output_sha": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
  "trials_output": "model/ctrl_trials_v5.sc",
- "trials_output_sha": "c704067a31e40a0c4270f76b3ccd415fdd50e24dfe5d90e13b503a900c8284be"
+ "trials_output_sha": "45461325d905aed2d034f9b8da07f7c04dd2ca1e5785905ad19a808aea39ca8a"
 }

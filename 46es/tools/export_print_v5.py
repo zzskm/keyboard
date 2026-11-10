@@ -34,7 +34,7 @@ from orient_print_stl import orient  # noqa: E402
 from check_stl import check  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 from cad_model import shape_digests  # noqa: E402
-from parts_v5 import PARTS, ORDERS, SAMPLE, WALL_SCAN  # noqa: E402
+from parts_v5 import PARTS, ORDERS, WALL_SCAN  # noqa: E402
 
 CACHE = ROOT / '.cache/print_v5'
 PREBUILT = ROOT / '.cache/v5/export'
@@ -95,11 +95,6 @@ def main():
     parser.add_argument('--force', action='store_true', help='re-export parts whose shape is unchanged too')
     args = parser.parse_args()
     orders = [o for o in ORDERS if o in args.order]
-    if 'order1' in orders:
-        from cad_model import document
-        upper = next(p['expr'] for p in document(SAMPLE)['params'] if p['name'] == 'SMP_upper')
-        if upper != '1.7 mm':
-            raise ValueError(f'trial row C must match v5 upper layer 1.7 mm, got {upper}')
     CACHE.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=CACHE, prefix='print_v5_') as scratch:
         export(orders, Path(scratch), args.force)

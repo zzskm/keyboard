@@ -5,23 +5,23 @@
  "parts": [
   {
    "file": "46es_v5_sw_hole_coupon",
-   "stl_sha256": "5c872514f60cb2bd4146a06405214d89e21a27d1686861380ad87dc3a2963b24",
-   "facets": 22708,
-   "samples": 1111990,
+   "stl_sha256": "993ec75b18f15f8e88ee7735234688b703123ffe2b9a966b7e3071771acb8c45",
+   "facets": 14904,
+   "samples": 1030544,
    "min_mm": 1.5,
    "wall_min_mm": 1.5,
    "below_limit": [],
-   "below_warn_count": 42
+   "below_warn_count": 45
   },
   {
    "file": "46es_v5_boss_tab",
-   "stl_sha256": "0649e6274a9b95fcfd5c543c0fa19050a1439d82aaaedf4df3e50496b75280a6",
-   "facets": 6404,
-   "samples": 145344,
-   "min_mm": 1.299,
-   "wall_min_mm": 1.299,
+   "stl_sha256": "cb000bc1cfaaab1cdb3c75fc20acb05eded26493739562b2bd60e4f6c1b3f1c8",
+   "facets": 6940,
+   "samples": 177220,
+   "min_mm": 1.0,
+   "wall_min_mm": 1.0,
    "below_limit": [],
-   "below_warn_count": 1
+   "below_warn_count": 2
   },
   {
    "file": "46es_v5_seam_coupon_S0_L",
