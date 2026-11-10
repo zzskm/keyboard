@@ -14,6 +14,7 @@ import ctrl_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
+from cad_eval_cache import evaluation  # noqa: E402
 # Recorded with their fingerprints so check_repository.py and pipeline.py --status catch a verifier or input
 # changed after this run (plan 2-3). The order-1 record stands for the mount STLs read for the pin fit.
 VERIFY_INPUTS = ('inspection/scripts/verify_assembly_reference_v5.py', 'model/46es_assembly_review_v5.sc',
@@ -50,10 +51,7 @@ def per_key(result, bodies_from, suffix=''):
 def main():
     manifest = json.loads((ROOT / 'model/assembly_reference_v5.json').read_text(encoding='utf-8'))
     assert sha(MODEL) == manifest['output_sha'] and sha(SOURCE) == manifest['source_sha'], 'stale review model'
-    report = CACHE / 'eval.json'
-    if not report.exists() or report.stat().st_mtime < MODEL.stat().st_mtime:
-        subprocess.run([CLI, 'eval', '--in', str(MODEL), '--json-out', str(report)], check=True, capture_output=True)
-    ev = json.loads(report.read_text(encoding='utf-8'))
+    ev, _ = evaluation(MODEL)
     assert not [f for f in ev['timeline'] if f.get('error')]
     bodies = {b['name']: b for b in ev['bodies']}
     for prefix, count in [('REF_MX_LOWER', 46), ('REF_MX_GUIDE', 138), ('REF_MX_UPPER', 46), ('REF_MX_STEM', 46),

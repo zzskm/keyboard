@@ -17,6 +17,7 @@ from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BO
                            horizontal_faces, top_levels, ctrl_params, rear_foot_volume, cover_windows)
 import ctrl_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
+from cad_eval_cache import evaluation  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 
@@ -53,7 +54,7 @@ MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
 PLATE_L_GATE_RELIEF_MM3 = 8.319 * 7.4 * 2.0 + 1.9 * 4.0 * 2.0
 COUPON_L_GATE_RELIEF_MM3 = ((120.7 - 118.0) * 7.4 * 2.0          # gate relief part (the coupon trim starts at X 118)
                             + math.pi * 1.2 ** 2 * 2.2 + math.pi * 2.2 ** 2 * 2.8)   # v4 hole: clear Z 8-10.2, head Z 10.2-13
-CACHE = ROOT / 'guide/.cache/v5'
+CACHE = ROOT / '.cache/v5'
 
 
 def cli_results(script, model, name):
@@ -454,10 +455,7 @@ def main():
     assert set(trials) == set(ctrl_v5.TRIALS) and not set(trials) & set(new), set(trials)
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
-    ev_path = CACHE / 'eval_v5_export.json'
-    if not ev_path.exists() or ev_path.stat().st_mtime < V5.stat().st_mtime:
-        subprocess.run([CLI, 'eval', '--in', str(V5), '--json-out', str(ev_path)], check=True, capture_output=True)
-    ev = json.loads(ev_path.read_text(encoding='utf-8'))
+    ev, _ = evaluation(V5)
     errors = [t['name'] for t in ev['timeline'] if t.get('error')]
     warnings = [t['name'] for t in ev['timeline'] if t.get('warning')]
     dof = [s['name'] for s in ev['sketches'] if s.get('dof') != 0]
@@ -475,10 +473,7 @@ def main():
     assert abs(params['v5_legmag_skin'] - 3.9) < 1e-9
     assert abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
     walls = leg_magnet_walls(params)
-    v4_eval_path = CACHE / f'eval-baseline-{V4_SHA[:16]}.json'
-    if not v4_eval_path.exists():
-        subprocess.run([CLI, 'eval', '--in', str(V4), '--json-out', str(v4_eval_path)], check=True, capture_output=True)
-    v4_eval = json.loads(v4_eval_path.read_text(encoding='utf-8'))
+    v4_eval, _ = evaluation(V4)
     v4_bodies = {b['name']: b for b in v4_eval['bodies']}
     for n in DERIVED:
         # the left coupon copies the plate before the new bracket screw holes: it loses the v4 hole at (125, 17)
@@ -486,10 +481,7 @@ def main():
         expected = v4_bodies[n]['volume_mm3'] + (COUPON_L_GATE_RELIEF_MM3 if n == 'SEAM_COUPON_L_V4' else 0.0)
         assert abs(bodies[n]['volume_mm3'] - expected) < 0.05, (n, bodies[n]['volume_mm3'], expected)
         assert all(abs(bodies[n]['bbox'][k][i] - v4_bodies[n]['bbox'][k][i]) < 1e-6 for k in ('min', 'max') for i in range(3)), n
-    flat_eval = CACHE / 'eval_v5_flat_Z18.json'
-    if not flat_eval.exists():
-        subprocess.run([CLI, 'eval', '--in', str(FLAT), '--json-out', str(flat_eval)], check=True, capture_output=True)
-    flat_bodies = {b['name']: b for b in json.loads(flat_eval.read_text(encoding='utf-8'))['bodies']}
+    flat_bodies = {b['name']: b for b in evaluation(FLAT)[0]['bodies']}
     flat_shapes = live_shapes(FLAT)
     # the 2nd pass touches the covers only; phase 2 (2026-11-09) moves the left plate's two bracket screw holes and
     # drops the gate reliefs, and the rear feet (2026-11-09) hang below the rear flanges: each plate may differ from

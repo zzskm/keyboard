@@ -21,9 +21,14 @@ Staleness is read from the committed records, so --status needs no SolidCraft. E
 after editing export_print_v5.py (or the STL scripts it calls) run --only order1 order2. Every stage run appends
 {stage, started, seconds, ok} to 46es/.cache/pipeline-timings.json; --status shows the last successful time.
 Publishing the guide stays a separate step after the merge (guide/publish_guide.py).
+
+  python 46es/tools/pipeline.py --clean      delete cache entries nothing current uses (plan 3-7): evaluations of
+      files no longer in the tree, the old guide/.cache/v5 build folder and eval files, guide renders other than the
+      newest per render id, visual-review runs other than the newest three
 """
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 import time
@@ -195,11 +200,40 @@ def run(args):
         print('Inspect the captures and record the visual verdict in the change report (guide/README.md 시각 검토).')
 
 
+def size_of(path):
+    return path.stat().st_size if path.is_file() else sum(p.stat().st_size for p in path.rglob('*') if p.is_file())
+
+
+def clean():
+    from cad_eval_cache import EVAL_CACHE
+    tracked = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '*.sc'], text=True).split()
+    keep = {sha(ROOT / rel)[:16] for rel in tracked if (ROOT / rel).is_file()}
+    keep |= {sha(p)[:16] for p in (ROOT / '.cache/v5').glob('*.sc')}        # probe and partial builds
+    doomed = [p for p in EVAL_CACHE.glob('*.json') if p.name.split('.')[0] not in keep]
+    guide = ROOT / 'guide/.cache'
+    doomed += [guide / 'v5', *guide.glob('eval-*.json')]                   # before the shared cache (2026-11-10)
+    newest = {}
+    for png in sorted((guide / 'renders').glob('*.png'), key=lambda p: p.stat().st_mtime):
+        rid = png.stem.rsplit('-', 1)[0]
+        if rid in newest:
+            doomed += [newest[rid], newest[rid].with_suffix('.script.json')]
+        newest[rid] = png
+    runs = sorted((p for p in REVIEW_RUNS.glob('*') if p.is_dir()), key=lambda p: p.stat().st_mtime, reverse=True)
+    doomed += runs[3:]
+    freed = 0
+    for path in doomed:
+        if path.exists():
+            freed += size_of(path)
+            shutil.rmtree(path) if path.is_dir() else path.unlink()
+    print(f'removed {sum(1 for _ in doomed)} cache entries, {freed / 1e6:.0f} MB')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--status', action='store_true', help='show stale stages (default)')
     mode.add_argument('--run', action='store_true', help='run stale stages in order')
+    mode.add_argument('--clean', action='store_true', help='delete cache entries nothing current uses')
     which = parser.add_mutually_exclusive_group()
     which.add_argument('--from', dest='start', choices=list(STAGES), help='with --run: this stage and all later ones')
     which.add_argument('--only', nargs='+', choices=list(STAGES), help='with --run: only these stages')
@@ -207,7 +241,9 @@ def main():
     args = parser.parse_args()
     if (args.start or args.only) and not args.run:
         parser.error('--from/--only need --run')
-    if args.run:
+    if args.clean:
+        clean()
+    elif args.run:
         run(args)
     else:
         status()

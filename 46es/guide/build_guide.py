@@ -66,13 +66,12 @@ def run(cmd, timeout=900):
 
 # ---------------------------------------------------------------- model data
 def model_eval(cli, model, model_sha):
-    CACHE.mkdir(exist_ok=True)
-    out = CACHE / f"eval-{model_sha[:16]}.json"
-    if not out.exists():
-        tmp = CACHE / f"eval-{model_sha[:16]}.tmp.json"
-        run([cli, "eval", "--in", model, "--json-out", tmp])
-        tmp.replace(out)
-    return json.loads(out.read_text(encoding="utf-8"))
+    """The shared evaluation cache (tools/cad_eval_cache.py, 46es/.cache/eval), keyed by the model bytes."""
+    from cad_eval_cache import evaluation
+    data, path = evaluation(model, cli)
+    if not path.name.startswith(model_sha[:16]):
+        die(f"{model} changed while the guide was built")
+    return data
 
 
 def expand(items, names, groups, where):

@@ -101,7 +101,7 @@ def export(parts, order, sources, out, scratch):
         write_json(command_path, script, indent=None)
         subprocess.run([str(CLI), 'run', str(command_path), '--in', str(source), '--quiet'], check=True)
         ev_path = raw / (source.stem + '_eval.json')
-        evaluated, _ = evaluation(source, ROOT / 'guide/.cache/v5', CLI)
+        evaluated, _ = evaluation(source, CLI)
         write_json(ev_path, evaluated, indent=None)
         errors = [f['name'] for f in evaluated['timeline'] if f.get('error')]
         if errors:
@@ -116,14 +116,14 @@ def export(parts, order, sources, out, scratch):
         raw_path = raw / f'{part}.stl'
         raw_mesh = check(str(raw_path))
         if len(raw_mesh['components']) != 1 or raw_mesh['bad_edge_count'] != 0:
-            diagnostics = ROOT / 'guide/.cache/v5/print_diagnostics'
+            diagnostics = CACHE / 'print_diagnostics'
             diagnostics.mkdir(parents=True, exist_ok=True)
             copyfile(raw_path, diagnostics / f'{part}_raw.stl')
             raise AssertionError((part, 'SolidCraft raw STL', len(raw_mesh['components']), raw_mesh['bad_edge_count']))
         orient(str(raw_path), str(stl), flip)
         m = check(str(stl))
         if len(m['components']) != 1 or m['bad_edge_count'] != 0:
-            diagnostics = ROOT / 'guide/.cache/v5/print_diagnostics'
+            diagnostics = CACHE / 'print_diagnostics'
             diagnostics.mkdir(parents=True, exist_ok=True)
             copyfile(raw_path, diagnostics / f'{part}_raw.stl')
             copyfile(stl, diagnostics / f'{part}_oriented.stl')

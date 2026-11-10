@@ -11,9 +11,10 @@ reference-only switch envelopes and Wilmore housing are suppressed in the produc
 Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
 Run from the repository root with python 46es/tools/build_seam_v5.py.
-  --probe   build into guide/.cache/v5 without replacing the current CAD
-  --mounts  build only the four mounts into guide/.cache/v5/mounts_v5.sc from a
+  --probe   build into .cache/v5 without replacing the current CAD
+  --mounts  build only the four mounts into .cache/v5/mounts_v5.sc from a
             parameter-only document and check their sections (seconds, for mount iteration)
+  --ctrl    build only the brackets B, A, C into .cache/v5/ctrl_v5.sc and check volumes and keep-outs
   --refresh-record  after an edit that must not change the model: probe-build, require the
             committed CAD's document and bodies to be reproduced exactly, update only
             model/seam_v5_build.json (the CAD bytes, and every record tied to them, stay)
@@ -35,6 +36,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
+from cad_eval_cache import seed as seed_evaluation
 from common import ROOT, CLI, sha, fingerprints, write_json
 
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
@@ -43,8 +45,9 @@ OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 # parameter-only model of their own (plan 3-3, user 2026-11-10) instead of the production timeline.
 TRIALS_OUTPUT = ROOT / 'model/ctrl_trials_v5.sc'
 PARAMETERS_CSV = ROOT / 'model/parameters_seam_v5.csv'
-CACHE = ROOT / 'guide/.cache/v5'
+CACHE = ROOT / '.cache/v5'          # build scratch (seeds, pending models, reports); not tracked
 MOUNTS_ONLY = CACHE / 'mounts_v5.sc'
+CTRL_ONLY = CACHE / 'ctrl_v5.sc'
 KEY_MARGIN = 1.0
 LEGMAG_SKIN_MIN = 1.3
 CAP_1U = 18.05
@@ -420,16 +423,19 @@ def write_seed(doc, container, path):
 
 
 def evaluate(seed, pending):
-    """run + eval through the CLI; returns the evaluation and the wall time of the run."""
+    """Evaluate the seed, save it as `pending` and measure it in one CLI call (plan 3-1: a separate run --save
+    and eval opened and evaluated the model twice). file.save_as names the document after the file stem, as
+    run --save did. Returns the measurement and the wall time of the call."""
     started = time.perf_counter()
-    run('run', '--in', seed, '--save', pending, '--quiet')
-    elapsed = time.perf_counter() - started
+    script = pending.with_name(f'save_{pending.stem}.json')
+    write_json(script, [dict(command='file.save_as', params=dict(path=str(pending)))], indent=None)
     report = pending.with_name(f'eval_{pending.stem}.json')
-    run('eval', '--in', pending, '--json-out', report)
+    run('eval', script, '--in', seed, '--json-out', report)
+    elapsed = time.perf_counter() - started
     evaluated = json.loads(report.read_text(encoding='utf-8'))
     failed = [f for f in evaluated['timeline'] if f.get('error')]
     assert not failed, failed
-    (CACHE / f'eval_{pending.stem}_{sha(pending)[:16]}.json').write_bytes(report.read_bytes())
+    seed_evaluation(pending, report)      # later stages read it by the saved bytes (cad_eval_cache)
     return evaluated, elapsed
 
 
@@ -863,6 +869,36 @@ def trials_document():
     return doc, container
 
 
+def build_ctrl():
+    """Fast loop for bracket work (plan 3-2): the production bracket B and the snap trials A/C alone, from a
+    parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates.
+    A covers-only build is not offered: the covers come from the v4 timeline (plan 4-5)."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    doc, container = trials_document()
+    doc['name'] = '46es v5 snap brackets B, A, C only - bracket check'
+    feature, sketch = helpers(doc)
+    ctrl_v5.emit(feature, sketch, plate=None, references=False)
+    designs = {ctrl_v5.BODY: ctrl_v5.bracket(), **{n: ctrl_v5.bracket(**s) for n, s in ctrl_v5.TRIALS.items()}}
+    keep_outs = {name: ctrl_v5.check(design) for name, design in designs.items()}
+    seed = CACHE / 'seed_ctrl_v5.sc'
+    write_seed(doc, container, seed)
+    evaluated, elapsed = evaluate(seed, CTRL_ONLY)
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    assert set(bodies) == set(designs), sorted(bodies)
+    report = {}
+    for name, design in designs.items():
+        b, expected = bodies[name], ctrl_v5.expected_volume(design)
+        rel = abs(b['volume_mm3'] - expected) / expected
+        assert b['closed'] and rel < 0.015, (name, b['closed'], b['volume_mm3'], expected)
+        report[name] = dict(volume_mm3=round(b['volume_mm3'], 3), estimate_mm3=round(expected, 3),
+                            rel_error=round(rel, 5), bbox=b['bbox'])
+    info = dict(model=str(CTRL_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
+                bodies=report, keep_outs=keep_outs)
+    write_json(CACHE / 'ctrl_v5.json', info)
+    print(json.dumps(info, ensure_ascii=False, indent=1))
+    return info
+
+
 def build_mounts():
     """Fast loop for mount work: the four mounts alone, from a parameter-only copy of the v4 document."""
     sys.path.insert(0, str(ROOT / 'inspection/scripts'))
@@ -905,14 +941,18 @@ def build_mounts():
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--probe', action='store_true', help='build into guide/.cache/v5/v5.sc only and print the checks')
-    ap.add_argument('--mounts', action='store_true', help='build and check only the four mounts (guide/.cache/v5/mounts_v5.sc)')
+    ap.add_argument('--probe', action='store_true', help='build into .cache/v5/v5.sc only and print the checks')
+    ap.add_argument('--mounts', action='store_true', help='build and check only the four mounts (.cache/v5/mounts_v5.sc)')
     ap.add_argument('--refresh-record', action='store_true',
                     help='after a refactor: probe-build, require the committed CAD to be reproduced exactly, '
                          'and update model/seam_v5_build.json without replacing the CAD')
+    ap.add_argument('--ctrl', action='store_true',
+                    help='build and check only the brackets B, A, C (.cache/v5/ctrl_v5.sc)')
     a = ap.parse_args()
     if a.mounts:
         build_mounts()
+    elif a.ctrl:
+        build_ctrl()
     elif a.refresh_record:
         refresh_record()
     else:
