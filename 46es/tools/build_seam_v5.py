@@ -12,6 +12,9 @@ Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into guide/.cache/v5 without replacing the current CAD
   --mounts  build only the four mounts into guide/.cache/v5/mounts_v5.sc from a
             parameter-only document and check their sections (seconds, for mount iteration)
+  --refresh-record  after an edit that must not change the model: probe-build, require the
+            committed CAD's document and bodies to be reproduced exactly, update only
+            model/seam_v5_build.json (the CAD bytes, and every record tied to them, stay)
 """
 # SOURCE OF TRUTH - Edit this file. Do NOT hand-edit generated .sc files.
 # Regenerate outputs with: python tools/build_seam_v5.py (and export scripts as needed)
@@ -32,9 +35,8 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
+from common import ROOT, CLI, sha, write_json
 
-ROOT = Path(__file__).resolve().parents[1]
-CLI = Path('C:/Program Files/SolidCraft/solidcraft-cli.exe')
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/v5'
@@ -87,10 +89,6 @@ REFERENCE_FEATURES = {7: 'HOUSING_OUTER_REF_WIL', 8: 'HOUSING_CAVITY_TBD', 10: '
                       11: 'HOUSING_USB_CUT_TBD', 242: 'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED',
                       243: 'REF_SWITCH_LATCH_BOUND_ASSUMED', 244: 'REF_SWITCH_UPPER_BOUND_ASSUMED'}
 REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01', 'CTRL_GATE_SPLIT_V1', 'REF_M2_GATE', 'REF_M2_GATE_NUT'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}
-
-
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 # ------------------------------------------------------------------------------------ build record
@@ -805,13 +803,31 @@ def build(probe=False):
         info['output_sha'] = sha(OUTPUT)
         record = build_record()
         record['output_sha'] = info['output_sha']
-        with BUILD_RECORD.open('w', encoding='utf-8', newline='\n') as f:
-            json.dump(record, f, indent=1, sort_keys=True)
-            f.write('\n')
-    (CACHE / ('probe_v5.json' if probe else 'build_v5.json')).write_text(
-        json.dumps(info, indent=1, ensure_ascii=False), encoding='utf-8')
+        write_json(BUILD_RECORD, record, sort_keys=True)
+    write_json(CACHE / ('probe_v5.json' if probe else 'build_v5.json'), info)
     print(json.dumps(info, ensure_ascii=False, indent=1))
     return info
+
+
+def refresh_record():
+    """Record new input fingerprints for an edit that must not change the model (refactor, shared helper),
+    without replacing the CAD. Rebuilding would give the same model in different zip bytes and make every
+    record tied to the CAD file hash stale (order 1/2 source_sha256, verification, review model, renders).
+    A probe build has to reproduce the committed document and every body's BRep exactly; otherwise regenerate."""
+    build(probe=True)
+    sys.path.insert(0, str(ROOT / 'inspection/scripts'))
+    from cad_model import document, live_shapes
+    probe = CACHE / 'v5.sc'
+    committed, rebuilt = document(OUTPUT), document(probe)
+    differ = [key for key in committed.keys() | rebuilt.keys() if committed.get(key) != rebuilt.get(key)]
+    assert not differ, f'probe document differs from the committed CAD in {sorted(differ)}: run without --refresh-record'
+    a, b = live_shapes(OUTPUT), live_shapes(probe)
+    bodies = sorted(n for n in a.keys() | b.keys() if a.get(n) != b.get(n))
+    assert not bodies, f'probe bodies differ from the committed CAD: {bodies}: run without --refresh-record'
+    record = build_record()
+    record['output_sha'] = sha(OUTPUT)
+    write_json(BUILD_RECORD, record, sort_keys=True)
+    print(f'build record refreshed: {len(a)} bodies identical, {OUTPUT.name} kept')
 
 
 def build_mounts():
@@ -838,7 +854,7 @@ def build_mounts():
     stl_dir.mkdir(exist_ok=True)
     script = [dict(command='file.export_stl', params=dict(path=str(stl_dir / f'{suffix}.stl'), bodies=[p['mount']], quality='fine'))
               for suffix, p in mounts.items()]
-    (CACHE / 'mounts_export.json').write_text(json.dumps(script), encoding='utf-8')
+    write_json(CACHE / 'mounts_export.json', script, indent=None)
     run('run', str(CACHE / 'mounts_export.json'), '--in', MOUNTS_ONLY, '--quiet')
     sections = {}
     for suffix, p in mounts.items():
@@ -848,7 +864,7 @@ def build_mounts():
     info = dict(model=str(MOUNTS_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])), warnings=warnings,
                 bodies=report, sections=sections, sections_ok=ok)
-    (CACHE / 'mounts_v5.json').write_text(json.dumps(info, indent=1, ensure_ascii=False), encoding='utf-8')
+    write_json(CACHE / 'mounts_v5.json', info)
     print(json.dumps(info, ensure_ascii=False, indent=1))
     assert ok, 'mount sections differ from the drawing'
     return info
@@ -858,5 +874,13 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--probe', action='store_true', help='build into guide/.cache/v5/v5.sc only and print the checks')
     ap.add_argument('--mounts', action='store_true', help='build and check only the four mounts (guide/.cache/v5/mounts_v5.sc)')
+    ap.add_argument('--refresh-record', action='store_true',
+                    help='after a refactor: probe-build, require the committed CAD to be reproduced exactly, '
+                         'and update model/seam_v5_build.json without replacing the CAD')
     a = ap.parse_args()
-    build_mounts() if a.mounts else build(probe=a.probe)
+    if a.mounts:
+        build_mounts()
+    elif a.refresh_record:
+        refresh_record()
+    else:
+        build(probe=a.probe)

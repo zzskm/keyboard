@@ -1,0 +1,6 @@
+# Python packages for the 46es tools (CI and local). SolidCraft CLI and, for the guide browser checks,
+# Playwright are installed separately (AGENTS.md §10). Versions as used on 2026-11-10.
+numpy==2.5.3
+scipy==1.18.1
+shapely==2.2.0
+ezdxf==1.4.5

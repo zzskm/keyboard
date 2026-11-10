@@ -11,7 +11,6 @@ Use --trial to export the four mounts, four test coupons and the three snap brac
 Both order sets record the source CAD hash for every part.
 """
 import argparse
-import hashlib
 import json
 from pathlib import Path
 from shutil import copyfile
@@ -19,14 +18,12 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'tools'))
+from common import ROOT, CLI, sha, write_json
 sys.path.insert(0, str(ROOT / 'inspection/scripts'))
 from orient_print_stl import orient  # noqa: E402
 from check_stl import check  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 
-CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / '.cache/print_v5'
 # file stem -> (body, material, flip about X for printing); all order-2 parts print top face down (print_v5 README)
@@ -55,10 +52,6 @@ TRIAL_PARTS = {
 }
 SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
 MJF_MAX = (370.0, 276.0, 360.0)
-
-
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main():
@@ -95,18 +88,18 @@ def export(parts, order, sources, out, scratch):
             script.append(dict(command='file.export_stl', params=dict(path=str(raw / f'{part}.stl'), bodies=[body], quality='fine')))
             script.append(dict(command='file.export_step', params=dict(path=str(scratch / f'46es_v5_{part}.step'), bodies=[body])))
         command_path = raw / (source.stem + '_export.json')
-        command_path.write_text(json.dumps(script), encoding='utf-8')
-        subprocess.run([CLI, 'run', str(command_path), '--in', str(source), '--quiet'], check=True)
+        write_json(command_path, script, indent=None)
+        subprocess.run([str(CLI), 'run', str(command_path), '--in', str(source), '--quiet'], check=True)
         ev_path = raw / (source.stem + '_eval.json')
         evaluated, _ = evaluation(source, ROOT / 'guide/.cache/v5', CLI)
-        ev_path.write_text(json.dumps(evaluated), encoding='utf-8')
+        write_json(ev_path, evaluated, indent=None)
         errors = [f['name'] for f in evaluated['timeline'] if f.get('error')]
         if errors:
             raise ValueError(f'{source.name}: timeline errors: {errors}')
         bodies.update({b['name']: b for b in evaluated['bodies']})
     # Both source models use assembly coordinates; combine their non-overlapping body names for mapping.
     ev_path = raw / 'eval.json'
-    ev_path.write_text(json.dumps({'bodies': list(bodies.values())}), encoding='utf-8')
+    write_json(ev_path, {'bodies': list(bodies.values())}, indent=None)
     records = []
     for part, (body, material, flip) in parts.items():
         stl = scratch / f'46es_v5_{part}.stl'
@@ -140,7 +133,7 @@ def export(parts, order, sources, out, scratch):
     for row in records:
         row['source_sha256'] = input_hashes[body_sources[row['body']]]
     record_path = scratch / ('seam-v5-trial-print-set.json' if trial else 'seam-v5-print-set.json')
-    record_path.write_text(json.dumps(records, indent=1, ensure_ascii=False), encoding='utf-8', newline='\n')
+    write_json(record_path, records)
     thin = scratch / ('seam-v5-trial-thin-wall.json' if trial else 'seam-v5-mjf-thin-wall.json')
     subprocess.run([sys.executable, '-I', str(ROOT / 'inspection/scripts/thin_wall_scan.py'), '--limit', '1.0', '--warn', '1.5',
                     '--json', str(thin), '--map', str(record_path), str(ev_path),

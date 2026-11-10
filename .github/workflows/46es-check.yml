@@ -15,6 +15,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      # check_repository.py imports the CAD generator and verifier (numpy/scipy/shapely/ezdxf).
-      - run: python -m pip install --quiet numpy scipy shapely ezdxf
+          cache: pip
+          cache-dependency-path: 46es/requirements.txt
+      # check_repository.py and smoke_test.py import the CAD generator and verifier (numpy/scipy/shapely/ezdxf).
+      - run: python -m pip install --quiet -r 46es/requirements.txt
       - run: python -B 46es/tools/check_repository.py
+      # Generator geometry without SolidCraft: mount profiles, bracket keep-outs, cover window vs committed records.
+      - run: python -B 46es/tools/smoke_test.py

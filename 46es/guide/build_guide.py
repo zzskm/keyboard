@@ -36,7 +36,8 @@ import diagrams
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
-DEFAULT_CLI = Path(r"C:\Program Files\SolidCraft\solidcraft-cli.exe")
+sys.path.insert(0, str(HERE.parent / "tools"))
+from common import CLI as DEFAULT_CLI  # noqa: E402  (SOLIDCRAFT_CLI or the default install path)
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600'

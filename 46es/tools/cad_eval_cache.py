@@ -1,15 +1,12 @@
 """Cache SolidCraft CLI evaluations by the exact source CAD bytes."""
-import hashlib
 import json
 import subprocess
 from pathlib import Path
 
-
-def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+from common import CLI, sha
 
 
-def evaluation(source, cache_dir, cli):
+def evaluation(source, cache_dir, cli=CLI):
     source = Path(source)
     cache_dir = Path(cache_dir)
     cache_dir.mkdir(parents=True, exist_ok=True)

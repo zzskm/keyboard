@@ -4,7 +4,6 @@ Adds the measured PSD60 proxy, switches, keycaps and an illustrative Pro Micro.
 Run from the repository root with python 46es/tools/build_assembly_reference_v5.py.
 """
 import copy
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -15,18 +14,13 @@ import zipfile
 from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT
 import ctrl_v5
 from make_key_dxf import load_keys, rect
+from common import ROOT, CLI, sha, write_json
 
-ROOT = Path(__file__).resolve().parents[1]
-CLI = Path('C:/Program Files/SolidCraft/solidcraft-cli.exe')
 SOURCE = ROOT / 'model/46es_mount_seam_v5.sc'
 OUTPUT = ROOT / 'model/46es_assembly_review_v5.sc'
 CACHE = ROOT / 'guide/.cache/reference_v5'
 MANIFEST = ROOT / 'model/assembly_reference_v5.json'
 MEASUREMENTS = ROOT / 'model/measurements/2026-11-04T111846Z.json'
-
-
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def run(*args):
@@ -358,7 +352,7 @@ def build():
                     skirt_cover_H=values['v5_skirt_cover_H'], cover_top_above_rim=values['v5_cover_top_above_rim'],
                     rim_ref_Z=values['v5_rim_ref_Z'],
                     housing=housing_name, body_count=evaluated['body_count'])
-    MANIFEST.write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+    write_json(MANIFEST, manifest, indent=2)
     print(json.dumps(dict(model=str(OUTPUT), bodies=evaluated['body_count'], keys=len(keys))))
 
 

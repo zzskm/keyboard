@@ -1,5 +1,4 @@
 """Verify cover and controller placement in the v5 assembly reference."""
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -14,7 +13,7 @@ from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X
 import ctrl_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
-CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
+from common import CLI, sha, write_json  # noqa: E402
 MODEL = ROOT / 'model/46es_assembly_review_v5.sc'
 SOURCE = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/reference_v5'
@@ -28,10 +27,6 @@ TARGET = 1.0            # keycap <-> cover (rest and pressed)
 TARGET_CASE = 2.6       # keycap <-> case inner wall (plan §4)
 TARGET_PLATE = 0.25     # pressed 4 mm keycap bottom <-> plate top (expected 0.3 = seat + 6.0 - 4 - 13 + ...)
 TOL = 1e-4
-
-
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def per_key(result, bodies_from, suffix=''):
@@ -150,7 +145,7 @@ def main():
     # Mounts on the bosses (touching is reported as a near pair at distance 0; overlaps fail mount_fit above).
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=BOSSES, clearance=1.0, min_volume=0.000001)))
-    (CACHE / 'keycap_check.json').write_text(json.dumps(script), encoding='utf-8')
+    write_json(CACHE / 'keycap_check.json', script, indent=None)
     out = CACHE / 'keycap_check_out.json'
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
@@ -264,8 +259,7 @@ def main():
                   centred_gap_each_side_mm=round((params['REF_PSD_in_W'] - design['in_W_min']) / 2, 3),
                   depth_gap_each_side_mm=round((params['REF_PSD_in_D'] - design['in_D_min']) / 2, 3)),
     )
-    (ROOT / 'inspection/data/assembly-reference-v5-verification.json').write_text(
-        json.dumps(result, indent=2, ensure_ascii=False), encoding='utf-8')
+    write_json(ROOT / 'inspection/data/assembly-reference-v5-verification.json', result, indent=2)
     print(json.dumps(result, indent=1, ensure_ascii=False))
 
 

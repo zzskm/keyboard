@@ -3,7 +3,7 @@
 Run with python -B 46es/inspection/scripts/verify_seam_v5.py.
 Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
 """
-import csv, hashlib, json, math, subprocess, sys
+import csv, json, math, subprocess, sys
 from pathlib import Path
 
 from shapely.geometry import LineString, Point
@@ -16,10 +16,10 @@ from make_key_dxf import load_keys, rect  # noqa: E402
 from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, REAR_BOSS_X, REAR_FEET,  # noqa: E402
                            horizontal_faces, top_levels, ctrl_params, rear_foot_volume, cover_windows)
 import ctrl_v5  # noqa: E402
+from common import CLI, sha, write_json  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 
-CLI = 'C:/Program Files/SolidCraft/solidcraft-cli.exe'
 V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
 FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
@@ -50,14 +50,10 @@ COUPON_L_GATE_RELIEF_MM3 = ((120.7 - 118.0) * 7.4 * 2.0          # gate relief p
 CACHE = ROOT / 'guide/.cache/v5'
 
 
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def cli_results(script, model, name):
     path = CACHE / f'{name}.json'
     out = CACHE / f'{name}_out.json'
-    path.write_text(json.dumps(script), encoding='utf-8')
+    write_json(path, script, indent=None)
     subprocess.run([CLI, 'run', str(path), '--in', str(model), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
     return json.loads(out.read_text(encoding='utf-8'))
@@ -534,7 +530,7 @@ def main():
         clearance[key].update(merged)
     sections = [all_results[section_start+offset] for offset in section_offsets]
     clearance['mount_screw_interface'] = verify_mount_screw_interface(sections)
-    (ROOT / 'inspection/data/seam-v5-clearance.json').write_text(json.dumps(clearance, indent=1), encoding='utf-8')
+    write_json(ROOT / 'inspection/data/seam-v5-clearance.json', clearance)
 
     print_set = check_print_set(bodies, v4_bodies)
 
@@ -569,14 +565,13 @@ def main():
                   derived_same_volume_box=sorted(DERIVED), plate_delta_from_flat_Z18=plate_delta,
                   plate_L_delta_from_flat_Z18_mm3=round(plate_l_delta, 3), rear_foot_bottom_Z=foot_bottom,
                   changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
-                  params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in CHANGED_PARAMS},
+                  params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in sorted(CHANGED_PARAMS)},
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
                   plate_supports=seats, mounts=verify_mounts(bodies), removed=sorted(REMOVED),
                   leg_magnets=walls,
                   clearance=clearance_summary, mount_screw_interface=clearance['mount_screw_interface'],
                   plate_files_unchanged=exports.get('plate_files_unchanged_since_previous_export'), parts=parts)
-    (ROOT / 'inspection/data/seam-v5-verification.json').write_text(json.dumps(result, indent=1, ensure_ascii=False),
-                                                                    encoding='utf-8')
+    write_json(ROOT / 'inspection/data/seam-v5-verification.json', result)
     print(json.dumps(result, indent=1, ensure_ascii=False))
 
 

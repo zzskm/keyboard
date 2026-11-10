@@ -5,7 +5,6 @@ The CAD kernel, fresh thin-wall scans and the browser are separate checks.
 """
 import ast
 import csv
-import hashlib
 import json
 import re
 import subprocess
@@ -19,15 +18,12 @@ sys.path.insert(0, str(ROOT / 'guide'))
 from cad_model import document, live_shapes
 from check_stl import check
 from build_guide import expand
+from common import sha
 
 
 def require(condition, message):
     if not condition:
         raise ValueError(message)
-
-
-def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def read(path):
