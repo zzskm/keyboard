@@ -26,7 +26,7 @@ from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
-from parts_v5 import ORDERS, by_file, mount_part  # noqa: E402
+from parts_v5 import ORDERS, WALL_SCAN, by_file, mount_part  # noqa: E402
 
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
 TRIALS = ROOT / 'model/ctrl_trials_v5.sc'
@@ -58,9 +58,14 @@ def snapshot(evaluated, model):
 
 
 def baseline_now(ev, trials_ev, params):
+    """params: the design parameters' expressions; values: what they evaluate to, so a value that changes through
+    another parameter (cover thickness, keycap rest Z) shows in the differences too."""
+    unit = lambda p: math.degrees(p['value']) if p['unit'] == 'deg' else p['value']     # as the CSV shows them
+    values = {p['name']: round(unit(p), 6) for p in ev['params'] if p['name'] in params and p.get('value') is not None}
     return dict(about='Expected v5 state: verify_seam_v5.py fails on any difference; --accept rewrites this file and '
                       'prints the differences for the commit message. check_repository.py compares the fingerprints.',
-                bodies=snapshot(ev, V5), trials=snapshot(trials_ev, TRIALS), params=dict(sorted(params.items())))
+                bodies=snapshot(ev, V5), trials=snapshot(trials_ev, TRIALS), params=dict(sorted(params.items())),
+                values=dict(sorted(values.items())))
 
 
 def baseline_diff(old, new):
@@ -75,10 +80,11 @@ def baseline_diff(old, new):
                 dv = round(b[n]['volume_mm3'] - a[n]['volume_mm3'], 3)
                 box = '' if a[n]['bbox'] == b[n]['bbox'] else f', box {a[n]["bbox"]} -> {b[n]["bbox"]}'
                 out.append(f'{section}: changed {n}: volume {a[n]["volume_mm3"]} -> {b[n]["volume_mm3"]} mm3 ({dv:+}){box}')
-    a, b = old.get('params', {}), new['params']
-    out += [f'param added {n} = {b[n]}' for n in sorted(set(b) - set(a))]
-    out += [f'param removed {n} (was {a[n]})' for n in sorted(set(a) - set(b))]
-    out += [f'param {n}: {a[n]} -> {b[n]}' for n in sorted(set(a) & set(b)) if a[n] != b[n]]
+    for section, label in (('params', 'param'), ('values', 'value')):
+        a, b = old.get(section, {}), new[section]
+        out += [f'{label} added {n} = {b[n]}' for n in sorted(set(b) - set(a))]
+        out += [f'{label} removed {n} (was {a[n]})' for n in sorted(set(a) - set(b))]
+        out += [f'{label} {n}: {a[n]} -> {b[n]}' for n in sorted(set(a) & set(b)) if a[n] != b[n]]
     return out
 
 
@@ -477,9 +483,7 @@ def main(accept=False):
     for n in covers:
         lo, hi = bodies[n]['bbox']['min'][2], bodies[n]['bbox']['max'][2]
         assert abs(hi - cover_hi) < 1e-6 and abs(lo - cover_lo) < 1e-6, n
-    assert abs(params['TBD_cover_T'] - 6) < 1e-9 and abs(params['v5_cover_top_Z'] - 19) < 1e-9
-    assert abs(params['v5_legmag_skin'] - 3.9) < 1e-9
-    assert abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
+    # current values (cover T 6, top Z 19, skin 3.9, keycap rest Z 17.3) are pinned by the baseline's `values`
     walls = leg_magnet_walls(params)
     foot_bottom = params['v5_rear_boss_top_Z'] + params['v5_rear_foot_gap']
     for plate in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):
@@ -529,7 +533,7 @@ def main(accept=False):
         p = by_body[body]
         wall = walls_by_file[p['file']]['wall_min_mm']
         if body in COVERS:
-            assert wall is None or wall >= 1.0 - 1e-3, (p['file'], wall)
+            assert wall is None or wall >= WALL_SCAN['limit'] - 1e-3, (p['file'], wall)
         parts.append(dict(file=p['file'], material=p['material'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 2),
                           wall_min_mm=wall, stl_volume_rel_err=walls_by_file[p['file']]['rel']))
     clearance_summary = {k: dict(overlaps=len(clearance[k]['overlaps']), contacts=len(clearance[k]['contacts']),

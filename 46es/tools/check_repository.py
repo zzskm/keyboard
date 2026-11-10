@@ -77,11 +77,17 @@ def model_checks():
     doc = document(V5)
     params = {p['name']: p['expr'] for p in doc['params'] if not p['model']}
     with (ROOT / 'model/parameters_seam_v5.csv').open(encoding='utf-8-sig') as f:
-        rows = {r['name']: r['expression'] for r in csv.DictReader(f)}
+        table = list(csv.DictReader(f))
+    rows = {r['name']: r['expression'] for r in table}
     require(params == rows, 'current parameter CSV differs from CAD')
-    # The v5 baseline (verify_seam_v5.py --accept) holds every body's shape fingerprint and every design parameter.
+    # The v5 baseline (verify_seam_v5.py --accept) holds every body's shape fingerprint and every design parameter
+    # with its value; the CSV's value column (written by the build from the evaluated model) must agree.
     baseline = read(BASELINE)
     require(params == baseline['params'], 'CAD parameters differ from inspection/data/seam-v5-baseline.json')
+    values = {r['name']: float(r['value']) for r in table if r['value'] not in ('', None)}
+    differ = sorted(n for n, v in values.items() if n in baseline['values'] and abs(v - baseline['values'][n]) > 1e-4)
+    require(set(values) == set(baseline['values']) and not differ,
+            f'parameter values differ from the v5 baseline: {differ or sorted(set(values) ^ set(baseline["values"]))}')
     current, trials = live_shapes(V5), live_shapes(TRIALS)
     for shapes, expected in ((current, baseline['bodies']), (trials, baseline['trials'])):
         require(set(shapes) == set(expected), f'CAD body set differs from the v5 baseline: {sorted(set(shapes) ^ set(expected))}')

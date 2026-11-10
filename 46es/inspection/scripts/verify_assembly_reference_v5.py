@@ -59,18 +59,18 @@ def main():
         selected = [b for n, b in bodies.items() if n.startswith(prefix)]
         assert len(selected) == count and all(b['closed'] for b in selected), prefix
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}
-    # measured reference kept exactly as in the v4 review model
+    # PSD60 case as measured (a bought part: these never follow a design change)
     for name, value in [('in_W', 286), ('in_D', 96), ('support_H', 5.5), ('rim_F', 14), ('rim_B', 14),
                         ('out_W', 320), ('out_D', 115), ('post_D', 5)]:
         assert abs(params['REF_PSD_' + name] - value) < 1e-6, name
     case = bodies[HOUSING]['bbox']
     rim = case['max'][2]
-    assert abs(rim - 14) < 1e-6
+    assert abs(rim - params['REF_PSD_rim_F']) < 1e-6
     # Confirm all three cover top faces share the same plane.
     cover_top = max(bodies[n]['bbox']['max'][2] for n in COVERS)
     assert all(abs(bodies[n]['bbox']['max'][2] - cover_top) < 1e-6 for n in COVERS)
     protrusion = cover_top - rim
-    assert abs(protrusion - params['v5_cover_top_above_rim']) < 1e-6 and abs(protrusion - 5.0) < 1e-6, protrusion
+    assert abs(protrusion - params['v5_cover_top_above_rim']) < 1e-6, protrusion
     levels = top_levels(MODEL)
     for n, lv in levels.items():
         assert set(lv) == {round(cover_top, 4)}, (n, lv)

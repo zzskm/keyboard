@@ -34,7 +34,7 @@
   },
   "ok": true,
   "inputs": {
-    "inspection/scripts/verify_assembly_reference_v5.py": "ast:c9c125c2dcafb13daf3c10806e85994e1aed017aebedb24c6f204c4beab31ba4",
+    "inspection/scripts/verify_assembly_reference_v5.py": "ast:5881e8571c18ff83db65b321d48ccb22bec00c48692688e2afe2314a52b1354b",
     "model/46es_assembly_review_v5.sc": "76a3da2aa00df733e54f595f699db6212d24e02cd4a171ddba279ef5363da652",
     "model/assembly_reference_v5.json": "22ea00422af853cda931f0ee3ca3d61bdc0443e4dd0c6ebd848d3394705f4fa6",
     "model/46es_mount_seam_v5.sc": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",

@@ -1,18 +1,18 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:1d548862d5b033c42921d81ad7ff12239155e5247e52004fc052fc5c7d155c62",
+  "inspection/scripts/verify_seam_v5.py": "ast:54a5dd8dec8ad448a3585570c943d52da54bceab85afb3d1b2a5425708fef366",
   "tools/parts_v5.py": "ast:6cbed26e08be7fc00cba1b4dc7406dbbf0a97354b017593260f853c2ac86ba7f",
   "model/46es_mount_seam_v5.sc": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
   "model/ctrl_trials_v5.sc": "a8884127ff14a8f2b53f9d92de22e8d91be9683dc85c6f59737045721463f61d",
   "model/parameters_seam_v5.csv": "3fe40cec28dd18f089b8b3f95dba8701f043d490eb3d8e4168a8ca5fbe31cd7d",
-  "inspection/data/seam-v5-baseline.json": "e9adda8b967df2d8390a534876be56e9ab7cd0ae098865ec5c3606c028d69114",
+  "inspection/data/seam-v5-baseline.json": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
   "inspection/data/seam-v5-print-set.json": "484811d98e87e97cd3227d06b1a9ddd11d63a2b493d733a528fa4c0f5826ceca",
   "inspection/data/seam-v5-mjf-thin-wall.json": "0ca9db04442c2fb26c7a252f267eb2d3fa87f45de12ffc763ac25384e99860b9",
   "inspection/data/seam-v5-trial-print-set.json": "a6d3cb1954c3e22dab8ab0ee4cdadcb53b6e92e1cdb8e23d98e54abff6d85cef"
  },
  "v5_sha": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
- "baseline_sha": "e9adda8b967df2d8390a534876be56e9ab7cd0ae098865ec5c3606c028d69114",
+ "baseline_sha": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
  "baseline_bodies": 67,
  "print_set": [
   {
