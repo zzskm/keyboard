@@ -6,11 +6,11 @@
 
 | 변경 | 최소 확인 | 비고 |
 |---|---|---|
-| 문서/링크 | `python -B 46es/tools/check_repository.py`; stage 후 `update_manifest.py --check` | CAD/실물 불필요 |
-| 정적 검사/manifest 로직 | 위 + 관련 동작 확인 | CAD 재생성 불필요 |
+| 문서/링크 | `python -B 46es/tools/check_repository.py` | CAD/실물 불필요 |
+| 정적 검사 로직 | 위 + 관련 동작 확인 | CAD 재생성 불필요 |
 | v5 형상/생성기/샘플 원본 | 현행 CAD·제작 세트 갱신 및 형상 검사. 조립 모델에 영향이 있으면 검토 CAD 갱신 후 가이드 시각 검토 | SolidCraft/NumPy/SciPy. 실물 별도 |
 | 가이드 spec/3D/자산 | [시각 검토](../guide/README.md#시각-검토)로 변경 단계 확인. 화면·조작이 바뀌면 데스크톱·모바일 브라우저 검사도 수행 | Playwright 필요 |
-| 출력물/주문 세트 | STL 연결성·모서리·부피/경계/방향/해시, 제작 안내·manifest | 업체 출력 품질 별도 |
+| 출력물/주문 세트 | STL 연결성·모서리·부피/경계/방향/해시, 제작 안내 | 업체 출력 품질 별도 |
 | 실물 시험 | 아래 목록 기록, 통과/수정/보류 | CAD와 별개 |
 
 미실행은 `미실행`, 실물은 `실물 확인 대기`로 표기. 과거 `ok` JSON 재사용 금지.
@@ -102,11 +102,10 @@ python 46es/guide/build_guide.py
 
 ```sh
 python -B 46es/tools/check_repository.py
-python -I 46es/tools/update_manifest.py --check
 ```
 
-첫 명령은 현행 경로·문서 링크·가이드 부품 참조·CAD/CSV·입출력 해시·시험/본 출력 STL의 연결성·모서리·부피·기록을 검사한다. SolidCraft의 재평가·간섭 계산이나 브라우저 조작을 대신하지 않는다. 가이드 브라우저 검사는 [가이드 안내](../guide/README.md)를 따른다.
+현행 경로·문서 링크·가이드 부품 참조·CAD/CSV·입출력 해시·시험/본 출력 STL의 연결성·모서리·부피·기록을 검사한다. SolidCraft의 재평가·간섭 계산이나 브라우저 조작을 대신하지 않는다. 가이드 브라우저 검사는 [가이드 안내](../guide/README.md)를 따른다.
 
-파일 추가·변경·삭제 뒤 `git add 46es` → `update_manifest.py` → `git add 46es/manifest.json`을 실행한다. CI는 현재 목록·문서·출력물 불일치를 차단한다.
+CI는 이 검사로 현행 경로·문서·출력물 불일치를 차단한다. 추적 파일 목록과 바이트는 git이 관리하므로 별도 목록 파일을 두지 않는다(`manifest.json`은 2026-11-10 폐지).
 
 텍스트는 `.gitattributes`로 LF를 고정한다. 정리 전 조립 메타데이터의 실측 JSON 해시는 Windows CRLF 사본의 값이었다. 원본 관찰값과 CAD는 바꾸지 않고 Git에 저장된 LF 바이트의 해시로 정규화했다.

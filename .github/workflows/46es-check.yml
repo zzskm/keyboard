@@ -17,5 +17,4 @@ jobs:
           python-version: '3.12'
       # check_repository.py imports the CAD generator and verifier (numpy/scipy/shapely/ezdxf).
       - run: python -m pip install --quiet numpy scipy shapely ezdxf
-      - run: python -I 46es/tools/update_manifest.py --check
       - run: python -B 46es/tools/check_repository.py

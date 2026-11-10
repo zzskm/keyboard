@@ -154,12 +154,9 @@ python 46es/tools/build_assembly_reference_v5.py
 python -B 46es/inspection/scripts/verify_assembly_reference_v5.py
 python -B 46es/guide/review_guide.py --steps standoff trial module --views reset iso
 
-# 변경을 검토·stage한 뒤 파일 목록과 체크섬 갱신
+# 변경을 검토·stage한 뒤 정적 검사
 # 아래 git add는 이번 작업의 46es 변경만 있을 때 사용한다.
 git add 46es
-python -I 46es/tools/update_manifest.py
-git add 46es/manifest.json
-python -I 46es/tools/update_manifest.py --check
 python -B 46es/tools/check_repository.py
 git diff --cached --check
 
@@ -167,7 +164,9 @@ git diff --cached --check
 python 46es/guide/publish_guide.py
 ```
 
-다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `check_repository.py`는 의도한 커밋의 추적 파일을 기준으로 검사한다. manifest는 stage된 blob의 바이트를 기록하며 설계 승인서를 뜻하지 않는다. 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다.
+다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `check_repository.py`는 의도한 커밋의 추적 파일을 기준으로 검사한다. 생성 기록의 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다.
+
+이전 결정을 뒤집는 형상 변경은 커밋 제목을 `decision:`으로 시작하고, [결정 이력](docs/design.md#결정-이력)의 커밋 칸에는 해시 대신 그 커밋 제목을 적는다(같은 커밋에서 쓸 수 있어 해시 기입용 후속 커밋이 필요 없다). 조회는 `git log --grep "^decision:" -- 46es`.
 
 Windows에서는 `PYTHONUTF8=1`을 설정하고 실행한다. 설정하지 않으면 cp949 콘솔에서 한글 출력이 실패한다. 텍스트 원본을 스크립트로 고칠 때는 `newline='\n'` 또는 `write_bytes`로 LF를 유지한다. 생성기·검사가 작업 트리 원본의 해시를 기록하므로(예: `generator_sha`), CRLF로 저장한 원본은 커밋된 LF 파일과 해시가 어긋난다.
 

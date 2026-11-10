@@ -23,7 +23,6 @@ CAD 재생성/검증은 [`../docs/validation.md`](../docs/validation.md). CAD �
 
 ```sh
 python -B 46es/tools/check_repository.py
-python -I 46es/tools/update_manifest.py --check
 ```
 
 ## 보존된 원본과 참고 모델

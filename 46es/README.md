@@ -24,12 +24,8 @@
 
 ## 유지/검사
 
-현재 입력·사용 출력물·검증 기준·원본 근거만 유지. 이전 버전은 태그 `46es-pre-cleanup-2026-11-06`([정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)) 참조. 결정을 바꾼 경위는 [design.md 결정 이력](docs/design.md#결정-이력). `manifest.json`은 추적 파일 목록(승인 상태 아님).
+현재 입력·사용 출력물·검증 기준·원본 근거만 유지. 이전 버전은 태그 `46es-pre-cleanup-2026-11-06`([정리 전 Git 이력](https://github.com/zzskm/keyboard/tree/72d3ea1ea8939ef29bc34afd62b5b2a4978f19a6/46es)) 참조. 결정을 바꾼 경위는 [design.md 결정 이력](docs/design.md#결정-이력).
 
 ```sh
-git add 46es
-python -I 46es/tools/update_manifest.py
-git add 46es/manifest.json
-python -I 46es/tools/update_manifest.py --check
 python -B 46es/tools/check_repository.py
 ```
