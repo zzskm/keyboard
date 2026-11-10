@@ -133,7 +133,7 @@ Git 상태에 타 작업자의 변경이 있으면 덮어쓰지 않는다. 병�
 
 발주할 때는 실제로 보낼 STL/STEP, 재료·색·수량, 원본 모델 커밋과 해시를 고정한다. 발주 후 해당 세트의 내용을 몰래 교체하지 않는다. 변경본은 별도 제작 리비전으로 구분하고, 발주본은 Git tag 또는 명시된 커밋에서 재현한다. 단순 검토 모델과 참고 하우징은 발주 세트에 넣지 않는다.
 
-`model/review_v5`는 조립 좌표의 검토 출력물이다. `model/print_v5`는 제작 세트다. 파일명이 비슷하다고 서로 대신 사용하지 않는다. 시험물과 구매 할인 쿠폰도 문서에서 구분한다.
+`model/print_v5`는 제작 세트다(STL은 출력 방향, STEP은 조립 좌표). 조립 검토는 `46es_assembly_review_v5.sc`로 하며 제작 세트를 대신하지 않는다. 별도 검토 내보내기 `model/review_v5`는 2026-11-10에 폐지했다. 시험물과 구매 할인 쿠폰도 문서에서 구분한다.
 
 가이드 소스 수정, HTML 생성, Pages 저장소 반영, 실제 게시 확인은 각각 기록한다. 다른 저장소에 게시되는 가이드를 원본 저장소 커밋만으로 배포 완료라고 보고하지 않는다. 게시는 `guide/publish_guide.py`로 한다(빌드·브라우저 검사·Pages 반영·게시본 확인). 가이드에 영향이 있는 변경을 main에 병합하면 같은 작업에서 게시까지 한다(사용자 결정 2026-11-09). 발주·결제·병합·게시 여부는 요청 범위와 실제 성공 결과를 따른다.
 
@@ -144,7 +144,6 @@ Git 상태에 타 작업자의 변경이 있으면 덮어쓰지 않는다. 병�
 ```sh
 # 형상 변경: 원본 → 검토·제작 출력 → 형상 검사
 python 46es/tools/build_seam_v5.py
-python 46es/tools/export_seam_v5_review.py
 python 46es/tools/export_print_v5.py
 python 46es/tools/export_print_v5.py --trial
 python -B 46es/inspection/scripts/verify_seam_v5.py

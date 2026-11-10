@@ -572,7 +572,7 @@
         {
           "k": "지금 할 일",
           "ol": [
-            "평면 커버, 키캡 여유 1.0 mm 및 보강 mount를 이 페이지와 <code>model/review_v5/</code>에서 확인한다. 주문 2 파일은 <code>model/print_v5/order2/</code>에 내보냄",
+            "평면 커버, 키캡 여유 1.0 mm 및 보강 mount를 이 페이지와 <code>model/46es_assembly_review_v5.sc</code>에서 확인한다. 주문 2 파일은 <code>model/print_v5/order2/</code>에 내보냄",
             "주문 1(시험): B 쿠폰, 보스 탭(투명 레진), 이음 쿠폰 L·R, mount 4개, 스냅 브래킷 B와 시험편 A·C. 파일은 <code>model/print_v5/order1/</code>",
             "구매품: 흑색 탄소강 M3×4 버튼헤드, M3 6 mm 지지대(맞변 5), Ø3×2 자석 10개 + 예비(흑색 코팅이면 좋음), M2 저두 나사·너트, 투명 2액형 에폭시",
             "주문 1 시험 결과를 v5 CAD에 반영(아래 「주문 1 시험」). plate 치수는 이 결과로 주문 2 전에 정한다",

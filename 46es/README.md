@@ -7,7 +7,7 @@
 - **편집 원본:** `tools/build_seam_v5.py`
 - **생성 CAD(직접 편집 금지):** `model/46es_mount_seam_v5.sc` 등
 - **회귀 기준( SOT 아님):** `model/baselines/`
-- **구분:** `model/review_v5/`=조립 검토, `model/print_v5/`=제작 세트
+- **구분:** `model/46es_assembly_review_v5.sc`=조립 검토, `model/print_v5/`=제작 세트(STEP은 조립 좌표)
 
 | 목적 | 문서 |
 |---|---|
