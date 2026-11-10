@@ -5,14 +5,15 @@ three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
 snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The base holds the
-plates, seam coupons and reference hardware; its reference-only switch envelopes and Wilmore housing stay suppressed
-(the review model re-enables the housing). The three cover pieces (tools/cover_v5.py) and the seam spine
-(tools/spine_v5.py) are code since 2026-11-10 and run after the base timeline.
+plates and seam coupons; its reference-only switch envelopes and Wilmore housing stay suppressed (the review
+model re-enables the housing). The three cover pieces (tools/cover_v5.py), the seam spine (tools/spine_v5.py) and
+the reference screws, nuts and magnets (tools/hardware_v5.py) are code since 2026-11-10 and run after the base.
 
 model/seam_v5_base.json is source, one parameter or feature per line. It was cut from the v4 document on 2026-11-10
 (suppressed v4 mount/bracket chains, orphan sketches and dimensions dropped, the fixed v5 edits folded in, every
 body's BRep unchanged); the v4 file is in git history (tag 46es-pre-cleanup-2026-11-09 and earlier). Parts of it
-move into generator code step by step when the shape stays identical (plan 4-5): covers and spine so far.
+move into generator code step by step when the shape stays identical (plan 4-5): covers, spine and reference
+hardware so far; the plates stay (their outlines and openings are the r2 drawing's sketches).
 
 Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
@@ -44,6 +45,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
 import cover_v5
+import hardware_v5
 import spine_v5
 from cad_eval_cache import seed as seed_evaluation
 from export_print_v5 import prebuild, seal_prebuilt
@@ -99,7 +101,7 @@ REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_PO
 # Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
 BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/cover_v5.py',
-                'tools/spine_v5.py', 'tools/make_key_dxf.py',
+                'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
                 'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
@@ -716,13 +718,15 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
 
 
 def emit_code_bodies(doc, feature):
-    """Covers and spine come from code (plan 4-5 step 2): only their own features touch them, so they run after the
-    base timeline with the BRep of the base-era chain. Their sketches stay hidden, as they were in the base."""
+    """Covers, spine and reference hardware come from code (plan 4-5 steps 2-3): only their own features touch them,
+    so they run after the base timeline with the BRep of the base-era chain. Sketch visibility is the base's:
+    cover and spine sketches hidden, the four reference nut sketches shown."""
     first = doc['next_id']
     cover_v5.emit(feature)
     spine_v5.emit(feature)
     doc['visibility']['hidden_sketches'] += [f['id'] for f in doc['features']
                                              if f['id'] >= first and f['type'] == 'sketch']
+    hardware_v5.emit(feature)
 
 
 def build(probe=False):

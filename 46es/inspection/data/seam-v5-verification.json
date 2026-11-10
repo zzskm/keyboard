@@ -3,15 +3,15 @@
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:54a5dd8dec8ad448a3585570c943d52da54bceab85afb3d1b2a5425708fef366",
   "tools/parts_v5.py": "ast:6cbed26e08be7fc00cba1b4dc7406dbbf0a97354b017593260f853c2ac86ba7f",
-  "model/46es_mount_seam_v5.sc": "1bae3188137c837ac640317ff33775996e1a54c7e571cf1946aec35908ee5800",
-  "model/ctrl_trials_v5.sc": "6e85187d87cf7cd59a21f039d42ac2bc34a1d3a05fc3125e1fb168a87d49514d",
+  "model/46es_mount_seam_v5.sc": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "model/ctrl_trials_v5.sc": "a43de8805337c1654497505ed433390d123a9893558cdf146eca0793e03d53da",
   "model/parameters_seam_v5.csv": "3fe40cec28dd18f089b8b3f95dba8701f043d490eb3d8e4168a8ca5fbe31cd7d",
   "inspection/data/seam-v5-baseline.json": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
-  "inspection/data/seam-v5-print-set.json": "1d00470857d2a595a48e996d1b1b431ba9caa3fcd08c2b7e5a8eb128937c577b",
+  "inspection/data/seam-v5-print-set.json": "e605342e620c990b4b3c653a98f0d44f5ff22908de771dbe3772de9c90d73f9a",
   "inspection/data/seam-v5-mjf-thin-wall.json": "0ca9db04442c2fb26c7a252f267eb2d3fa87f45de12ffc763ac25384e99860b9",
-  "inspection/data/seam-v5-trial-print-set.json": "49ea7eabc5066483f52286d80e7fe8988d8edd7c84a91eab8da6b2217ab2af31"
+  "inspection/data/seam-v5-trial-print-set.json": "f51d1b9525e29647b7c3abebad9536fcc795b39c1ffcb1ca8a909da8927a508e"
  },
- "v5_sha": "1bae3188137c837ac640317ff33775996e1a54c7e571cf1946aec35908ee5800",
+ "v5_sha": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
  "baseline_sha": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
  "baseline_bodies": 67,
  "print_set": [
@@ -108,7 +108,7 @@
   }
  ],
  "bodies": 65,
- "timeline_active": 372,
+ "timeline_active": 351,
  "rear_foot_bottom_Z": 0.5,
  "generated": [
   "COVER_L_DRAFT_TBD",
@@ -130,8 +130,8 @@
   "REF_M2_PLATE_2",
   "REF_M2_PLATE_2_NUT"
  ],
- "timeline": 379,
- "sketches": 84,
+ "timeline": 358,
+ "sketches": 80,
  "params": 235,
  "cover_Z": [
   11.5,
