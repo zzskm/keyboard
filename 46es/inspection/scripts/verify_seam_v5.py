@@ -14,7 +14,7 @@ from check_stl import check
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
 from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, REAR_BOSS_X, REAR_FEET,  # noqa: E402
-                           horizontal_faces, top_levels, ctrl_params, rear_foot_volume)
+                           horizontal_faces, top_levels, ctrl_params, rear_foot_volume, cover_windows)
 import ctrl_v5  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
@@ -37,7 +37,9 @@ NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_legmag_skin_min', 'v5_keycap
               'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_cover_top_above_rim',
               'v5_key_margin', 'v5_legmag_plate_clr', 'v5_legpad_L', 'v5_lip_relief_clr',
               'v5_legmag_L_X', 'v5_legmag_L_Y', 'v5_legmag_R_X', 'v5_legmag_R_Y',
-              'v5_rear_boss_D', 'v5_rear_boss_top_Z', 'v5_rear_foot_gap', 'v5_rear_foot_L'} | {name for name, _, _ in ctrl_params()} \
+              'v5_rear_boss_D', 'v5_rear_boss_top_Z', 'v5_rear_foot_gap', 'v5_rear_foot_L',
+              'v5_cover_silhouette_cell', 'v5_cover_silhouette_close_r', 'v5_cover_silhouette_fill_L',
+              'v5_cover_silhouette_min_rail', 'v5_cover_silhouette_res'} | {name for name, _, _ in ctrl_params()} \
     | {f'v5_rear_boss_{i}_X' for i in range(1, len(REAR_BOSS_X) + 1)} | {f'v5_rear_foot_{i}_X' for i in REAR_FEET}
 CHANGED_PARAMS = {'TBD_cover_T', 'TBD_upper_plate_T'}
 MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
@@ -257,7 +259,7 @@ def leg_magnet_walls(params):
     out = {}
     for s in 'LR':
         p = (params[f'v5_legmag_{s}_X'], params[f'v5_legmag_{s}_Y'])
-        cut = windows + grown
+        cut = windows + grown + cover_windows()      # r2 windows, per-key margin, silhouette window (2026-11-10)
         assert not any(inside(p, q) for q in cut), s
         out[s] = dict(center=p,
                       cover_pocket_D=2 * r_cover, plate_pocket_D=2 * r_plate,
@@ -275,19 +277,27 @@ def leg_magnet_walls(params):
 
 
 def cover_levels(params, bodies, flat_bodies):
-    """Check the single top plane and the unchanged XY shape against the flat baseline."""
+    """Check the single top plane; the silhouette window (2026-11-10) only widens the flat baseline's window.
+
+    The window is cut through the full cover height, so each piece loses (flat top area - new top area) × height
+    against the flat snapshot raised to the new top. Keycap clearance is checked by verify_assembly_reference_v5."""
     top = params['v5_cover_top_Z']
     levels = top_levels(V5)
     flat_levels = top_levels(FLAT)
+    out = {}
     for name in COVERS:
         area = flat_levels[name][18.0]
         assert set(flat_levels[name]) == {18.0}, flat_levels[name]
-        assert levels[name] == {round(top, 4): area}, (name, levels[name])
-        expected = flat_bodies[name]['volume_mm3'] + area * (top - 18.0)
+        assert set(levels[name]) == {round(top, 4)}, (name, levels[name])
+        new_area = levels[name][round(top, 4)]
+        assert new_area <= area + 1e-3, (name, new_area, area)
+        bound = flat_bodies[name]['volume_mm3'] + area * (top - 18.0)
         actual = bodies[name]['volume_mm3']
-        assert abs(actual - expected) / expected < 0.001, (name, actual, expected)
+        assert actual <= bound * 1.0001, (name, actual, bound)
+        out[name] = dict(top_Z=top, top_area_mm2=new_area, flat_top_area_mm2=area,
+                         window_widened_mm2=round(area - new_area, 3), volume_mm3=round(actual, 3))
     assert params['v5_legmag_skin'] >= params['v5_legmag_skin_min']
-    return levels
+    return out
 
 
 TRIAL_STL = {'L': 'mount_L', 'R': 'mount_R', 'REAR': 'mount_H02_SO3', 'FRONT': 'mount_H03_SO6'}

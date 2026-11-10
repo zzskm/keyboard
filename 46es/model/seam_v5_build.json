@@ -1,0 +1,15 @@
+{
+ "generator": "tools/build_seam_v5.py",
+ "inputs": {
+  "firmware/46es_kbfirmware.json": "1b0dbb379cfec7261b49bc7074cef33837958754ebdd0528759a4f424e757951",
+  "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
+  "model/baselines/seam_v4.sc": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
+  "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
+  "tools/build_seam_v5.py": "ast:0236c8332851dd18a37db984bbf352661b39d8edca2f8d392c76ef1c92715728",
+  "tools/ctrl_v5.py": "ast:c78fb081b79c68121f2ad7da7d3f3c83893c1b8ce5a5194167068aa07a8c75b3",
+  "tools/make_key_dxf.py": "ast:55f2262eea711da74fb9777051a6e0c954e537eec613ff83925822c7b9829a52",
+  "tools/mounts_v5.py": "ast:eb9dcc6a4de0fa9f82678782340f6afa1ea119894c92261b68b84eb7142412e4"
+ },
+ "output": "model/46es_mount_seam_v5.sc",
+ "output_sha": "7105afb09cfa541b519b1c4354b52ade6fd7d071d6a7ea768b7adb2b379b1b54"
+}

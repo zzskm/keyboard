@@ -1,7 +1,7 @@
 {
  "ok": true,
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "fa44464aba129d2b03792d61039614e9d6837d5977d75f8ca2f588173cb5b90d",
+ "v5_sha": "7105afb09cfa541b519b1c4354b52ade6fd7d071d6a7ea768b7adb2b379b1b54",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
  "print_set": [
   {
@@ -60,9 +60,9 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 15.578,
+   "volume_cm3": 15.187,
    "size": [
-    101.79,
+    101.75,
     95.33,
     7.5
    ],
@@ -73,22 +73,22 @@
    "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 14.422,
+   "volume_cm3": 14.031,
    "size": [
-    87.7,
+    87.5,
     95.33,
     7.5
    ],
-   "wall_min_mm": 1.098,
+   "wall_min_mm": 1.059,
    "rel": 3e-06
   },
   {
    "file": "46es_v5_cover_R",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 16.212,
+   "volume_cm3": 15.378,
    "size": [
-    128.7,
+    128.67,
     95.33,
     7.5
    ],
@@ -98,7 +98,7 @@
  ],
  "bodies": 67,
  "untouched_bodies_exact": 45,
- "timeline_active": 495,
+ "timeline_active": 491,
  "derived_same_volume_box": [
   "SEAM_COUPON_L_V4",
   "SEAM_COUPON_R_V4"
@@ -143,9 +143,9 @@
   "REF_LEGMAG_R_COVER",
   "REF_LEGMAG_R_PLATE"
  ],
- "timeline": 699,
- "sketches": 155,
- "params": 230,
+ "timeline": 695,
+ "sketches": 153,
+ "params": 235,
  "new_params": [
   "ctrl5_M2_1_X",
   "ctrl5_M2_1_Y",
@@ -155,6 +155,11 @@
   "ctrl5_end_d",
   "ctrl5_hook_e",
   "ctrl5_stop_gap",
+  "v5_cover_silhouette_cell",
+  "v5_cover_silhouette_close_r",
+  "v5_cover_silhouette_fill_L",
+  "v5_cover_silhouette_min_rail",
+  "v5_cover_silhouette_res",
   "v5_cover_top_Z",
   "v5_cover_top_above_rim",
   "v5_key_margin",
@@ -194,13 +199,25 @@
  "cover_T": 6.0,
  "cover_levels": {
   "COVER_L_DRAFT_TBD": {
-   "19.0": 2511.215
+   "top_Z": 19.0,
+   "top_area_mm2": 2446.169,
+   "flat_top_area_mm2": 2511.215,
+   "window_widened_mm2": 65.046,
+   "volume_mm3": 15187.38
   },
   "COVER_T_DRAFT_TBD": {
-   "19.0": 2359.906
+   "top_Z": 19.0,
+   "top_area_mm2": 2294.74,
+   "flat_top_area_mm2": 2359.906,
+   "window_widened_mm2": 65.166,
+   "volume_mm3": 14030.884
   },
   "COVER_R_DRAFT_TBD": {
-   "19.0": 2600.172
+   "top_Z": 19.0,
+   "top_area_mm2": 2461.08,
+   "flat_top_area_mm2": 2600.172,
+   "window_widened_mm2": 139.092,
+   "volume_mm3": 15377.575
   }
  },
  "plate_supports": [
@@ -565,7 +582,7 @@
    ],
    "cover_pocket_D": 3.2,
    "plate_pocket_D": 3.3,
-   "cover_wall_to_window_mm": 1.184,
+   "cover_wall_to_window_mm": 1.137,
    "cover_wall_to_outer_edge_mm": 1.267,
    "cover_top_skin_mm": 3.9,
    "plate_wall_to_switch_opening_mm": 2.909,
@@ -581,7 +598,7 @@
    ],
    "cover_pocket_D": 3.2,
    "plate_pocket_D": 3.3,
-   "cover_wall_to_window_mm": 1.171,
+   "cover_wall_to_window_mm": 1.137,
    "cover_wall_to_outer_edge_mm": 1.267,
    "cover_top_skin_mm": 3.9,
    "plate_wall_to_switch_opening_mm": 2.896,
@@ -641,43 +658,43 @@
  },
  "plate_files_unchanged": {
   "plate_L": {
-   ".stl": false,
-   ".step": false
+   ".stl": true,
+   ".step": true
   },
   "plate_R": {
-   ".stl": false,
-   ".step": false
+   ".stl": true,
+   ".step": true
   }
  },
  "parts": [
   {
    "file": "46es_v5_cover_L_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 15.58,
+   "volume_cm3": 15.19,
    "v4_volume_cm3": 5.78,
    "flat_Z18_volume_cm3": 13.07,
    "wall_min_mm": 1.098,
-   "min_mm": 0.305,
+   "min_mm": 0.264,
    "stl_volume_rel_err": 6e-06
   },
   {
    "file": "46es_v5_cover_T_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 14.42,
+   "volume_cm3": 14.03,
    "v4_volume_cm3": 5.21,
    "flat_Z18_volume_cm3": 12.06,
-   "wall_min_mm": 1.098,
-   "min_mm": 0.146,
+   "wall_min_mm": 1.059,
+   "min_mm": 0.136,
    "stl_volume_rel_err": 3e-06
   },
   {
    "file": "46es_v5_cover_R_REVIEW_ONLY",
    "material": "8001 레진 투명",
-   "volume_cm3": 16.21,
+   "volume_cm3": 15.38,
    "v4_volume_cm3": 6.17,
    "flat_Z18_volume_cm3": 13.61,
    "wall_min_mm": 1.098,
-   "min_mm": 0.31,
+   "min_mm": 0.267,
    "stl_volume_rel_err": 5e-06
   },
   {

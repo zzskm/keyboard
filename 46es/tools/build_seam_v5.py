@@ -16,6 +16,7 @@ Run from the repository root with python 46es/tools/build_seam_v5.py.
 # SOURCE OF TRUTH - Edit this file. Do NOT hand-edit generated .sc files.
 # Regenerate outputs with: python tools/build_seam_v5.py (and export scripts as needed)
 import argparse
+import ast
 import copy
 import hashlib
 import json
@@ -47,6 +48,8 @@ SEAT_ROOT_Z = PAD_ROOT_Z
 # and the part edges, as close to the leg tip as that allows.
 LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
+LEGMAG_POCKET_R = 1.6                # cover pocket (TBD_magnet_D 3 + 2 × TBD_magnet_clr 0.1) / 2
+LEGMAG_WINDOW_WALL = 1.15            # pocket wall to the cover window (per-key window: L 1.184, R 1.171; rule >= 1.0)
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 # PSD60 Defender rear-wall bosses (user photo, KPrepublic product image, 2026-11-09): four half-round bosses without
 # a hole on the inner rear wall. Centres X are photo estimates (perspective fitted on H01-H06, residual <= 0.8 mm,
@@ -88,6 +91,39 @@ REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01', 'CTRL_GA
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+# ------------------------------------------------------------------------------------ build record
+# Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
+# output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
+BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/make_key_dxf.py',
+                'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
+                'firmware/46es_kbfirmware.json', 'model/baselines/seam_v4.sc')
+BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
+
+
+def _canonical_ast(node):
+    """ast.dump without None/empty fields, so the text is the same on Python 3.12 and 3.13+."""
+    if isinstance(node, ast.AST):
+        fields = [f'{k}={_canonical_ast(v)}' for k in node._fields
+                  if (v := getattr(node, k, None)) is not None and v != []]
+        return f"{type(node).__name__}({','.join(fields)})"
+    if isinstance(node, list):
+        return '[' + ','.join(map(_canonical_ast, node)) + ']'
+    return repr(node)
+
+
+def input_fingerprint(path):
+    """SHA-256 of the file, or of its syntax tree for Python sources (comment-only edits keep the fingerprint)."""
+    if path.suffix == '.py':
+        tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
+        return 'ast:' + hashlib.sha256(_canonical_ast(tree).encode('utf-8')).hexdigest()
+    return sha(path)
+
+
+def build_record():
+    return dict(generator='tools/build_seam_v5.py', output=OUTPUT.relative_to(ROOT).as_posix(),
+                inputs={rel: input_fingerprint(ROOT / rel) for rel in BUILD_INPUTS})
 
 
 def run(*args):
@@ -173,8 +209,8 @@ def top_levels(model, bodies=COVERS, tol=1e-4):
 
 
 # ------------------------------------------------------------------------------------ document helpers
-def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1, fill_L=0.0):
-    """키 블록 실루엣 창. make_key_dxf.py::silhouette_polys와 동일 로직."""
+def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1, fill_L=0.0, width='env_u'):
+    """키 블록 실루엣 창. make_key_dxf.py::silhouette_polys와 동일 로직(width='env_u'). width='w_u'면 r2 칸 대신 실제 키캡 폭."""
     import numpy as np
     from scipy import ndimage
 
@@ -209,7 +245,7 @@ def silhouette_polys(keys, cell, close_r, min_rail, edge, res=0.1, fill_L=0.0):
     def _raster_cells(block_keys, cell_size, xs_arr, ys_arr, res_val):
         U = np.zeros((len(ys_arr), len(xs_arr)), dtype=bool)
         for k in block_keys:
-            w = k["env_u"] * 19.05 - (19.05 - cell_size)
+            w = k[width] * 19.05 - (19.05 - cell_size)
             pts = rect(k["x"], k["y"], w, cell_size, k["rot"])
             n = len(pts)
             area = sum(pts[i][0] * pts[(i + 1) % n][1] - pts[(i + 1) % n][0] * pts[i][1] for i in range(n))
@@ -308,6 +344,40 @@ def _dp(pts, tol):
     b = dp_open(pts[i1:] + pts[:1])
     out = a[:-1] + b[:-1]
     return out
+
+
+# Cover window (2026-11-09): one silhouette outline per key block instead of per-key margin rectangles.
+# cell 20.35 = keycap 18.05 + 2 × KEY_MARGIN 1.0 + 0.3 for the 0.1 raster and the 0.15 outline simplification, so the
+# window still holds every keycap + 1.0 (the trial value 16 left 0.31, user 2026-11-10). min_rail 1.1: keys 9, 31 and
+# 40 come within 1.16 of the cover edge (the per-key window already left that rail; resin wall limit 1.0).
+# Cells use the keycap width w_u, not the r2 slot env_u: with env_u the 1.5u slot of key 19 carried the window to
+# the right edge and cut the cover lip into a 0.28 mm sliver.
+COVER_SILHOUETTE = dict(cell=20.35, close_r=0.0, fill_L=16.0, min_rail=1.1, res=0.1)
+COVER_EDGE_GAP = 0.3                       # case inner W 286.381 × D 95.934, PCB origin offset (0.693, 0.667)
+
+
+def cover_windows():
+    """Plan polygons of the cover window cuts (GH60 PCB coordinates)."""
+    in_w, in_d, gap = 286.381, 95.934, COVER_EDGE_GAP
+    edge = (-.693 + gap, in_w - .693 - gap, -.667 + gap, in_d - .667 - gap)
+    s = COVER_SILHOUETTE
+    keys = load_keys(.693, .667)
+    polys, _, _ = silhouette_polys(keys, cell=s['cell'], close_r=s['close_r'], min_rail=s['min_rail'],
+                                   edge=edge, res=s['res'], fill_L=s['fill_L'], width='w_u')
+    from shapely.geometry import Polygon, Point
+    from shapely.ops import unary_union
+    # The leg magnets were placed against the per-key window (wall 1.17-1.18); the silhouette's 0.15 oversize came within 0.98
+    # of the L pocket. Moving the magnet would move the plate pocket, so the window keeps clear of both pockets.
+    keep = unary_union([Point(x, y).buffer(LEGMAG_POCKET_R + LEGMAG_WINDOW_WALL, quad_segs=8)
+                        for x, y, _, _ in LEG_MAGNETS.values()])
+    shapes = [Polygon(p).buffer(0).difference(keep) for p in polys]
+    polys = [[(round(x, 4), round(y, 4)) for x, y in g.exterior.coords[:-1]]
+             for s in shapes for g in getattr(s, 'geoms', [s])]
+    window = unary_union([Polygon(p) for p in polys])
+    assert not window.intersects(keep.buffer(-1e-3))
+    short = [i for i, r in enumerate(key_rects(keys, KEY_MARGIN), 1) if not window.covers(Polygon(r))]
+    assert not short, f'cover window misses keycap + {KEY_MARGIN} at keys {short}'
+    return polys
 
 
 def read_source():
@@ -573,7 +643,8 @@ def build(probe=False):
               '확정: 2 + g', before='TBD_cover_T')
     new_param('v5_keycap_bottom_rest_Z', 'v4_plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat',
               '[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3', before='TBD_cover_T')
-    new_param('v5_skirt_cover_H', 1.2, '[v5 2026-11-09 시험 후보 Z18.5] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
+    # Z 19 kept (user 2026-11-10); the lower candidates 1.2 (Z 18.5) / 0.7 (Z 18) are tried on codex/46es-cover-plate-trial.
+    new_param('v5_skirt_cover_H', 1.7, '[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
               '대안 1.2(턱 Z 18.5) / 0.7(Z 18)', before='TBD_cover_T')
     new_param('v5_cover_top_Z', 'v5_keycap_bottom_rest_Z + v5_skirt_cover_H',
               'Single flat cover top at Z 19', before='TBD_cover_T')
@@ -604,13 +675,16 @@ def build(probe=False):
         f['extent'][key] = new
     # --- 3. key margin (documentation parameter; sketch rectangles are fixed numbers) -----------
     new_param('v5_key_margin', KEY_MARGIN, '[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. '
-              'SK35_COVER_KEY_MARGIN_V5_* 사각형은 이 값으로 만든 고정 숫자(tools/build_seam_v5.py에서 재생성)')
+              'SK35_COVER_SILHOUETTE_V5_* 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)')
     # --- 3b. 커버 창 단순화 파라미터 (v5 2026-11-09) ---------------------------------------
-    new_param('v5_cover_silhouette_cell', 16.0, '[v5 2026-11-09] 커버 창 실루엣 래스터 셀 크기. 키 블록마다 회전 셀(cell) 사각형을 합침')
-    new_param('v5_cover_silhouette_close_r', 0.0, '[v5 2026-11-09] 오목 모서리 둥글림 반경(0 = 둥글림 없음, 직각 계단 유지)')
-    new_param('v5_cover_silhouette_fill_L', 16.0, '[v5 2026-11-09] 가로/세로 선분 닫힘 길이. 이보다 좁은 틈·쐐기를 직선으로 메움(계단 모서리 유지)')
-    new_param('v5_cover_silhouette_min_rail', 1.6, '[v5 2026-11-09] 커버 외곽 안쪽 최소 살 폭. 창이 이보다 좁게 다가가면 개방')
-    new_param('v5_cover_silhouette_res', 0.1, '[v5 2026-11-09] 래스터 해상도')
+    s = COVER_SILHOUETTE
+    new_param('v5_cover_silhouette_cell', s['cell'], '[v5 2026-11-10] 커버 창 실루엣 래스터 셀 크기. 키 블록마다 실제 키캡 폭(r2 칸 폭 아님)의 회전 셀 사각형을 합침. '
+              '키캡 18.05 + 2×v5_key_margin + 래스터·단순화 오차 0.3(시험값 16은 키캡 간격 0.31)')
+    new_param('v5_cover_silhouette_close_r', s['close_r'], '[v5 2026-11-09] 오목 모서리 둥글림 반경(0 = 둥글림 없음, 직각 계단 유지)')
+    new_param('v5_cover_silhouette_fill_L', s['fill_L'], '[v5 2026-11-09] 가로/세로 선분 닫힘 길이. 이보다 좁은 틈·쐐기를 직선으로 메움(계단 모서리 유지)')
+    new_param('v5_cover_silhouette_min_rail', s['min_rail'], '[v5 2026-11-10] 커버 외곽 안쪽 최소 살 폭(창을 이 선에서 자름). '
+              '9·31·40번 키캡+여유가 외곽 1.16 안까지 와서 1.1(레진 벽 한계 1.0)')
+    new_param('v5_cover_silhouette_res', s['res'], '[v5 2026-11-09] 래스터 해상도')
     # --- 2. leg magnets ------------------------------------------------------------------------------
     new_param('v5_legmag_plate_clr', 0.15, '[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, '
               '헐거우면 에폭시로 채움(plate 재출력 없음)')
@@ -623,26 +697,8 @@ def build(probe=False):
     feature, sketch = helpers(doc)
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
-    keys = load_keys(.693, .667)
     # 커버 창 단순화: 기존 개별 키 마진 그룹 대신 실루엣 통합 윤곽 사용 (v5 2026-11-09)
-    in_w, in_d, gap_c = 286.381, 95.934, 0.3
-    edge = (-.693 + gap_c, in_w - .693 - gap_c, -.667 + gap_c, in_d - .667 - gap_c)
-    # 파라미터 값 가져오기 (문자열 표현식이면 그대로, 숫자면 float로)
-    def get_param_val(name):
-        p = params[name]
-        v = p.get('expr', p.get('value'))
-        try:
-            return float(v)
-        except (ValueError, TypeError):
-            return v
-    polys, U, res = silhouette_polys(keys,
-                                     cell=get_param_val('v5_cover_silhouette_cell'),
-                                     close_r=get_param_val('v5_cover_silhouette_close_r'),
-                                     min_rail=get_param_val('v5_cover_silhouette_min_rail'),
-                                     edge=edge,
-                                     res=get_param_val('v5_cover_silhouette_res'),
-                                     fill_L=get_param_val('v5_cover_silhouette_fill_L'))
-    for i, poly in enumerate(polys, 1):
+    for i, poly in enumerate(cover_windows(), 1):
         sk = sketch(f'SK35_COVER_SILHOUETTE_V5_{i}', top_plane, [poly])
         feature('extrude', f'COVER_SILHOUETTE_V5_{i}', sketch=sk, profiles=dict(type='all'),
                 extent=dict(convention='total_distance', direction='negative',
@@ -728,6 +784,7 @@ def build(probe=False):
     assert not REMOVED_BODIES & set(bodies), REMOVED_BODIES & set(bodies)
     top_z = values['v5_cover_top_Z']
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
+    assert abs((values['TBD_magnet_D'] + 2 * values['TBD_magnet_clr']) / 2 - LEGMAG_POCKET_R) < 1e-9
     levels = top_levels(pending)
     for name, faces in levels.items():
         assert set(faces) == {round(top_z, 4)}, (name, faces)
@@ -746,6 +803,11 @@ def build(probe=False):
     if not probe:
         pending.replace(OUTPUT)
         info['output_sha'] = sha(OUTPUT)
+        record = build_record()
+        record['output_sha'] = info['output_sha']
+        with BUILD_RECORD.open('w', encoding='utf-8', newline='\n') as f:
+            json.dump(record, f, indent=1, sort_keys=True)
+            f.write('\n')
     (CACHE / ('probe_v5.json' if probe else 'build_v5.json')).write_text(
         json.dumps(info, indent=1, ensure_ascii=False), encoding='utf-8')
     print(json.dumps(info, ensure_ascii=False, indent=1))

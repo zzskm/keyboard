@@ -56,6 +56,18 @@ def source_checks():
     return len(list(filter(None, paths)))
 
 
+def build_checks():
+    """The committed production CAD was generated from the committed generator inputs (model/seam_v5_build.json)."""
+    from build_seam_v5 import BUILD_RECORD, OUTPUT, build_record
+    require(BUILD_RECORD.is_file(), 'missing build record: run python 46es/tools/build_seam_v5.py')
+    recorded, current = read(BUILD_RECORD), build_record()
+    stale = sorted(rel for rel in set(recorded['inputs']) | set(current['inputs'])
+                   if recorded['inputs'].get(rel) != current['inputs'].get(rel))
+    require(not stale, f'CAD not regenerated after input change: {", ".join(stale)} (run python 46es/tools/build_seam_v5.py)')
+    require(recorded['output'] == current['output'] and sha(OUTPUT) == recorded['output_sha'],
+            f'{current["output"]} differs from its build record (hand edit or partial regeneration)')
+
+
 def model_checks():
     from verify_seam_v5 import V4, V5, FLAT, V4_SHA, FLAT_SHA, CHANGED, DERIVED, ADDED, REMOVED, PLATE_L_GATE_RELIEF_MM3
     from build_seam_v5 import REAR_FEET
@@ -164,6 +176,7 @@ def print_checks(current, sample):
 
 def main():
     count = source_checks()
+    build_checks()
     current, sample, review, unchanged = model_checks()
     steps = guide_checks(list(review))
     prints = print_checks(current, sample)

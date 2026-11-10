@@ -202,7 +202,12 @@ seam_cb_D,mm,1.2 mm,1.2,[v4 2026-11-05] tab 윗면 M2 머리 카운터보어 깊
 seam_nut_D,mm,1.0 mm,1,[v4 2026-11-05] R 바닥 아랫면 M2 너트(AF4×1.6) 육각 포켓 깊이. 너트는 0.6 아래로 나옴,false
 spine_wire_W,mm,3 mm,3,[v4 2026-11-05] spine 줄기 아랫면 배선 홈 폭(Y). 행 배선이 seam을 건너는 곳,false
 spine_wire_H,mm,2 mm,2,"[v4 2026-11-05] spine 배선 홈 높이(Z, 줄기 밑면 split_spine_bottom_Z에서 위로). 남는 줄기 높이 2.5, 아래 mount 윗면 Z3까지 통로 3",false
-v5_key_margin,mm,1.0,1,"[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. SK35_COVER_KEY_MARGIN_V5_* 사각형은 이 값으로 만든 고정 숫자(tools/build_seam_v5.py에서 재생성)",false
+v5_key_margin,mm,1.0,1,"[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. SK35_COVER_SILHOUETTE_V5_* 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)",false
+v5_cover_silhouette_cell,mm,20.35,20.35,[v5 2026-11-10] 커버 창 실루엣 래스터 셀 크기. 키 블록마다 실제 키캡 폭(r2 칸 폭 아님)의 회전 셀 사각형을 합침. 키캡 18.05 + 2×v5_key_margin + 래스터·단순화 오차 0.3(시험값 16은 키캡 간격 0.31),false
+v5_cover_silhouette_close_r,mm,0.0,0,"[v5 2026-11-09] 오목 모서리 둥글림 반경(0 = 둥글림 없음, 직각 계단 유지)",false
+v5_cover_silhouette_fill_L,mm,16.0,16,[v5 2026-11-09] 가로/세로 선분 닫힘 길이. 이보다 좁은 틈·쐐기를 직선으로 메움(계단 모서리 유지),false
+v5_cover_silhouette_min_rail,mm,1.1,1.1,[v5 2026-11-10] 커버 외곽 안쪽 최소 살 폭(창을 이 선에서 자름). 9·31·40번 키캡+여유가 외곽 1.16 안까지 와서 1.1(레진 벽 한계 1.0),false
+v5_cover_silhouette_res,mm,0.1,0.1,[v5 2026-11-09] 래스터 해상도,false
 v5_legmag_plate_clr,mm,0.15,0.15,"[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, 헐거우면 에폭시로 채움(plate 재출력 없음)",false
 v5_legpad_L,mm,8,8,[v5 설계 후보] 다리 자석 자리에서 plate 가장자리 단차(rabbet)를 메우는 받침 길이(X),false
 v5_lip_relief_clr,mm,0.3,0.3,"[v5 설계 후보] 받침 양끝 ↔ 커버 립 절단 끝 여유(X, 편측)",false
