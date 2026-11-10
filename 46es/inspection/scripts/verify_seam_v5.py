@@ -16,7 +16,7 @@ from make_key_dxf import load_keys, rect  # noqa: E402
 from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, REAR_BOSS_X, REAR_FEET,  # noqa: E402
                            horizontal_faces, top_levels, ctrl_params, rear_foot_volume, cover_windows)
 import ctrl_v5  # noqa: E402
-from common import CLI, sha, write_json  # noqa: E402
+from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 
@@ -24,6 +24,11 @@ V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
 TRIALS = ROOT / 'model/ctrl_trials_v5.sc'
 FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
+# Recorded with their fingerprints (common.fingerprint) so check_repository.py and pipeline.py --status can tell
+# that this verifier or what it read changed after the run (plan 2-3). The baselines are pinned by V4_SHA/FLAT_SHA.
+VERIFY_INPUTS = ('inspection/scripts/verify_seam_v5.py', 'model/46es_mount_seam_v5.sc', 'model/ctrl_trials_v5.sc',
+                 'model/parameters_seam_v5.csv', 'inspection/data/seam-v5-print-set.json',
+                 'inspection/data/seam-v5-mjf-thin-wall.json', 'inspection/data/seam-v5-trial-print-set.json')
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
 # The assumed switch envelopes and the Wilmore housing stand-in are reference-only and no longer evaluated in production.
@@ -557,7 +562,7 @@ def main():
     clearance_summary = {k: dict(overlaps=len(clearance[k]['overlaps']), contacts=len(clearance[k]['contacts']),
                                  unchecked=len(clearance[k]['unchecked']))
                          for k in ('changed_vs_unchanged', 'among_changed')}
-    result = dict(ok=True, v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
+    result = dict(ok=True, inputs=fingerprints(VERIFY_INPUTS), v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
                   timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')),
                   derived_same_volume_box=sorted(DERIVED), plate_delta_from_flat_Z18=plate_delta,
                   plate_L_delta_from_flat_Z18_mm3=round(plate_l_delta, 3), rear_foot_bottom_Z=foot_bottom,

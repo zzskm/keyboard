@@ -1,5 +1,14 @@
 {
  "ok": true,
+ "inputs": {
+  "inspection/scripts/verify_seam_v5.py": "ast:b0c5a0e06c97cc49cf93da8b203e6ca30a104e0213034f6cbde97da1ea20d62f",
+  "model/46es_mount_seam_v5.sc": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
+  "model/ctrl_trials_v5.sc": "c51ae88b45ee4c2387a26faefaf7622f521afa18d74ad00867ccf0812f63bdaf",
+  "model/parameters_seam_v5.csv": "c06ced136480d6452396a95ffdfb605a0b8f2f69b465831c3818a43c58430efa",
+  "inspection/data/seam-v5-print-set.json": "81db49a0d819a175fda61d52f0ffa060beea1760efa16b1adbefcd7b1c2b38b1",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "0ca9db04442c2fb26c7a252f267eb2d3fa87f45de12ffc763ac25384e99860b9",
+  "inspection/data/seam-v5-trial-print-set.json": "00116967942a8d258ab8b62e0b8a6374b1e8550ced4f5a05fdcfe779814e5cb7"
+ },
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
  "v5_sha": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",

@@ -115,7 +115,10 @@ def main():
 
     captures = capture(site, evidence, steps, args.views)
     report = {'status': 'pending_manual_review', 'source_sha256': source_sha,
-              'review_model_sha256': model_sha, 'steps': captures}
+              'review_model_sha256': model_sha,
+              # tools/pipeline.py --status compares these with the working tree to tell whether a review is current
+              'spec_sha256': {name: file_sha256(HERE / name) for name in ('guide_v5.json', spec['interactive'])},
+              'steps': captures}
     (evidence / 'review.json').write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     print('Inspect the captures and record the visual verdict in the change report.')

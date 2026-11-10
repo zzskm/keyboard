@@ -21,9 +21,7 @@ Run from the repository root with python 46es/tools/build_seam_v5.py.
 # SOURCE OF TRUTH - Edit this file. Do NOT hand-edit generated .sc files.
 # Regenerate outputs with: python tools/build_seam_v5.py (and export scripts as needed)
 import argparse
-import ast
 import copy
-import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -37,7 +35,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
-from common import ROOT, CLI, sha, write_json
+from common import ROOT, CLI, sha, fingerprints, write_json
 
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
@@ -106,29 +104,23 @@ BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.p
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
 
 
-def _canonical_ast(node):
-    """ast.dump without None/empty fields, so the text is the same on Python 3.12 and 3.13+."""
-    if isinstance(node, ast.AST):
-        fields = [f'{k}={_canonical_ast(v)}' for k in node._fields
-                  if (v := getattr(node, k, None)) is not None and v != []]
-        return f"{type(node).__name__}({','.join(fields)})"
-    if isinstance(node, list):
-        return '[' + ','.join(map(_canonical_ast, node)) + ']'
-    return repr(node)
-
-
-def input_fingerprint(path):
-    """SHA-256 of the file, or of its syntax tree for Python sources (comment-only edits keep the fingerprint)."""
-    if path.suffix == '.py':
-        tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
-        return 'ast:' + hashlib.sha256(_canonical_ast(tree).encode('utf-8')).hexdigest()
-    return sha(path)
-
-
 def build_record():
     return dict(generator='tools/build_seam_v5.py', output=OUTPUT.relative_to(ROOT).as_posix(),
                 trials_output=TRIALS_OUTPUT.relative_to(ROOT).as_posix(),
-                inputs={rel: input_fingerprint(ROOT / rel) for rel in BUILD_INPUTS})
+                inputs=fingerprints(BUILD_INPUTS))
+
+
+def stale_reasons():
+    """Why the committed CAD does not match its build record (empty when it does)."""
+    if not BUILD_RECORD.is_file():
+        return ['missing build record']
+    recorded, current = json.loads(BUILD_RECORD.read_text(encoding='utf-8')), build_record()
+    reasons = [f'input changed: {rel}' for rel in sorted(set(recorded['inputs']) | set(current['inputs']))
+               if recorded['inputs'].get(rel) != current['inputs'].get(rel)]
+    for key, path in (('output', OUTPUT), ('trials_output', TRIALS_OUTPUT)):
+        if recorded.get(key) != current[key] or not path.is_file() or sha(path) != recorded.get(key + '_sha'):
+            reasons.append(f'{current[key]} differs from its build record')
+    return reasons
 
 
 def write_build_record():

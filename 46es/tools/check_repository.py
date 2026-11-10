@@ -18,7 +18,10 @@ sys.path.insert(0, str(ROOT / 'guide'))
 from cad_model import document, live_shapes
 from check_stl import check
 from build_guide import expand
-from common import sha
+from common import sha, changed_inputs
+
+VERIFICATION_RECORDS = ('inspection/data/seam-v5-verification.json',
+                        'inspection/data/assembly-reference-v5-verification.json')
 
 
 def require(condition, message):
@@ -54,15 +57,19 @@ def source_checks():
 
 def build_checks():
     """The committed production CAD was generated from the committed generator inputs (model/seam_v5_build.json)."""
-    from build_seam_v5 import BUILD_RECORD, OUTPUT, TRIALS_OUTPUT, build_record
-    require(BUILD_RECORD.is_file(), 'missing build record: run python 46es/tools/build_seam_v5.py')
-    recorded, current = read(BUILD_RECORD), build_record()
-    stale = sorted(rel for rel in set(recorded['inputs']) | set(current['inputs'])
-                   if recorded['inputs'].get(rel) != current['inputs'].get(rel))
-    require(not stale, f'CAD not regenerated after input change: {", ".join(stale)} (run python 46es/tools/build_seam_v5.py)')
-    for key, path in (('output', OUTPUT), ('trials_output', TRIALS_OUTPUT)):
-        require(recorded.get(key) == current[key] and sha(path) == recorded.get(key + '_sha'),
-                f'{current[key]} differs from its build record (hand edit or partial regeneration)')
+    from build_seam_v5 import stale_reasons
+    stale = stale_reasons()
+    require(not stale, 'CAD does not match its build record (python 46es/tools/pipeline.py --status): ' + '; '.join(stale))
+
+
+def verifier_checks():
+    """Each verification record names the verifier and the files it read; a verifier edited after its last run
+    (or an input replaced) leaves an `ok` that no longer describes the current code (AGENTS.md §6)."""
+    for record in VERIFICATION_RECORDS:
+        inputs = read(ROOT / record).get('inputs')
+        require(inputs, f'{record} has no input fingerprints: rerun its verifier')
+        changed = changed_inputs(inputs)
+        require(not changed, f'stale {record}: changed since the verifier ran: {", ".join(changed)}')
 
 
 def model_checks():
@@ -176,6 +183,7 @@ def print_checks(current, sample):
 def main():
     count = source_checks()
     build_checks()
+    verifier_checks()
     current, sample, review, unchanged = model_checks()
     steps = guide_checks(list(review))
     prints = print_checks(current, sample)

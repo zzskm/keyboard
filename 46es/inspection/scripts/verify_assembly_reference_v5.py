@@ -13,7 +13,12 @@ from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X
 import ctrl_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
-from common import CLI, sha, write_json  # noqa: E402
+from common import CLI, sha, fingerprints, write_json  # noqa: E402
+# Recorded with their fingerprints so check_repository.py and pipeline.py --status catch a verifier or input
+# changed after this run (plan 2-3). The order-1 record stands for the mount STLs read for the pin fit.
+VERIFY_INPUTS = ('inspection/scripts/verify_assembly_reference_v5.py', 'model/46es_assembly_review_v5.sc',
+                 'model/assembly_reference_v5.json', 'model/46es_mount_seam_v5.sc',
+                 'inspection/data/seam-v5-trial-print-set.json')
 MODEL = ROOT / 'model/46es_assembly_review_v5.sc'
 SOURCE = ROOT / 'model/46es_mount_seam_v5.sc'
 CACHE = ROOT / 'guide/.cache/reference_v5'
@@ -226,6 +231,7 @@ def main():
                         note='The two corner pegs (K1 +x, K23 -x) are clipped in assembly; the bracket is checked '
                              'against every other switch part and the case with a 0.3 mm search radius.'),
         ok=True,
+        inputs=fingerprints(VERIFY_INPUTS),
         mount_review_fit=dict(overlaps=0, unchecked=0, pairs_checked=mount_fit['pairs_checked'],
                               rear_boss_within_1mm=[list(c) for c in boss_contacts]),
         rear_feet=dict(gap_target_mm=gap, feet=feet, bosses_without_foot=unfooted,

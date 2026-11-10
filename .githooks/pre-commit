@@ -1,0 +1,12 @@
+#!/bin/sh
+# 46es pre-commit hook (46es/AGENTS.md §10). Enable once per clone: git config core.hooksPath .githooks
+# Commits that touch 46es/ get the staged-scope check, the static check of the index, git diff --cached --check
+# and the repository-local author identity (46es/tools/finish.py --hook). Other commits pass through.
+git diff --cached --name-only | grep -q '^46es/' || exit 0
+for python in python3 python; do
+    if "$python" -c 'import sys; sys.exit(sys.version_info < (3, 12))' 2>/dev/null; then
+        exec "$python" -B 46es/tools/finish.py --hook
+    fi
+done
+echo 'pre-commit: Python 3.12+ not found (46es/requirements.txt)' >&2
+exit 1
