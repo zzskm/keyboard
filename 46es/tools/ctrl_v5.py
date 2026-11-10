@@ -297,8 +297,9 @@ def check(design=None):
     solids = [(p['name'], p['shape'], p['z0'], p['z1']) for p in design['prisms']]
     solids += [(lip['name'], box(*lip['bbox'][:2], *lip['bbox'][2:4]), lip['bbox'][4], lip['bbox'][5]) for lip in design['lips']]
     hits = []
+    zones = keepouts()            # once per check, not per prism (plan 3-8: 1.9 s -> 0.1 s)
     for name, shape, z0, z1 in solids:
-        for kname, kshape, k0, k1 in keepouts():
+        for kname, kshape, k0, k1 in zones:
             if min(z1, k1) - max(z0, k0) <= 1e-6:
                 continue
             area = shape.intersection(kshape).area

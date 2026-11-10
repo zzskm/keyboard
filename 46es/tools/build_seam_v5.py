@@ -21,6 +21,7 @@ Run from the repository root with python 46es/tools/build_seam_v5.py.
   --mounts  build only the four mounts into .cache/v5/mounts_v5.sc from a
             parameter-only document and check their sections (seconds, for mount iteration)
   --ctrl    build only the brackets B, A, C into .cache/v5/ctrl_v5.sc and check volumes and keep-outs
+  --covers  build only the three cover pieces into .cache/v5/covers_v5.sc, check them and compare with production
   --refresh-record  after an edit that must not change the model: probe-build, require the
             committed CAD's document and bodies to be reproduced exactly, update only
             model/seam_v5_build.json (the CAD bytes, and every record tied to them, stay)
@@ -57,6 +58,7 @@ PARAMETERS_CSV = ROOT / 'model/parameters_seam_v5.csv'
 CACHE = ROOT / '.cache/v5'          # build scratch (seeds, pending models, reports); not tracked
 MOUNTS_ONLY = CACHE / 'mounts_v5.sc'
 CTRL_ONLY = CACHE / 'ctrl_v5.sc'
+COVERS_ONLY = CACHE / 'covers_v5.sc'
 KEY_MARGIN = 1.0
 LEGMAG_SKIN_MIN = 1.3
 CAP_1U = 18.05
@@ -360,6 +362,30 @@ COVER_EDGE_GAP = 0.3                       # case inner W 286.381 × D 95.934, P
 
 
 def cover_windows():
+    """cover_window_cuts() cached under a hash of everything it reads (plan 3-8: the raster takes about 4.5 s).
+
+    The key covers the key layout, the window and magnet constants, the source of every function the result
+    comes from and the numpy/scipy/shapely versions, so any change to them recomputes."""
+    import hashlib
+    import inspect
+    import numpy, scipy, shapely
+    import make_key_dxf
+    sources = [inspect.getsource(f) for f in (cover_window_cuts, silhouette_polys, _trace_boundary, _dp, key_rects,
+                                              overlap, make_key_dxf.rect, make_key_dxf.load_keys)]
+    key_data = dict(keys=load_keys(.693, .667), silhouette=COVER_SILHOUETTE, edge_gap=COVER_EDGE_GAP,
+                    magnets=LEG_MAGNETS, pocket_r=LEGMAG_POCKET_R, window_wall=LEGMAG_WINDOW_WALL, margin=KEY_MARGIN,
+                    cap=CAP_1U, sources=sources, versions=[numpy.__version__, scipy.__version__, shapely.__version__])
+    digest = hashlib.sha256(json.dumps(key_data, sort_keys=True, default=str).encode()).hexdigest()[:16]
+    cached = CACHE / 'prep' / f'cover_windows_{digest}.json'
+    if cached.is_file():
+        return [[tuple(p) for p in poly] for poly in json.loads(cached.read_text(encoding='utf-8'))]
+    polys = cover_window_cuts()
+    cached.parent.mkdir(parents=True, exist_ok=True)
+    write_json(cached, polys, indent=None)
+    return polys
+
+
+def cover_window_cuts():
     """Plan polygons of the cover window cuts (GH60 PCB coordinates)."""
     in_w, in_d, gap = 286.381, 95.934, COVER_EDGE_GAP
     edge = (-.693 + gap, in_w - .693 - gap, -.667 + gap, in_d - .667 - gap)
@@ -593,9 +619,8 @@ def check_ctrl(evaluated, trials):
     return report
 
 
-def build(probe=False):
-    CACHE.mkdir(parents=True, exist_ok=True)
-    doc, container = read_source()
+def cover_params(doc):
+    """Add the v5 cover, key margin and leg magnet parameters to doc; returns new_param() for further ones."""
     params = {p['name']: p for p in doc['params']}
 
     def new_param(name, expr, comment, unit='mm', before=None):
@@ -642,15 +667,12 @@ def build(probe=False):
     for s, (x, y, plate, cover) in LEG_MAGNETS.items():
         new_param(f'v5_legmag_{s}_X', x, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2)')
         new_param(f'v5_legmag_{s}_Y', y, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽)')
+    return new_param
 
-    feature, sketch = helpers(doc)
-    # Covers and spine come from code (plan 4-5 step 2): only their own features touch them, so they run after the base
-    # timeline with the BRep of the base-era chain. Their sketches stay hidden, as they were in the base.
-    first = doc['next_id']
-    cover_v5.emit(feature)
-    spine_v5.emit(feature)
-    doc['visibility']['hidden_sketches'] += [f['id'] for f in doc['features']
-                                             if f['id'] >= first and f['type'] == 'sketch']
+
+def emit_cover_cuts(doc, feature, sketch, plates=True):
+    """Silhouette window and leg magnet features on the covers; with plates, also the plate pads, pockets and the
+    reference magnets (in the production timeline order). Without plates (--covers) only the cover features."""
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
     # 커버 창 단순화: 기존 개별 키 마진 그룹 대신 실루엣 통합 윤곽 사용 (v5 2026-11-09)
@@ -665,10 +687,11 @@ def build(probe=False):
     for s, (x, y, plate, cover) in LEG_MAGNETS.items():
         X, Y = f'v5_legmag_{s}_X', f'v5_legmag_{s}_Y'
         # plate: fill the rabbet under the leg tip (local support), then the pocket
-        feature('box', f'PLATE_LEGPAD_{s}_V5', corner=[f'{X} - v5_legpad_L/2', front_plate,
-                                                      'plate_top_Z - TBD_cover_lip_H - 0.05'],
-                length='v5_legpad_L', width='TBD_cover_wall + TBD_cover_lip_clr + 0.05',
-                height='TBD_cover_lip_H + 0.05', operation='join', participants=[plate])
+        if plates:
+            feature('box', f'PLATE_LEGPAD_{s}_V5', corner=[f'{X} - v5_legpad_L/2', front_plate,
+                                                          'plate_top_Z - TBD_cover_lip_H - 0.05'],
+                    length='v5_legpad_L', width='TBD_cover_wall + TBD_cover_lip_clr + 0.05',
+                    height='TBD_cover_lip_H + 0.05', operation='join', participants=[plate])
         feature('box', f'COVER_LIP_RELIEF_{s}_V5', corner=[f'{X} - v5_legpad_L/2 - v5_lip_relief_clr',
                                                           '-TBD_pcb0_dy + TBD_cover_gap - 1',
                                                           'plate_top_Z - TBD_cover_lip_H - 0.5'],
@@ -677,6 +700,8 @@ def build(probe=False):
         feature('cylinder', f'COVER_LEGMAG_{s}_V5', axis=[0., 0., 1.], base=[X, Y, 'plate_top_Z - 1'],
                 height='1 + TBD_magnet_T + TBD_magnet_clr', radius='(TBD_magnet_D + 2*TBD_magnet_clr) / 2',
                 operation='cut', participants=[cover])
+        if not plates:
+            continue
         feature('cylinder', f'PLATE_LEGMAG_{s}_V5', axis=[0., 0., 1.],
                 base=[X, Y, 'plate_top_Z - TBD_magnet_T - TBD_magnet_clr'],
                 height='TBD_magnet_T + TBD_magnet_clr + 1', radius='(TBD_magnet_D + 2*v5_legmag_plate_clr) / 2',
@@ -688,6 +713,25 @@ def build(probe=False):
                     radius='TBD_magnet_D / 2', operation='new_body', body_names=[name])
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
+
+
+def emit_code_bodies(doc, feature):
+    """Covers and spine come from code (plan 4-5 step 2): only their own features touch them, so they run after the
+    base timeline with the BRep of the base-era chain. Their sketches stay hidden, as they were in the base."""
+    first = doc['next_id']
+    cover_v5.emit(feature)
+    spine_v5.emit(feature)
+    doc['visibility']['hidden_sketches'] += [f['id'] for f in doc['features']
+                                             if f['id'] >= first and f['type'] == 'sketch']
+
+
+def build(probe=False):
+    CACHE.mkdir(parents=True, exist_ok=True)
+    doc, container = read_source()
+    new_param = cover_params(doc)
+    feature, sketch = helpers(doc)
+    emit_code_bodies(doc, feature)
+    emit_cover_cuts(doc, feature, sketch)
 
     # --- rear feet on the PSD60 rear-wall bosses (2026-11-09) ----------------------------------------
     feet = rear_foot_plan(doc)
@@ -813,8 +857,7 @@ def trials_document():
 
 def build_ctrl():
     """Fast loop for bracket work (plan 3-2): the production bracket B and the snap trials A/C alone, from a
-    parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates.
-    A covers-only build is not offered: the covers come from the base timeline (plan 4-5)."""
+    parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates."""
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = trials_document()
     doc['name'] = '46es v5 snap brackets B, A, C only - bracket check'
@@ -837,6 +880,44 @@ def build_ctrl():
     info = dict(model=str(CTRL_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
                 bodies=report, keep_outs=keep_outs)
     write_json(CACHE / 'ctrl_v5.json', info)
+    print(json.dumps(info, ensure_ascii=False, indent=1))
+    return info
+
+
+def build_covers():
+    """Fast loop for cover work (plan 3-2): the three cover pieces alone, from a parameter-only document, with the
+    silhouette window and the leg magnet cuts (no plate, spine or reference parts). Checks the flat top, the piece
+    ranges and the magnet skin, and reports whether each piece matches the production CAD's BRep."""
+    sys.path.insert(0, str(ROOT / 'inspection/scripts'))
+    from cad_model import live_shapes
+    CACHE.mkdir(parents=True, exist_ok=True)
+    doc, container = read_source()
+    doc['features'] = []
+    doc['next_id'] = 1
+    doc['visibility'] = {key: [] for key in doc['visibility']}
+    doc['name'] = '46es v5 cover pieces only - cover check'
+    cover_params(doc)
+    feature, sketch = helpers(doc)
+    cover_v5.emit(feature)
+    emit_cover_cuts(doc, feature, sketch, plates=False)
+    seed = CACHE / 'seed_covers_v5.sc'
+    write_seed(doc, container, seed)
+    evaluated, elapsed = evaluate(seed, COVERS_ONLY)
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
+    assert set(bodies) == set(COVERS), sorted(bodies)
+    cover_v5.check(bodies)
+    assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
+    top_z = values['v5_cover_top_Z']
+    levels = top_levels(COVERS_ONLY)
+    for name, faces in levels.items():
+        assert set(faces) == {round(top_z, 4)}, (name, faces)
+    built, production = live_shapes(COVERS_ONLY), live_shapes(OUTPUT)
+    info = dict(model=str(COVERS_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
+                cover_top_Z=top_z, cover_levels=levels,
+                bodies={n: dict(volume_mm3=round(bodies[n]['volume_mm3'], 3), bbox=bodies[n]['bbox'],
+                                same_brep_as_production=built[n] == production.get(n)) for n in COVERS})
+    write_json(CACHE / 'covers_v5.json', info)
     print(json.dumps(info, ensure_ascii=False, indent=1))
     return info
 
@@ -888,8 +969,12 @@ if __name__ == '__main__':
                          'and update model/seam_v5_build.json without replacing the CAD')
     ap.add_argument('--ctrl', action='store_true',
                     help='build and check only the brackets B, A, C (.cache/v5/ctrl_v5.sc)')
+    ap.add_argument('--covers', action='store_true',
+                    help='build and check only the three cover pieces (.cache/v5/covers_v5.sc)')
     a = ap.parse_args()
-    if a.mounts:
+    if a.covers:
+        build_covers()
+    elif a.mounts:
         build_mounts()
     elif a.ctrl:
         build_ctrl()
