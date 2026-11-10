@@ -22,6 +22,7 @@ from common import sha, changed_inputs
 
 VERIFICATION_RECORDS = ('inspection/data/seam-v5-verification.json',
                         'inspection/data/assembly-reference-v5-verification.json')
+LFS_POINTER = b'version https://git-lfs.github.com/spec/'   # model/*.sc checked out without Git LFS (.gitattributes)
 
 
 def require(condition, message):
@@ -40,7 +41,11 @@ def source_checks():
         path = ROOT / rel
         require(path.is_file(), f'tracked file is missing: {rel}')
         require(not rel.endswith(('.bak', '.tmp', '.sc~')), f'backup file tracked: {rel}')
-        if path.suffix == '.py':
+        if path.suffix == '.sc':
+            with path.open('rb') as f:
+                head = f.read(len(LFS_POINTER))
+            require(head != LFS_POINTER, f'{rel} is a Git LFS pointer, not the CAD: run git lfs install && git lfs pull')
+        elif path.suffix == '.py':
             ast.parse(path.read_text(encoding='utf-8'), filename=rel)
         elif path.suffix == '.json':
             read(path)

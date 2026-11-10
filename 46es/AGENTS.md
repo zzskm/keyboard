@@ -146,7 +146,7 @@ Git 상태에 타 작업자의 변경이 있으면 덮어쓰지 않는다. 병�
 
 흐름은 세 명령이다. 원본을 고친 뒤 `pipeline.py --status`로 낡은 단계를 보고 `pipeline.py --run`으로 생성·내보내기·검증·조립 검토·시각 검토 캡처를 순서대로 다시 만든다. 변경을 검토·stage한 뒤 `finish.py`로 마무리하고, main 병합·push 뒤 가이드 영향이 있으면 `publish_guide.py`로 게시한다. 시각 검토 판정은 캡처를 보고 사람이 보고에 적는다.
 
-clone마다 한 번 `git config core.hooksPath .githooks`를 실행한다. `.githooks/pre-commit`은 46es를 건드리는 커밋에 `finish.py --hook`(stage 범위·정적 검사·공백·작성자, 스모크와 보고 틀 제외)을 실행하는 git 훅이라 Claude·Codex·사람 모두에게 같이 동작한다.
+clone마다 한 번 `git config core.hooksPath .githooks`를 실행한다. 생성 CAD `model/*.sc`는 Git LFS 객체라 clone 전에 Git LFS가 설치되어 있어야 한다(`.githooks/`에 LFS 훅 포함, [validation.md](docs/validation.md#재생성-저장소-루트)). `.githooks/pre-commit`은 46es를 건드리는 커밋에 `finish.py --hook`(stage 범위·정적 검사·공백·작성자, 스모크와 보고 틀 제외)을 실행하는 git 훅이라 Claude·Codex·사람 모두에게 같이 동작한다.
 
 `git add 46es`는 이번 작업의 46es 변경만 있을 때 쓴다. 다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `finish.py`는 stage 범위를 보여 주고 `check_repository.py`(의도한 커밋의 추적 파일 기준), `smoke_test.py`, `git diff --cached --check`, 저장소 로컬 작성자 확인을 차례로 실행한 뒤 아래 보고 틀을 출력한다. 생성 기록의 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다. 형상이 바뀌지 않는 생성기 정리는 `build_seam_v5.py --refresh-record`로 기록만 갱신한다(다시 빌드한 CAD가 커밋된 CAD와 바디 단위로 같을 때만 통과).
 

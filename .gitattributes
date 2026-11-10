@@ -2,3 +2,5 @@
 46es/model/mounts_cadcraft_phase1.dxf text eol=lf
 46es/model/reference_r2/*.step -text -diff
 46es/model/reference_r2/overview.svg -diff
+# Git hooks run by sh on every platform (core.hooksPath .githooks)
+.githooks/* text eol=lf

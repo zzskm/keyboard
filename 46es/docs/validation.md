@@ -80,6 +80,8 @@
 
 SolidCraft CLI와 `46es/requirements.txt`의 Python 패키지(`pip install -r 46es/requirements.txt`)가 설치된 Windows 환경에서 실행한다. CLI 경로는 환경변수 `SOLIDCRAFT_CLI`, 없으면 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`다(`tools/common.py`). 가이드는 `--cli`로도 지정할 수 있다. 콘솔 출력은 스크립트가 UTF-8로 바꾸므로 `PYTHONUTF8`을 따로 설정하지 않아도 된다.
 
+생성 CAD `46es/model/*.sc` 3개(현행·조립 검토·시험편)는 2026-11-10부터 Git LFS에 둔다(`46es/.gitattributes`). 재생성마다 약 18 MB씩 저장소에 쌓이던 것을 막는다. 그 전 커밋의 `.sc`는 일반 blob 그대로다(이력 재작성 없음). clone에는 [Git LFS](https://git-lfs.com)가 필요하고, LFS 없이 받으면 `.sc`가 포인터 파일이라 `check_repository.py`가 `git lfs install && git lfs pull`을 안내하며 멈춘다. `core.hooksPath .githooks`를 쓰면 `.git/hooks`가 무시되므로 LFS 훅(`pre-push` 등 4개)도 `.githooks/`에 있다. CI는 LFS 객체를 id로 캐시해 처음 보는 CAD만 내려받는다.
+
 이 절이 46es 명령의 유일한 목록이다. 다른 문서는 여기를 가리킨다.
 
 ```sh

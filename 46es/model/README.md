@@ -19,6 +19,8 @@
 | 검증 기준 | [`../inspection/data/seam-v5-baseline.json`](../inspection/data/seam-v5-baseline.json) | 두 CAD의 바디 형상 지문·부피·상자와 설계 매개변수. `verify_seam_v5.py --accept`로만 갱신 |
 | 실측 | [`measurements/`](measurements/), [`measurements.csv`](measurements.csv) | CSV=상태/채택, JSON=원본 관찰 |
 
+이 폴더의 `.sc` 3개(현행 CAD·시험편·조립 검토)는 Git LFS에 저장된다(2026-11-10부터, [validation.md](../docs/validation.md#재생성-저장소-루트)).
+
 ## 재생성·검증
 
 CAD 재생성·검증·정적 검사 명령은 [validation.md 「재생성」](../docs/validation.md#재생성-저장소-루트) 한 곳에 있다(`pipeline.py`가 단계를 순서대로 실행).

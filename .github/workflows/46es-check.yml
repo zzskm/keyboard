@@ -12,6 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # 46es/model/*.sc are Git LFS objects (46es/.gitattributes); the checks read the CAD itself. The objects
+      # are cached by their ids so a run downloads only CAD it has not seen (LFS bandwidth quota).
+      - run: git lfs ls-files --long | cut -d' ' -f1 | sort > .lfs-ids
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs/objects
+          key: lfs-${{ hashFiles('.lfs-ids') }}
+          restore-keys: lfs-
+      - run: git lfs pull
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

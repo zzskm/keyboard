@@ -13,3 +13,6 @@
 *.dwg -text
 *.dxf -text
 *.png -text
+# Generated CAD rewritten on every regeneration (about 18 MB each time) lives in Git LFS from 2026-11-10
+# (improvement plan 4-6). Earlier commits keep the plain blobs; the history is not rewritten.
+model/*.sc filter=lfs diff=lfs merge=lfs -text
