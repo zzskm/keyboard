@@ -10,8 +10,9 @@ from cad_model import live_shapes
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
 from build_seam_v5 import (MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X, REAR_RESTS, REAR_REST_BODY,  # noqa: E402
-                           top_levels)
+                           top_levels, cover_windows)
 import ctrl_v5  # noqa: E402
+import cover_pattern_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
@@ -76,8 +77,7 @@ def main():
     protrusion = cover_top - rim
     assert abs(protrusion - params['v5_cover_top_above_rim']) < 1e-6, protrusion
     levels = top_levels(MODEL)
-    for n, lv in levels.items():
-        assert set(lv) == {round(cover_top, 4)}, (n, lv)
+    cover_pattern_v5.check_levels(levels, cover_top, cover_windows())   # top plane + engraved decoration floor
     design = {k: round(params['CASE_V5_' + k], 3) for k in
               ('rim_Z', 'in_W_design', 'in_W_min', 'in_D_design', 'in_D_min', 'keycap_wall_min')}
     # production bodies identical to the v5 source

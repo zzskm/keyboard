@@ -4,7 +4,7 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 
 ## 기준/변경 경로
 
-- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 기반 타임라인 [`model/seam_v5_base.json`](../model/seam_v5_base.json)(plate)에 v5 기능을 더해 생성. plate 앞 이음과 주문 1 이음 쿠폰은 `tools/seam_v5.py`, mount 4개는 [`model/mounts_cadcraft_phase1.dxf`](../model/mounts_cadcraft_phase1.dxf)의 평면 윤곽을 `tools/mounts_v5.py`가 직접 돌출하고, 브래킷은 `tools/ctrl_v5.py`, 커버 3조각은 `tools/cover_v5.py`, spine은 `tools/spine_v5.py`, 참조 나사·너트·자석은 `tools/hardware_v5.py`가 만든다(앞 이음 나사·너트는 `seam_v5.py`). mount만 고칠 때는 `--mounts`, 브래킷만 고칠 때는 `--ctrl`, 커버만 고칠 때는 `--covers`로 수 초–수십 초 안에 확인한다([명령](validation.md#재생성-저장소-루트)).
+- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 기반 타임라인 [`model/seam_v5_base.json`](../model/seam_v5_base.json)(plate)에 v5 기능을 더해 생성. plate 앞 이음과 주문 1 이음 쿠폰은 `tools/seam_v5.py`, mount 4개는 [`model/mounts_cadcraft_phase1.dxf`](../model/mounts_cadcraft_phase1.dxf)의 평면 윤곽을 `tools/mounts_v5.py`가 직접 돌출하고, 브래킷은 `tools/ctrl_v5.py`, 커버 3조각은 `tools/cover_v5.py`(윗면 장식은 `tools/cover_pattern_v5.py`), spine은 `tools/spine_v5.py`, 참조 나사·너트·자석은 `tools/hardware_v5.py`가 만든다(앞 이음 나사·너트는 `seam_v5.py`). mount만 고칠 때는 `--mounts`, 브래킷만 고칠 때는 `--ctrl`, 커버만 고칠 때는 `--covers`로 수 초–수십 초 안에 확인한다([명령](validation.md#재생성-저장소-루트)).
 - `parameters_seam_v5.csv`는 CAD 내보내기 결과. 변경 순서: 생성기 → CAD → 검토/제작 출력 → 검증 → 가이드.
 - [`46es_assembly_review_v5.sc`](../model/46es_assembly_review_v5.sc): 조립 검토용 파생(부분 실측/단순 MX·OEM 참고). 실물 보증·주문용 아님.
 - 좌표: GH60 PCB 앞·왼쪽 원점, X 오른쪽/Y 뒤쪽/Z 위. **Z=0 = 케이스 지지대 상면**(타이핑 경사 정규화).
@@ -22,6 +22,7 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 | 커버 다리 자석 포켓 위 살 | 3.9 mm |
 | 커버 창과 참고 키캡 간격 | 1.0 mm. 쉴 때·4 mm 눌림 모두 |
 | 커버 창 윤곽 | 키 블록(왼쪽·오른쪽) 실루엣 2개. 키캡 실제 폭 + 여유를 담는 셀 20.35, 외곽 살 ≥ 1.1, 다리 자석 포켓과 ≥ 1.15 |
+| 커버 윗면 장식 | 이름 `46es` 음각 하나, 깊이 1.0(Z 19 → 18, 관통 없음). L 왼쪽 블록 위쪽(X 5.6–16.5, Y 38.9–42.1). 각진 단일 획 글자 높이 2.8·폭 1.5·간격 1.5·획 폭 0.4(막대 사이 살 1.0, 글자 사이 살 1.1), e는 가로 막대 셋. T·R에는 장식 없음. `tools/cover_pattern_v5.py` |
 | 참고 키캡 밑면 | 착좌 +6.0 = Z 17.3 mm. 실측 확정값 아님 |
 | 참고 키캡 4 mm 눌림 후 plate 간격 | 0.3 mm |
 | 케이스 테두리 | Z 14 mm 대략 실측. 커버 윗면 +5.0 |
@@ -30,6 +31,8 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 | 다리 자석 포켓 | 커버 Ø3.2 / plate Ø3.3. X 94.0·167.7, Y 2.5 |
 
 r2 DWG의 P4·P5는 각각 윗면이 평평하고, 세 조각의 윤곽은 거의 일치한다. v5도 세 조각의 윗면을 Z 19(참고 키캡 밑면 17.3 + 덮음 1.7)로 평탄화했다. r2와 비교해 v5에는 키캡 여유 1.0 mm를 위한 창 확장과 밑면 자석 체결이 적용된다.
+
+커버 윗면에는 이름 `46es` 하나만 작게 음각한다(사용자 결정 2026-11-10). 경위: 처음에는 L 앞쪽·R 가운데·T 뒤쪽 빈 면을 채우는 무늬를 시도했다(attractor hex → V자 헤링본 사선 → 폭이 줄어드는 헤링본). 사용자가 미리보기에서 모두 마음에 들지 않아 했고, 면을 채우는 대신 초점 하나를 두는 안 중 T 윤곽 핀스트라이프와 엠블럼을 골랐다. 그 미리보기도 본 뒤 핀스트라이프는 빼고("center cover에 engrave 제거"), 엠블럼은 "minimal, futuristic font"로 작게 바꿔 화면 캡처에 표시한 자리(L 왼쪽 블록의 뒤쪽 가장자리 바로 아래)에 두기로 했다. 글자는 폰트 파일 없이 생성기에 직선으로 그린 각진 단일 획이라 어느 환경에서도 같은 형상이 나온다. 모든 글자가 같은 높이이고 획 끝과 모서리는 직각이며, 막대 사이 살은 높이의 절반 − 획 폭이라 레진 벽 기준 1.0이 글자 높이의 하한을 정한다. 사용자가 폭은 그대로 두고 높이만 조금 줄이라고 해서(2026-11-10) 획을 0.45 → 0.4로 줄여 높이 3.0 → 2.8로 내렸다(막대 사이 살 1.0, 기준에 딱 맞음). 더 줄이려면 살이 1.0 아래로 가거나 획이 0.4보다 가늘어진다. 관통하지 않으므로 커버 강도·자석·배선 가림은 그대로이고, 윗면 평면 Z 19와 창 여유는 바뀌지 않는다. 절삭은 홈마다 바깥 고리의 곡선으로 프로파일을 지정해 안쪽 고리(6 속)를 섬으로 남긴다. 생성·검증은 윗면 높이가 Z 19와 Z 18 두 개뿐이고 Z 18 면적이 계산한 홈 면적과 같은지 확인한다.
 
 ## 체결·분해
 

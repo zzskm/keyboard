@@ -1,18 +1,18 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:2ab53dfaeb2c6e09a1ff43778a6a3f7c68f83bd6bf8db4836fc78cbe6e004a5a",
+  "inspection/scripts/verify_seam_v5.py": "ast:a7dfa4e9cce976aae1792f4ca200c5f9ab28635797cb9f4b6472344003f333cb",
   "tools/parts_v5.py": "ast:9009a600ffc32586e1ec814ab3c19191714b7bb4c271972fa241df1807801970",
-  "model/46es_mount_seam_v5.sc": "5377431fbf55bc089b5a3c97df8a7d61c92587510d84a3db030cebd7cc16882c",
-  "model/ctrl_trials_v5.sc": "c248f760b4b86f6aa477f9a42f0fa5666d234ba3ded3f877005c1c6ff8b96e4b",
-  "model/parameters_seam_v5.csv": "8e70e7d5c82d267b478e123b01e33ee056cac1e822d0447cdb867126bd0cb95c",
-  "inspection/data/seam-v5-baseline.json": "e38fdbe7f8525b53bc703f3e2e9332cc47e9cb0e1918dd3be5d5fb5ad1aa466a",
-  "inspection/data/seam-v5-print-set.json": "d9a7145bb774d261c535b82c3fb49a5beb9d2233babad3dda065a5b423c957ae",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "27eb822d9f17eec1404837a6f4f01719d8e80adeb0f3081c1d20609fc88d5708",
-  "inspection/data/seam-v5-trial-print-set.json": "e57f884c8508078af72fed9ddc3616decda045a1ec4d1fa9cdb3182649cf9dc3"
+  "model/46es_mount_seam_v5.sc": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
+  "model/ctrl_trials_v5.sc": "c704067a31e40a0c4270f76b3ccd415fdd50e24dfe5d90e13b503a900c8284be",
+  "model/parameters_seam_v5.csv": "f3b581f3845ed2130bb1bdea7f49c72369322d07589d5c23ee68c5850f341523",
+  "inspection/data/seam-v5-baseline.json": "07bcdefff6bb1ddf385f94e420d467c8b3ed20f7af02ebdf61315e267f5f4ea1",
+  "inspection/data/seam-v5-print-set.json": "e055f4b9f3daf55dcee8afde52d86246e938e91a1d09f4983ef5781dd887ecb5",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "3d9874834b9a173fca1a7230dc4076a784a6d4f3a82f6b390704d16d40e92816",
+  "inspection/data/seam-v5-trial-print-set.json": "7d74ef81c5496cb987dd5a25326efc1883c568d995a2438ad5091666e3f83e11"
  },
- "v5_sha": "5377431fbf55bc089b5a3c97df8a7d61c92587510d84a3db030cebd7cc16882c",
- "baseline_sha": "e38fdbe7f8525b53bc703f3e2e9332cc47e9cb0e1918dd3be5d5fb5ad1aa466a",
+ "v5_sha": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
+ "baseline_sha": "07bcdefff6bb1ddf385f94e420d467c8b3ed20f7af02ebdf61315e267f5f4ea1",
  "baseline_bodies": 74,
  "print_set": [
   {
@@ -71,13 +71,13 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 15.187,
+   "volume_cm3": 15.176,
    "size": [
     101.75,
     95.33,
     7.5
    ],
-   "wall_min_mm": 1.098,
+   "wall_min_mm": 1.0,
    "rel": 6e-06
   },
   {
@@ -108,7 +108,7 @@
   }
  ],
  "bodies": 64,
- "timeline_active": 348,
+ "timeline_active": 350,
  "rear_rest_Z": [
   0.5,
   5.0
@@ -143,9 +143,9 @@
   "REF_M2_SEAM_FRONT",
   "REF_M2_SEAM_FRONT_NUT"
  ],
- "timeline": 355,
- "sketches": 80,
- "params": 240,
+ "timeline": 357,
+ "sketches": 81,
+ "params": 244,
  "cover_Z": [
   11.5,
   19.0
@@ -154,8 +154,11 @@
  "cover_levels": {
   "COVER_L_DRAFT_TBD": {
    "top_Z": 19.0,
-   "top_area_mm2": 2446.169,
-   "volume_mm3": 15187.38
+   "top_area_mm2": 2434.889,
+   "volume_mm3": 15176.1,
+   "floor_Z": 18.0,
+   "floor_area_mm2": 11.28,
+   "expected_mm2": 11.28
   },
   "COVER_T_DRAFT_TBD": {
    "top_Z": 19.0,
@@ -556,8 +559,8 @@
   {
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
-   "volume_cm3": 15.19,
-   "wall_min_mm": 1.098,
+   "volume_cm3": 15.18,
+   "wall_min_mm": 1.0,
    "stl_volume_rel_err": 6e-06
   },
   {

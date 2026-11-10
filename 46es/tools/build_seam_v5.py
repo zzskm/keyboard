@@ -2,13 +2,13 @@
 
 The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
-per piece. The four mounts are extruded directly from the CADCraft drawing
+per piece (plus the 1.0 mm engraved decoration floor: the name on L, tools/cover_pattern_v5.py). The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
 snap, no gate). Three separate rest blocks stand on the PSD60 rear-wall bosses under the rear plate flanges
 (REAR_RESTS; the plates themselves carry no foot). The front seam of the plate halves (half-lap tab, M2, nut pocket)
 and the order-1 seam coupons come from tools/seam_v5.py. The base holds the
 plates; its reference-only switch envelopes and Wilmore housing stay suppressed (the review
-model re-enables the housing). The three cover pieces (tools/cover_v5.py), the seam spine (tools/spine_v5.py) and
+model re-enables the housing). The three cover pieces (tools/cover_v5.py, top decoration tools/cover_pattern_v5.py), the seam spine (tools/spine_v5.py) and
 the reference screws, nuts and magnets (tools/hardware_v5.py) are code since 2026-11-10 and run after the base.
 
 model/seam_v5_base.json is source, one parameter or feature per line. It was cut from the v4 document on 2026-11-10
@@ -49,6 +49,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
 import cover_v5
+import cover_pattern_v5
 import hardware_v5
 import seam_v5
 import spine_v5
@@ -115,7 +116,7 @@ REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_PO
 # Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
 BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/cover_v5.py',
-                'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/make_key_dxf.py',
+                'tools/cover_pattern_v5.py', 'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
                 'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
@@ -757,6 +758,14 @@ def cover_params(doc):
     new_param('v5_cover_silhouette_min_rail', s['min_rail'], '[v5 2026-11-10] 커버 외곽 안쪽 최소 살 폭(창을 이 선에서 자름). '
               '9·31·40번 키캡+여유가 외곽 1.16 안까지 와서 1.1(레진 벽 한계 1.0)')
     new_param('v5_cover_silhouette_res', s['res'], '[v5 2026-11-09] 래스터 해상도')
+    # --- 3c. 커버 윗면 장식 (v5 2026-11-10) ---------------------------------------------------
+    p = cover_pattern_v5
+    new_param('v5_cover_pattern_depth', p.DEPTH, '[v5 사용자 결정 2026-11-10] 커버 윗면 장식 음각 깊이. L 왼쪽 블록 위쪽의 '
+              f'이름 "{p.TEXT}" 하나, 관통 없음. 윤곽은 tools/cover_pattern_v5.py에서 재생성하는 고정 숫자')
+    new_param('v5_cover_pattern_text_height', p.TEXT_HEIGHT, '[v5 2026-11-10] 이름 글자 높이(획 중심선 기준, 각진 단일 획)')
+    new_param('v5_cover_pattern_text_stroke', p.TEXT_STROKE, '[v5 2026-11-10] 이름 획 폭(끝·모서리 직각)')
+    new_param('v5_cover_pattern_skin', 'v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z - TBD_magnet_T - TBD_magnet_clr',
+              '장식 바닥 아래 살의 하한(다리 자석 포켓 위 기준, 보스 자석 포켓은 더 낮음)')
     # --- 2. leg magnets ------------------------------------------------------------------------------
     new_param('v5_legmag_plate_clr', 0.15, '[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, '
               '헐거우면 에폭시로 채움(plate 재출력 없음)')
@@ -780,6 +789,7 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
                 extent=dict(convention='total_distance', direction='negative',
                             distance='TBD_cover_T + TBD_cover_lip_H + 0.5'),
                 operation='cut', targets=list(COVERS))
+    cover_pattern_v5.emit(feature, sketch, cover_windows(), top_plane)
 
     front_plate = '-TBD_pcb0_dy + TBD_plate_gap'
     for s, (x, y, plate, cover) in LEG_MAGNETS.items():
@@ -904,9 +914,11 @@ def build(probe=False):
     cover_v5.check(bodies)
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
     assert abs((values['TBD_magnet_D'] + 2 * values['TBD_magnet_clr']) / 2 - LEGMAG_POCKET_R) < 1e-9
+    assert values['v5_cover_pattern_skin'] >= values['v5_legmag_skin_min']
+    assert abs(values['v5_cover_pattern_depth'] - cover_pattern_v5.DEPTH) < 1e-9
     levels = top_levels(pending)
-    for name, faces in levels.items():
-        assert set(faces) == {round(top_z, 4)}, (name, faces)
+    pattern_report = cover_pattern_v5.check_levels(levels, top_z, cover_windows())
+    for name in levels:
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
     mount_report = check_mounts(evaluated, mounts)
     ctrl_report['bodies'] = check_ctrl(evaluated, trials)
@@ -919,7 +931,8 @@ def build(probe=False):
                 run_seconds=round(elapsed, 1),
                 trials_model=str(trials_pending if probe else TRIALS_OUTPUT), trials_run_seconds=round(trials_elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
-                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
+                cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, cover_pattern=pattern_report,
+                mounts=mount_report,
                 ctrl=ctrl_report, rear_rests=rest_report, seam=seam_report)
     if not probe:
         pending.replace(OUTPUT)
@@ -1027,12 +1040,12 @@ def build_covers():
     cover_v5.check(bodies)
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
     top_z = values['v5_cover_top_Z']
+    assert values['v5_cover_pattern_skin'] >= values['v5_legmag_skin_min']
     levels = top_levels(COVERS_ONLY)
-    for name, faces in levels.items():
-        assert set(faces) == {round(top_z, 4)}, (name, faces)
+    pattern_report = cover_pattern_v5.check_levels(levels, top_z, cover_windows())
     built, production = live_shapes(COVERS_ONLY), live_shapes(OUTPUT)
     info = dict(model=str(COVERS_ONLY), features=len(evaluated['timeline']), run_seconds=round(elapsed, 2),
-                cover_top_Z=top_z, cover_levels=levels,
+                cover_top_Z=top_z, cover_levels=levels, cover_pattern=pattern_report,
                 bodies={n: dict(volume_mm3=round(bodies[n]['volume_mm3'], 3), bbox=bodies[n]['bbox'],
                                 same_brep_as_production=built[n] == production.get(n)) for n in COVERS})
     write_json(CACHE / 'covers_v5.json', info)

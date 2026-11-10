@@ -34,11 +34,11 @@
   },
   "ok": true,
   "inputs": {
-    "inspection/scripts/verify_assembly_reference_v5.py": "ast:c2480cf85b593343918d45a669d3ba7b19523d8e956def5a55df0c7f193a18bc",
-    "model/46es_assembly_review_v5.sc": "4da8776d54d56e62906a3f7e97a7e8c9ae12a101da37a31354b6a3d5027885b8",
-    "model/assembly_reference_v5.json": "b6d2f972b29dd32eb7b9ea1131a0be23cad4fe6720c4551d4b58c1e2f7e187ba",
-    "model/46es_mount_seam_v5.sc": "5377431fbf55bc089b5a3c97df8a7d61c92587510d84a3db030cebd7cc16882c",
-    "inspection/data/seam-v5-trial-print-set.json": "e57f884c8508078af72fed9ddc3616decda045a1ec4d1fa9cdb3182649cf9dc3"
+    "inspection/scripts/verify_assembly_reference_v5.py": "ast:370f6d54c3d2ad0921ce2477ac022996651685a22c80fccb0827617b5be80bf9",
+    "model/46es_assembly_review_v5.sc": "aa47b137811a5138cfb305c02606ae42ac31146e1eb138668f48b4178dea4079",
+    "model/assembly_reference_v5.json": "6cccb5d0b840b705f4bda4863ce93c507e831ca558d4cf83d2b79b5dffa0d078",
+    "model/46es_mount_seam_v5.sc": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
+    "inspection/data/seam-v5-trial-print-set.json": "7d74ef81c5496cb987dd5a25326efc1883c568d995a2438ad5091666e3f83e11"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -115,14 +115,15 @@
       }
     }
   },
-  "model_sha": "4da8776d54d56e62906a3f7e97a7e8c9ae12a101da37a31354b6a3d5027885b8",
-  "source_sha": "5377431fbf55bc089b5a3c97df8a7d61c92587510d84a3db030cebd7cc16882c",
+  "model_sha": "aa47b137811a5138cfb305c02606ae42ac31146e1eb138668f48b4178dea4079",
+  "source_sha": "60a27cbccfdcdd1dc873de0b2adab4ae8eb610e1c0cd31abc2df59276650c679",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.000000000000007,
   "cover_above_rim_mm": 5.0,
   "cover_levels": {
     "COVER_L_DRAFT_TBD": {
-      "19.0": 2446.169
+      "18.0": 11.28,
+      "19.0": 2434.889
     },
     "COVER_T_DRAFT_TBD": {
       "19.0": 2294.74

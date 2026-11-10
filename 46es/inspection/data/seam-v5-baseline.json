@@ -2,8 +2,8 @@
  "about": "Expected v5 state: verify_seam_v5.py fails on any difference; --accept rewrites this file and prints the differences for the commit message. check_repository.py compares the fingerprints.",
  "bodies": {
   "COVER_L_DRAFT_TBD": {
-   "shape_sha256": "7bd93753dd02777bc8e06c1eaf2fc981eeb60230706882b78adef4e35710e48c",
-   "volume_mm3": 15187.38,
+   "shape_sha256": "db35ffac00e4ec48065976aab445658319009b5b2521a63a816605ba2fd2a60a",
+   "volume_mm3": 15176.1,
    "bbox": [
     [
      -0.393,
@@ -1392,6 +1392,10 @@
   "split_support_size": "6 mm",
   "split_usb_bridge_W": "4 mm",
   "stab_2u": "0",
+  "v5_cover_pattern_depth": "1.0",
+  "v5_cover_pattern_skin": "v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z - TBD_magnet_T - TBD_magnet_clr",
+  "v5_cover_pattern_text_height": "2.8",
+  "v5_cover_pattern_text_stroke": "0.4",
   "v5_cover_silhouette_cell": "20.35",
   "v5_cover_silhouette_close_r": "0.0",
   "v5_cover_silhouette_fill_L": "16.0",
@@ -1634,6 +1638,10 @@
   "split_support_size": 6.0,
   "split_usb_bridge_W": 4.0,
   "stab_2u": 0.0,
+  "v5_cover_pattern_depth": 1.0,
+  "v5_cover_pattern_skin": 2.9,
+  "v5_cover_pattern_text_height": 2.8,
+  "v5_cover_pattern_text_stroke": 0.4,
   "v5_cover_silhouette_cell": 20.35,
   "v5_cover_silhouette_close_r": 0.0,
   "v5_cover_silhouette_fill_L": 16.0,

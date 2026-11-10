@@ -23,6 +23,7 @@ from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REAR_RESTS
                            seam_coupon_bodies,
                            horizontal_faces, top_levels, cover_windows)
 import ctrl_v5  # noqa: E402
+import cover_pattern_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
@@ -327,15 +328,17 @@ def leg_magnet_walls(params):
 
 
 def cover_levels(params, bodies):
-    """Each cover has one flat top plane at v5_cover_top_Z. Keycap clearance is checked by verify_assembly_reference_v5."""
+    """Each cover has one flat top plane at v5_cover_top_Z, plus the engraved decoration floor (tools/cover_pattern_v5.py)
+    with the groove area. Keycap clearance is checked by verify_assembly_reference_v5."""
     top = params['v5_cover_top_Z']
     levels = top_levels(V5)
+    pattern = cover_pattern_v5.check_levels(levels, top, cover_windows())
     out = {}
     for name in COVERS:
-        assert set(levels[name]) == {round(top, 4)}, (name, levels[name])
         out[name] = dict(top_Z=top, top_area_mm2=levels[name][round(top, 4)],
-                         volume_mm3=round(bodies[name]['volume_mm3'], 3))
+                         volume_mm3=round(bodies[name]['volume_mm3'], 3), **pattern.get(name, {}))
     assert params['v5_legmag_skin'] >= params['v5_legmag_skin_min']
+    assert params['v5_cover_pattern_skin'] >= params['v5_legmag_skin_min']
     return out
 
 
