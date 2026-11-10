@@ -139,7 +139,7 @@ Git 상태에 타 작업자의 변경이 있으면 덮어쓰지 않는다. 병�
 
 ## 10. 실행 명령과 종료 보고
 
-아래 명령은 저장소 루트에서 실행한다. CAD 관련 명령에는 SolidCraft CLI와 Python NumPy·SciPy가 필요하다. 가이드 브라우저 검사에는 Playwright가 필요하다. 변경 유형에 따라 §6의 검증 범위를 적용한다.
+아래 명령은 저장소 루트에서 실행한다. CAD 관련 명령에는 SolidCraft CLI(경로는 `SOLIDCRAFT_CLI` 또는 기본 설치 경로)와 `46es/requirements.txt`의 Python 패키지가 필요하다. 가이드 브라우저 검사에는 Playwright가 필요하다. 변경 유형에 따라 §6의 검증 범위를 적용한다.
 
 ```sh
 # 형상 변경: 원본 → 검토·제작 출력 → 형상 검사
@@ -154,21 +154,20 @@ python 46es/tools/build_assembly_reference_v5.py
 python -B 46es/inspection/scripts/verify_assembly_reference_v5.py
 python -B 46es/guide/review_guide.py --steps standoff trial module --views reset iso
 
-# 변경을 검토·stage한 뒤 정적 검사
+# 변경을 검토·stage한 뒤 마무리(정적 검사·스모크·공백·작성자·보고 틀)
 # 아래 git add는 이번 작업의 46es 변경만 있을 때 사용한다.
 git add 46es
-python -B 46es/tools/check_repository.py
-git diff --cached --check
+python -B 46es/tools/finish.py
 
 # main 병합·push 뒤 가이드 게시(가이드 영향이 있을 때)
 python 46es/guide/publish_guide.py
 ```
 
-다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `check_repository.py`는 의도한 커밋의 추적 파일을 기준으로 검사한다. 생성 기록의 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다.
+다른 작업의 변경이 섞였으면 파일을 지정해 stage한다. `finish.py`는 stage 범위를 보여 주고 `check_repository.py`(의도한 커밋의 추적 파일 기준), `smoke_test.py`, `git diff --cached --check`, 저장소 로컬 작성자 확인을 차례로 실행한 뒤 아래 보고 틀을 출력한다. 생성 기록의 해시가 다르면 원본 변경·입력 경로·LF/CRLF부터 확인한다. 원인을 확인하지 않고 메타데이터만 덮어쓰지 않는다. 형상이 바뀌지 않는 생성기 정리는 `build_seam_v5.py --refresh-record`로 기록만 갱신한다(다시 빌드한 CAD가 커밋된 CAD와 바디 단위로 같을 때만 통과).
 
 이전 결정을 뒤집는 형상 변경은 커밋 제목을 `decision:`으로 시작하고, [결정 이력](docs/design.md#결정-이력)의 커밋 칸에는 해시 대신 그 커밋 제목을 적는다(같은 커밋에서 쓸 수 있어 해시 기입용 후속 커밋이 필요 없다). 조회는 `git log --grep "^decision:" -- 46es`.
 
-Windows에서는 `PYTHONUTF8=1`을 설정하고 실행한다. 설정하지 않으면 cp949 콘솔에서 한글 출력이 실패한다. 텍스트 원본을 스크립트로 고칠 때는 `newline='\n'` 또는 `write_bytes`로 LF를 유지한다. 생성기·검사가 작업 트리 원본의 해시를 기록하므로(예: `generator_sha`), CRLF로 저장한 원본은 커밋된 LF 파일과 해시가 어긋난다.
+공통 경로·CLI·해시·JSON 쓰기는 `tools/common.py`를 쓴다. 이 모듈을 import하면 콘솔 출력이 UTF-8로 바뀌므로 `PYTHONUTF8=1`은 필요 없다(이 모듈을 쓰지 않는 옛 분석 스크립트는 여전히 필요할 수 있다). 기록 JSON은 `write_json()`으로 LF·고정 순서로 쓴다. 같은 입력으로 다시 실행했을 때 diff가 생기면 `set` 순회처럼 순서가 정해지지 않은 곳을 고친다. 텍스트 원본을 스크립트로 고칠 때는 `newline='\n'` 또는 `write_bytes`로 LF를 유지한다. 생성기·검사가 작업 트리 원본의 해시를 기록하므로(예: `generator_sha`), CRLF로 저장한 원본은 커밋된 LF 파일과 해시가 어긋난다.
 
 작업 종료 보고는 다음 다섯 줄이면 충분하다.
 

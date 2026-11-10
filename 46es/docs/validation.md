@@ -78,10 +78,11 @@
 
 ## 재생성 (저장소 루트)
 
-SolidCraft CLI와 Python NumPy·SciPy가 설치된 Windows 환경에서 실행한다. 현재 CAD 도구는 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`를 사용한다. 가이드만 `--cli`로 경로를 지정할 수 있다.
+SolidCraft CLI와 `46es/requirements.txt`의 Python 패키지(`pip install -r 46es/requirements.txt`)가 설치된 Windows 환경에서 실행한다. CLI 경로는 환경변수 `SOLIDCRAFT_CLI`, 없으면 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`다(`tools/common.py`). 가이드는 `--cli`로도 지정할 수 있다. 콘솔 출력은 스크립트가 UTF-8로 바꾸므로 `PYTHONUTF8`을 따로 설정하지 않아도 된다.
 
 ```sh
 python 46es/tools/build_seam_v5.py --mounts   # mount만 바꿀 때: 수 초, 도면 단면 비교
+python 46es/tools/build_seam_v5.py --refresh-record   # 형상이 그대로인 생성기 정리 뒤: CAD 유지, 생성 기록만 갱신
 python 46es/tools/build_seam_v5.py
 python 46es/tools/export_seam_v5_review.py
 python 46es/tools/export_print_v5.py
@@ -102,10 +103,14 @@ python 46es/guide/build_guide.py
 
 ```sh
 python -B 46es/tools/check_repository.py
+python -B 46es/tools/smoke_test.py
+python -B 46es/tools/finish.py      # 커밋 전: stage 범위 → 위 두 검사 → git diff --cached --check → 작성자 → 보고 틀
 ```
 
-현행 경로·문서 링크·가이드 부품 참조·CAD/CSV·입출력 해시·시험/본 출력 STL의 연결성·모서리·부피·기록을 검사한다. SolidCraft의 재평가·간섭 계산이나 브라우저 조작을 대신하지 않는다. 가이드 브라우저 검사는 [가이드 안내](../guide/README.md)를 따른다.
+`check_repository.py`는 현행 경로·문서 링크·가이드 부품 참조·생성 기록·CAD/CSV·입출력 해시·시험/본 출력 STL의 연결성·모서리·부피·기록을 검사한다. `smoke_test.py`는 생성기의 순수 Python 형상(mount 윤곽의 층별 부피, 브래킷 금지 영역·벽, 커버 창)을 다시 계산해 커밋된 검증 기록·주문 1 부피와 비교한다(약 15 s). 둘 다 SolidCraft의 재평가·간섭 계산이나 브라우저 조작을 대신하지 않는다. 가이드 브라우저 검사는 [가이드 안내](../guide/README.md)를 따른다.
 
-CI는 이 검사로 현행 경로·문서·출력물 불일치를 차단한다. 추적 파일 목록과 바이트는 git이 관리하므로 별도 목록 파일을 두지 않는다(`manifest.json`은 2026-11-10 폐지).
+생성기만 정리하고 형상이 그대로면 `build_seam_v5.py --refresh-record`를 쓴다. 캐시에 다시 빌드해 커밋된 CAD의 문서와 모든 바디 BRep가 같을 때만 생성 기록의 입력 지문을 갱신하고 CAD는 그대로 둔다. 다시 빌드한 CAD는 형상이 같아도 zip 바이트가 달라, 교체하면 그 해시에 묶인 주문 1·2 기록·검증·검토 모델이 모두 낡은 것이 되기 때문이다. 하나라도 다르면 실패하므로 그때는 전체 재생성을 한다.
+
+CI는 두 검사로 현행 경로·문서·출력물 불일치와 생성 논리 회귀를 차단한다. 추적 파일 목록과 바이트는 git이 관리하므로 별도 목록 파일을 두지 않는다(`manifest.json`은 2026-11-10 폐지).
 
 텍스트는 `.gitattributes`로 LF를 고정한다. 정리 전 조립 메타데이터의 실측 JSON 해시는 Windows CRLF 사본의 값이었다. 원본 관찰값과 CAD는 바꾸지 않고 Git에 저장된 LF 바이트의 해시로 정규화했다.

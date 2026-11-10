@@ -6,7 +6,7 @@
 
 ## 실행 (저장소 루트)
 
-SolidCraft CLI + Python NumPy·Matplotlib·Shapely·ezdxf 필요(기본 `C:/Program Files/SolidCraft/solidcraft-cli.exe`, `--cli` 변경).
+SolidCraft CLI + Python NumPy·Matplotlib·Shapely·ezdxf 필요(`SOLIDCRAFT_CLI` 또는 기본 `C:/Program Files/SolidCraft/solidcraft-cli.exe`, `--cli` 변경).
 
 ```sh
 python 46es/tools/build_assembly_reference_v5.py
