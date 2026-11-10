@@ -1,7 +1,7 @@
 {
  "ok": true,
  "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "7105afb09cfa541b519b1c4354b52ade6fd7d071d6a7ea768b7adb2b379b1b54",
+ "v5_sha": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
  "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
  "print_set": [
   {
@@ -96,9 +96,9 @@
    "rel": 5e-06
   }
  ],
- "bodies": 67,
+ "bodies": 65,
  "untouched_bodies_exact": 45,
- "timeline_active": 491,
+ "timeline_active": 395,
  "derived_same_volume_box": [
   "SEAM_COUPON_L_V4",
   "SEAM_COUPON_R_V4"
@@ -136,15 +136,13 @@
   "REF_M2_PLATE_2_NUT"
  ],
  "added": [
-  "CTRL_SNAP_TRIAL_A",
-  "CTRL_SNAP_TRIAL_C",
   "REF_LEGMAG_L_COVER",
   "REF_LEGMAG_L_PLATE",
   "REF_LEGMAG_R_COVER",
   "REF_LEGMAG_R_PLATE"
  ],
- "timeline": 695,
- "sketches": 153,
+ "timeline": 599,
+ "sketches": 109,
  "params": 235,
  "new_params": [
   "ctrl5_M2_1_X",
@@ -656,65 +654,50 @@
   ],
   "check": "SolidCraft XY sections + source fastener cylinders; exact overlap boolean returns no result"
  },
- "plate_files_unchanged": {
-  "plate_L": {
-   ".stl": true,
-   ".step": true
-  },
-  "plate_R": {
-   ".stl": true,
-   ".step": true
-  }
- },
  "parts": [
   {
-   "file": "46es_v5_cover_L_REVIEW_ONLY",
+   "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "volume_cm3": 15.19,
    "v4_volume_cm3": 5.78,
    "flat_Z18_volume_cm3": 13.07,
    "wall_min_mm": 1.098,
-   "min_mm": 0.264,
    "stl_volume_rel_err": 6e-06
   },
   {
-   "file": "46es_v5_cover_T_REVIEW_ONLY",
+   "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
    "volume_cm3": 14.03,
    "v4_volume_cm3": 5.21,
    "flat_Z18_volume_cm3": 12.06,
    "wall_min_mm": 1.059,
-   "min_mm": 0.136,
    "stl_volume_rel_err": 3e-06
   },
   {
-   "file": "46es_v5_cover_R_REVIEW_ONLY",
+   "file": "46es_v5_cover_R",
    "material": "8001 레진 투명",
    "volume_cm3": 15.38,
    "v4_volume_cm3": 6.17,
    "flat_Z18_volume_cm3": 13.61,
    "wall_min_mm": 1.098,
-   "min_mm": 0.267,
    "stl_volume_rel_err": 5e-06
   },
   {
-   "file": "46es_v5_plate_L_REVIEW_ONLY",
+   "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
    "volume_cm3": 38.51,
    "v4_volume_cm3": 38.12,
    "flat_Z18_volume_cm3": 38.12,
    "wall_min_mm": 1.0,
-   "min_mm": 0.026,
    "stl_volume_rel_err": 3.6e-05
   },
   {
-   "file": "46es_v5_plate_R_REVIEW_ONLY",
+   "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
    "volume_cm3": 40.76,
    "v4_volume_cm3": 40.64,
    "flat_Z18_volume_cm3": 40.64,
    "wall_min_mm": 1.047,
-   "min_mm": 0.026,
    "stl_volume_rel_err": 1.9e-05
   }
  ]

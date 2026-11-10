@@ -54,14 +54,15 @@ def source_checks():
 
 def build_checks():
     """The committed production CAD was generated from the committed generator inputs (model/seam_v5_build.json)."""
-    from build_seam_v5 import BUILD_RECORD, OUTPUT, build_record
+    from build_seam_v5 import BUILD_RECORD, OUTPUT, TRIALS_OUTPUT, build_record
     require(BUILD_RECORD.is_file(), 'missing build record: run python 46es/tools/build_seam_v5.py')
     recorded, current = read(BUILD_RECORD), build_record()
     stale = sorted(rel for rel in set(recorded['inputs']) | set(current['inputs'])
                    if recorded['inputs'].get(rel) != current['inputs'].get(rel))
     require(not stale, f'CAD not regenerated after input change: {", ".join(stale)} (run python 46es/tools/build_seam_v5.py)')
-    require(recorded['output'] == current['output'] and sha(OUTPUT) == recorded['output_sha'],
-            f'{current["output"]} differs from its build record (hand edit or partial regeneration)')
+    for key, path in (('output', OUTPUT), ('trials_output', TRIALS_OUTPUT)):
+        require(recorded.get(key) == current[key] and sha(path) == recorded.get(key + '_sha'),
+                f'{current[key]} differs from its build record (hand edit or partial regeneration)')
 
 
 def model_checks():
@@ -94,7 +95,8 @@ def model_checks():
     ref = read(ROOT / 'model/assembly_reference_v5.json')
     inputs = {'source_sha': V5, 'output_sha': ROOT / 'model/46es_assembly_review_v5.sc',
               'generator_sha': ROOT / ref['generator'],
-              'measurement_sha': ROOT / 'model/measurements/2026-11-04T111846Z.json'}
+              'measurement_sha': ROOT / 'model/measurements/2026-11-04T111846Z.json',
+              'trials_sha': ROOT / 'model/ctrl_trials_v5.sc'}
     for key, path in inputs.items():
         require(sha(path) == ref[key], f'stale assembly reference: {key}')
     review = live_shapes(inputs['output_sha'])
@@ -135,8 +137,9 @@ def guide_checks(names):
 
 
 def print_checks(current, sample):
-    from export_print_v5 import MODEL, SAMPLE, PARTS, TRIAL_PARTS
-    model_sha, sample_sha = sha(MODEL), sha(SAMPLE)
+    from export_print_v5 import MODEL, SAMPLE, TRIALS, PARTS, TRIAL_PARTS, source_of
+    shapes = {MODEL: current, SAMPLE: sample, TRIALS: live_shapes(TRIALS)}
+    hashes = {path: sha(path) for path in shapes}
     for order, record, wall, expected in [
         ('order1', 'seam-v5-trial-print-set.json', 'seam-v5-trial-thin-wall.json', TRIAL_PARTS),
         ('order2', 'seam-v5-print-set.json', 'seam-v5-mjf-thin-wall.json', PARTS),
@@ -151,9 +154,9 @@ def print_checks(current, sample):
             name = p['file']
             body, material, flip = expected[name.removeprefix('46es_v5_')]
             require((p['body'], p['material'], p['print_flip_about_X']) == (body, material, flip), f'wrong print mapping: {name}')
-            require(body in current or body in sample, f'CAD body missing: {body}')
-            require(p.get('source_sha256') == (sample_sha if body in sample else model_sha),
-                    f'stale {order} CAD source: {name}')
+            source = source_of(body)
+            require(body in shapes[source], f'CAD body missing: {body} in {source.name}')
+            require(p.get('source_sha256') == hashes[source], f'stale {order} CAD source: {name}')
             for ext, key in [('.stl', 'stl_sha256'), ('.step', 'step_sha256')]:
                 require(sha(folder / (name + ext)) == p[key], f'output hash differs: {name}{ext}')
             scan = scans[name]

@@ -8,6 +8,8 @@ snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (
 frame/mask/pair chain, the v4 bracket/gate chain and the
 reference-only switch envelopes and Wilmore housing are suppressed in the production model.
 
+Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
+model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
 Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into guide/.cache/v5 without replacing the current CAD
   --mounts  build only the four mounts into guide/.cache/v5/mounts_v5.sc from a
@@ -39,6 +41,10 @@ from common import ROOT, CLI, sha, write_json
 
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
+# Order-1 snap trial brackets A/C (tools/ctrl_v5.py TRIALS): free bodies without plate cuts, so they live in a small
+# parameter-only model of their own (plan 3-3, user 2026-11-10) instead of the production timeline.
+TRIALS_OUTPUT = ROOT / 'model/ctrl_trials_v5.sc'
+PARAMETERS_CSV = ROOT / 'model/parameters_seam_v5.csv'
 CACHE = ROOT / 'guide/.cache/v5'
 MOUNTS_ONLY = CACHE / 'mounts_v5.sc'
 KEY_MARGIN = 1.0
@@ -121,7 +127,15 @@ def input_fingerprint(path):
 
 def build_record():
     return dict(generator='tools/build_seam_v5.py', output=OUTPUT.relative_to(ROOT).as_posix(),
+                trials_output=TRIALS_OUTPUT.relative_to(ROOT).as_posix(),
                 inputs={rel: input_fingerprint(ROOT / rel) for rel in BUILD_INPUTS})
+
+
+def write_build_record():
+    record = build_record()
+    record['output_sha'] = sha(OUTPUT)
+    record['trials_output_sha'] = sha(TRIALS_OUTPUT)
+    write_json(BUILD_RECORD, record, sort_keys=True)
 
 
 def run(*args):
@@ -599,7 +613,7 @@ def ctrl_params():
     ]
 
 
-def check_ctrl(evaluated):
+def check_ctrl(evaluated, trials):
     """The generator's Pro Micro frame matches the document; each bracket is one closed body of the expected volume."""
     bodies = {b['name']: b for b in evaluated['bodies']}
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
@@ -613,6 +627,9 @@ def check_ctrl(evaluated):
     assert abs(values['TBD_frame_T'] + values['TBD_standoff_H'] - c.PLATE_BOTTOM) < 1e-9
     assert 'CTRL_GATE_SPLIT_V1' not in bodies and 'REF_M2_GATE' not in bodies
     report = {}
+    assert not set(c.TRIALS) & set(bodies), 'snap trials belong in model/ctrl_trials_v5.sc'
+    bodies.update({b['name']: b for b in trials['bodies']})
+    assert set(c.TRIALS) == {b['name'] for b in trials['bodies']}, trials['bodies']
     for body, design in [(c.BODY, c.bracket())] + [(n, c.bracket(**s)) for n, s in c.TRIALS.items()]:
         b = bodies[body]
         expected = c.expected_volume(design)
@@ -756,7 +773,8 @@ def build(probe=False):
                 operation='join', participants=[plate])
 
     # Phase 2 (2026-11-09): the v4 bracket/gate chain is suppressed; tools/ctrl_v5.py builds the snap bracket,
-    # its two plate screw holes and the reference M2 screws, plus two order-1 trial variants beside the coupons.
+    # its two plate screw holes and the reference M2 screws. The order-1 trial variants A/C are built into
+    # model/ctrl_trials_v5.sc (trials_document); their keep-out checks run here with the production bracket's.
     suppressed_ctrl = strip_ctrl(doc)
     for name, expr, comment in ctrl_params():
         new_param(name, expr, comment)
@@ -770,13 +788,19 @@ def build(probe=False):
     ctrl_v5.emit(feature, sketch)
     for body, spec in ctrl_v5.TRIALS.items():
         ctrl_report[body] = ctrl_v5.check(ctrl_v5.bracket(spec['hook_e'], spec['end_d'], spec['stop_gap']))
-        ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
 
     doc['name'] = '46es seam v5 - flat cover, drawing-built mounts, snap controller bracket'
     seed = CACHE / 'seed_v5.sc'
     write_seed(doc, container, seed)
     pending = CACHE / 'v5.sc'
     evaluated, elapsed = evaluate(seed, pending)
+    csv_pending = CACHE / 'parameters_seam_v5.csv'
+    write_json(CACHE / 'parameters_export.json',
+               [dict(command='parameters.export', params=dict(path=str(csv_pending), format='csv'))], indent=None)
+    run('run', CACHE / 'parameters_export.json', '--in', pending, '--quiet')
+    trials_seed, trials_pending = CACHE / 'seed_ctrl_trials_v5.sc', CACHE / 'ctrl_trials_v5.sc'
+    write_seed(*trials_document(), trials_seed)
+    trials, trials_elapsed = evaluate(trials_seed, trials_pending)
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
     assert not REMOVED_BODIES & set(bodies), REMOVED_BODIES & set(bodies)
@@ -788,22 +812,23 @@ def build(probe=False):
         assert set(faces) == {round(top_z, 4)}, (name, faces)
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
     mount_report = check_mounts(evaluated, mounts)
-    ctrl_report['bodies'] = check_ctrl(evaluated)
+    ctrl_report['bodies'] = check_ctrl(evaluated, trials)
     feet_report = check_rear_feet(evaluated, feet)
     feet_report['plan_clearance_mm'] = rear_foot_clearance(feet, mounts, bodies)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
                 suppressed_legacy=len(suppressed) + len(suppressed_ctrl), run_seconds=round(elapsed, 1),
+                trials_model=str(trials_pending if probe else TRIALS_OUTPUT), trials_run_seconds=round(trials_elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
                 cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
                 ctrl=ctrl_report, rear_feet=feet_report)
     if not probe:
         pending.replace(OUTPUT)
+        trials_pending.replace(TRIALS_OUTPUT)
+        csv_pending.replace(PARAMETERS_CSV)
         info['output_sha'] = sha(OUTPUT)
-        record = build_record()
-        record['output_sha'] = info['output_sha']
-        write_json(BUILD_RECORD, record, sort_keys=True)
+        write_build_record()
     write_json(CACHE / ('probe_v5.json' if probe else 'build_v5.json'), info)
     print(json.dumps(info, ensure_ascii=False, indent=1))
     return info
@@ -817,17 +842,33 @@ def refresh_record():
     build(probe=True)
     sys.path.insert(0, str(ROOT / 'inspection/scripts'))
     from cad_model import document, live_shapes
-    probe = CACHE / 'v5.sc'
-    committed, rebuilt = document(OUTPUT), document(probe)
-    differ = [key for key in committed.keys() | rebuilt.keys() if committed.get(key) != rebuilt.get(key)]
-    assert not differ, f'probe document differs from the committed CAD in {sorted(differ)}: run without --refresh-record'
-    a, b = live_shapes(OUTPUT), live_shapes(probe)
-    bodies = sorted(n for n in a.keys() | b.keys() if a.get(n) != b.get(n))
-    assert not bodies, f'probe bodies differ from the committed CAD: {bodies}: run without --refresh-record'
-    record = build_record()
-    record['output_sha'] = sha(OUTPUT)
-    write_json(BUILD_RECORD, record, sort_keys=True)
-    print(f'build record refreshed: {len(a)} bodies identical, {OUTPUT.name} kept')
+    count = 0
+    for output, probe in ((OUTPUT, CACHE / 'v5.sc'), (TRIALS_OUTPUT, CACHE / 'ctrl_trials_v5.sc')):
+        committed, rebuilt = document(output), document(probe)
+        differ = [key for key in committed.keys() | rebuilt.keys() if committed.get(key) != rebuilt.get(key)]
+        assert not differ, f'probe {output.name} differs from the committed CAD in {sorted(differ)}: run without --refresh-record'
+        a, b = live_shapes(output), live_shapes(probe)
+        bodies = sorted(n for n in a.keys() | b.keys() if a.get(n) != b.get(n))
+        assert not bodies, f'probe bodies differ from {output.name}: {bodies}: run without --refresh-record'
+        count += len(a)
+    assert (CACHE / 'parameters_seam_v5.csv').read_bytes() == PARAMETERS_CSV.read_bytes(), 'parameter CSV differs'
+    write_build_record()
+    print(f'build record refreshed: {count} bodies identical, {OUTPUT.name} and {TRIALS_OUTPUT.name} kept')
+
+
+def trials_document():
+    """Parameter-only copy of the v4 document holding the order-1 snap trials A and C. They are free bodies beside the
+    coupons (no plate cut, no reference screws), so they need the parameters and nothing else."""
+    doc, container = read_source()
+    doc['features'] = []
+    doc['next_id'] = 1
+    doc['visibility'] = {key: [] for key in doc['visibility']}
+    doc['appearances'] = {'bodies': {}}
+    doc['name'] = '46es v5 snap bracket trials A/C (order 1)'
+    feature, sketch = helpers(doc)
+    for body, spec in ctrl_v5.TRIALS.items():
+        ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
+    return doc, container
 
 
 def build_mounts():

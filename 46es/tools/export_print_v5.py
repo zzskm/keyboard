@@ -7,7 +7,8 @@ python tools/export_print_v5.py
   -> inspection/data/seam-v5-print-set.json     (hashes, dimensions and CAD/STL volumes)
   -> inspection/data/seam-v5-mjf-thin-wall.json (thin wall scan, mapped back to assembly coordinates)
 
-Use --trial to export the four mounts, four test coupons and the three snap brackets (A/B/C) in model/print_v5/order1/.
+Use --trial to export the four mounts, four test coupons and the three snap brackets (A/B/C) in model/print_v5/order1/
+(B from the production model, A/C from model/ctrl_trials_v5.sc, coupon B and the boss tab from the sample model).
 Both order sets record the source CAD hash for every part.
 """
 import argparse
@@ -51,6 +52,14 @@ TRIAL_PARTS = {
     'ctrl_snap_C': ('CTRL_SNAP_TRIAL_C', 'MJF PA12S-HP 검정', True),
 }
 SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'          # snap trials A/C (build_seam_v5.py, plan 3-3)
+SAMPLE_BODIES = ('SW_HOLE_SAMPLE', 'BOSS_TAB_SAMPLE')
+TRIAL_BODIES = ('CTRL_SNAP_TRIAL_A', 'CTRL_SNAP_TRIAL_C')
+
+
+def source_of(body):
+    """The CAD file each printed body is exported from."""
+    return SAMPLE if body in SAMPLE_BODIES else TRIALS if body in TRIAL_BODIES else MODEL
 MJF_MAX = (370.0, 276.0, 360.0)
 
 
@@ -62,13 +71,14 @@ def main():
     order = 'order1' if args.trial else 'order2'
     out = ROOT / 'model/print_v5' / order
     out.mkdir(parents=True, exist_ok=True)
-    sources = {MODEL: {k: v for k, v in parts.items() if v[0] not in ('SW_HOLE_SAMPLE', 'BOSS_TAB_SAMPLE')}}
+    sources = {}
+    for k, v in parts.items():
+        sources.setdefault(source_of(v[0]), {})[k] = v
     if args.trial:
         from cad_model import document
         upper = next(p['expr'] for p in document(SAMPLE)['params'] if p['name'] == 'SMP_upper')
         if upper != '1.7 mm':
             raise ValueError(f'trial row C must match v5 upper layer 1.7 mm, got {upper}')
-        sources[SAMPLE] = {k: v for k, v in parts.items() if v[0] in ('SW_HOLE_SAMPLE', 'BOSS_TAB_SAMPLE')}
     CACHE.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=CACHE, prefix=f'print_v5_{order}_') as scratch:
         export(parts, order, sources, out, Path(scratch))

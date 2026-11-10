@@ -22,6 +22,7 @@ from mesh_section import read_stl, align, compare, section  # noqa: E402
 
 V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'
 FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
 FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
@@ -32,7 +33,7 @@ CHANGED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', '
 # Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
 # the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
 DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
-ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE', *ctrl_v5.TRIALS}
+ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}   # snap trials: model/ctrl_trials_v5.sc
 NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_legmag_skin_min', 'v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z',
               'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_cover_top_above_rim',
               'v5_key_margin', 'v5_legmag_plate_clr', 'v5_legpad_L', 'v5_lip_relief_clr',
@@ -444,6 +445,9 @@ def main():
     assert all(old[n] != new[n] for n in CHANGED)
     for n in CHANGED | ADDED:
         assert len(new[n]) == 1 and len(new[n][0]['shells']) == 1, n
+    trials = live_shapes(TRIALS)       # snap trials A/C: their own model (build_seam_v5.trials_document)
+    assert set(trials) == set(ctrl_v5.TRIALS) and not set(trials) & set(new), set(trials)
+    assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev_path = CACHE / 'eval_v5_export.json'
     if not ev_path.exists() or ev_path.stat().st_mtime < V5.stat().st_mtime:
@@ -534,29 +538,22 @@ def main():
 
     print_set = check_print_set(bodies, v4_bodies)
 
-    exports = json.loads((ROOT / 'inspection/data/seam-v5-exports.json').read_text(encoding='utf-8'))
-    assert exports['model_sha'] == sha(V5), 'exports are of another model'
-    thin = {Path(t['file']).stem if 'file' in t else t: t for t in
-            json.loads((ROOT / 'inspection/data/seam-v5-thin-wall.json').read_text(encoding='utf-8'))['parts']}
-    parts = []
-    for p in exports['parts']:
-        stl = ROOT / 'model/review_v5' / (p['file'] + '.stl')
-        assert sha(stl) == p['stl_sha256'] and sha(stl.with_suffix('.step')) == p['step_sha256'], p['file']
-        mesh = check(str(stl))
-        assert len(mesh['components']) == 1 and mesh['bad_edge_count'] == 0, p['file']
-        rel = abs(mesh['components'][0]['signed_volume'] - p['cad_volume_mm3']) / p['cad_volume_mm3']
-        assert rel < 0.0001, (p['file'], rel)
-        t = thin[p['file']]
-        assert t['stl_sha256'] == p['stl_sha256']
-        assert t['wall_min_mm'] is None or t['wall_min_mm'] >= p['wall_limit_mm'] - 1e-3, (p['file'], t['wall_min_mm'])
-        if p['body'] in COVERS:   # resin covers: every wall >= 1.0 (material rule), wedge tips excluded by wall_min_mm
-            assert t['wall_min_mm'] is None or t['wall_min_mm'] >= 1.0 - 1e-3, (p['file'], t['wall_min_mm'])
-        parts.append(dict(file=p['file'], material=p['material'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 2),
-                          v4_volume_cm3=None, flat_Z18_volume_cm3=round(flat_bodies[p['body']]['volume_mm3'] / 1000, 2),
-                          wall_min_mm=t['wall_min_mm'], min_mm=t.get('min_mm'), stl_volume_rel_err=round(rel, 6)))
+    # Covers and plates against the v4 and flat Z 18 baselines, from the order-2 print set (model/review_v5 was
+    # abolished 2026-11-10: it exported and scanned the same bodies a second time). Resin covers: every wall >= 1.0
+    # (material rule), wedge tips excluded by wall_min_mm.
     v4_vol = {b['name']: b['volume_mm3'] for b in v4_eval['bodies']}
-    for part, p in zip(parts, exports['parts']):
-        part['v4_volume_cm3'] = round(v4_vol[p['body']] / 1000, 2)
+    by_body = {p['body']: p for p in json.loads((ROOT / 'inspection/data/seam-v5-print-set.json').read_text(encoding='utf-8'))}
+    walls_by_file = {r['file']: r for r in print_set}
+    parts = []
+    for body in COVERS + ['PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1']:
+        p = by_body[body]
+        wall = walls_by_file[p['file']]['wall_min_mm']
+        if body in COVERS:
+            assert wall is None or wall >= 1.0 - 1e-3, (p['file'], wall)
+        parts.append(dict(file=p['file'], material=p['material'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 2),
+                          v4_volume_cm3=round(v4_vol[body] / 1000, 2),
+                          flat_Z18_volume_cm3=round(flat_bodies[body]['volume_mm3'] / 1000, 2),
+                          wall_min_mm=wall, stl_volume_rel_err=walls_by_file[p['file']]['rel']))
     clearance_summary = {k: dict(overlaps=len(clearance[k]['overlaps']), contacts=len(clearance[k]['contacts']),
                                  unchecked=len(clearance[k]['unchecked']))
                          for k in ('changed_vs_unchanged', 'among_changed')}
@@ -570,7 +567,7 @@ def main():
                   plate_supports=seats, mounts=verify_mounts(bodies), removed=sorted(REMOVED),
                   leg_magnets=walls,
                   clearance=clearance_summary, mount_screw_interface=clearance['mount_screw_interface'],
-                  plate_files_unchanged=exports.get('plate_files_unchanged_since_previous_export'), parts=parts)
+                  parts=parts)
     write_json(ROOT / 'inspection/data/seam-v5-verification.json', result)
     print(json.dumps(result, indent=1, ensure_ascii=False))
 

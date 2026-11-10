@@ -11,7 +11,7 @@ import re
 import subprocess
 import zipfile
 
-from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT
+from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT, TRIALS_OUTPUT, helpers
 import ctrl_v5
 from make_key_dxf import load_keys, rect
 from common import ROOT, CLI, sha, write_json
@@ -331,6 +331,11 @@ def build():
                         ('REF_MX_STEM',[231,189,53])]:
         for name in names(group):
             doc['appearances']['bodies'][name]=dict(name='Custom',color=color,opacity=1)
+    # The order-1 snap trials A/C are printed from model/ctrl_trials_v5.sc (plan 3-3). Rebuild them here from the same
+    # tools/ctrl_v5.py design so the review model, the guide parts table and the 3D view keep them beside the coupons.
+    feature, sketch = helpers(doc)
+    for body, spec in ctrl_v5.TRIALS.items():
+        ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
     doc['name']='46es v5 assembly review - measured PSD60 proxy / MX / OEM'
     with zipfile.ZipFile(seed,'w',zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('document.json',json.dumps(doc,ensure_ascii=False))
@@ -346,6 +351,7 @@ def build():
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     assert abs(values['v5_keycap_bottom_rest_Z'] - cap_bottom_Z) < 1e-6, (values['v5_keycap_bottom_rest_Z'], cap_bottom_Z)
     manifest = dict(version='v5', generator='tools/build_assembly_reference_v5.py', source=SOURCE.name, source_sha=sha(SOURCE), measurement_sha=sha(MEASUREMENTS),
+                    trials_sha=sha(TRIALS_OUTPUT),
                     generator_sha=sha(Path(__file__)), output_sha=sha(OUTPUT),
                     keys=keys, switch_seat_Z=seat_Z, keycap_bottom_rest_Z=cap_bottom_Z, keycap_bottom_above_seat=cap_above_seat,
                     cover_top_Z=values['v5_cover_top_Z'],

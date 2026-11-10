@@ -1,8 +1,8 @@
 {
  "changed_vs_unchanged": {
-  "total_pairs": 940,
+  "total_pairs": 846,
   "candidate_pairs": 103,
-  "pairs_pruned_by_bbox": 837,
+  "pairs_pruned_by_bbox": 743,
   "intentionally_checked_by_sections": [
    [
     "MOUNT_L_PAIR_V3",
@@ -61,9 +61,9 @@
   "pairs_pruned": 0
  },
  "among_changed": {
-  "total_pairs": 190,
+  "total_pairs": 153,
   "candidate_pairs": 36,
-  "pairs_pruned_by_bbox": 154,
+  "pairs_pruned_by_bbox": 117,
   "intentionally_checked_by_sections": [],
   "overlaps": [],
   "unchecked": [],
