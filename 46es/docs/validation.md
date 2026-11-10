@@ -104,7 +104,9 @@ python -B 46es/guide/review_guide.py --steps standoff trial module --views reset
 파이프라인 밖의 명령:
 
 ```sh
-python 46es/tools/build_seam_v5.py --mounts           # mount만 바꿀 때: 수 초, 도면 단면 비교
+python 46es/tools/build_seam_v5.py --mounts           # mount만 바꿀 때: 약 5 s, 도면 단면 비교
+python 46es/tools/build_seam_v5.py --ctrl             # 브래킷 B·시험편 A·C만: 약 20 s, 금지 영역·부피 추정 비교
+python 46es/tools/pipeline.py --clean                 # 쓰지 않는 캐시 삭제(아래)
 python 46es/tools/build_seam_v5.py --refresh-record   # 형상이 그대로인 생성기 정리 뒤: CAD 유지, 생성 기록만 갱신
 python 46es/guide/build_guide.py                      # 로컬 가이드 전체 빌드(guide/out, 옵션은 guide/README.md)
 python -B 46es/tools/finish.py                        # 커밋 전 마무리(아래 「CAD 없이 할 수 있는 검사」)
@@ -112,6 +114,8 @@ python 46es/guide/publish_guide.py                    # main 병합·push 뒤 �
 ```
 
 낡음 판정은 커밋된 기록으로 한다. seam은 생성 기록의 입력 지문·출력 해시, order1·order2는 주문 기록의 원본 CAD·STL/STEP 해시, 두 검증 단계는 기록의 `inputs`(검증 스크립트 자신과 읽은 파일의 지문), assembly는 `assembly_reference_v5.json`의 해시, review는 현재 검토 모델·가이드 spec으로 찍은 `guide/.cache/visual-review/` 캡처가 있는지다. 내보내기 코드(`export_print_v5.py`와 STL 스크립트)는 지문을 남기지 않으므로 고쳤으면 `--only order1 order2`로 다시 내보낸다. 생성기 코드만 바뀌어 seam이 낡았으면 `--status`가 `--refresh-record`를 안내한다. 실행한 단계의 벽시계 시간은 `46es/.cache/pipeline-timings.json`에 쌓이고 `--status`에 마지막 시간이 보인다.
+
+캐시는 Git에서 제외된 `46es/.cache/`에 둔다. CAD 평가는 `tools/cad_eval_cache.py` 하나가 파일 바이트 해시를 키로 `.cache/eval/`에 저장하므로 바뀐 CAD의 예전 평가를 읽지 않는다. 빌드는 저장과 측정을 CLI 한 번으로 하고(`eval` + `file.save_as`) 그 측정을 캐시에 넣어, 뒤 단계가 같은 모델을 다시 평가하지 않는다. 빌드 작업 폴더는 `.cache/v5/`, 내보내기는 `.cache/print_v5/`다. 가이드 렌더와 시각 검토는 `guide/.cache/`에 남는다. `--clean`은 트리에 없는 파일의 평가, 옛 `guide/.cache/v5`, 렌더 id마다 가장 최근 것이 아닌 렌더, 최근 3개가 아닌 시각 검토 실행 폴더를 지운다. 커버만 따로 빌드하는 옵션은 없다. 커버가 v4 타임라인에서 만들어지기 때문이다(계획 4-5).
 
 `build_seam_v5.py`는 현행 CAD와 함께 스냅 시험편 A·C만 담은 `model/ctrl_trials_v5.sc`, 매개변수 CSV, 생성 기록을 만든다. `--trial`은 현행 모델의 mount·이음 쿠폰·브래킷 B, `ctrl_trials_v5.sc`의 시험편 A·C, `model/samples/46es_sw_hole_sample.sc`의 B 쿠폰·보스 탭을 내보낸다. 샘플 행 C `SMP_upper`는 1.7이어야 한다. 두 주문의 내보내기는 `46es/.cache/print_v5/`에서 CAD 재평가, STL 검사와 벽 스캔을 마친 뒤 각 세트를 교체한다. 각 부품 기록에 실제 내보내기에 사용한 CAD와 STL/STEP 해시가 들어간다. 현행 CAD 해시가 바뀌면 그 모델을 사용한 두 세트를 갱신한다.
 

@@ -4,7 +4,7 @@ PSD60 Defender용 46키 non-split hand-wired. r2의 키 중심/회전/외곽 유
 
 ## 기준/변경 경로
 
-- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 [`model/baselines/seam_v4.sc`](../model/baselines/seam_v4.sc)에서 생성. mount 4개는 [`model/mounts_cadcraft_phase1.dxf`](../model/mounts_cadcraft_phase1.dxf)의 평면 윤곽을 `tools/mounts_v5.py`가 직접 돌출한다(옛 v4 mount 사슬·참고 바디는 억제). mount만 고칠 때는 `python 46es/tools/build_seam_v5.py --mounts`로 수 초 안에 확인한다.
+- 현행 CAD: [`model/46es_mount_seam_v5.sc`](../model/46es_mount_seam_v5.sc) ← `tools/build_seam_v5.py`가 [`model/baselines/seam_v4.sc`](../model/baselines/seam_v4.sc)에서 생성. mount 4개는 [`model/mounts_cadcraft_phase1.dxf`](../model/mounts_cadcraft_phase1.dxf)의 평면 윤곽을 `tools/mounts_v5.py`가 직접 돌출한다(옛 v4 mount 사슬·참고 바디는 억제). mount만 고칠 때는 `--mounts`, 브래킷만 고칠 때는 `--ctrl`로 수 초–수십 초 안에 확인한다([명령](validation.md#재생성-저장소-루트)).
 - `parameters_seam_v5.csv`는 CAD 내보내기 결과. 변경 순서: 생성기 → CAD → 검토/제작 출력 → 검증 → 가이드.
 - [`46es_assembly_review_v5.sc`](../model/46es_assembly_review_v5.sc): 조립 검토용 파생(부분 실측/단순 MX·OEM 참고). 실물 보증·주문용 아님.
 - 좌표: GH60 PCB 앞·왼쪽 원점, X 오른쪽/Y 뒤쪽/Z 위. **Z=0 = 케이스 지지대 상면**(타이핑 경사 정규화).
