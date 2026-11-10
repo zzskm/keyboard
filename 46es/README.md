@@ -4,9 +4,9 @@
 
 ## SOT
 
-- **편집 원본:** `tools/build_seam_v5.py`
+- **편집 원본:** `tools/build_seam_v5.py`와 그 기반 타임라인 `model/seam_v5_base.json`
 - **생성 CAD(직접 편집 금지):** `model/46es_mount_seam_v5.sc` 등
-- **회귀 기준( SOT 아님):** `model/baselines/`
+- **검증 기준:** `inspection/data/seam-v5-baseline.json`(바디 형상 지문·매개변수. `verify_seam_v5.py --accept`로만 갱신)
 - **구분:** `model/46es_assembly_review_v5.sc`=조립 검토, `model/print_v5/`=제작 세트(STEP은 조립 좌표)
 
 | 목적 | 문서 |
