@@ -218,47 +218,23 @@ def table_rows(text, heading):
 
 
 def print_readme_checks():
-    """model/print_v5/README.md part tables against the print records (plan 4-4): the files of each order, material,
-    size to the precision written, and for order 2 the volume and the minimum wall."""
-    from parts_v5 import ORDERS, RESIN, parts
+    """model/print_v5/README.md part tables (plan 4-4): the measured cells (size, order-2 volume and minimum wall) are
+    written by tools/doc_tables.py from the records and must be current; the material column follows parts_v5.py."""
+    import doc_tables
+    from parts_v5 import RESIN, by_file
     text = (ROOT / 'model/print_v5/README.md').read_text(encoding='utf-8')
-    checked = 0
-    for order, heading in (('order1', '주문 1'), ('order2', '주문 2')):
-        records = {p['file']: p for p in read(ORDERS[order]['record'])}
-        walls = {p['file']: p for p in read(ORDERS[order]['wall'])['parts']}
-        registry = {p.file: p for p in parts(order)}
+    for order, heading in doc_tables.HEADINGS.items():
+        registry = by_file(order)
         rows = table_rows(text, heading)
         header, rows = rows[0], rows[1:]
-        col = {name: next(i for i, h in enumerate(header) if name in h) for name in ('파일', '재료', 'X×Y×Z')}
-        listed = []
+        col = {name: next(i for i, h in enumerate(header) if name in h) for name in ('파일', '재료')}
         for row in rows:
-            name = row[col['파일']].strip('`')
-            head, _, alts = name.rpartition('_')
-            files = [f'{head}_{a}' for a in alts.split('/')] if '/' in alts else [name]
-            listed += files
-            sizes = row[col['X×Y×Z']].split(' / ')
-            for i, file in enumerate(files):
-                record, part = records[file], registry[file]
-                dims = (sizes[i] if len(sizes) == len(files) else sizes[0]).split('×')
-                for axis, (cell, value) in enumerate(zip(dims, record['print_bbox_mm'])):
-                    options = cell.split('/')
-                    cell = options[i] if len(options) == len(files) else cell
-                    require(len(dims) == 3 and shown(value, cell),
-                            f'print_v5/README.md {file}: size {"XYZ"[axis]} {cell.strip()} vs record {value}')
-                require(('투명' in row[col['재료']]) == (part.material == RESIN), f'print_v5/README.md {file}: material')
-                volume = record['cad_volume_mm3'] / 1000
-                for cell in re.findall(r'\(([\d.]+) cm³\)', row[1]):
-                    require(shown(volume, cell), f'print_v5/README.md {file}: {cell} cm³ vs record {volume:.3f}')
-                if order == 'order2':
-                    volume_cell = row[next(i for i, h in enumerate(header) if '부피' in h)]
-                    wall_cell = row[next(i for i, h in enumerate(header) if '최소 벽' in h)]
-                    require(shown(volume, volume_cell), f'print_v5/README.md {file}: volume {volume_cell} vs {volume:.3f} cm³')
-                    require(shown(walls[file]['wall_min_mm'], wall_cell),
-                            f'print_v5/README.md {file}: wall {wall_cell} vs scan {walls[file]["wall_min_mm"]}')
-                checked += 1
-        require(sorted(listed) == sorted(registry), f'print_v5/README.md {heading} files differ from tools/parts_v5.py: '
-                                                    f'{sorted(set(listed) ^ set(registry))}')
-    return checked
+            for file in doc_tables.row_files(row[col['파일']]):
+                require(('투명' in row[col['재료']]) == (registry[file].material == RESIN), f'print_v5/README.md {file}: material')
+    try:
+        return doc_tables.check()
+    except AssertionError as e:
+        require(False, str(e))
 
 
 # docs/design.md 「현행 치수」: row label -> the values its text must show (expressions over the baseline values;
