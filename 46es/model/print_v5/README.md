@@ -83,4 +83,4 @@ mount 4개와 맞는 스냅 브래킷 하나는 통과 시 본 조립에 쓴다.
 
 ## 재내보내기
 
-저장소 루트에서 `python 46es/tools/export_print_v5.py --trial`(주문 1), `python 46es/tools/export_print_v5.py`(주문 2). [주문 1 기록](../../inspection/data/seam-v5-trial-print-set.json)과 [주문 2 기록](../../inspection/data/seam-v5-print-set.json)에 각 부품의 원본 CAD와 STL·STEP 해시가 있다. [전체 검사·재생성 순서](../../docs/validation.md)를 따른다.
+저장소 루트에서 `python 46es/tools/export_print_v5.py`(두 주문, 부품 목록은 `tools/parts_v5.py`). [주문 1 기록](../../inspection/data/seam-v5-trial-print-set.json)과 [주문 2 기록](../../inspection/data/seam-v5-print-set.json)에 각 부품의 원본 CAD와 STL·STEP 해시가 있다. [전체 검사·재생성 순서](../../docs/validation.md)를 따른다.

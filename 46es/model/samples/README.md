@@ -1,6 +1,6 @@
 # 46es 시험 쿠폰 원본 — B 쿠폰·보스 탭
 
-`46es_sw_hole_sample.sc`는 주문 1의 B 쿠폰(`SW_HOLE_SAMPLE`)과 보스 탭(`BOSS_TAB_SAMPLE`)의 SolidCraft 원본이다. 46es 부품이 아니라 시험용 조각이다. 출력 파일은 `python 46es/tools/export_print_v5.py --trial`이 이 원본에서 [`../print_v5/order1/`](../print_v5/README.md)의 `46es_v5_sw_hole_coupon`·`46es_v5_boss_tab`으로 내보낸다. 이 폴더에는 출력 파일을 두지 않는다. 재료·수량·출력 방향은 [제작 안내](../print_v5/README.md)를 따른다.
+`46es_sw_hole_sample.sc`는 주문 1의 B 쿠폰(`SW_HOLE_SAMPLE`)과 보스 탭(`BOSS_TAB_SAMPLE`)의 SolidCraft 원본이다. 46es 부품이 아니라 시험용 조각이다. 출력 파일은 `python 46es/tools/export_print_v5.py`가 이 원본에서 [`../print_v5/order1/`](../print_v5/README.md)의 `46es_v5_sw_hole_coupon`·`46es_v5_boss_tab`으로 내보낸다. 이 폴더에는 출력 파일을 두지 않는다. 재료·수량·출력 방향은 [제작 안내](../print_v5/README.md)를 따른다.
 
 ## 형상
 
