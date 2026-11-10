@@ -5,13 +5,14 @@ three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
 snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The base holds the
-plates, spine, covers, seam coupons and reference hardware; its reference-only switch envelopes and Wilmore housing
-stay suppressed (the review model re-enables the housing).
+plates, seam coupons and reference hardware; its reference-only switch envelopes and Wilmore housing stay suppressed
+(the review model re-enables the housing). The three cover pieces (tools/cover_v5.py) and the seam spine
+(tools/spine_v5.py) are code since 2026-11-10 and run after the base timeline.
 
 model/seam_v5_base.json is source, one parameter or feature per line. It was cut from the v4 document on 2026-11-10
 (suppressed v4 mount/bracket chains, orphan sketches and dimensions dropped, the fixed v5 edits folded in, every
 body's BRep unchanged); the v4 file is in git history (tag 46es-pre-cleanup-2026-11-09 and earlier). Parts of it
-move into generator code step by step when the shape stays identical (plan 4-5).
+move into generator code step by step when the shape stays identical (plan 4-5): covers and spine so far.
 
 Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
@@ -41,6 +42,8 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
+import cover_v5
+import spine_v5
 from cad_eval_cache import seed as seed_evaluation
 from export_print_v5 import prebuild, seal_prebuilt
 from common import ROOT, CLI, sha, fingerprints, write_json
@@ -93,7 +96,8 @@ REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_PO
 # ------------------------------------------------------------------------------------ build record
 # Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
-BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/make_key_dxf.py',
+BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/cover_v5.py',
+                'tools/spine_v5.py', 'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
                 'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
@@ -640,6 +644,13 @@ def build(probe=False):
         new_param(f'v5_legmag_{s}_Y', y, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽)')
 
     feature, sketch = helpers(doc)
+    # Covers and spine come from code (plan 4-5 step 2): only their own features touch them, so they run after the base
+    # timeline with the BRep of the base-era chain. Their sketches stay hidden, as they were in the base.
+    first = doc['next_id']
+    cover_v5.emit(feature)
+    spine_v5.emit(feature)
+    doc['visibility']['hidden_sketches'] += [f['id'] for f in doc['features']
+                                             if f['id'] >= first and f['type'] == 'sketch']
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
     # 커버 창 단순화: 기존 개별 키 마진 그룹 대신 실루엣 통합 윤곽 사용 (v5 2026-11-09)
@@ -732,6 +743,8 @@ def build(probe=False):
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
     top_z = values['v5_cover_top_Z']
+    spine_v5.check(values)
+    cover_v5.check(bodies)
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
     assert abs((values['TBD_magnet_D'] + 2 * values['TBD_magnet_clr']) / 2 - LEGMAG_POCKET_R) < 1e-9
     levels = top_levels(pending)

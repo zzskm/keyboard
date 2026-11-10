@@ -4,14 +4,16 @@
   "firmware/46es_kbfirmware.json": "1b0dbb379cfec7261b49bc7074cef33837958754ebdd0528759a4f424e757951",
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
-  "model/seam_v5_base.json": "082b2a96ae5409ba53eb9527df2798cfbb2f1b791f32a82867b956141b58577d",
-  "tools/build_seam_v5.py": "ast:539b104843b8c51e671d6d9504624e2e6bc827abe8780289b0208c3db60c3446",
+  "model/seam_v5_base.json": "4c6b4d97f8c5c9599df3174f5bd53582a540e087a64f243ebe60d834a25bc006",
+  "tools/build_seam_v5.py": "ast:8f9113e373ca25dc81abbc22abc2720ebcf706780168bdd0895ed8063be25e9f",
+  "tools/cover_v5.py": "ast:71675a63b6a44021ce62c6ee5fbf7e35c29cb07d265f32194407963470998046",
   "tools/ctrl_v5.py": "ast:c78fb081b79c68121f2ad7da7d3f3c83893c1b8ce5a5194167068aa07a8c75b3",
   "tools/make_key_dxf.py": "ast:55f2262eea711da74fb9777051a6e0c954e537eec613ff83925822c7b9829a52",
-  "tools/mounts_v5.py": "ast:4cde629e5db93a971bfd6977843b5da70a07253260df2806fb89843b9c4cdebf"
+  "tools/mounts_v5.py": "ast:4cde629e5db93a971bfd6977843b5da70a07253260df2806fb89843b9c4cdebf",
+  "tools/spine_v5.py": "ast:ccbb0d545f5d59e578b6a3e0e9bc565e7d2f8d25b4b2fad44754095b9e418fe5"
  },
  "output": "model/46es_mount_seam_v5.sc",
- "output_sha": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
+ "output_sha": "1bae3188137c837ac640317ff33775996e1a54c7e571cf1946aec35908ee5800",
  "trials_output": "model/ctrl_trials_v5.sc",
- "trials_output_sha": "a8884127ff14a8f2b53f9d92de22e8d91be9683dc85c6f59737045721463f61d"
+ "trials_output_sha": "6e85187d87cf7cd59a21f039d42ac2bc34a1d3a05fc3125e1fb168a87d49514d"
 }
