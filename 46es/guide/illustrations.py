@@ -45,6 +45,12 @@ def draw(out, dest, items, view='iso', arrows=(), size=(8, 3.5), bounds=None):
     projected, colors, priority = [], [], []
     for piece, color, focus, lift in items:
         mesh = triangles(out / piece['mesh'])
+        if piece.get('clip'):
+            lo, hi = np.array(piece['clip'])
+            centre = mesh['verts'].mean(axis=1)
+            mesh = mesh[np.all((centre >= lo - .2) & (centre <= hi + .2), axis=1)]
+            if not len(mesh):
+                continue
         normals = mesh['normal']
         visible = normals @ camera > 1e-6
         coords = mesh['verts'][visible] + (0, 0, lift)
@@ -89,6 +95,12 @@ def prepare(out, data):
             continue
         part['illustration'] = f'img/build/part-{i:02}.png'
         pieces = part['pieces']
+        # A set of identical hardware reads as scattered dots at thumbnail size: draw one,
+        # the one with the tightest plan box (an unrotated keycap, not a tilted thumb key).
+        area = lambda b: (b[1][0] - b[0][0]) * (b[1][1] - b[0][1])
+        first = min(pieces[0].get('instances') or [None], key=lambda b: area(b) if b else 0)
+        if first and str(part.get('qty', '')).isdigit() and int(part['qty']) > 1:
+            pieces = [dict(p, clip=first) for p in pieces]
         draw(out, part['illustration'],
              [(p, p['color'] if part.get('preserveColors') else '#587d78', False, 0) for p in pieces],
              'bottom' if part.get('preserveColors') else 'iso', size=(1.5, .9))

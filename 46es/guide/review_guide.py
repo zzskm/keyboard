@@ -38,7 +38,7 @@ def capture(site, evidence, steps, views):
                     executable_path=os.environ.get('BROWSER_EXECUTABLE', CHROME),
                     args=['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
                 )
-                page = browser.new_page(viewport={'width': 1440, 'height': 1100})
+                page = browser.new_page(viewport={'width': 1440, 'height': 1100}, reduced_motion='reduce')  # camera moves land in one frame
                 errors = []
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{server.server_port}/#interactive')

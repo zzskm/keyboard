@@ -56,7 +56,7 @@ python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --v
 
 `comparison_r2.json`=DWG 판 윤곽·두께·배치 가정(공칭/가정). `model/reference_r2/` STEP/STL. 갱신: `python 46es/tools/build_r2_reference.py`(CadQuery 2.6, ezdxf).
 
-3D 시점 버튼: `시점 복원`(`data-view=reset`)은 단계 기본 시점, `입체`·`위`·`아래`·`앞`은 고정 시점이다. `review_guide.py --views`도 같은 이름을 쓴다(`reset iso top bottom front`). 그림이 있는 단계는 `<단계>-diagrams.png`도 남긴다.
+3D 시점 버튼: `맞춤`(`data-view=reset`)은 단계 기본 시점(이번 작업 부품 중심, 주변은 전체의 일부만), `입체`·`위`·`아래`·`앞`은 고정 시점이다. `시점 유지`를 켜면 단계를 넘겨도 카메라가 그대로이고, `크게 보기`는 3D를 화면 전체로 띄운다(Esc로 닫기, 모바일은 이때만 한 손가락 자유 회전). 크기 14 mm 이하 instance로만 이뤄진 부품(나사·너트·자석·지지대)은 작업 대상일 때 위치에 고리를 표시하며, instance는 빌드가 CAD body bbox로 묶는다(`assembly.py` `instances`). 카메라 이동은 `prefers-reduced-motion`이면 즉시 끝나며 검사 스크립트는 이 설정으로 캡처한다. `review_guide.py --views`도 같은 이름을 쓴다(`reset iso top bottom front`). 그림이 있는 단계는 `<단계>-diagrams.png`도 남긴다.
 
 SolidCraft 없는 UI 검토: `python 46es/guide/preview_from_published.py --published <v5 자산 폴더>`(`assembly.json,models/,img/`, 해시 일치, Pillow). 정식 빌드 대체 아님.
 

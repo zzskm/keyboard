@@ -34,7 +34,7 @@ def run(base_url, shot_prefix, executable=None):
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path=executable or os.environ.get('BROWSER_EXECUTABLE', CHROME), headless=True,
                                     args=['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
-        page = browser.new_page(viewport={'width': 1440, 'height': 1100}, device_scale_factor=1)
+        page = browser.new_page(viewport={'width': 1440, 'height': 1100}, device_scale_factor=1, reduced_motion='reduce')
         errors = []
         page.on('pageerror', lambda e: errors.append(str(e)))
         page.goto(base_url + '#interactive')
