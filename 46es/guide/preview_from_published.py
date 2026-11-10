@@ -4,6 +4,7 @@ No SolidCraft evaluation or new v5 rendering is claimed. Full publication uses b
 Input folder needs assembly.json, models/, img/ from the existing published guide.
 """
 import argparse
+import csv
 import hashlib
 import html
 import json
@@ -30,6 +31,13 @@ def build(source,out):
     for p in params:
         m=re.fullmatch(r'([-+]?\d+(?:\.\d+)?)\s*(?:mm)?',p['expr'])
         if m:numeric[p['name']]=float(m[1])
+    # Derived parameters (v5_rear_rest_H = plate_top_Z - ...) have no literal value in the file: take the value
+    # SolidCraft evaluated into the committed CSV, but only where its expression is this model's expression.
+    exprs={p['name']:p['expr'] for p in params}
+    with (HERE/'../model/parameters_seam_v5.csv').open(encoding='utf-8-sig') as f:
+        for row in csv.DictReader(f):
+            if exprs.get(row['name'])==row['expression'] and row['name'] not in numeric:
+                numeric[row['name']]=float(row['value'])
     ctx=guide.Ctx(spec,dict(bodies=[],params=[dict(name=k,value=v) for k,v in numeric.items()]),[],{})
     section=next(s for s in spec['sections'] if s['type']=='assembly')
     old={s['id']:s for s in data['steps']}

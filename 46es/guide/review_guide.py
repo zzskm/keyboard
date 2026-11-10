@@ -39,6 +39,8 @@ def capture(site, evidence, steps, views):
                     args=['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
                 )
                 page = browser.new_page(viewport={'width': 1440, 'height': 1100}, reduced_motion='reduce')  # camera moves land in one frame
+                # as a data-saver browser, so the 2D drawing stays up until the 3D button is pressed
+                page.add_init_script("Object.defineProperty(navigator, 'connection', {value: {saveData: true}, configurable: true})")
                 errors = []
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{server.server_port}/#interactive')

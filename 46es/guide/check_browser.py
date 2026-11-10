@@ -1,4 +1,5 @@
-"""Browser check of a built guide: steps, parts, diagrams, 3D, fallback, saved progress, phone width.
+"""Browser check of a built guide: steps, parts, diagrams, 3D, fallback, saved progress, phone width, 3D auto-open,
+touch scrolling over the 3D.
 
   python guide/check_browser.py --site guide/out          # serve a build folder on a free local port
   GUIDE_URL=http://127.0.0.1:8766/ python guide/check_browser.py   # or check a running server
@@ -15,6 +16,9 @@ from pathlib import Path
 from threading import Thread
 
 CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+# A data-saver browser: the guide then waits for the 3D button instead of opening 3D on its own (assembly.js).
+SAVE_DATA = "Object.defineProperty(navigator, 'connection', {value: {saveData: true}, configurable: true})"
+READY = "document.getElementById('assembly-status').textContent.includes('3D 준비 완료')"
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -35,6 +39,7 @@ def run(base_url, shot_prefix, executable=None):
         browser = p.chromium.launch(executable_path=executable or os.environ.get('BROWSER_EXECUTABLE', CHROME), headless=True,
                                     args=['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
         page = browser.new_page(viewport={'width': 1440, 'height': 1100}, device_scale_factor=1, reduced_motion='reduce')
+        page.add_init_script(SAVE_DATA)
         errors = []
         page.on('pageerror', lambda e: errors.append(str(e)))
         page.goto(base_url + '#interactive')
@@ -72,7 +77,7 @@ def run(base_url, shot_prefix, executable=None):
         page.locator('#asm-step').select_option(str(last))
         page.locator('#asm-done').check()
         page.locator('#asm-3d').click()
-        page.wait_for_function("document.getElementById('assembly-status').textContent.includes('3D 준비 완료')", timeout=120000)
+        page.wait_for_function(READY, timeout=120000)
         page.screenshot(path=shot_prefix + 'oem.png')
         page.locator('[data-view=front]').click()
         page.screenshot(path=shot_prefix + 'case-height.png')
@@ -108,6 +113,7 @@ def run(base_url, shot_prefix, executable=None):
         page.locator('[data-compare-view=top]').click()
         assert page.locator('#v5-canvas canvas').is_visible()
         fallback = browser.new_page()
+        fallback.add_init_script(SAVE_DATA)
         fallback.route('**/viewer.js', lambda route: route.abort())
         fallback.goto(base_url + '#interactive')
         fallback.locator('#assembly-ui').wait_for(state='visible', timeout=60000)
@@ -117,9 +123,46 @@ def run(base_url, shot_prefix, executable=None):
         assert fallback.locator('#asm-drawing').is_visible()
         fallback.locator('#asm-next').click()
         assert fallback.locator('#asm-title').inner_text() == re.sub(r'<[^>]+>', '', steps[1]['title'])
+        # Default browser: 3D opens without a click; going back to the drawings is remembered across a reload.
+        auto = browser.new_page(viewport={'width': 1440, 'height': 1100}, reduced_motion='reduce')
+        auto.on('pageerror', lambda e: errors.append(str(e)))
+        auto.goto(base_url + '#interactive')
+        auto.wait_for_function(READY, timeout=120000)
+        assert auto.locator('#asm-canvas').is_visible() and not auto.locator('#asm-drawing').is_visible()
+        auto.locator('#asm-3d').click()
+        assert auto.locator('#asm-drawing').is_visible()
+        auto.reload()
+        auto.locator('#assembly-ui').wait_for(state='visible', timeout=60000)
+        auto.wait_for_timeout(1500)
+        assert auto.locator('#asm-drawing').is_visible() and not auto.locator('#asm-canvas').is_visible()
+        assert '불러오는' not in auto.locator('#assembly-status').inner_text()
+        # Phone: a vertical swipe over the 3D scrolls the page, a sideways one turns the model (touch-action pan-y).
+        phone = browser.new_page(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True, reduced_motion='reduce')
+        phone.on('pageerror', lambda e: errors.append(str(e)))
+        phone.goto(base_url + '#interactive')
+        phone.wait_for_function(READY, timeout=120000)
+        touch = phone.context.new_cdp_session(phone)
+
+        def swipe(dx, dy):
+            phone.evaluate('scrollTo(0, 0)')
+            box = phone.locator('#asm-canvas').bounding_box()
+            x, y = box['x'] + box['width'] / 2, min(box['y'] + box['height'] / 2, 700)
+            start = phone.evaluate('scrollY')
+            touch.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y}]})
+            for i in range(1, 13):
+                touch.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': [{'x': x + dx * i / 12, 'y': y + dy * i / 12}]})
+                phone.wait_for_timeout(16)
+            touch.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+            phone.wait_for_timeout(400)
+            return phone.evaluate('scrollY') - start
+
+        assert swipe(0, -200) > 80, 'vertical swipe over the 3D did not scroll the page'
+        before = phone.locator('#asm-canvas').screenshot()
+        assert abs(swipe(-150, 0)) < 5 and phone.locator('#asm-canvas').screenshot() != before, 'sideways swipe did not turn the model'
         browser.close()
     result = {'steps': len(steps), 'parts': len(parts), 'diagrams': shown, 'page_errors': errors,
-              'mobile_overflow': False, 'fallback': 'passed', 'persistence': 'passed'}
+              'mobile_overflow': False, 'fallback': 'passed', 'persistence': 'passed', 'auto_3d': 'passed',
+              'touch_scroll': 'passed'}
     assert not errors, errors
     return result
 
