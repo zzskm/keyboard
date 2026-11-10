@@ -11,7 +11,8 @@ import re
 import subprocess
 import zipfile
 
-from build_seam_v5 import MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT, TRIALS_OUTPUT, helpers
+from build_seam_v5 import (MX_CONTACTS, MX_CONTACT_SIZE, MX_GUIDES, MX_PIN_DEPTH_FROM_SEAT, TRIALS_OUTPUT, helpers,
+                           emit_rear_rest_trials)
 import ctrl_v5
 from make_key_dxf import load_keys, rect
 from common import ROOT, CLI, sha, write_json
@@ -212,7 +213,7 @@ def build():
 
     # PSD60 rear-wall bosses: photo estimates kept in the production parameters (tools/build_seam_v5.py REAR_BOSS_*),
     # half discs on the measured inner rear wall from the case floor to the assumed top. Separate bodies, so the
-    # verifier can measure the plate feet and the right mount against them.
+    # verifier can measure the rear rest blocks and the right mount against them.
     radius = float(params['v5_rear_boss_D']['expr']) / 2
     half_disc = [(round(radius * math.cos(math.pi * (1 + j / 24)), 6), round(min(0.0, radius * math.sin(math.pi * (1 + j / 24))), 6))
                  for j in range(25)]
@@ -337,11 +338,13 @@ def build():
                         ('REF_MX_STEM',[231,189,53])]:
         for name in names(group):
             doc['appearances']['bodies'][name]=dict(name='Custom',color=color,opacity=1)
-    # The order-1 snap trials A/C are printed from model/ctrl_trials_v5.sc (plan 3-3). Rebuild them here from the same
-    # tools/ctrl_v5.py design so the review model, the guide parts table and the 3D view keep them beside the coupons.
+    # The order-1 snap trials A/C and rear rest height variants are printed from model/ctrl_trials_v5.sc (plan 3-3).
+    # Rebuild them here from the same code so the review model, the guide parts table and the 3D view keep them
+    # beside the coupons.
     feature, sketch = helpers(doc)
     for body, spec in ctrl_v5.TRIALS.items():
         ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
+    emit_rear_rest_trials(feature, doc)
     doc['name']='46es v5 assembly review - measured PSD60 proxy / MX / OEM'
     with zipfile.ZipFile(seed,'w',zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('document.json',json.dumps(doc,ensure_ascii=False))

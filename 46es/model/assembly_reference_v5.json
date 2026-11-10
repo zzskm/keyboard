@@ -2,11 +2,11 @@
   "version": "v5",
   "generator": "tools/build_assembly_reference_v5.py",
   "source": "46es_mount_seam_v5.sc",
-  "source_sha": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "measurement_sha": "7d0ddf7c509903db706e2a0cef6506bb90d9e1e67abac1c18636e22f483bebf0",
-  "trials_sha": "a43de8805337c1654497505ed433390d123a9893558cdf146eca0793e03d53da",
-  "generator_sha": "00134c0a8d207880a6bb79ea764a80d23635dd3f5cf205c2edede2b6951e3334",
-  "output_sha": "62e41a47063cd1522bff9a503f3f875686a169a07ed44b2ad4721136db4bd1eb",
+  "trials_sha": "e718f98d26f31a682d2706cf19a3e047ecbe59cb5788be8c6c51d56778077c8b",
+  "generator_sha": "804e45179e922836ac0e80422b6cb65d6b0b16e0f7a7595d9750d61e654d9187",
+  "output_sha": "763d433254d0caa1b3ecb61c6ca4d840df0f73ada81ab4fe8b1d799739e9f824",
   "keys": [
     {
       "x": 110.46542391096345,
@@ -477,5 +477,5 @@
   "cover_top_above_rim": 5.0,
   "rim_ref_Z": 14.0,
   "housing": "REF_HOUSING_PSD60_MEASURED",
-  "body_count": 542
+  "body_count": 547
 }

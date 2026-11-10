@@ -5,22 +5,22 @@
   "body": "PLATE_L_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 38511.1416,
-  "stl_triangles": 8996,
+  "cad_volume_mm3": 38259.1419,
+  "stl_triangles": 8978,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 38512.534,
+  "stl_volume_mm3": 38260.5295,
   "stl_rel_volume_error": 3.6e-05,
   "print_bbox_mm": [
    143.293,
    95.334,
-   12.5
+   8.0
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "6d717b7051a81c74b7a86c2f5a9c8027a4267e3714ea777890d6e7ca031db5a1",
-  "step_sha256": "fe164a10b98a09fa7f8014e3312f29938cbbdc3a120592bc0f6b74f767aea3f9",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
-  "shape_sha256": "2b30feccea2560f2d6e9abd351b7923e0c3f368c600eaa6d89c9452f37d729d8"
+  "stl_sha256": "20f119009131fd9fb68fca9a15f1cec4460050c8d7315e5b242eee60f00a6d7d",
+  "step_sha256": "a0ea9e712544ba36df3c0918bf1c71858a1d49e8ae6050583ec47ecd20158b26",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
+  "shape_sha256": "8368b627be18bce3366d0dfa5238451081474c0c45b8e68916c22dda079b1576"
  },
  {
   "order": "order2",
@@ -28,22 +28,22 @@
   "body": "PLATE_R_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 40762.4014,
-  "stl_triangles": 5880,
+  "cad_volume_mm3": 40636.4014,
+  "stl_triangles": 5872,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 40763.1758,
+  "stl_volume_mm3": 40637.165,
   "stl_rel_volume_error": 1.9e-05,
   "print_bbox_mm": [
    154.257,
    95.334,
-   12.5
+   8.0
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "c8c1502ad7fc2f08569d6f22465bbfe790fb89aaa5396caf01c8239659d6ec05",
-  "step_sha256": "5194feab444fef86d052b709605d4cf886a06a2e4fb983442250f48033adb0aa",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
-  "shape_sha256": "50a8a2ac1055645e354863679e4e05cc352955f919e1b6f8abcfbc7497ef6857"
+  "stl_sha256": "1c077bb5b46aae93f3b511182c7b2c7502fd3187977ae667f974797e34bcb1b0",
+  "step_sha256": "99599a22f450b9186edbd97b75691784cc0ac339c4e72040081aae20952989bb",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
+  "shape_sha256": "54d68a3e53d4bfa1106370f169aac59b7391eeb3b466a1b5f88132d0e20b24ef"
  },
  {
   "order": "order2",
@@ -65,7 +65,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "5a3c02870ad1b7f82ff499dc9718d9385ce87af856a06f9e32002e72b3b99870",
   "step_sha256": "91e30501384fd6a5e1404321411568f4021343f7b208e78037e2fb58cd9b2fa5",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "shape_sha256": "a8a605fb5562840e835ebf9e814eedcf7cc6530287b2e37bd93e7d4f250d9fb5"
  },
  {
@@ -88,7 +88,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "60aa77a29fc7a3398c3e0372fb5c05504b22bd46b6447177766a43868cd7b388",
   "step_sha256": "14edf20aecbe9406f547d331c72a75e12acfa01e86c624d05387a6774e05e3ee",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "shape_sha256": "ab53b867d3223b53cba27765acac5fb761c858d14e40e2aea808b3c9f95d66e0"
  },
  {
@@ -111,7 +111,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "a1220d708e0572c097b76df62b2af5a216d18d4b6e93d264df6e0e252cba323a",
   "step_sha256": "06d82a76ef656d48f7c502b48ae0ffc1a08909b7e92f6203583cdb0f48fa3a4a",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "shape_sha256": "7bd93753dd02777bc8e06c1eaf2fc981eeb60230706882b78adef4e35710e48c"
  },
  {
@@ -134,7 +134,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "b9155f62e60b2b7741196048e65e7b681699d9b86f64ef265797205f9df2b22c",
   "step_sha256": "a07f55e007d1249d3a6fc3b919f2a7f2da93509a7a3ac51d593bd6137455d06b",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "shape_sha256": "88fd05da00812af994d6e97f86c81e0d689e084366a58e5fb152d9b8c7b7400a"
  },
  {
@@ -157,7 +157,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "0d5ef01e455606b81efdaf2745719b23c081a69b36249d97e926c55ef738b618",
   "step_sha256": "7806307e779118c8397b1aaef561bf2990dd9131846eee31be8b985351a1045c",
-  "source_sha256": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "source_sha256": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "shape_sha256": "011d79fef00a281179696866bb2628ccfc9ec274b9ded1d59616ceaeca9d38e0"
  }
 ]

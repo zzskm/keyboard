@@ -19,7 +19,7 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z,  # noqa: E402
+from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REAR_RESTS, REAR_REST_BODY, REAR_REST_TRIALS,  # noqa: E402
                            horizontal_faces, top_levels, cover_windows)
 import ctrl_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
@@ -37,11 +37,12 @@ VERIFY_INPUTS = ('inspection/scripts/verify_seam_v5.py', 'tools/parts_v5.py', 'm
                  'model/parameters_seam_v5.csv', 'inspection/data/seam-v5-baseline.json', 'inspection/data/seam-v5-print-set.json',
                  'inspection/data/seam-v5-mjf-thin-wall.json', 'inspection/data/seam-v5-trial-print-set.json')
 # Bodies the v5 generator builds or cuts (drawing-built mounts, snap bracket and its plate screws, leg magnets, rear
-# feet, cover windows): their clearance is checked against every other body and among themselves.
+# rest blocks, cover windows): their clearance is checked against every other body and among themselves.
 GENERATED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD',
                                          'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'REF_M2_PLATE_1', 'REF_M2_PLATE_2',
                                          'REF_M2_PLATE_1_NUT', 'REF_M2_PLATE_2_NUT', 'REF_LEGMAG_L_COVER',
-                                         'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}
+                                         'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE',
+                                         *(REAR_REST_BODY.format(i) for i in REAR_RESTS)}
 MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
 CACHE = ROOT / '.cache/v5'
 
@@ -464,8 +465,8 @@ def main(accept=False):
     new = live_shapes(V5)
     for n in GENERATED:
         assert len(new[n]) == 1 and len(new[n][0]['shells']) == 1, n
-    trials = live_shapes(TRIALS)       # snap trials A/C: their own model (build_seam_v5.trials_document)
-    assert set(trials) == set(ctrl_v5.TRIALS) and not set(trials) & set(new), set(trials)
+    trials = live_shapes(TRIALS)       # snap trials A/C and rear rest variants: their own model (build_seam_v5.trials_document)
+    assert set(trials) == set(ctrl_v5.TRIALS) | set(REAR_REST_TRIALS) and not set(trials) & set(new), set(trials)
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev, _ = evaluation(V5)
@@ -485,9 +486,16 @@ def main(accept=False):
         assert abs(hi - cover_hi) < 1e-6 and abs(lo - cover_lo) < 1e-6, n
     # current values (cover T 6, top Z 19, skin 3.9, keycap rest Z 17.3) are pinned by the baseline's `values`
     walls = leg_magnet_walls(params)
-    foot_bottom = params['v5_rear_boss_top_Z'] + params['v5_rear_foot_gap']
+    # Rear rest blocks: the plates end at the rear flange bottom (no foot) and each block spans pad top -> flange bottom,
+    # touching its plate's flange (the contact shows in the clearance pass below).
+    flange_bottom = params['plate_top_Z'] - params['TBD_plate_T'] - params['split_flange_H']
+    rest_bottom = params['v5_rear_boss_top_Z'] + params['v5_rear_rest_gap']
     for plate in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):
-        assert abs(bodies[plate]['bbox']['min'][2] - foot_bottom) < 1e-6, (plate, bodies[plate]['bbox'])
+        assert abs(bodies[plate]['bbox']['min'][2] - flange_bottom) < 1e-6, (plate, bodies[plate]['bbox'])
+    for i in REAR_RESTS:
+        box = bodies[REAR_REST_BODY.format(i)]['bbox']
+        assert abs(box['min'][2] - rest_bottom) < 1e-6 and abs(box['max'][2] - flange_bottom) < 1e-6, (i, box)
+        assert abs(box['max'][2] - box['min'][2] - params['v5_rear_rest_H']) < 1e-6, (i, box)
     levels = cover_levels(params, bodies)
     support_plan = support_contact_plan(params)
 
@@ -521,6 +529,10 @@ def main(accept=False):
     sections = [all_results[section_start+offset] for offset in section_offsets]
     clearance['mount_screw_interface'] = verify_mount_screw_interface(sections)
     write_json(ROOT / 'inspection/data/seam-v5-clearance.json', clearance)
+    touching = {frozenset(c.split(' | ')) for k in ('generated_vs_rest', 'among_generated') for c in clearance[k]['contacts']}
+    rest_contacts = {REAR_REST_BODY.format(i): plate for i, (_, plate) in REAR_RESTS.items()}
+    for rest, plate in rest_contacts.items():
+        assert frozenset((rest, plate)) in touching, (rest, plate, 'the flange does not sit on the rest block')
 
     print_set = check_print_set(bodies)
 
@@ -541,7 +553,7 @@ def main(accept=False):
                          for k in ('generated_vs_rest', 'among_generated')}
     result = dict(ok=True, inputs=fingerprints(VERIFY_INPUTS), v5_sha=sha(V5), baseline_sha=sha(BASELINE),
                   baseline_bodies=len(baseline['bodies']) + len(baseline['trials']), print_set=print_set, bodies=len(new),
-                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')), rear_foot_bottom_Z=foot_bottom,
+                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')), rear_rest_Z=[rest_bottom, flange_bottom], rear_rest_contacts=rest_contacts,
                   generated=sorted(GENERATED), timeline=len(ev['timeline']), sketches=len(ev['sketches']), params=len(p5),
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
                   plate_supports=seats, mounts=verify_mounts(bodies), leg_magnets=walls,

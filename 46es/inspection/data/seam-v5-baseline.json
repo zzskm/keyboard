@@ -146,13 +146,13 @@
    ]
   },
   "PLATE_L_SPLIT_V1": {
-   "shape_sha256": "2b30feccea2560f2d6e9abd351b7923e0c3f368c600eaa6d89c9452f37d729d8",
-   "volume_mm3": 38511.142,
+   "shape_sha256": "8368b627be18bce3366d0dfa5238451081474c0c45b8e68916c22dda079b1576",
+   "volume_mm3": 38259.142,
    "bbox": [
     [
      -0.393,
      -0.367,
-     0.5
+     5.0
     ],
     [
      142.9,
@@ -162,13 +162,13 @@
    ]
   },
   "PLATE_R_SPLIT_V1": {
-   "shape_sha256": "50a8a2ac1055645e354863679e4e05cc352955f919e1b6f8abcfbc7497ef6857",
-   "volume_mm3": 40762.401,
+   "shape_sha256": "54d68a3e53d4bfa1106370f169aac59b7391eeb3b466a1b5f88132d0e20b24ef",
+   "volume_mm3": 40636.401,
    "bbox": [
     [
      131.131,
      -0.367,
-     0.5
+     5.0
     ],
     [
      285.388,
@@ -190,6 +190,54 @@
      145.881,
      87.0,
      8.5
+    ]
+   ]
+  },
+  "REAR_REST_1_V5": {
+   "shape_sha256": "f87a4824c7612df9e5f40d87df6c86b60f710494242b1bcf14e870a29059669d",
+   "volume_mm3": 252.0,
+   "bbox": [
+    [
+     30.0,
+     90.967,
+     0.5
+    ],
+    [
+     44.0,
+     94.967,
+     5.0
+    ]
+   ]
+  },
+  "REAR_REST_2_V5": {
+   "shape_sha256": "dac4e9d41da36f8c0435f1ba1acc103575ad192a0191489a6bb1533aafc33885",
+   "volume_mm3": 252.0,
+   "bbox": [
+    [
+     106.0,
+     90.967,
+     0.5
+    ],
+    [
+     120.0,
+     94.967,
+     5.0
+    ]
+   ]
+  },
+  "REAR_REST_3_V5": {
+   "shape_sha256": "636bd82ab86c44cac80dc78dd3e96b47d782cb72194577eef9d48fcaf3da3a84",
+   "volume_mm3": 252.0,
+   "bbox": [
+    [
+     163.0,
+     90.967,
+     0.5
+    ],
+    [
+     177.0,
+     94.967,
+     5.0
     ]
    ]
   },
@@ -1074,6 +1122,38 @@
      8.0
     ]
    ]
+  },
+  "REAR_REST_TRIAL_HI": {
+   "shape_sha256": "9d09153c35b64766348e009281a4304f79638882fb0f526f3201cd84fe6073ce",
+   "volume_mm3": 268.8,
+   "bbox": [
+    [
+     156.0,
+     -42.0,
+     0.0
+    ],
+    [
+     170.0,
+     -38.0,
+     4.8
+    ]
+   ]
+  },
+  "REAR_REST_TRIAL_LO": {
+   "shape_sha256": "3d2c6878393d4e806761fbec7074b8b0c696630d389ebeb714b314635c26b712",
+   "volume_mm3": 235.2,
+   "bbox": [
+    [
+     156.0,
+     -50.0,
+     0.0
+    ],
+    [
+     170.0,
+     -46.0,
+     4.2
+    ]
+   ]
   }
  },
  "params": {
@@ -1305,11 +1385,13 @@
   "v5_rear_boss_4_X": "245.8",
   "v5_rear_boss_D": "9.0",
   "v5_rear_boss_top_Z": "0.0",
-  "v5_rear_foot_1_X": "37.0",
-  "v5_rear_foot_2_X": "113.0",
-  "v5_rear_foot_3_X": "170.0",
-  "v5_rear_foot_L": "14.0",
-  "v5_rear_foot_gap": "0.5",
+  "v5_rear_rest_1_X": "37.0",
+  "v5_rear_rest_2_X": "113.0",
+  "v5_rear_rest_3_X": "170.0",
+  "v5_rear_rest_H": "plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap",
+  "v5_rear_rest_L": "14.0",
+  "v5_rear_rest_W": "4.0",
+  "v5_rear_rest_gap": "0.5",
   "v5_rim_ref_Z": "14",
   "v5_skirt_cover_H": "1.7"
  },
@@ -1542,11 +1624,13 @@
   "v5_rear_boss_4_X": 245.8,
   "v5_rear_boss_D": 9.0,
   "v5_rear_boss_top_Z": 0.0,
-  "v5_rear_foot_1_X": 37.0,
-  "v5_rear_foot_2_X": 113.0,
-  "v5_rear_foot_3_X": 170.0,
-  "v5_rear_foot_L": 14.0,
-  "v5_rear_foot_gap": 0.5,
+  "v5_rear_rest_1_X": 37.0,
+  "v5_rear_rest_2_X": 113.0,
+  "v5_rear_rest_3_X": 170.0,
+  "v5_rear_rest_H": 4.5,
+  "v5_rear_rest_L": 14.0,
+  "v5_rear_rest_W": 4.0,
+  "v5_rear_rest_gap": 0.5,
   "v5_rim_ref_Z": 14.0,
   "v5_skirt_cover_H": 1.7
  }

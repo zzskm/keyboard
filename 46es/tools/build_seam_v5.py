@@ -4,7 +4,8 @@ The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
-snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The base holds the
+snap, no gate). Three separate rest blocks stand on the PSD60 rear-wall bosses under the rear plate flanges
+(REAR_RESTS; the plates themselves carry no foot). The base holds the
 plates and seam coupons; its reference-only switch envelopes and Wilmore housing stay suppressed (the review
 model re-enables the housing). The three cover pieces (tools/cover_v5.py), the seam spine (tools/spine_v5.py) and
 the reference screws, nuts and magnets (tools/hardware_v5.py) are code since 2026-11-10 and run after the base.
@@ -15,7 +16,8 @@ body's BRep unchanged); the v4 file is in git history (tag 46es-pre-cleanup-2026
 move into generator code step by step when the shape stays identical (plan 4-5): covers, spine and reference
 hardware so far; the plates stay (their outlines and openings are the r2 drawing's sketches).
 
-Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
+Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C and rear rest
+height variants),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
 Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into .cache/v5 without replacing the current CAD
@@ -80,14 +82,23 @@ COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 REAR_BOSS_X = (36.0, 113.6, 170.1, 245.8)
 REAR_BOSS_D = 9.0
 REAR_BOSS_TOP_Z = 0.0
-# Bosses 1-3 lie under the rear plate flanges: a foot extends the flange down to REAR_FOOT_GAP above the boss top
-# (the gap is filled with a shim or pad at trial assembly; the plate is never trimmed). Boss 4 sits under the right
-# mount's rear corner beside SO4, where the flange is interrupted: no foot.
-REAR_FEET = {1: (37.0, 'PLATE_L_SPLIT_V1'), 2: (113.0, 'PLATE_L_SPLIT_V1'), 3: (170.0, 'PLATE_R_SPLIT_V1')}
-REAR_FOOT_L = 14.0
-REAR_FOOT_GAP = 0.5
-REAR_FOOT_OVERLAP = 0.5            # foot top reaches into the flange
-REAR_FOOT_CHORD_MARGIN = 2.0       # the boss chord under the foot stays whole for this photo error (each side)
+# Bosses 1-3 lie under the rear plate flanges. A separate rest block stands on each (stuck to the boss top with the
+# pad that fills REAR_REST_GAP) and the flange bottom sits on the block. Until 2026-11-10 the block was a foot joined
+# to the plate; it made the plate print 12.5 mm tall with three thin fins and need support (user 2026-11-10), so the
+# plate lost it. Boss 4 sits under the right mount's rear corner beside SO4, where the flange is interrupted: no rest.
+REAR_RESTS = {1: (37.0, 'PLATE_L_SPLIT_V1'), 2: (113.0, 'PLATE_L_SPLIT_V1'), 3: (170.0, 'PLATE_R_SPLIT_V1')}
+REAR_REST_BODY = 'REAR_REST_{}_V5'
+REAR_REST_L = 14.0                 # along X, as the former foot
+REAR_REST_W = 4.0                  # along Y from the rear plate edge: the 2 mm flange plus 2 mm towards the boss front
+REAR_REST_GAP = 0.5                # block bottom above the boss top: the adhesive pad
+REAR_FLANGE_BOTTOM_Z = 5.0         # plate_top_Z - TBD_plate_T - split_flange_H (checked after evaluation)
+REAR_REST_H = REAR_FLANGE_BOTTOM_Z - REAR_BOSS_TOP_Z - REAR_REST_GAP
+REAR_REST_CHORD_MARGIN = 2.0       # the boss chord under the flange stays under the block for this photo error (each side)
+REAR_REST_COLOR = [226, 172, 60]
+# Order-1 height variants (model/ctrl_trials_v5.sc): the boss top height is an assumption and MJF is +-0.3, so the
+# block that leaves room for the pad without lifting the plate off the standoffs is picked at trial assembly.
+REAR_REST_TRIALS = {'REAR_REST_TRIAL_LO': dict(dh=-0.3, origin=(156.0, -50.0)),
+                    'REAR_REST_TRIAL_HI': dict(dh=0.3, origin=(156.0, -42.0))}
 REAR_FLANGES = ('PLATE_FLANGE_L_REAR', 'PLATE_FLANGE_R_REAR_A', 'PLATE_FLANGE_R_REAR_B')
 PLATE_REAR_Y = 94.967              # rear plate edge (flange outer face), as in the base flange features
 # Reference-only solids of the base, suppressed in production. The review model
@@ -494,11 +505,13 @@ def check_mounts(evaluated, mounts):
     return report
 
 
-def rear_foot_plan(doc):
-    """Foot X spans on the rear flanges and how much photo error each boss estimate tolerates.
+def rear_rest_plan(doc):
+    """Rest block X spans under the rear flanges, how much photo error each boss estimate tolerates and the bearing
+    area of each block on its boss.
 
     The flange spans come from the base flange features themselves, so a moved flange fails here instead of
-    leaving a foot in the air."""
+    leaving a block without a flange above it."""
+    from shapely.geometry import Point, box as rect_box
     flanges = {}
     for f in doc['features']:
         if f.get('name') in REAR_FLANGES and not f.get('suppressed'):
@@ -510,39 +523,64 @@ def rear_foot_plan(doc):
     assert params['split_flange_W'] == '2 mm', params['split_flange_W']
     wall_y = 95.934 - 0.667                     # TBD_case_in_D - TBD_pcb0_dy (Wilmore stand-in, checked after eval)
     inner_y = PLATE_REAR_Y - 2.0
+    assert REAR_REST_W >= 2.0 and PLATE_REAR_Y < wall_y
     r = REAR_BOSS_D / 2
     chord = (r * r - (wall_y - inner_y) ** 2) ** 0.5   # half width of the boss top at the flange inner face
     plan = {}
-    for i, (x, plate) in REAR_FEET.items():
-        x0, x1 = x - REAR_FOOT_L / 2, x + REAR_FOOT_L / 2
+    for i, (x, plate) in REAR_RESTS.items():
+        x0, x1 = x - REAR_REST_L / 2, x + REAR_REST_L / 2
         assert any(a <= x0 and x1 <= b for a, b in flanges[plate]), (i, x0, x1, flanges[plate])
         boss = REAR_BOSS_X[i - 1]
         margin = (round(boss - chord - x0, 3), round(x1 - boss - chord, 3))
-        assert min(margin) >= REAR_FOOT_CHORD_MARGIN, (i, margin)
-        plan[i] = dict(plate=plate, foot_X=[x0, x1], boss_X=boss, boss_chord_half=round(chord, 3),
-                       full_chord_margin_mm=list(margin))
+        assert min(margin) >= REAR_REST_CHORD_MARGIN, (i, margin)
+        block = rect_box(x0, PLATE_REAR_Y - REAR_REST_W, x1, PLATE_REAR_Y)
+        bearing = [block.intersection(Point(boss + dx, wall_y).buffer(r, quad_segs=32)).area
+                   for dx in (0.0, -REAR_REST_CHORD_MARGIN, REAR_REST_CHORD_MARGIN)]
+        plan[i] = dict(plate=plate, body=REAR_REST_BODY.format(i), rest_X=[x0, x1],
+                       rest_Y=[round(PLATE_REAR_Y - REAR_REST_W, 3), PLATE_REAR_Y], boss_X=boss,
+                       boss_chord_half=round(chord, 3), full_chord_margin_mm=list(margin),
+                       bearing_on_boss_mm2=round(bearing[0], 2),
+                       bearing_on_boss_min_mm2=round(min(bearing), 2),
+                       flange_contact_mm2=round(REAR_REST_L * 2.0, 2))
     boss4 = REAR_BOSS_X[3]
     assert not any(a < boss4 + r and boss4 - r < b for spans in flanges.values() for a, b in spans), 'boss 4 under a flange'
     return plan
 
 
-def check_rear_feet(evaluated, plan):
-    """Plates reach down to the foot bottom; the wall line the plan assumed is the evaluated one."""
+def check_rear_rests(evaluated, trials, plan):
+    """Each rest block is a closed box from the pad to the flange bottom; the plates end at the flange bottom (no
+    foot); the wall line the plan assumed is the evaluated one; the height variants differ only in height."""
     bodies = {b['name']: b for b in evaluated['bodies']}
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     assert abs(values['TBD_case_in_D'] - values['TBD_pcb0_dy'] - (95.934 - 0.667)) < 1e-6
-    assert abs(values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H'] - 5.0) < 1e-9
-    bottom = values['v5_rear_boss_top_Z'] + values['v5_rear_foot_gap']
+    flange_bottom = values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
+    assert abs(flange_bottom - REAR_FLANGE_BOTTOM_Z) < 1e-9
+    assert abs(values['v5_rear_rest_H'] - REAR_REST_H) < 1e-9, values['v5_rear_rest_H']
+    bottom = values['v5_rear_boss_top_Z'] + values['v5_rear_rest_gap']
     for plate in {p['plate'] for p in plan.values()}:
         b = bodies[plate]
-        assert b['closed'] and abs(b['bbox']['min'][2] - bottom) < 1e-6, (plate, b['bbox'])
-    return dict(foot_bottom_Z=bottom, foot_volume_mm3=round(rear_foot_volume(values), 3), feet=plan)
+        assert b['closed'] and abs(b['bbox']['min'][2] - flange_bottom) < 1e-6, (plate, b['bbox'])
+    volume = REAR_REST_L * REAR_REST_W * REAR_REST_H
+    for i, p in plan.items():
+        b = bodies[p['body']]
+        expected = (p['rest_X'][0], p['rest_Y'][0], bottom, p['rest_X'][1], p['rest_Y'][1], flange_bottom)
+        assert b['closed'] and all(abs(a - e) < 1e-6 for a, e in zip(b['bbox']['min'] + b['bbox']['max'], expected)), (i, b['bbox'])
+        assert abs(b['volume_mm3'] - volume) < 1e-6, (i, b['volume_mm3'])
+    variants = {}
+    trial_bodies = {b['name']: b for b in trials['bodies']}
+    for body, spec in REAR_REST_TRIALS.items():
+        b = trial_bodies[body]
+        height = REAR_REST_H + spec['dh']
+        size = [b['bbox']['max'][k] - b['bbox']['min'][k] for k in range(3)]
+        assert b['closed'] and all(abs(a - e) < 1e-6 for a, e in zip(size, (REAR_REST_L, REAR_REST_W, height))), (body, size)
+        variants[body] = round(height, 3)
+    return dict(rest_Z=[bottom, flange_bottom], rest_volume_mm3=round(volume, 3), height_variants_mm=variants, rests=plan)
 
 
-def rear_foot_clearance(plan, mounts, bodies, minimum=1.0):
-    """Plan-view distance of each foot to the mounts, the switch bodies and the USB outlet keepout.
+def rear_rest_clearance(plan, mounts, bodies, minimum=1.0):
+    """Plan-view distance of each rest block to the mounts, the switch bodies and the USB outlet keepout.
 
-    The feet hang below the plate (Z 0.5-5) where the mount frames (Z 0-3) and the switch housings live."""
+    The blocks stand below the plate (Z 0.5-5) where the mount frames (Z 0-3) and the switch housings live."""
     from shapely.geometry import box as rect_box
     from mounts_v5 import switch_pins
     switches = [k['body'] for k in switch_pins()]
@@ -550,19 +588,21 @@ def rear_foot_clearance(plan, mounts, bodies, minimum=1.0):
     usb_box = rect_box(usb['min'][0], usb['min'][1], usb['max'][0], usb['max'][1])
     out = {}
     for i, p in plan.items():
-        foot = rect_box(p['foot_X'][0], PLATE_REAR_Y - 2.0, p['foot_X'][1], PLATE_REAR_Y)
-        d = dict(mount=min(m['outline'].distance(foot) for m in mounts.values()),
-                 switch_body=min(s.distance(foot) for s in switches), usb_outlet=usb_box.distance(foot))
+        block = rect_box(p['rest_X'][0], p['rest_Y'][0], p['rest_X'][1], p['rest_Y'][1])
+        d = dict(mount=min(m['outline'].distance(block) for m in mounts.values()),
+                 switch_body=min(s.distance(block) for s in switches), usb_outlet=usb_box.distance(block))
         assert min(d.values()) >= minimum, (i, d)
         out[i] = {k: round(v, 3) for k, v in d.items()}
     return out
 
 
-def rear_foot_volume(values):
-    """Material one foot adds below the flange bottom (Z 5)."""
-    flange_bottom = values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
-    return values['v5_rear_foot_L'] * values['split_flange_W'] * (
-        flange_bottom - values['v5_rear_boss_top_Z'] - values['v5_rear_foot_gap'])
+def emit_rear_rest_trials(feature, doc):
+    """The order-1 height variants: free boxes beside the coupons (trials model and review model)."""
+    for body, spec in REAR_REST_TRIALS.items():
+        x, y = spec['origin']
+        feature('box', body, corner=[x, y, 0.0], length=str(REAR_REST_L), width=str(REAR_REST_W),
+                height=str(round(REAR_REST_H + spec['dh'], 6)), operation='new_body', body_names=[body])
+        doc['appearances']['bodies'][body] = dict(name='Custom', color=REAR_REST_COLOR, opacity=1.0)
 
 
 def ctrl_params():
@@ -611,7 +651,7 @@ def check_ctrl(evaluated, trials):
     report = {}
     assert not set(c.TRIALS) & set(bodies), 'snap trials belong in model/ctrl_trials_v5.sc'
     bodies.update({b['name']: b for b in trials['bodies']})
-    assert set(c.TRIALS) == {b['name'] for b in trials['bodies']}, trials['bodies']
+    assert set(c.TRIALS) | set(REAR_REST_TRIALS) == {b['name'] for b in trials['bodies']}, trials['bodies']
     for body, design in [(c.BODY, c.bracket())] + [(n, c.bracket(**s)) for n, s in c.TRIALS.items()]:
         b = bodies[body]
         expected = c.expected_volume(design)
@@ -737,29 +777,34 @@ def build(probe=False):
     emit_code_bodies(doc, feature)
     emit_cover_cuts(doc, feature, sketch)
 
-    # --- rear feet on the PSD60 rear-wall bosses (2026-11-09) ----------------------------------------
-    feet = rear_foot_plan(doc)
+    # --- rest blocks on the PSD60 rear-wall bosses (feet on the plate 2026-11-09, separate blocks 2026-11-10) ------
+    rests = rear_rest_plan(doc)
     for i, x in enumerate(REAR_BOSS_X, 1):
         new_param(f'v5_rear_boss_{i}_X', x, f'[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 {i} 중심 X. 사용자 제공 '
                   'KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22'
-                  + (' · 우 mount 뒤 모서리(SO4 옆) 밑이라 plate 다리 없음' if i == 4 else ''))
+                  + (' · 우 mount 뒤 모서리(SO4 옆) 밑이라 받침 블록 없음' if i == 4 else ''))
     new_param('v5_rear_boss_D', REAR_BOSS_D, '[사진 추정·미실측 2026-11-09] 뒤 벽 보스 지름(약 8–10). 벽에 반쯤 묻힌 반원. 실측 M22')
     new_param('v5_rear_boss_top_Z', REAR_BOSS_TOP_Z, '[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지대 윗면. 근거: r2 맨 아래 판 P0(2T, 폭 4 테두리, '
               'H01·H05·H06 M2 구멍)가 노치 없이 이 보스 위를 지났다. 실측 M22')
-    new_param('v5_rear_foot_gap', REAR_FOOT_GAP, '[v5 설계 2026-11-09] plate 뒤 다리 끝 ↔ 보스 윗면 공칭 틈. 시험 조립에서 실제 틈을 재 '
-              'shim·점착 패드로 메운다(plate는 깎지 않는다). 딱 맞춰 만들면 지지대 6개가 정한 plate 높이와 겹친다(과구속)')
-    new_param('v5_rear_foot_L', REAR_FOOT_L, f'[v5 설계 2026-11-09] 뒤 다리 길이(X). 보스 추정 위치가 ±{REAR_FOOT_CHORD_MARGIN:g} 틀려도 '
-              '플랜지 안쪽 면에서 본 보스 윗면 폭이 다리 밑에 다 들어온다. 폭은 플랜지와 같은 split_flange_W')
-    for i, (x, plate) in REAR_FEET.items():
+    new_param('v5_rear_rest_gap', REAR_REST_GAP, '[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 '
+              '보스 위에 붙인다. 딱 맞춰 만들면 지지대 6개가 정한 plate 높이와 겹친다(과구속)')
+    new_param('v5_rear_rest_L', REAR_REST_L, f'[v5 설계 2026-11-10] 뒤 받침 블록 길이(X). 보스 추정 위치가 ±{REAR_REST_CHORD_MARGIN:g} 틀려도 '
+              '플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다')
+    new_param('v5_rear_rest_W', REAR_REST_W, '[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + '
+              f'보스 앞쪽으로 {REAR_REST_W - 2.0:g}')
+    variants = ' / '.join(f'{REAR_REST_H + t["dh"]:g}' for t in REAR_REST_TRIALS.values())
+    new_param('v5_rear_rest_H', 'plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap',
+              f'[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 1 높이 변형 {variants}')
+    for i, (x, plate) in REAR_RESTS.items():
         side = 'L' if plate.startswith('PLATE_L') else 'R'
-        new_param(f'v5_rear_foot_{i}_X', x, f'[v5 설계 2026-11-09] plate {side} 뒤 다리 {i} 중심 X(보스 {i} 위, 뒤 플랜지 구간 안)')
-        feature('box', f'PLATE_REAR_FOOT_{i}_V5',
-                corner=[f'v5_rear_foot_{i}_X - v5_rear_foot_L/2', f'{PLATE_REAR_Y} - split_flange_W',
-                        'v5_rear_boss_top_Z + v5_rear_foot_gap'],
-                length='v5_rear_foot_L', width='split_flange_W',
-                height=(f'plate_top_Z - TBD_plate_T - split_flange_H + {REAR_FOOT_OVERLAP}'
-                        ' - v5_rear_boss_top_Z - v5_rear_foot_gap'),
-                operation='join', participants=[plate])
+        body = REAR_REST_BODY.format(i)
+        new_param(f'v5_rear_rest_{i}_X', x, f'[v5 설계 2026-11-09] 뒤 받침 블록 {i} 중심 X(보스 {i} 위, plate {side} 뒤 플랜지 구간 안)')
+        feature('box', body,
+                corner=[f'v5_rear_rest_{i}_X - v5_rear_rest_L/2', f'{PLATE_REAR_Y} - v5_rear_rest_W',
+                        'v5_rear_boss_top_Z + v5_rear_rest_gap'],
+                length='v5_rear_rest_L', width='v5_rear_rest_W', height='v5_rear_rest_H',
+                operation='new_body', body_names=[body])
+        doc['appearances']['bodies'][body] = dict(name='Custom', color=REAR_REST_COLOR, opacity=1.0)
 
     # Phase 2 (2026-11-09): tools/ctrl_v5.py builds the snap bracket (the base has no bracket),
     # its two plate screw holes and the reference M2 screws. The order-1 trial variants A/C are built into
@@ -801,8 +846,8 @@ def build(probe=False):
         assert abs(bodies[name]['bbox']['max'][2] - top_z) < 1e-6, name
     mount_report = check_mounts(evaluated, mounts)
     ctrl_report['bodies'] = check_ctrl(evaluated, trials)
-    feet_report = check_rear_feet(evaluated, feet)
-    feet_report['plan_clearance_mm'] = rear_foot_clearance(feet, mounts, bodies)
+    rest_report = check_rear_rests(evaluated, trials, rests)
+    rest_report['plan_clearance_mm'] = rear_rest_clearance(rests, mounts, bodies)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
     info = dict(model=str(pending if probe else OUTPUT), base_sha=sha(BASE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
@@ -810,7 +855,7 @@ def build(probe=False):
                 trials_model=str(trials_pending if probe else TRIALS_OUTPUT), trials_run_seconds=round(trials_elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
                 cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
-                ctrl=ctrl_report, rear_feet=feet_report)
+                ctrl=ctrl_report, rear_rests=rest_report)
     if not probe:
         pending.replace(OUTPUT)
         trials_pending.replace(TRIALS_OUTPUT)
@@ -844,18 +889,21 @@ def refresh_record():
     print(f'build record refreshed: {count} bodies identical, {OUTPUT.name} and {TRIALS_OUTPUT.name} kept')
 
 
-def trials_document():
-    """Parameter-only copy of the base document holding the order-1 snap trials A and C. They are free bodies beside the
-    coupons (no plate cut, no reference screws), so they need the parameters and nothing else."""
+def trials_document(rests=True):
+    """Parameter-only copy of the base document holding the order-1 snap trials A and C and the rear rest height
+    variants. They are free bodies beside the coupons (no plate cut, no reference screws), so they need the
+    parameters and nothing else."""
     doc, container = read_source()
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
     doc['appearances'] = {'bodies': {}}
-    doc['name'] = '46es v5 snap bracket trials A/C (order 1)'
+    doc['name'] = '46es v5 snap bracket trials A/C and rear rest height variants (order 1)'
     feature, sketch = helpers(doc)
     for body, spec in ctrl_v5.TRIALS.items():
         ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
+    if rests:
+        emit_rear_rest_trials(feature, doc)
     return doc, container
 
 
@@ -863,7 +911,7 @@ def build_ctrl():
     """Fast loop for bracket work (plan 3-2): the production bracket B and the snap trials A/C alone, from a
     parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    doc, container = trials_document()
+    doc, container = trials_document(rests=False)
     doc['name'] = '46es v5 snap brackets B, A, C only - bracket check'
     feature, sketch = helpers(doc)
     ctrl_v5.emit(feature, sketch, plate=None, references=False)

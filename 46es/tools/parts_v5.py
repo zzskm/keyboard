@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from common import ROOT
 
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
-TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C (build_seam_v5.py, plan 3-3)
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C and rear rest height variants (build_seam_v5.py)
 SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
 
 MJF = 'MJF PA12S-HP 검정'
@@ -76,8 +76,15 @@ PARTS = (
         ('ctrl_bracket', 'CTRL_BRACKET_SPLIT_V1', MODEL, MJF, True),
         ('ctrl_snap_A', 'CTRL_SNAP_TRIAL_A', TRIALS, MJF, True),
         ('ctrl_snap_C', 'CTRL_SNAP_TRIAL_C', TRIALS, MJF, True),
+        # rear rest blocks on the PSD60 rear-wall bosses (build_seam_v5.py REAR_RESTS): nominal height and the two
+        # variants, three prints each; the height that fits at trial assembly is used as it is (no order-2 part)
+        ('rear_rest', 'REAR_REST_1_V5', MODEL, MJF, False),
+        ('rear_rest_lo', 'REAR_REST_TRIAL_LO', TRIALS, MJF, False),
+        ('rear_rest_hi', 'REAR_REST_TRIAL_HI', TRIALS, MJF, False),
     ]),
 )
+# CAD bodies with the shape of a listed part, printed from that part's file (the guide shows them, no file of their own)
+SAME_PRINT = {'REAR_REST_2_V5': 'REAR_REST_1_V5', 'REAR_REST_3_V5': 'REAR_REST_1_V5'}
 
 
 def parts(order):

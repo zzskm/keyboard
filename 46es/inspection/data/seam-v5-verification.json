@@ -1,29 +1,29 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:54a5dd8dec8ad448a3585570c943d52da54bceab85afb3d1b2a5425708fef366",
-  "tools/parts_v5.py": "ast:6cbed26e08be7fc00cba1b4dc7406dbbf0a97354b017593260f853c2ac86ba7f",
-  "model/46es_mount_seam_v5.sc": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
-  "model/ctrl_trials_v5.sc": "a43de8805337c1654497505ed433390d123a9893558cdf146eca0793e03d53da",
-  "model/parameters_seam_v5.csv": "3fe40cec28dd18f089b8b3f95dba8701f043d490eb3d8e4168a8ca5fbe31cd7d",
-  "inspection/data/seam-v5-baseline.json": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
-  "inspection/data/seam-v5-print-set.json": "e605342e620c990b4b3c653a98f0d44f5ff22908de771dbe3772de9c90d73f9a",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "0ca9db04442c2fb26c7a252f267eb2d3fa87f45de12ffc763ac25384e99860b9",
-  "inspection/data/seam-v5-trial-print-set.json": "f51d1b9525e29647b7c3abebad9536fcc795b39c1ffcb1ca8a909da8927a508e"
+  "inspection/scripts/verify_seam_v5.py": "ast:1021a34b2cba9e4f65286dc36950562f056e3f8927cc000ff809a178e0c14691",
+  "tools/parts_v5.py": "ast:37acc904c93a986817fc95b23558329ef2d1f5f8a5b2957bd7fd7a61aa1fdcc3",
+  "model/46es_mount_seam_v5.sc": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
+  "model/ctrl_trials_v5.sc": "e718f98d26f31a682d2706cf19a3e047ecbe59cb5788be8c6c51d56778077c8b",
+  "model/parameters_seam_v5.csv": "087d119bea21b86a710662b9fc17537fb8c7b8687a57ddd5131018c5c6a4aab6",
+  "inspection/data/seam-v5-baseline.json": "5a87d36a52c6ff72fb5e5c42d59b379bd1df4213b26a9b4c292c1c0ef1d06a67",
+  "inspection/data/seam-v5-print-set.json": "2c842591cd57580df96c4525a4d7734d94a41b000a967d41b21c37a4119905ab",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "0d3381dbf362a6b30074aeb0ceabc15b91f22bf511f2242b39ae804845cc0153",
+  "inspection/data/seam-v5-trial-print-set.json": "0d053a925679d710513d2f364b2c61f6f45e23f38685d669bef11f5471c6caac"
  },
- "v5_sha": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
- "baseline_sha": "f05cdd94d03f9925295a9e12653f8903072257cf373f92ffca3ed57d05d3e33f",
- "baseline_bodies": 67,
+ "v5_sha": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
+ "baseline_sha": "5a87d36a52c6ff72fb5e5c42d59b379bd1df4213b26a9b4c292c1c0ef1d06a67",
+ "baseline_bodies": 72,
  "print_set": [
   {
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 38.511,
+   "volume_cm3": 38.259,
    "size": [
     143.29,
     95.33,
-    12.5
+    8.0
    ],
    "wall_min_mm": 1.0,
    "rel": 3.6e-05
@@ -32,11 +32,11 @@
    "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 40.762,
+   "volume_cm3": 40.636,
    "size": [
     154.26,
     95.33,
-    12.5
+    8.0
    ],
    "wall_min_mm": 1.047,
    "rel": 1.9e-05
@@ -107,9 +107,17 @@
    "rel": 5e-06
   }
  ],
- "bodies": 65,
+ "bodies": 68,
  "timeline_active": 351,
- "rear_foot_bottom_Z": 0.5,
+ "rear_rest_Z": [
+  0.5,
+  5.0
+ ],
+ "rear_rest_contacts": {
+  "REAR_REST_1_V5": "PLATE_L_SPLIT_V1",
+  "REAR_REST_2_V5": "PLATE_L_SPLIT_V1",
+  "REAR_REST_3_V5": "PLATE_R_SPLIT_V1"
+ },
  "generated": [
   "COVER_L_DRAFT_TBD",
   "COVER_R_DRAFT_TBD",
@@ -121,6 +129,9 @@
   "MOUNT_R_PAIR_V3",
   "PLATE_L_SPLIT_V1",
   "PLATE_R_SPLIT_V1",
+  "REAR_REST_1_V5",
+  "REAR_REST_2_V5",
+  "REAR_REST_3_V5",
   "REF_LEGMAG_L_COVER",
   "REF_LEGMAG_L_PLATE",
   "REF_LEGMAG_R_COVER",
@@ -132,7 +143,7 @@
  ],
  "timeline": 358,
  "sketches": 80,
- "params": 235,
+ "params": 237,
  "cover_Z": [
   11.5,
   19.0
@@ -499,7 +510,7 @@
   },
   "among_generated": {
    "overlaps": 0,
-   "contacts": 21,
+   "contacts": 24,
    "unchecked": 0
   }
  },
@@ -564,14 +575,14 @@
   {
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
-   "volume_cm3": 38.51,
+   "volume_cm3": 38.26,
    "wall_min_mm": 1.0,
    "stl_volume_rel_err": 3.6e-05
   },
   {
    "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
-   "volume_cm3": 40.76,
+   "volume_cm3": 40.64,
    "wall_min_mm": 1.047,
    "stl_volume_rel_err": 1.9e-05
   }

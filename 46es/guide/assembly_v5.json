@@ -234,6 +234,7 @@
         "housing",
         "case-screws",
         "usb",
+        "REAR_REST_1_V5",
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1",
         "m2-5",
@@ -242,14 +243,16 @@
         "m2-6"
       ],
       "focus": [
+        "REAR_REST_1_V5",
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1"
       ],
       "needs": {
+        "REAR_REST_1_V5": "3 · 높이 고르기",
         "PLATE_L_SPLIT_V1": 1,
         "PLATE_R_SPLIT_V1": 1,
         "shim": "두께 확인",
-        "rear-pads": "틈 재기"
+        "rear-pads": "두께 고르기"
       },
       "view": "iso",
       "note": "plate를 임시로 얹습니다. 아직 위쪽 M3 나사는 조이지 않습니다.",
@@ -263,7 +266,7 @@
       "quick": [
         "plate를 지지대와 mount 받침 위에 임시로 얹는다.",
         "지지대 구멍 6곳과 받침 7곳을 맞춘다. Rear plate 받침과 spine shim 접촉을 따로 확인한다.",
-        "plate 뒤 다리 3곳과 케이스 뒤 벽 보스 사이 틈을 재어 패드 두께를 고른다(설계 0.5)."
+        "뒤 받침 블록 3개를 보스 위에 올려 plate 뒤 플랜지와의 틈을 재고, 블록 높이와 패드 두께를 골라 붙인다(설계 0.5)."
       ],
       "placement": [
         {
@@ -516,6 +519,7 @@
         "housing",
         "case-screws",
         "usb",
+        "REAR_REST_1_V5",
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1",
         "m2-5",
@@ -562,6 +566,7 @@
         "housing",
         "case-screws",
         "usb",
+        "REAR_REST_1_V5",
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1",
         "m2-5",
@@ -657,6 +662,7 @@
         "housing",
         "case-screws",
         "usb",
+        "REAR_REST_1_V5",
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1",
         "m2-5",
@@ -793,6 +799,7 @@
     "COVER_T_DRAFT_TBD": "#719bc7",
     "COVER_R_DRAFT_TBD": "#719bc7",
     "PLATE_SPINE_V1": "#b6a06d",
+    "REAR_REST_1_V5": "#c9a23a",
     "housing": "#bbc2c7",
     "controller": "#478761",
     "switches": "#c1b38a",
@@ -801,6 +808,6 @@
   },
   "labels": {
     "eyebrow": "BUILD / 46es v5",
-    "case_hint": "케이스는 부분 실측 검토 형상입니다. 테두리 Z 14 mm, 커버 윗면 Z 19 mm입니다. mount의 일체형 받침 7곳이 plate 밑면과 맞닿습니다. 뒤 벽 보스 4개는 제품 사진으로 추정한 위치이며 plate 뒤 다리 3곳이 그 위에 패드를 사이에 두고 얹힙니다. 배선과 실제 부품 치수는 시험 조립에서 확인합니다."
+    "case_hint": "케이스는 부분 실측 검토 형상입니다. 테두리 Z 14 mm, 커버 윗면 Z 19 mm입니다. mount의 일체형 받침 7곳이 plate 밑면과 맞닿습니다. 뒤 벽 보스 4개는 제품 사진으로 추정한 위치이며 그 가운데 3곳에 패드로 붙인 받침 블록이 plate 뒤 플랜지를 받칩니다. 배선과 실제 부품 치수는 시험 조립에서 확인합니다."
   }
 }

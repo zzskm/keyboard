@@ -9,7 +9,8 @@ from cad_model import live_shapes
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from build_seam_v5 import MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X, REAR_FEET, top_levels  # noqa: E402
+from build_seam_v5 import (MOUNT_PIN_CLEARANCE, PLATE_SUPPORT_MOUNTS, REAR_BOSS_X, REAR_RESTS, REAR_REST_BODY,  # noqa: E402
+                           top_levels)
 import ctrl_v5  # noqa: E402
 BRACKET = ctrl_v5.BODY
 
@@ -27,6 +28,8 @@ COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 HOUSING = 'REF_HOUSING_PSD60_MEASURED'
 BOSSES = [f'REF_PSD_REAR_BOSS_{i}' for i in range(1, len(REAR_BOSS_X) + 1)]   # photo estimates, assumed top Z 0
 PLATES = ['PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1']
+RESTS = [REAR_REST_BODY.format(i) for i in REAR_RESTS]   # rear rest blocks on bosses 1-3
+REST_CLEARANCE = 0.3     # rest block <-> measured case wall, switch parts, mounts, controller (search radius 1.0)
 CAPS = [f'REF_KEYCAP_OEM_{i:02}' for i in range(1, 47)]
 PRESS = 4.0
 TARGET = 1.0            # keycap <-> cover (rest and pressed)
@@ -55,7 +58,8 @@ def main():
     assert not [f for f in ev['timeline'] if f.get('error')]
     bodies = {b['name']: b for b in ev['bodies']}
     for prefix, count in [('REF_MX_LOWER', 46), ('REF_MX_GUIDE', 138), ('REF_MX_UPPER', 46), ('REF_MX_STEM', 46),
-                          ('REF_MX_CONTACT', 92), ('REF_KEYCAP_OEM_', 46), ('REF_LEGMAG_', 4), ('REF_PSD_REAR_BOSS_', 4)]:
+                          ('REF_MX_CONTACT', 92), ('REF_KEYCAP_OEM_', 46), ('REF_LEGMAG_', 4), ('REF_PSD_REAR_BOSS_', 4),
+                          ('REAR_REST_', 5)]:
         selected = [b for n, b in bodies.items() if n.startswith(prefix)]
         assert len(selected) == count and all(b['closed'] for b in selected), prefix
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}
@@ -142,9 +146,13 @@ def main():
         bodies=['REF_PROMICRO_PCB'], against=switch_parts, min_volume=0.000001)))
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=[BRACKET], against=switch_parts + [HOUSING], clearance=0.3, min_volume=0.000001)))
-    # Rear feet over the rear-wall bosses: no overlap, and each foot's nearest boss is its own at the design gap.
+    # Rest blocks over the rear-wall bosses: no overlap, and each block's nearest boss is its own at the pad gap.
+    # The plates no longer reach the bosses. Each block touches its plate's flange and clears everything else.
     script.append(dict(command='inspect.clearance', params=dict(
-        bodies=PLATES, against=BOSSES, clearance=1.0, min_volume=0.000001)))
+        bodies=RESTS + PLATES, against=BOSSES, clearance=1.0, min_volume=0.000001)))
+    script.append(dict(command='inspect.clearance', params=dict(
+        bodies=RESTS, against=PLATES + mounts + switch_parts + controller + [HOUSING, BRACKET], clearance=1.0,
+        min_volume=0.000001)))
     # Mounts on the bosses (touching is reported as a near pair at distance 0; overlaps fail mount_fit above).
     script.append(dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=BOSSES, clearance=1.0, min_volume=0.000001)))
@@ -153,7 +161,7 @@ def main():
     subprocess.run([CLI, 'run', str(CACHE / 'keycap_check.json'), '--in', str(MODEL), '--results', '--json-out', str(out)],
                    check=True, capture_output=True)
     rest, rest_plate, moved, pressed, pressed_plate, controller_fit, *mount_checks = json.loads(out.read_text(encoding='utf-8'))
-    *pin_checks, mount_fit, peg_fit, bracket_fit, feet_fit, boss_mounts = mount_checks
+    *pin_checks, mount_fit, peg_fit, bracket_fit, rest_boss, rest_fit, boss_mounts = mount_checks
     pcb_box = bodies['REF_PROMICRO_PCB']['bbox']
 
     def corner_peg(name):
@@ -185,16 +193,27 @@ def main():
                               closest_reference=reference)
     assert len(moved['bodies']) >= 46
     assert not controller_fit['overlaps'] and not controller_fit['unchecked'], controller_fit
-    assert not feet_fit['overlaps'] and not feet_fit['unchecked'], feet_fit
-    gap = params['v5_rear_foot_gap']
-    feet = {}
-    for i, (_, plate) in REAR_FEET.items():
-        boss = BOSSES[i - 1]
-        near = [n['distance_mm'] for n in feet_fit['near'] if {n['a'], n['b']} == {plate, boss}]
+    assert not rest_boss['overlaps'] and not rest_boss['unchecked'], rest_boss
+    assert not rest_fit['overlaps'] and not rest_fit['unchecked'], rest_fit
+    gap = params['v5_rear_rest_gap']
+    rests = {}
+    for i, (_, plate) in REAR_RESTS.items():
+        block, boss = REAR_REST_BODY.format(i), BOSSES[i - 1]
+        near = [n['distance_mm'] for n in rest_boss['near'] if {n['a'], n['b']} == {block, boss}]
         assert near and abs(min(near) - gap) < 1e-3, (i, near, gap)
-        feet[i] = dict(plate=plate, boss=boss, gap_mm=round(min(near), 4))
-    unfooted = [b for b in BOSSES if b not in {BOSSES[i - 1] for i in REAR_FEET}]
-    assert not [n for n in feet_fit['near'] if {n['a'], n['b']} & set(unfooted)], 'a plate reaches a boss without a foot'
+        others = {}
+        for n in rest_fit['near']:
+            if block in (n['a'], n['b']):
+                other = n['b'] if n['a'] == block else n['a']
+                others[other] = min(others.get(other, 1e9), n['distance_mm'])
+        assert others.pop(plate, 1.0) < 1e-6, (block, plate, 'the flange does not sit on the rest block')
+        closest = min(others.items(), key=lambda item: item[1], default=(None, None))
+        assert closest[1] is None or closest[1] >= REST_CLEARANCE - TOL, (block, closest)
+        rests[i] = dict(rest=block, plate=plate, boss=boss, gap_mm=round(min(near), 4), plate_contact=True,
+                        closest_other=closest[0], closest_other_mm=None if closest[1] is None else round(closest[1], 4))
+    unrested = [b for b in BOSSES if b not in {BOSSES[i - 1] for i in REAR_RESTS}]
+    assert not [n for n in rest_boss['near'] if {n['a'], n['b']} & set(PLATES)], 'a plate reaches a boss'
+    assert not [n for n in rest_boss['near'] if {n['a'], n['b']} & set(unrested)], 'a rest block reaches a boss that has none'
     assert not boss_mounts['overlaps'] and not boss_mounts['unchecked'], boss_mounts
     boss_contacts = sorted((round(n['distance_mm'], 4), *sorted((n['a'], n['b']))) for n in boss_mounts['near'])
     states = {}
@@ -232,9 +251,10 @@ def main():
         inputs=fingerprints(VERIFY_INPUTS),
         mount_review_fit=dict(overlaps=0, unchecked=0, pairs_checked=mount_fit['pairs_checked'],
                               rear_boss_within_1mm=[list(c) for c in boss_contacts]),
-        rear_feet=dict(gap_target_mm=gap, feet=feet, bosses_without_foot=unfooted,
-                       note='Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap '
-                            'is filled with a shim or pad at trial assembly.'),
+        rear_rests=dict(gap_target_mm=gap, clearance_target_mm=REST_CLEARANCE, rests=rests, bosses_without_rest=unrested,
+                        note='Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap '
+                             'under each block is the adhesive pad, and the block height is picked from the order-1 '
+                             'variants at trial assembly.'),
         mount_switch_pin_fit=dict(target_mm=MOUNT_PIN_CLEARANCE, search_radius_mm=pin_search_radius,
                                   mounts=pin_fit),
         model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],

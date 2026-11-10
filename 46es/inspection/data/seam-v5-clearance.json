@@ -1,8 +1,8 @@
 {
  "generated_vs_rest": {
-  "total_pairs": 846,
-  "candidate_pairs": 103,
-  "pairs_pruned_by_bbox": 743,
+  "total_pairs": 987,
+  "candidate_pairs": 94,
+  "pairs_pruned_by_bbox": 893,
   "intentionally_checked_by_sections": [
    [
     "MOUNT_L_PAIR_V3",
@@ -56,14 +56,14 @@
    "STANDOFF_SO5_REF | MOUNT_R_PAIR_V3",
    "STANDOFF_SO6_REF | MOUNT_H03_SO6_MIN_V2"
   ],
-  "pairs_checked": 103,
+  "pairs_checked": 94,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
  "among_generated": {
-  "total_pairs": 153,
-  "candidate_pairs": 36,
-  "pairs_pruned_by_bbox": 117,
+  "total_pairs": 210,
+  "candidate_pairs": 39,
+  "pairs_pruned_by_bbox": 171,
   "intentionally_checked_by_sections": [],
   "overlaps": [],
   "unchecked": [],
@@ -79,6 +79,8 @@
    "PLATE_L_SPLIT_V1 | MOUNT_H03_SO6_MIN_V2",
    "PLATE_L_SPLIT_V1 | MOUNT_L_PAIR_V3",
    "PLATE_L_SPLIT_V1 | PLATE_R_SPLIT_V1",
+   "PLATE_L_SPLIT_V1 | REAR_REST_1_V5",
+   "PLATE_L_SPLIT_V1 | REAR_REST_2_V5",
    "PLATE_L_SPLIT_V1 | REF_LEGMAG_L_PLATE",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_2",
@@ -86,11 +88,12 @@
    "PLATE_R_SPLIT_V1 | COVER_T_DRAFT_TBD",
    "PLATE_R_SPLIT_V1 | MOUNT_H03_SO6_MIN_V2",
    "PLATE_R_SPLIT_V1 | MOUNT_R_PAIR_V3",
+   "PLATE_R_SPLIT_V1 | REAR_REST_3_V5",
    "PLATE_R_SPLIT_V1 | REF_LEGMAG_R_PLATE",
    "REF_M2_PLATE_1 | REF_M2_PLATE_1_NUT",
    "REF_M2_PLATE_2 | REF_M2_PLATE_2_NUT"
   ],
-  "pairs_checked": 36,
+  "pairs_checked": 39,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },

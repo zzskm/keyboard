@@ -119,12 +119,15 @@ def model_checks():
 def printed_checks(printed):
     """The guide's printed-part table against tools/parts_v5.py: the same bodies (the two sample-model coupons are
     described in model/samples/README.md instead), the orders named in each note, and the STL orientation."""
-    from parts_v5 import PARTS, SAMPLE
+    from parts_v5 import PARTS, SAMPLE, SAME_PRINT
     registry = {}
     for part in PARTS:
         if part.source != SAMPLE:
             registry.setdefault(part.body, []).append(part)
     guide = {body: p for p in printed for body in p['bodies']}
+    for copy, original in SAME_PRINT.items():        # shown beside the part whose file prints them
+        require(guide.get(copy) is guide.get(original) is not None, f'guide printed parts: {copy} is not listed with {original}')
+        del guide[copy]
     require(set(guide) == set(registry), f'guide printed parts differ from tools/parts_v5.py: {sorted(set(guide) ^ set(registry))}')
     for body, parts in registry.items():
         entry = guide[body]
@@ -250,8 +253,8 @@ DESIGN_ROWS = {
     '스위치 착좌': ['plate_top_Z - TBD_upper_plate_T', 'TBD_sw_hole'],
     '커버 윗면 / 본체 두께': ['v5_cover_top_Z', 'TBD_cover_T'],
     'mount–plate 접촉면': ['plate_top_Z - TBD_plate_T'],
-    'plate 뒤 다리': ['v5_rear_foot_L', 'v5_rear_boss_top_Z + v5_rear_foot_gap', 'v5_rear_foot_gap',
-                     *[f'v5_rear_foot_{i}_X {s} v5_rear_foot_L / 2' for i in (1, 2, 3) for s in '-+']],
+    '뒤 받침 블록': ['v5_rear_rest_L', 'v5_rear_rest_W', 'v5_rear_rest_H', 'v5_rear_rest_gap',
+                    *[f'v5_rear_rest_{i}_X {s} v5_rear_rest_L / 2' for i in (1, 2, 3) for s in '-+']],
     '커버 다리 자석 포켓 위 살': ['v5_legmag_skin'],
     '커버 창 윤곽': ['v5_cover_silhouette_cell', 'v5_cover_silhouette_min_rail'],
     '참고 키캡 밑면': ['v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z'],

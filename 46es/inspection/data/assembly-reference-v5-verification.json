@@ -34,11 +34,11 @@
   },
   "ok": true,
   "inputs": {
-    "inspection/scripts/verify_assembly_reference_v5.py": "ast:5881e8571c18ff83db65b321d48ccb22bec00c48692688e2afe2314a52b1354b",
-    "model/46es_assembly_review_v5.sc": "62e41a47063cd1522bff9a503f3f875686a169a07ed44b2ad4721136db4bd1eb",
-    "model/assembly_reference_v5.json": "416b3a4bcaf9aae48e1e3e91f557307e0e4b8217f6dc1e9270839863c6f6165c",
-    "model/46es_mount_seam_v5.sc": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
-    "inspection/data/seam-v5-trial-print-set.json": "f51d1b9525e29647b7c3abebad9536fcc795b39c1ffcb1ca8a909da8927a508e"
+    "inspection/scripts/verify_assembly_reference_v5.py": "ast:c2480cf85b593343918d45a669d3ba7b19523d8e956def5a55df0c7f193a18bc",
+    "model/46es_assembly_review_v5.sc": "763d433254d0caa1b3ecb61c6ca4d840df0f73ada81ab4fe8b1d799739e9f824",
+    "model/assembly_reference_v5.json": "e4856bf1aa34d95a824a5866f57288715c6e106faa0f8f16974699914e60199d",
+    "model/46es_mount_seam_v5.sc": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
+    "inspection/data/seam-v5-trial-print-set.json": "0d053a925679d710513d2f364b2c61f6f45e23f38685d669bef11f5471c6caac"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -52,29 +52,42 @@
       ]
     ]
   },
-  "rear_feet": {
+  "rear_rests": {
     "gap_target_mm": 0.5,
-    "feet": {
+    "clearance_target_mm": 0.3,
+    "rests": {
       "1": {
+        "rest": "REAR_REST_1_V5",
         "plate": "PLATE_L_SPLIT_V1",
         "boss": "REF_PSD_REAR_BOSS_1",
-        "gap_mm": 0.5
+        "gap_mm": 0.5,
+        "plate_contact": true,
+        "closest_other": "REF_HOUSING_PSD60_MEASURED",
+        "closest_other_mm": 0.366
       },
       "2": {
+        "rest": "REAR_REST_2_V5",
         "plate": "PLATE_L_SPLIT_V1",
         "boss": "REF_PSD_REAR_BOSS_2",
-        "gap_mm": 0.5
+        "gap_mm": 0.5,
+        "plate_contact": true,
+        "closest_other": "REF_HOUSING_PSD60_MEASURED",
+        "closest_other_mm": 0.366
       },
       "3": {
+        "rest": "REAR_REST_3_V5",
         "plate": "PLATE_R_SPLIT_V1",
         "boss": "REF_PSD_REAR_BOSS_3",
-        "gap_mm": 0.5
+        "gap_mm": 0.5,
+        "plate_contact": true,
+        "closest_other": "REF_HOUSING_PSD60_MEASURED",
+        "closest_other_mm": 0.366
       }
     },
-    "bosses_without_foot": [
+    "bosses_without_rest": [
       "REF_PSD_REAR_BOSS_4"
     ],
-    "note": "Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap is filled with a shim or pad at trial assembly."
+    "note": "Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap under each block is the adhesive pad, and the block height is picked from the order-1 variants at trial assembly."
   },
   "mount_switch_pin_fit": {
     "target_mm": 0.4,
@@ -102,8 +115,8 @@
       }
     }
   },
-  "model_sha": "62e41a47063cd1522bff9a503f3f875686a169a07ed44b2ad4721136db4bd1eb",
-  "source_sha": "0a790e7f5c371f2f6c1a1ee12151351043252eb159e1b27f754cd03b82207bb4",
+  "model_sha": "763d433254d0caa1b3ecb61c6ca4d840df0f73ada81ab4fe8b1d799739e9f824",
+  "source_sha": "ee0e8dd067c9a1532607f79a93a00d1dd3dbf5ceb28f593a5907e3e247acc038",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.000000000000007,
   "cover_above_rim_mm": 5.0,
