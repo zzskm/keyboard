@@ -2,8 +2,11 @@
 import hashlib
 import json
 import shutil
-import struct
 from pathlib import Path
+
+import numpy as np
+
+import glb
 
 
 def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, assembly_only=False):
@@ -86,7 +89,8 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
             body_sets = [[b] for b in p['bodies']] if p['id'] in ('m2-5','m2-6','m2-nuts') else [p['bodies']]
         for j, bodies in enumerate(body_sets):
             filename = f'part-{i:02}-{j:02}.stl'
-            piece = dict(mesh='models/' + filename, bodies=bodies,
+            # every piece is one named mesh in a single GLB (glb.py); the STL stays in the build cache
+            piece = dict(mesh=f'models/assembly.glb#{Path(filename).stem}', bodies=bodies,
                          instances=instances([ctx.bodies[b]['bbox'] for b in bodies]))
             if colors:
                 piece['color'] = list(colors.values())[j]
@@ -102,21 +106,24 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
         script = meshes / 'export.json'
         script.write_text(json.dumps(commands), encoding='utf-8')
         run([cli, 'run', script, '--in', model, '--quiet'])
-    target = out / 'models'
-    target.mkdir(parents=True, exist_ok=True)
+    loaded = []
     for p, piece in exports:
-        path = meshes / Path(piece['mesh']).name
-        raw = path.read_bytes()
-        if len(raw) < 84 or len(raw) != 84 + 50 * struct.unpack_from('<I', raw, 80)[0]:
-            die(f'interactive: invalid binary STL {path}')
+        name = piece['mesh'].split('#')[1]
+        try:
+            tris = glb.read_stl(meshes / f'{name}.stl')
+        except ValueError as e:
+            die(f'interactive: {e}')
         # Refuse stale print-oriented meshes: every vertex must stay in CAD world bounds.
-        low, high = p['bbox']
-        for offset in range(84, len(raw), 50):
-            for v in struct.iter_unpack('<fff', raw[offset+12:offset+48]):
-                if any(v[i] < low[i] - .1 or v[i] > high[i] + .1 for i in range(3)):
-                    die(f"interactive: mesh outside CAD bounds: {p['id']}")
-        shutil.copyfile(path, target / path.name)
-    data = dict(parts=parts, steps=steps, model_sha=model_sha, tools=ctx.text(source.get('tools', '')))
+        low, high = np.array(p['bbox'][0]), np.array(p['bbox'][1])
+        if (tris < low - .1).any() or (tris > high + .1).any():
+            die(f"interactive: mesh outside CAD bounds: {p['id']}")
+        loaded.append((name, tris))
+    (out / 'models').mkdir(parents=True, exist_ok=True)
+    for stale in (out / 'models').glob('part-*.stl'):  # older builds shipped one STL per piece
+        stale.unlink()
+    glb.write(out / 'models' / 'assembly.glb', loaded)
+    data = dict(parts=parts, steps=steps, model_sha=model_sha, tools=ctx.text(source.get('tools', '')),
+                model_bytes=(out / 'models' / 'assembly.glb').stat().st_size)
     prepare_comparison(base, out, die)
     from illustrations import prepare as draw_illustrations
     draw_illustrations(out, data)
@@ -177,17 +184,26 @@ def prepare_comparison(base, out, die):
     for path, expected in ref['source_files'].items():
         if hashlib.sha256((root / path).read_bytes()).hexdigest() != expected:
             die('r2 reference stale: run python 46es/tools/build_r2_reference.py')
+    loaded = []
     for p in ref['parts']:
         src = folder / Path(p['mesh']).name
         if hashlib.sha256(src.read_bytes()).hexdigest() != p['sha256']:
             die('r2 reference mesh hash mismatch: ' + p['id'])
-        (out / 'models').mkdir(exist_ok=True, parents=True)
-        shutil.copyfile(src, out / p['mesh'])
+        loaded.append((src.stem, glb.read_stl(src)))
+        # the site reads the same GLB format as the v5 viewer; sha256 stays the committed STL's
+        p['mesh'] = f'models/r2.glb#{src.stem}'
+        for piece in p.get('pieces', []):
+            piece['mesh'] = p['mesh']
+    (out / 'models').mkdir(exist_ok=True, parents=True)
+    for stale in (out / 'models').glob('r2-P*.stl'):
+        stale.unlink()
+    glb.write(out / 'models' / 'r2.glb', loaded)
     step = folder / '46es_r2_reference.step'
     if hashlib.sha256(step.read_bytes()).hexdigest() != ref['step_sha256']:
         die('r2 reference STEP hash mismatch')
     shutil.copyfile(step, out / step.name)
-    shutil.copyfile(manifest, out / 'r2-reference.json')
+    (out / 'r2-reference.json').write_text(json.dumps(ref, ensure_ascii=False, indent=2) + '\n',
+                                           encoding='utf-8', newline='\n')
     shutil.copyfile(folder / 'overview.svg', out / 'r2-overview.svg')
 
 

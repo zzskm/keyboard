@@ -1,6 +1,5 @@
-"""Orthographic assembly drawings from the same world-coordinate STLs as the 3D viewer."""
+"""Orthographic assembly drawings from the same world-coordinate meshes as the 3D viewer."""
 import json
-import struct
 from functools import lru_cache
 
 import matplotlib
@@ -10,15 +9,25 @@ from matplotlib.collections import PolyCollection
 from matplotlib.colors import to_rgb
 import numpy as np
 
+import glb
+
+
+@lru_cache(maxsize=8)
+def _glb(path):
+    return glb.read(path)
+
 
 @lru_cache(maxsize=64)
-def triangles(path):
-    raw = path.read_bytes()
-    count = struct.unpack_from('<I', raw, 80)[0]
-    dtype = np.dtype([('normal', '<f4', 3), ('verts', '<f4', (3, 3)), ('tag', '<u2')])
-    if not count or len(raw) != 84 + count * dtype.itemsize:
-        raise ValueError(f'Invalid binary STL: {path}')
-    return np.frombuffer(raw, dtype=dtype, count=count, offset=84)
+def triangles(out, mesh):
+    """`models/assembly.glb#name` (the viewer's GLB) or a plain STL path, both under out."""
+    file, _, name = mesh.partition('#')
+    verts = _glb(out / file)[name] if name else glb.read_stl(out / file)
+    tris = np.empty(len(verts), dtype=[('normal', '<f4', 3), ('verts', '<f4', (3, 3))])
+    tris['verts'] = verts
+    # flat normals from the winding: the GLB keeps no normals, and STL ones match it
+    normals = np.cross(verts[:, 1] - verts[:, 0], verts[:, 2] - verts[:, 0])
+    tris['normal'] = normals / np.maximum(np.linalg.norm(normals, axis=1, keepdims=True), 1e-12)
+    return tris
 
 
 def selected_meshes(parts, step):
@@ -44,7 +53,7 @@ def draw(out, dest, items, view='iso', arrows=(), size=(8, 3.5), bounds=None):
     basis = np.array([right, up, camera]).T
     projected, colors, priority = [], [], []
     for piece, color, focus, lift in items:
-        mesh = triangles(out / piece['mesh'])
+        mesh = triangles(out, piece['mesh'])
         if piece.get('clip'):
             lo, hi = np.array(piece['clip'])
             centre = mesh['verts'].mean(axis=1)
@@ -134,3 +143,4 @@ def prepare(out, data):
                 items.extend((piece, p['color'], False, lift) for piece in p['pieces'])
             draw(out, f'img/build/{name}-{scope}.png', items, bounds=bounds)
     triangles.cache_clear()
+    _glb.cache_clear()

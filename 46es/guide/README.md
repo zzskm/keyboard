@@ -50,7 +50,7 @@ python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --v
 
 ## spec
 
-`groups`=CAD 바디 패턴+`@그룹`. `renders`=표시/카메라/단면. 본문 토큰 `{{p:}} {{v:}} {{d:}} {{l:}} {{n:}}`(`l`=바디 평면 최대 길이). 수치는 손으로 적지 말고 토큰으로 쓴다. yaw 0=−Y(앞), −π/2=+X. 조립 단계 ID/구매품 ID는 체크·진행 기록에 쓰이므로 변경 금지. 3D 단계는 `assembly_v5.json`(`show,focus,needs,view,hardwareStages`). 배선은 3D 형상 없음, 케이스/하드웨어/키캡은 참고. `assets/vendor/`=Three.js 0.180.0+MIT(오프라인). 3D 뷰어는 버튼 클릭 시 로드.
+`groups`=CAD 바디 패턴+`@그룹`. `renders`=표시/카메라/단면. 본문 토큰 `{{p:}} {{v:}} {{d:}} {{l:}} {{n:}}`(`l`=바디 평면 최대 길이). 수치는 손으로 적지 말고 토큰으로 쓴다. yaw 0=−Y(앞), −π/2=+X. 조립 단계 ID/구매품 ID는 체크·진행 기록에 쓰이므로 변경 금지. 3D 단계는 `assembly_v5.json`(`show,focus,needs,view,hardwareStages`). 배선은 3D 형상 없음, 케이스/하드웨어/키캡은 참고. `assets/vendor/`=Three.js 0.180.0+MIT(오프라인). 3D 뷰어는 버튼 클릭 시 로드. 3D 메시는 빌드가 SolidCraft STL(빌드 캐시에만 남김)을 `models/assembly.glb` 하나로 묶는다(`glb.py`: 같은 정점 합치기, 메시 상자 안 uint16 좌표 `KHR_mesh_quantization`, 법선 없음 → 뷰어·2D 그림이 면 법선을 다시 계산, 오차 0.003 mm 미만). 조각의 `mesh`는 `models/assembly.glb#part-ii-jj`, r2 비교는 `models/r2.glb`. STL 33 MB → GLB 9 MB, Pages가 gzip으로 보내 약 3.5 MB를 받는다. 진행률은 `assembly.json` `model_bytes` 기준.
 
 ## 비교/검토/검증
 

@@ -41,10 +41,9 @@ def build(source,out):
     data['steps']=steps
     out.mkdir(parents=True,exist_ok=True)
     # Copy only referenced v5 meshes and image assets. Missing resources fail early.
-    for part in data['parts']:
-        for piece in part.get('pieces',[]):
-            path=piece['mesh'];(out/path).parent.mkdir(parents=True,exist_ok=True)
-            shutil.copyfile(source/path,out/path)
+    for path in {piece['mesh'].split('#')[0] for part in data['parts'] for piece in part.get('pieces',[])}:
+        (out/path).parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(source/path,out/path)
     for f in (source/'img').glob('*.png'):
         (out/'img').mkdir(exist_ok=True);shutil.copyfile(f,out/'img'/f.name)
         with Image.open(f) as im:ctx.sizes[f.stem]=im.size
