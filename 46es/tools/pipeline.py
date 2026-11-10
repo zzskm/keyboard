@@ -5,12 +5,12 @@ Run from any directory:
   python 46es/tools/pipeline.py --status     each stage: ok / stale (with the reason) / pending after an earlier stage
   python 46es/tools/pipeline.py --run        run the stale stages in order, re-checking each before it runs
   python 46es/tools/pipeline.py --run --from verify_seam      run that stage and every later one
-  python 46es/tools/pipeline.py --run --only order1 order2    run just these (in chain order)
+  python 46es/tools/pipeline.py --run --only print verify_seam  run just these (in chain order)
 
 Stages (validation.md 「재생성」 lists the same commands):
   seam            tools/build_seam_v5.py                 model/seam_v5_build.json vs the generator inputs and CAD
-  order2          tools/export_print_v5.py               order-2 record vs its source CAD and STL/STEP files
-  order1          tools/export_print_v5.py --trial       order-1 record vs its three source CADs and files
+  print           tools/export_print_v5.py [--order ..]  order-1/2 records vs tools/parts_v5.py, the source CADs and
+                                                         the STL/STEP files; --run exports only the stale orders
   verify_seam     inspection/scripts/verify_seam_v5.py   inputs recorded in seam-v5-verification.json
   assembly        tools/build_assembly_reference_v5.py   model/assembly_reference_v5.json hashes
   verify_assembly inspection/scripts/verify_assembly_reference_v5.py   inputs recorded in its verification JSON
@@ -18,7 +18,7 @@ Stages (validation.md 「재생성」 lists the same commands):
                                                          (guide/.cache/visual-review); the verdict stays manual
 
 Staleness is read from the committed records, so --status needs no SolidCraft. Exporter code is not fingerprinted:
-after editing export_print_v5.py (or the STL scripts it calls) run --only order1 order2. Every stage run appends
+after editing export_print_v5.py (or the STL scripts it calls) run --only print. Every stage run appends
 {stage, started, seconds, ok} to 46es/.cache/pipeline-timings.json; --status shows the last successful time.
 Publishing the guide stays a separate step after the merge (guide/publish_guide.py).
 
@@ -49,31 +49,39 @@ def seam_stale():
     return stale_reasons()
 
 
-def print_stale(trial):
-    from export_print_v5 import PARTS, TRIAL_PARTS, source_of
-    parts, order = (TRIAL_PARTS, 'order1') if trial else (PARTS, 'order2')
-    record = DATA / ('seam-v5-trial-print-set.json' if trial else 'seam-v5-print-set.json')
+def order_stale(order):
+    from parts_v5 import ORDERS, by_file
+    record = ORDERS[order]['record']
     if not record.is_file():
         return [f'missing {record.name}']
     rows = {r['file']: r for r in json.loads(record.read_text(encoding='utf-8'))}
-    expected = {'46es_v5_' + name: spec for name, spec in parts.items()}
-    reasons = [] if set(rows) == set(expected) else ['part list differs from export_print_v5.py']
+    expected = by_file(order)
+    reasons = [] if list(rows) == list(expected) else ['part list differs from tools/parts_v5.py']
     sources = {}
-    folder = ROOT / 'model/print_v5' / order
     for name, row in rows.items():
-        if name not in expected:
+        part = expected.get(name)
+        if part is None:
             continue
-        body, material, flip = expected[name]
-        if (row['body'], row['material'], row['print_flip_about_X']) != (body, material, flip):
-            reasons.append(f'{name}: body/material/orientation differs from export_print_v5.py')
-        source = source_of(body)
-        if row['source_sha256'] != sources.setdefault(source, sha(source)):
-            reasons.append(f'{source.name} changed since the export')
+        if (row['body'], row['material'], row['print_flip_about_X']) != (part.body, part.material, part.flip):
+            reasons.append(f'{name}: body/material/orientation differs from tools/parts_v5.py')
+        if row['source_sha256'] != sources.setdefault(part.source, sha(part.source)):
+            reasons.append(f'{part.source.name} changed since the export')
         for ext, key in (('.stl', 'stl_sha256'), ('.step', 'step_sha256')):
-            path = folder / (name + ext)
+            path = part.folder / (name + ext)
             if not path.is_file() or sha(path) != row[key]:
                 reasons.append(f'{name}{ext} differs from {record.name}')
     return list(dict.fromkeys(reasons))
+
+
+def print_stale():
+    from parts_v5 import ORDERS
+    return [f'{order}: {reason}' for order in ORDERS for reason in order_stale(order)]
+
+
+def print_command(args):
+    from parts_v5 import ORDERS
+    orders = list(ORDERS) if args.only or args.start else [o for o in ORDERS if order_stale(o)]
+    return py('46es/tools/export_print_v5.py', '--order', *(orders or ORDERS))
 
 
 def record_stale(rel):
@@ -115,8 +123,7 @@ def py(*args):
 
 STAGES = {
     'seam': (seam_stale, lambda a: py('46es/tools/build_seam_v5.py')),
-    'order2': (lambda: print_stale(False), lambda a: py('46es/tools/export_print_v5.py')),
-    'order1': (lambda: print_stale(True), lambda a: py('46es/tools/export_print_v5.py', '--trial')),
+    'print': (print_stale, print_command),
     'verify_seam': (lambda: record_stale('inspection/data/seam-v5-verification.json'),
                     lambda a: py('-B', '46es/inspection/scripts/verify_seam_v5.py')),
     'assembly': (assembly_stale, lambda a: py('46es/tools/build_assembly_reference_v5.py')),
@@ -128,8 +135,8 @@ STAGES = {
 
 
 # What each stage reads from earlier stages: --status shows a stage as pending while one of these is stale or pending.
-NEEDS = {'order2': ('seam',), 'order1': ('seam',), 'verify_seam': ('seam', 'order2', 'order1'),
-         'assembly': ('seam',), 'verify_assembly': ('assembly', 'order1'), 'review': ('assembly',)}
+NEEDS = {'print': ('seam',), 'verify_seam': ('seam', 'print'),
+         'assembly': ('seam',), 'verify_assembly': ('assembly', 'print'), 'review': ('assembly',)}
 
 
 def load_timings():

@@ -37,6 +37,7 @@ from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
 from cad_eval_cache import seed as seed_evaluation
+from export_print_v5 import prebuild, seal_prebuilt
 from common import ROOT, CLI, sha, fingerprints, write_json
 
 SOURCE = ROOT / 'model/baselines/seam_v4.sc'
@@ -422,13 +423,14 @@ def write_seed(doc, container, path):
         archive.writestr('container.json', container)
 
 
-def evaluate(seed, pending):
+def evaluate(seed, pending, after=()):
     """Evaluate the seed, save it as `pending` and measure it in one CLI call (plan 3-1: a separate run --save
     and eval opened and evaluated the model twice). file.save_as names the document after the file stem, as
-    run --save did. Returns the measurement and the wall time of the call."""
+    run --save did. `after` runs in the same call once saved (plan 3-6: parameter CSV, print exports), so they need
+    no model load of their own. Returns the measurement and the wall time of the call."""
     started = time.perf_counter()
     script = pending.with_name(f'save_{pending.stem}.json')
-    write_json(script, [dict(command='file.save_as', params=dict(path=str(pending)))], indent=None)
+    write_json(script, [dict(command='file.save_as', params=dict(path=str(pending))), *after], indent=None)
     report = pending.with_name(f'eval_{pending.stem}.json')
     run('eval', script, '--in', seed, '--json-out', report)
     elapsed = time.perf_counter() - started
@@ -791,14 +793,15 @@ def build(probe=False):
     seed = CACHE / 'seed_v5.sc'
     write_seed(doc, container, seed)
     pending = CACHE / 'v5.sc'
-    evaluated, elapsed = evaluate(seed, pending)
     csv_pending = CACHE / 'parameters_seam_v5.csv'
-    write_json(CACHE / 'parameters_export.json',
-               [dict(command='parameters.export', params=dict(path=str(csv_pending), format='csv'))], indent=None)
-    run('run', CACHE / 'parameters_export.json', '--in', pending, '--quiet')
+    csv_export = dict(command='parameters.export', params=dict(path=str(csv_pending), format='csv'))
+    # The print exports of both orders ride on the saving call (export_print_v5.py reads them by the saved hash).
+    evaluated, elapsed = evaluate(seed, pending, [csv_export, *prebuild(OUTPUT, pending)])
+    seal_prebuilt(OUTPUT, pending)
     trials_seed, trials_pending = CACHE / 'seed_ctrl_trials_v5.sc', CACHE / 'ctrl_trials_v5.sc'
     write_seed(*trials_document(), trials_seed)
-    trials, trials_elapsed = evaluate(trials_seed, trials_pending)
+    trials, trials_elapsed = evaluate(trials_seed, trials_pending, prebuild(TRIALS_OUTPUT, trials_pending))
+    seal_prebuilt(TRIALS_OUTPUT, trials_pending)
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
     assert not REMOVED_BODIES & set(bodies), REMOVED_BODIES & set(bodies)

@@ -15,7 +15,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'inspection/scripts'))
 sys.path.insert(0, str(ROOT / 'guide'))
-from cad_model import document, live_shapes
+from cad_model import document, live_shapes, shape_digest
 from check_stl import check
 from build_guide import expand
 from common import sha, changed_inputs
@@ -114,6 +114,28 @@ def model_checks():
     return current, live_shapes(sample), review, len(same)
 
 
+def printed_checks(printed):
+    """The guide's printed-part table against tools/parts_v5.py: the same bodies (the two sample-model coupons are
+    described in model/samples/README.md instead), the orders named in each note, and the STL orientation."""
+    from parts_v5 import PARTS, SAMPLE
+    registry = {}
+    for part in PARTS:
+        if part.source != SAMPLE:
+            registry.setdefault(part.body, []).append(part)
+    guide = {body: p for p in printed for body in p['bodies']}
+    require(set(guide) == set(registry), f'guide printed parts differ from tools/parts_v5.py: {sorted(set(guide) ^ set(registry))}')
+    for body, parts in registry.items():
+        entry = guide[body]
+        orders = {f'주문 {part.order[-1]}' for part in parts}
+        named = {f'주문 {n}' for n in '12' if f'주문 {n}' in entry['note']}
+        require(named == orders, f'guide order differs from tools/parts_v5.py: {body} {sorted(named)} vs {sorted(orders)}')
+        flips = {part.flip for part in parts}
+        upright = 'STL은 밑면이 아래' in entry['orient']
+        flipped = any(f'STL은 {face}이 아래' in entry['orient'] for face in ('윗면', '지붕'))
+        require(len(flips) == 1 and upright != flipped and flipped in flips,
+                f'guide STL orientation differs from tools/parts_v5.py: {body}')
+
+
 def guide_checks(names):
     spec = read(ROOT / 'guide/guide_v5.json')
     for key in ('model', 'measurements', 'reference_manifest', 'interactive'):
@@ -131,6 +153,7 @@ def guide_checks(names):
     for p in source['printed'] + config['references']:
         if p['bodies']:
             expand(p['bodies'], names, spec['groups'], 'part')
+    printed_checks(source['printed'])
     for patterns in config['hardware_bodies'].values():
         if patterns:
             expand(patterns, names, spec['groups'], 'hardware')
@@ -144,32 +167,29 @@ def guide_checks(names):
 
 
 def print_checks(current, sample):
-    from export_print_v5 import MODEL, SAMPLE, TRIALS, PARTS, TRIAL_PARTS, source_of
+    from parts_v5 import MODEL, SAMPLE, TRIALS, PARTS, ORDERS, by_file
     shapes = {MODEL: current, SAMPLE: sample, TRIALS: live_shapes(TRIALS)}
     hashes = {path: sha(path) for path in shapes}
-    for order, record, wall, expected in [
-        ('order1', 'seam-v5-trial-print-set.json', 'seam-v5-trial-thin-wall.json', TRIAL_PARTS),
-        ('order2', 'seam-v5-print-set.json', 'seam-v5-mjf-thin-wall.json', PARTS),
-    ]:
-        parts = read(ROOT / 'inspection/data' / record)
-        scans = {x['file']: x for x in read(ROOT / 'inspection/data' / wall)['parts']}
-        expected_files = {'46es_v5_' + name for name in expected}
-        require(len(parts) == len(expected_files) and {p['file'] for p in parts} == set(scans) == expected_files, f'incomplete {order}')
+    for order, paths in ORDERS.items():
+        parts = read(paths['record'])
+        scans = {x['file']: x for x in read(paths['wall'])['parts']}
+        expected = by_file(order)
+        require([p['file'] for p in parts] == list(expected) and set(scans) == set(expected), f'incomplete {order}')
         folder = ROOT / 'model/print_v5' / order
-        require({p.stem for p in folder.glob('*.stl')} == {p.stem for p in folder.glob('*.step')} == expected_files, f'unlisted output: {order}')
+        require({p.stem for p in folder.glob('*.stl')} == {p.stem for p in folder.glob('*.step')} == set(expected), f'unlisted output: {order}')
         for p in parts:
             name = p['file']
-            body, material, flip = expected[name.removeprefix('46es_v5_')]
-            require((p['body'], p['material'], p['print_flip_about_X']) == (body, material, flip), f'wrong print mapping: {name}')
-            source = source_of(body)
-            require(body in shapes[source], f'CAD body missing: {body} in {source.name}')
+            part = expected[name]
+            require((p['body'], p['material'], p['print_flip_about_X']) == (part.body, part.material, part.flip), f'wrong print mapping: {name}')
+            source = part.source
+            require(part.body in shapes[source], f'CAD body missing: {part.body} in {source.name}')
             require(p.get('source_sha256') == hashes[source], f'stale {order} CAD source: {name}')
+            require(p.get('shape_sha256') == shape_digest(shapes[source][part.body]), f'stale {order} body shape: {name}')
             for ext, key in [('.stl', 'stl_sha256'), ('.step', 'step_sha256')]:
                 require(sha(folder / (name + ext)) == p[key], f'output hash differs: {name}{ext}')
             scan = scans[name]
             require(scan['stl_sha256'] == p['stl_sha256'], f'stale wall scan: {name}')
-            limit = .8 if material.startswith('8001') else 1.0
-            require(scan['wall_min_mm'] is None or scan['wall_min_mm'] >= limit - .001, f'thin wall: {name}')
+            require(scan['wall_min_mm'] is None or scan['wall_min_mm'] >= part.wall_limit - .001, f'thin wall: {name}')
             mesh = check(str(folder / (name + '.stl')))
             require(len(mesh['components']) == 1 and mesh['bad_edge_count'] == 0, f'invalid mesh: {name}')
             comp = mesh['components'][0]
@@ -177,7 +197,7 @@ def print_checks(current, sample):
             size = [comp['bbox']['max'][i] - comp['bbox']['min'][i] for i in range(3)]
             require(all(abs(x-y) < .002 for x,y in zip(size,p['print_bbox_mm'])), f'bounds differ: {name}')
             require(abs(comp['bbox']['min'][2]) < .0001, f'not on print bed: {name}')
-    return len(PARTS) + len(TRIAL_PARTS)
+    return len(PARTS)
 
 
 def main():

@@ -20,6 +20,7 @@ from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
+from parts_v5 import ORDERS, by_file, mount_part  # noqa: E402
 
 V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
@@ -27,7 +28,7 @@ TRIALS = ROOT / 'model/ctrl_trials_v5.sc'
 FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
 # Recorded with their fingerprints (common.fingerprint) so check_repository.py and pipeline.py --status can tell
 # that this verifier or what it read changed after the run (plan 2-3). The baselines are pinned by V4_SHA/FLAT_SHA.
-VERIFY_INPUTS = ('inspection/scripts/verify_seam_v5.py', 'model/46es_mount_seam_v5.sc', 'model/ctrl_trials_v5.sc',
+VERIFY_INPUTS = ('inspection/scripts/verify_seam_v5.py', 'tools/parts_v5.py', 'model/46es_mount_seam_v5.sc', 'model/ctrl_trials_v5.sc',
                  'model/parameters_seam_v5.csv', 'inspection/data/seam-v5-print-set.json',
                  'inspection/data/seam-v5-mjf-thin-wall.json', 'inspection/data/seam-v5-trial-print-set.json')
 V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
@@ -303,16 +304,14 @@ def cover_levels(params, bodies, flat_bodies):
     return out
 
 
-TRIAL_STL = {'L': 'mount_L', 'R': 'mount_R', 'REAR': 'mount_H02_SO3', 'FRONT': 'mount_H03_SO6'}
-
-
 def verify_mounts(bodies):
     """Each printed mount equals the drawing: sections of the order-1 STL at four heights, the AF 8.5 keep-clear
     land around every hex pocket, the hex pocket wall, and the evaluated volume against the layered profile."""
     out = {}
     for suffix, profile in mount_profiles().items():
         mount = profile['mount']
-        stl = ROOT / 'model/print_v5/order1' / f'46es_v5_{TRIAL_STL[suffix]}.stl'
+        part = mount_part(mount)
+        stl = part.folder / (part.file + '.stl')
         tris = align(read_stl(stl), profile['outline'].bounds)
         sections = compare(tris, expected_sections(profile))
         assert all(level['ok'] for level in sections.values()), (mount, sections)
@@ -391,9 +390,6 @@ def support_contacts(params, shapes, plan, results):
 
 
 # ---------------------------------------------------------------- order-2 print set (3rd pass, tools/export_print_v5.py)
-PRINT_V5 = ROOT / 'model/print_v5/order2'
-PRINT_SET_FILES = {'46es_v5_plate_L', '46es_v5_plate_R', '46es_v5_spine', '46es_v5_ctrl_bracket',
-                   '46es_v5_cover_L', '46es_v5_cover_T', '46es_v5_cover_R'}
 SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1'}
 MJF_MAX = (370.0, 276.0)
 
@@ -401,18 +397,19 @@ MJF_MAX = (370.0, 276.0)
 def check_print_set(bodies, v4_bodies):
     """print_v5/order2 STL/STEP files: hashes as recorded, one component, no open edges, volume = CAD, MJF 1.0 / resin 0.8
     walls, box on the bed and inside the MJF build volume; the spine keeps the v4 volume."""
-    parts = json.loads((ROOT / 'inspection/data/seam-v5-print-set.json').read_text(encoding='utf-8'))
-    thin = {t['file']: t for t in json.loads((ROOT / 'inspection/data/seam-v5-mjf-thin-wall.json').read_text(encoding='utf-8'))['parts']}
-    assert {p['file'] for p in parts} == PRINT_SET_FILES == set(thin), (set(thin), {p['file'] for p in parts})
+    expected = by_file('order2')
+    parts = json.loads(ORDERS['order2']['record'].read_text(encoding='utf-8'))
+    thin = {t['file']: t for t in json.loads(ORDERS['order2']['wall'].read_text(encoding='utf-8'))['parts']}
+    assert {p['file'] for p in parts} == set(expected) == set(thin), (set(thin), {p['file'] for p in parts})
     out = []
     for p in parts:
-        stl = PRINT_V5 / (p['file'] + '.stl')
+        part = expected[p['file']]
+        stl = part.folder / (p['file'] + '.stl')
         step = stl.with_suffix('.step')
         assert sha(stl) == p['stl_sha256'] and sha(step) == p['step_sha256'], p['file']
         t = thin[p['file']]
         assert t['stl_sha256'] == p['stl_sha256'], ('thin-wall scan is of another STL', p['file'])
-        limit = 0.8 if p['material'].startswith('8001') else 1.0
-        assert t['wall_min_mm'] is None or t['wall_min_mm'] >= limit - 1e-3, (p['file'], t['wall_min_mm'])
+        assert t['wall_min_mm'] is None or t['wall_min_mm'] >= part.wall_limit - 1e-3, (p['file'], t['wall_min_mm'])
         assert abs(p['cad_volume_mm3'] - bodies[p['body']]['volume_mm3']) < 1e-3, p['file']
         if p['file'] in SAME_AS_V4:
             assert abs(p['cad_volume_mm3'] - v4_bodies[SAME_AS_V4[p['file']]]['volume_mm3']) < 1e-3, p['file']

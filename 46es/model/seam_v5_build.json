@@ -5,7 +5,7 @@
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/baselines/seam_v4.sc": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
   "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
-  "tools/build_seam_v5.py": "ast:0ca5342932080df074983a5ed30d88cfd5d907d879a91ee29ea62cf913d8baaf",
+  "tools/build_seam_v5.py": "ast:2ea89166e0cdf307aba1e56ba23a61979b536c7b31264efb82193cb3756df00d",
   "tools/ctrl_v5.py": "ast:c78fb081b79c68121f2ad7da7d3f3c83893c1b8ce5a5194167068aa07a8c75b3",
   "tools/make_key_dxf.py": "ast:55f2262eea711da74fb9777051a6e0c954e537eec613ff83925822c7b9829a52",
   "tools/mounts_v5.py": "ast:eb9dcc6a4de0fa9f82678782340f6afa1ea119894c92261b68b84eb7142412e4"

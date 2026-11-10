@@ -15,8 +15,10 @@ Usage (paths may be relative to this folder):
   python build_guide.py --out D:/work/zzskm.github.io/keyboard-46es --clean-img
   python build_guide.py --only hero,sec-so1              # re-render just these
 Options: --spec FILE  --cli PATH  --jobs N  --skip-renders  --only IDS  --clean-img
-Renders and the eval result are cached in .cache/ by model hash + render settings, so a
-rebuild after a text-only change takes seconds; after a model change everything re-renders.
+Renders are cached in .cache/renders by the shape digest, appearance and list position of each body they
+show + render settings (plan 3-4), so a text-only change or a rebuild that reproduces the bodies takes
+seconds, and a model change re-renders only the views showing a changed body. The eval result is shared
+by model hash (tools/cad_eval_cache.py).
 """
 import argparse
 import concurrent.futures as cf
@@ -37,6 +39,7 @@ import diagrams
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
 sys.path.insert(0, str(HERE.parent / "tools"))
+sys.path.insert(0, str(HERE.parent / "inspection/scripts"))
 from common import CLI as DEFAULT_CLI  # noqa: E402  (SOLIDCRAFT_CLI or the default install path)
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
@@ -95,7 +98,15 @@ def expand(items, names, groups, where):
 
 
 # ---------------------------------------------------------------- renders
-def render_job(cli, model, model_sha, r, names, groups, cameras, defaults, cached_only=False):
+def body_looks(model):
+    """Per live body: its shape digest, its appearance entry and its position in the body list."""
+    from cad_model import document, shape_digests
+    appearances = document(model).get("appearances", {}).get("bodies", {})
+    return {name: [digest, appearances.get(name), index]
+            for index, (name, digest) in enumerate(shape_digests(model).items())}
+
+
+def render_job(cli, model, looks, r, names, groups, cameras, defaults, cached_only=False):
     rid = r["id"]
     show = expand(r["show"], names, groups, rid)
     if r.get("hide"):
@@ -113,8 +124,11 @@ def render_job(cli, model, model_sha, r, names, groups, cameras, defaults, cache
         styles += [f"{n}:{','.join(opts)}" for n in expand([s["body"]], names, groups, rid)]
     script = [{"command": "browser.visibility", "params": {"visible": False, "folder": "all"}},
               {"command": "browser.visibility", "params": {"visible": True, "items": show}}]
-    key_src = json.dumps({"model": model_sha, "script": script, "camera": cam, "size": [w, h],
-                          "section": r.get("section"), "styles": styles, "v": 1}, sort_keys=True)
+    # Keyed by what the render shows (plan 3-4), not by the model file: a rebuild or a change to hidden bodies
+    # keeps it. looks[n] = shape digest, appearance and list position (default colours follow the position).
+    drawn = list(dict.fromkeys(show + [n for s in r.get("style", []) for n in expand([s["body"]], names, groups, rid)]))
+    key_src = json.dumps({"bodies": {n: looks[n] for n in drawn}, "script": script, "camera": cam, "size": [w, h],
+                          "section": r.get("section"), "styles": styles, "v": 2}, sort_keys=True)
     key = hashlib.sha256(key_src.encode()).hexdigest()[:20]
     rdir = CACHE / "renders"
     png = rdir / f"{rid}-{key}.png"
@@ -551,6 +565,7 @@ def main():
     ctx.mrows = measurements((base / spec["measurements"]).resolve())
 
     renders = [] if a.assembly_only else spec["renders"]
+    looks = body_looks(model) if renders else {}
     ids = [r["id"] for r in renders]
     if len(set(ids)) != len(ids):
         die("duplicate render ids")
@@ -566,7 +581,7 @@ def main():
         futs = {}
         for r in renders:
             cached_only = a.skip_renders or bool(only and r["id"] not in only)
-            futs[ex.submit(render_job, cli, model, model_sha, r, names, groups, spec["cameras"], defaults,
+            futs[ex.submit(render_job, cli, model, looks, r, names, groups, spec["cameras"], defaults,
                            cached_only)] = r["id"]
         fresh = 0
         for f in cf.as_completed(futs):
