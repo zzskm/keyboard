@@ -76,6 +76,8 @@
 
 첫 산출물은 기준 리비전이 표시된 현행 앞 이음 단면과 R 안쪽 하중 경로, 커버 현행·후보 단면이다. 채택 치수와 시험 결과를 기록한 뒤 생성기, 영향받는 검토·제작 출력, 쿠폰, 검증 결과와 조립 가이드를 함께 갱신한다. CAD 검사와 실물 합격은 각각 기록하고, 본 출력 여부는 시험 결과를 바탕으로 결정한다.
 
+plate를 고칠 때 plate도 생성 코드로 옮긴다(작업 방식 개선 계획 4-5의 마지막 단계). 커버·spine·참조 하드웨어는 이미 `tools/cover_v5.py`·`spine_v5.py`·`hardware_v5.py`가 만들고, [기반 파일](../model/seam_v5_base.json)에는 plate 사슬 81개 피처만 남았다: r2 도면 스케치(외곽·스위치 홀·개구부)와 그 사이에 끼인 plate 절삭, 앞 이음과 그 나사, 그리고 plate 조각과 앞 이음 나사를 복사해 만드는 이음 시험편. 이 사슬은 순서를 옮기면 BRep이 같다고 보장할 수 없고, mount처럼 도면(DXF)에서 직접 돌출하면 형상이 미세하게 달라져 주문 1 출력물이 바뀐다. 그래서 형상을 바꾸는 이 작업 안에서 함께 하고, 바뀐 plate는 그 형상 변경으로 검증한다.
+
 ## 재생성 (저장소 루트)
 
 SolidCraft CLI와 `46es/requirements.txt`의 Python 패키지(`pip install -r 46es/requirements.txt`)가 설치된 Windows 환경에서 실행한다. CLI 경로는 환경변수 `SOLIDCRAFT_CLI`, 없으면 기본 설치 경로 `C:/Program Files/SolidCraft/solidcraft-cli.exe`다(`tools/common.py`). 가이드는 `--cli`로도 지정할 수 있다. 콘솔 출력은 스크립트가 UTF-8로 바꾸므로 `PYTHONUTF8`을 따로 설정하지 않아도 된다.
