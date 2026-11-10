@@ -58,6 +58,8 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
                               check=ctx.text(st.get('check', '')), fix=ctx.text(st.get('fix', '')),
                               diagrams=[d for gid in st.get('diagrams', []) for d in ctx.diagrams[gid]],
                               image='img/' + st.get('render', 'hero') + '.png', **setting))
+            if 'section' in setting:
+                steps[-1]['section'] = section(setting['section'], ctx.bodies, st['id'], die)
     piece_colors = config.get('piece_colors', {})
     key = hashlib.sha256(json.dumps([model_sha, [(p['id'], p['bodies']) for p in parts],
                                      piece_colors, 2]).encode()).hexdigest()[:20]
@@ -127,25 +129,43 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
     shutil.copytree(Path(__file__).parent / 'assets' / 'vendor', out / 'vendor', dirs_exist_ok=True)
 
 
+def section(spec, bodies, step, die):
+    """Resolve a step's default cut plane from a CAD body, so it follows the model.
+
+    `{"axis": "y", "through": "REF_SO2_MAGNET"}` cuts across y at that body's centre and is
+    seen from the front; axis x is seen from the left. `note` says what the cut shows."""
+    axis, name = spec.get('axis'), spec.get('through')
+    if axis not in ('x', 'y') or name not in bodies:
+        die(f'interactive: invalid section in {step}: {spec}')
+    box = bodies[name]['bbox']
+    i = 'xy'.index(axis)
+    centre = [round((box['min'][k] + box['max'][k]) / 2, 2) for k in range(3)]
+    return dict(axis=axis, at=centre[i], center=centre, through=name, note=spec.get('note', ''))
+
+
 def instances(boxes, gap=.2):
     """Group CAD body boxes that share one plan-view spot into one physical instance each.
 
     A switch is several bodies (housing, stem, contacts) stacked at one XY spot; a screw
     set is several bodies far apart. A body joins a group when its centre lies inside the
     group's first box (or the reverse), so neighbouring keycaps never chain together. The
-    viewer marks and frames these groups and the part thumbnail draws only the first one."""
+    viewer marks and frames these groups and the part thumbnail draws only the first one.
+    A group of several bodies carries the count as a third item (a leg magnet pair stacks
+    a cover magnet over a plate magnet at one spot), so the viewer can say "2 here"."""
     inside = lambda c, b: all(b['min'][i] - gap <= c[i] <= b['max'][i] + gap for i in (0, 1))
     centre = lambda b: [(b['min'][i] + b['max'][i]) / 2 for i in range(3)]
     groups = []
     for box in boxes:
         group = next((g for g in groups if inside(centre(box), g[0]) or inside(centre(g[0]), box)), None)
         if group is None:
-            groups.append([box, list(box['min']), list(box['max'])])
+            groups.append([box, list(box['min']), list(box['max']), 1])
         else:
             group[1] = [min(group[1][i], box['min'][i]) for i in range(3)]
             group[2] = [max(group[2][i], box['max'][i]) for i in range(3)]
+            group[3] += 1
     groups.sort(key=lambda g: (round(g[1][1]), g[1][0]))
-    return [[[round(v, 2) for v in g[1]], [round(v, 2) for v in g[2]]] for g in groups]
+    return [[[round(v, 2) for v in g[1]], [round(v, 2) for v in g[2]]] + ([g[3]] if g[3] > 1 else [])
+            for g in groups]
 
 def prepare_comparison(base, out, die):
     root = base.parent
@@ -188,8 +208,8 @@ def markup(config=None):
 <div class="build-sheet">
 <div class="build-step-heading"><span id="asm-number" class="build-number">01</span><div><p id="asm-phase" class="eyebrow"></p><h3 id="asm-title"></h3></div><span id="asm-progress"></span></div>
 <div class="parts-tray"><div class="tray-label">이번에 사용할 부품 <span>3D에서 위치 표시</span></div><div id="asm-tray" class="tray-items"></div></div>
-<div class="assembly-layout"><div class="assembly-visual" id="asm-visual"><div class="expand-bar"><button id="asm-x-prev" type="button" aria-label="이전 조립 단계">←</button><span id="asm-x-title"></span><button id="asm-x-next" type="button" aria-label="다음 조립 단계">→</button><button id="asm-x-close" type="button">닫기 ✕</button></div><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span><span class="key-3d"><i class="ring-dot"></i>작은 부품 위치</span><span class="key-3d"><i class="pick-dot"></i>선택한 부품</span></div><img id="asm-drawing" alt="현재 단계 조립도"><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대, 더블클릭한 곳으로 확대"></div>
-<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><span class="tool-group" role="group" aria-label="시점"><button type="button" data-view="reset" title="이 단계의 기본 시점">맞춤</button><button type="button" data-view="iso">입체</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button></span><span class="tool-group" role="group" aria-label="표시"><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><button id="asm-keep" type="button" aria-pressed="false" title="단계를 넘겨도 지금 시점을 유지">시점 유지</button><button id="asm-expand" type="button" aria-pressed="false">크게 보기</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></span></div></div>
+<div class="assembly-layout"><div class="assembly-visual" id="asm-visual"><div class="expand-bar"><button id="asm-x-prev" type="button" aria-label="이전 조립 단계">←</button><span id="asm-x-title"></span><button id="asm-x-next" type="button" aria-label="다음 조립 단계">→</button><button id="asm-x-close" type="button">닫기 ✕</button></div><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span><span class="key-3d"><i class="ring-dot"></i>작은 부품 위치</span><span class="key-3d"><i class="pick-dot"></i>선택한 부품</span><span class="key-3d" id="asm-key-pair" hidden><i class="ring2-dot"></i>2개 겹침</span><span class="key-3d" id="asm-key-cut" hidden><i class="cut-dot"></i>잘린 면</span></div><img id="asm-drawing" alt="현재 단계 조립도"><p id="asm-section-note" class="section-note" hidden></p><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대, 더블클릭한 곳으로 확대"></div>
+<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><span class="tool-group" role="group" aria-label="시점"><button type="button" data-view="reset" title="이 단계의 기본 시점">맞춤</button><button type="button" data-view="iso">입체</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button></span><span class="tool-group" role="group" aria-label="표시"><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><button id="asm-keep" type="button" aria-pressed="false" title="단계를 넘겨도 지금 시점을 유지">시점 유지</button><button id="asm-expand" type="button" aria-pressed="false">크게 보기</button><label>분해 <input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></span><span class="tool-group" role="group" aria-label="단면"><button id="asm-section" type="button" aria-pressed="false" title="모델을 잘라 안쪽 끼움 상태를 봅니다">단면</button><button id="asm-section-axis" type="button" hidden title="자르는 방향 바꾸기">앞에서</button><label id="asm-section-pos" hidden>위치 <input id="asm-section-at" aria-label="단면 위치" type="range" min="0" max="1" step="0.1" value="0"></label></span></div></div>
 <p id="asm-picked" aria-live="polite"></p><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
 <article class="assembly-instruction"><ol id="asm-actions" class="action-list"></ol><div id="asm-check" class="assembly-check"></div><details id="asm-details"><summary>세부 설명 · 안 맞을 때</summary><div id="asm-body"></div><div id="asm-fix"></div><a id="asm-detail">전체 설명에서 보기 ↗</a></details><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 확인 완료</label><button id="asm-complete-next" class="primary-button" type="button">완료하고 다음 →</button></article></div>
 <section id="asm-diagrams" class="step-diagrams" aria-label="이번 단계 그림" hidden></section>

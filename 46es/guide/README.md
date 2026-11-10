@@ -56,7 +56,7 @@ python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --v
 
 `comparison_r2.json`=DWG 판 윤곽·두께·배치 가정(공칭/가정). `model/reference_r2/` STEP/STL. 갱신: `python 46es/tools/build_r2_reference.py`(CadQuery 2.6, ezdxf).
 
-3D 시점 버튼: `맞춤`(`data-view=reset`)은 단계 기본 시점(이번 작업 부품 중심, 주변은 전체의 일부만), `입체`·`위`·`아래`·`앞`은 고정 시점이다. `시점 유지`를 켜면 단계를 넘겨도 카메라가 그대로이고, `크게 보기`는 3D를 화면 전체로 띄운다(Esc로 닫기, 모바일은 이때만 한 손가락 자유 회전). 크기 14 mm 이하 instance로만 이뤄진 부품(나사·너트·자석·지지대)은 작업 대상일 때 위치에 고리를 표시하며, instance는 빌드가 CAD body bbox로 묶는다(`assembly.py` `instances`). 카메라 이동은 `prefers-reduced-motion`이면 즉시 끝나며 검사 스크립트는 이 설정으로 캡처한다. `review_guide.py --views`도 같은 이름을 쓴다(`reset iso top bottom front`). 그림이 있는 단계는 `<단계>-diagrams.png`도 남긴다.
+3D 시점 버튼: `맞춤`(`data-view=reset`)은 단계 기본 시점(이번 작업 부품 중심, 주변은 전체의 일부만), `입체`·`위`·`아래`·`앞`은 고정 시점이다. `시점 유지`를 켜면 단계를 넘겨도 카메라가 그대로이고, `크게 보기`는 3D를 화면 전체로 띄운다(Esc로 닫기, 모바일은 이때만 한 손가락 자유 회전). 크기 14 mm 이하 instance로만 이뤄진 부품(나사·너트·자석·지지대)은 작업 대상일 때 위치에 고리를 표시하며, instance는 빌드가 CAD body bbox로 묶는다(`assembly.py` `instances`). 카메라 이동은 `prefers-reduced-motion`이면 즉시 끝나며 검사 스크립트는 이 설정으로 캡처한다. `단면`은 x 또는 y 평면으로 모델을 잘라 잘린 면을 빗금으로 보여 준다. 카메라 쪽 절반을 지우고(y는 앞, x는 왼쪽), 아래 시점 단계는 아래에서 본다. 단계 기본 단면은 `assembly_v5.json` 단계의 `section`(`axis`, `through`=CAD body 이름, `note`)이고 빌드가 그 body 중심으로 위치를 정하므로 형상이 바뀌어도 따라간다. 없으면 작업 부품 중심을 자른다. 위치 슬라이더와 `앞에서`/`옆에서` 전환이 있다. 위아래로 겹친 instance(다리 자석 쌍)는 이중 고리로 표시한다(`instances`의 세 번째 값이 개수). `review_guide.py --views`도 같은 이름을 쓴다(`reset iso top bottom front section`). 그림이 있는 단계는 `<단계>-diagrams.png`도 남긴다.
 
 SolidCraft 없는 UI 검토: `python 46es/guide/preview_from_published.py --published <v5 자산 폴더>`(`assembly.json,models/,img/`, 해시 일치, Pillow). 정식 빌드 대체 아님.
 

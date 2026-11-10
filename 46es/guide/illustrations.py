@@ -100,7 +100,7 @@ def prepare(out, data):
         area = lambda b: (b[1][0] - b[0][0]) * (b[1][1] - b[0][1])
         first = min(pieces[0].get('instances') or [None], key=lambda b: area(b) if b else 0)
         if first and str(part.get('qty', '')).isdigit() and int(part['qty']) > 1:
-            pieces = [dict(p, clip=first) for p in pieces]
+            pieces = [dict(p, clip=first[:2]) for p in pieces]
         draw(out, part['illustration'],
              [(p, p['color'] if part.get('preserveColors') else '#587d78', False, 0) for p in pieces],
              'bottom' if part.get('preserveColors') else 'iso', size=(1.5, .9))

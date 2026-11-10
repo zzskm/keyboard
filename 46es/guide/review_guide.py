@@ -62,11 +62,15 @@ def capture(site, evidence, steps, views):
                         timeout=120000,
                     )
                     for view in views:
-                        page.locator(f'[data-view={view}]').click()
+                        # section = the step's own cut (assembly_v5.json "section"), seen from its side
+                        toggle = '#asm-section' if view == 'section' else f'[data-view={view}]'
+                        page.locator(toggle).click()
                         page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
                         name = f'{step_id}-{view}.png'
                         page.locator('#asm-canvas').screenshot(path=evidence / name)
                         images.append(name)
+                        if view == 'section':
+                            page.locator('#asm-section').click()
                     page.locator('#asm-3d').click()
                     captures.append({'id': step_id, 'title': title, 'images': images})
                 if errors:
@@ -81,8 +85,9 @@ def capture(site, evidence, steps, views):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--steps', nargs='+', required=True, help='assembly step IDs; the final step is included')
-    parser.add_argument('--views', nargs='+', choices=('reset', 'iso', 'top', 'bottom', 'front'), default=['iso'],
-                        help='reset = view of the step itself; iso/top/bottom/front = fixed views')
+    parser.add_argument('--views', nargs='+', choices=('reset', 'iso', 'top', 'bottom', 'front', 'section'),
+                        default=['iso'], help='reset = view of the step itself; iso/top/bottom/front = fixed views; '
+                        'section = the step cut from assembly_v5.json (or one through its work parts)')
     parser.add_argument('--cli', default=str(DEFAULT_CLI))
     args = parser.parse_args()
 

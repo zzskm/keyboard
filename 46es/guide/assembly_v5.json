@@ -78,6 +78,11 @@
         "epoxy": "소량"
       },
       "view": "bottom",
+      "section": {
+        "axis": "y",
+        "through": "REF_SO1_MAGNET",
+        "note": "앞줄 보스 자석이 포켓 입구보다 들어가 있는지"
+      },
       "note": "커버와 plate만 작업합니다. v5 다리 자석 2쌍(앞쪽 가장자리)은 극성을 맞춥니다. 에폭시가 완전히 굳은 뒤 진행하세요.",
       "hardwareStages": [],
       "quick": [
@@ -108,6 +113,11 @@
         "m3-lower": 6
       },
       "view": "bottom",
+      "section": {
+        "axis": "y",
+        "through": "STANDOFF_SO1_REF",
+        "note": "지지대가 육각 포켓 바닥에 닿고 아래 나사 머리가 받침면에 닿는지"
+      },
       "note": "",
       "hardwareStages": [],
       "quick": [
@@ -139,6 +149,11 @@
         "case-screws": 6
       },
       "view": "iso",
+      "section": {
+        "axis": "y",
+        "through": "REF_CASE_H01_M2",
+        "note": "하우징 나사가 mount 구멍에 걸리는 길이"
+      },
       "note": "",
       "hardwareStages": [],
       "quick": [
@@ -165,6 +180,11 @@
         "m2-nuts": 1
       },
       "view": "iso",
+      "section": {
+        "axis": "y",
+        "through": "REF_M2_SEAM_FRONT",
+        "note": "앞 이음 반턱의 겹침과 묻힌 나사머리"
+      },
       "note": "케이스 밖에서 조립합니다. 이음 나사와 너트가 강조됩니다.",
       "hardwareStages": [
         "REF_M2_SEAM_FRONT"
@@ -256,6 +276,11 @@
         "rear-pads": "두께 고르기"
       },
       "view": "iso",
+      "section": {
+        "axis": "x",
+        "through": "REAR_REST_2_V5",
+        "note": "뒤 받침 블록과 plate 플랜지 밑면 사이"
+      },
       "note": "plate를 임시로 얹습니다. 아직 위쪽 M3 나사는 조이지 않습니다.",
       "hardwareStages": [
         "REF_M2_PLATE_3",
@@ -319,6 +344,11 @@
         "case-screws": "6 · 재조임"
       },
       "view": "iso",
+      "section": {
+        "axis": "y",
+        "through": "REF_CASE_H01_M2",
+        "note": "하우징 나사가 mount 구멍에 걸리는 길이"
+      },
       "note": "공구가 닿도록 plate 모듈을 들어낸 상태입니다.",
       "hardwareStages": [],
       "quick": [
@@ -381,6 +411,11 @@
         "m2-nuts": 2
       },
       "view": "bottom",
+      "section": {
+        "axis": "x",
+        "through": "REF_PROMICRO_PCB",
+        "note": "브래킷 두 암의 립이 PCB 긴 변 아래에 걸린 모양"
+      },
       "note": "검은 칩과 USB 소켓이 붙은 부품면은 케이스 바닥을 향합니다. 금색 패드가 보이는 납땜면은 plate를 향합니다.",
       "hardwareStages": [
         "REF_M2_PLATE_3",
@@ -541,6 +576,11 @@
         "rear-pads": 3
       },
       "view": "iso",
+      "section": {
+        "axis": "y",
+        "through": "REF_SO1_M3_UPPER",
+        "note": "plate와 하우징 앞벽의 틈, 위·아래 나사 끝 간격"
+      },
       "note": "",
       "hardwareStages": [
         "REF_M2_PLATE_3",
@@ -594,6 +634,11 @@
         "COVER_R_DRAFT_TBD": 1
       },
       "view": "iso",
+      "section": {
+        "axis": "y",
+        "through": "REF_LEGMAG_L_COVER",
+        "note": "커버 다리 자석과 plate 받침 자석이 맞닿는지"
+      },
       "note": "커버 윗면은 Z 19 mm 한 평면입니다. 대략 실측한 케이스 테두리 Z 14 mm보다 5 mm 높습니다. L·R 아래 다리는 자석으로 plate에 붙습니다.",
       "hardwareStages": [
         "REF_M2_PLATE_3",
