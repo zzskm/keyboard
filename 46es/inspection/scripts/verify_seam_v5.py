@@ -20,6 +20,7 @@ from check_stl import check
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
 from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REAR_RESTS, REAR_REST_BODY, REAR_REST_TRIALS,  # noqa: E402
+                           seam_coupon_bodies,
                            horizontal_faces, top_levels, cover_windows)
 import ctrl_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
@@ -42,7 +43,8 @@ GENERATED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1',
                                          'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'REF_M2_PLATE_1', 'REF_M2_PLATE_2',
                                          'REF_M2_PLATE_1_NUT', 'REF_M2_PLATE_2_NUT', 'REF_LEGMAG_L_COVER',
                                          'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE',
-                                         *(REAR_REST_BODY.format(i) for i in REAR_RESTS)}
+                                         *(REAR_REST_BODY.format(i) for i in REAR_RESTS),
+                                         'REF_M2_SEAM_FRONT', 'REF_M2_SEAM_FRONT_NUT'}
 MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
 CACHE = ROOT / '.cache/v5'
 
@@ -466,7 +468,8 @@ def main(accept=False):
     for n in GENERATED:
         assert len(new[n]) == 1 and len(new[n][0]['shells']) == 1, n
     trials = live_shapes(TRIALS)       # snap trials A/C and rear rest variants: their own model (build_seam_v5.trials_document)
-    assert set(trials) == set(ctrl_v5.TRIALS) | set(REAR_REST_TRIALS) and not set(trials) & set(new), set(trials)
+    assert (set(trials) == set(ctrl_v5.TRIALS) | set(REAR_REST_TRIALS) | set(seam_coupon_bodies())
+            and not set(trials) & set(new)), set(trials)
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev, _ = evaluation(V5)

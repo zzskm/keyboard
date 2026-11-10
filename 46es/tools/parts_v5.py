@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from common import ROOT
 
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
-TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C and rear rest height variants (build_seam_v5.py)
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C, rear rest variants, seam coupons (build_seam_v5.py)
 SAMPLE = ROOT / 'model/samples/46es_sw_hole_sample.sc'
 
 MJF = 'MJF PA12S-HP 검정'
@@ -67,8 +67,14 @@ PARTS = (
     *_rows('order1', [
         ('sw_hole_coupon', 'SW_HOLE_SAMPLE', SAMPLE, MJF, True),
         ('boss_tab', 'BOSS_TAB_SAMPLE', SAMPLE, RESIN, False),
-        ('seam_coupon_L', 'SEAM_COUPON_L_V4', MODEL, MJF, True),
-        ('seam_coupon_R', 'SEAM_COUPON_R_V4', MODEL, MJF, True),
+        # front seam coupons (tools/seam_v5.py COUPONS): S0 = v4 dovetail (control), S1 = production half-lap,
+        # S2 = wider locating clearance and nut pocket
+        ('seam_coupon_S0_L', 'SEAM_COUPON_S0_L', TRIALS, MJF, True),
+        ('seam_coupon_S0_R', 'SEAM_COUPON_S0_R', TRIALS, MJF, True),
+        ('seam_coupon_S1_L', 'SEAM_COUPON_S1_L', TRIALS, MJF, True),
+        ('seam_coupon_S1_R', 'SEAM_COUPON_S1_R', TRIALS, MJF, True),
+        ('seam_coupon_S2_L', 'SEAM_COUPON_S2_L', TRIALS, MJF, True),
+        ('seam_coupon_S2_R', 'SEAM_COUPON_S2_R', TRIALS, MJF, True),
         ('mount_L', 'MOUNT_L_PAIR_V3', MODEL, MJF, False),
         ('mount_R', 'MOUNT_R_PAIR_V3', MODEL, MJF, False),
         ('mount_H02_SO3', 'MOUNT_H02_SO3_MIN_V2', MODEL, MJF, False),

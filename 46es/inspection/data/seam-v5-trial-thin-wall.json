@@ -24,20 +24,20 @@
    "below_warn_count": 1
   },
   {
-   "file": "46es_v5_seam_coupon_L",
-   "stl_sha256": "393d8ed626a91c0c2b2dfc2d4f7a1642ef3dd72f3003811183457a54724555fc",
-   "facets": 5130,
-   "samples": 56425,
+   "file": "46es_v5_seam_coupon_S0_L",
+   "stl_sha256": "9ec28b5df3b9b0023ce75766878818170c04ea00c560c32747884b367baa1454",
+   "facets": 2234,
+   "samples": 25459,
    "min_mm": 1.2,
    "wall_min_mm": 1.2,
    "below_limit": [],
-   "below_warn_count": 2
+   "below_warn_count": 1
   },
   {
-   "file": "46es_v5_seam_coupon_R",
-   "stl_sha256": "8f0f5c8575ab6a35ac3c966a77e8a7b9553297a009a79ea299e5b3a0a65bb3da",
-   "facets": 1548,
-   "samples": 21486,
+   "file": "46es_v5_seam_coupon_S0_R",
+   "stl_sha256": "b2e1fe56760d2727e9f5f914ec9cf26200609410c87623e259436747793bb6bf",
+   "facets": 1516,
+   "samples": 24075,
    "min_mm": 0.184,
    "wall_min_mm": 1.169,
    "below_limit": [
@@ -74,23 +74,23 @@
       ]
      ],
      "at_assembly": [
-      137.131,
+      197.131,
       -50.163,
       12.867
      ],
      "to_assembly": [
-      137.315,
+      197.315,
       -50.163,
       12.867
      ],
      "box_assembly": [
       [
-       137.13,
+       197.13,
        -49.71,
        12.87
       ],
       [
-       137.53,
+       197.53,
        -50.21,
        10.73
       ]
@@ -129,29 +129,69 @@
       ]
      ],
      "at_assembly": [
-      137.227,
+      197.227,
       -56.601,
       10.693
      ],
      "to_assembly": [
-      137.131,
+      197.131,
       -56.836,
       10.693
      ],
      "box_assembly": [
       [
-       137.13,
+       197.13,
        -56.6,
        11.95
       ],
       [
-       137.61,
+       197.61,
        -57.13,
        10.69
       ]
      ]
     }
    ],
+   "below_warn_count": 1
+  },
+  {
+   "file": "46es_v5_seam_coupon_S1_L",
+   "stl_sha256": "e6db8a7fb637c8901bb46aed12291dd1ace1ff37c2c2690e184a4b532356b210",
+   "facets": 2110,
+   "samples": 33996,
+   "min_mm": 1.2,
+   "wall_min_mm": 1.2,
+   "below_limit": [],
+   "below_warn_count": 1
+  },
+  {
+   "file": "46es_v5_seam_coupon_S1_R",
+   "stl_sha256": "08836e4c69473f00118ef33ca2ed83e6160015190849618c0c06b5827ecf6647",
+   "facets": 1280,
+   "samples": 28768,
+   "min_mm": 1.269,
+   "wall_min_mm": 1.269,
+   "below_limit": [],
+   "below_warn_count": 1
+  },
+  {
+   "file": "46es_v5_seam_coupon_S2_L",
+   "stl_sha256": "d2d9048d961acc4b30122bf85f44560b28c8208b46c95a45bd61e9c59d91ccca",
+   "facets": 2110,
+   "samples": 33996,
+   "min_mm": 1.2,
+   "wall_min_mm": 1.2,
+   "below_limit": [],
+   "below_warn_count": 1
+  },
+  {
+   "file": "46es_v5_seam_coupon_S2_R",
+   "stl_sha256": "3409f5f14492f05239a60c6a5982d3e95fdefbdc3b0965e358f7e3fc63a7dbf4",
+   "facets": 1280,
+   "samples": 28875,
+   "min_mm": 1.169,
+   "wall_min_mm": 1.169,
+   "below_limit": [],
    "below_warn_count": 1
   },
   {
@@ -297,9 +337,9 @@
   },
   {
    "file": "46es_v5_mount_H03_SO6",
-   "stl_sha256": "c20111acd67f875cd3c30200da08d8f2720c4bfe7b9fa8354e6757b30f7fcf06",
+   "stl_sha256": "fc4b1c1f24d3d3226707bb510ed779c800220b2fae2789daaed7a96a34776a5c",
    "facets": 4276,
-   "samples": 86599,
+   "samples": 86164,
    "min_mm": 1.152,
    "wall_min_mm": 1.152,
    "below_limit": [],

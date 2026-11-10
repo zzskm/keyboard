@@ -195,11 +195,11 @@ split_gate_nut_Z,mm,split_gate_cap_Z+1.4 mm,7.8,"[검토 후보] nut 바닥7.8, 
 side_pair_bridge_W,mm,8 mm,8,[review v3] L/R pair connector width; existing mounting holes remain unchanged,false
 side_pair_bridge_end_setback,mm,3.7 mm,3.7,[review v3] Distance from case-hole axes to connector ends; clears existing head slots,false
 plate_top_Z,mm,TBD_frame_T + TBD_standoff_H + TBD_plate_T,13,[v4 2026-11-05] plate 윗면 Z(13). 이음·자석 기준,false
-seam_tab_T,mm,2.4 mm,2.4,[v4 2026-11-05] 앞 이음 반턱: L tab 두께 = R 포켓 깊이(plate 윗면에서). R 바닥 남은 두께 = TBD_plate_T - seam_tab_T. MJF에서는 층 배수 제약 없음,false
-seam_M2_X,mm,139.5 mm,139.5,[v4 MJF 2026-11-05] 앞 이음 M2 중심 X. 139.8→139.5: tab 끝 카운터보어 벽 0.9→1.2(MJF 최소 벽 1.0). 너트 포켓은 이음면 쪽으로 열었다(SEAM_FRONT_NUT_OPEN_R_MJF),false
+seam_tab_T,mm,2.4 mm,2.4,[2026-11-10 tools/seam_v5.py] 앞 이음 반턱: L tab 두께 = R 포켓 깊이(plate 윗면에서). R 바닥 남은 두께 = TBD_plate_T - seam_tab_T = 2.6,false
+seam_M2_X,mm,140.4 mm,140.4,[2026-11-10 tools/seam_v5.py] 앞 이음 M2 중심 X. 139.5→140.4: 닫힌 너트 포켓과 R 이음면 사이 벽 1.0 이상. Front mount 받침 1의 구멍도 이 값을 따른다,false
 seam_M2_Y,mm,6.6 mm,6.6,[v4 2026-11-05] 앞 이음 M2 중심 Y(tab 폭 3.0~10.2 가운데),false
 seam_cb_D,mm,1.2 mm,1.2,[v4 2026-11-05] tab 윗면 M2 머리 카운터보어 깊이. SSH M2 머리 H1.1 → 머리 윗면 Z12.9(커버 밑면 Z13 아래),false
-seam_nut_D,mm,1.0 mm,1,[v4 2026-11-05] R 바닥 아랫면 M2 너트(AF4×1.6) 육각 포켓 깊이. 너트는 0.6 아래로 나옴,false
+seam_nut_D,mm,1.3 mm,1.3,[2026-11-10 tools/seam_v5.py] R 아랫면 M2 너트(AF4×1.6) 육각 포켓 깊이. 1.0→1.3: 닫힌 포켓이 너트 면을 잡는다. 너트는 0.3 아래로 나오고 포켓 위 살은 1.3,false
 spine_wire_W,mm,3 mm,3,[v4 2026-11-05] spine 줄기 아랫면 배선 홈 폭(Y). 행 배선이 seam을 건너는 곳,false
 spine_wire_H,mm,2 mm,2,"[v4 2026-11-05] spine 배선 홈 높이(Z, 줄기 밑면 split_spine_bottom_Z에서 위로). 남는 줄기 높이 2.5, 아래 mount 윗면 Z3까지 통로 3",false
 v5_key_margin,mm,1.0,1,"[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. SK35_COVER_SILHOUETTE_V5_* 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)",false
@@ -215,6 +215,9 @@ v5_legmag_L_X,mm,94.0,94,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 X
 v5_legmag_L_Y,mm,2.5,2.5,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
 v5_legmag_R_X,mm,167.7,167.7,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2),false
 v5_legmag_R_Y,mm,2.5,2.5,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
+v5_seam_fit,mm,0.15,0.15,"[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). 주문 1 쿠폰 S2는 0.25, S0는 옛 dovetail",false
+v5_seam_nut_AF,mm,4.0,4,"[2026-11-10 tools/seam_v5.py] 앞 이음 너트 포켓 맞변(닫힌 육각, M2 너트 4.0을 눌러 끼움). 주문 1 쿠폰 S2는 4.2, S0는 옛 4.4(이음면 쪽 열림)",false
+v5_seam_tab_end_X,mm,147.4,147.4,[2026-11-10 tools/seam_v5.py] 앞 이음 tab 끝 X(L 조각의 오른쪽 끝). 걸림 턱은 X 144.2부터 +Y로 2.4,false
 v5_rear_boss_1_X,mm,36.0,36,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 1 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22",false
 v5_rear_boss_2_X,mm,113.6,113.6,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 2 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22",false
 v5_rear_boss_3_X,mm,170.1,170.1,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 3 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22",false

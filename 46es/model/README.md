@@ -7,10 +7,10 @@
 | 구분 | 경로 | 역할 |
 |---|---|---|
 | 편집 원본 | [`../tools/build_seam_v5.py`](../tools/build_seam_v5.py), [`../tools/mounts_v5.py`](../tools/mounts_v5.py) | v5 생성 규칙. mount는 도면 돌출 + 매개변수 체결부 |
-| 기반 타임라인 | [`seam_v5_base.json`](seam_v5_base.json) | 생성기 입력(편집 원본). plate·이음 쿠폰의 매개변수와 기능, 한 줄에 하나. 커버·spine·참조 하드웨어·mount·브래킷은 `tools/*_v5.py` 코드 |
+| 기반 타임라인 | [`seam_v5_base.json`](seam_v5_base.json) | 생성기 입력(편집 원본). plate의 매개변수와 기능, 한 줄에 하나. 앞 이음·이음 쿠폰·커버·spine·참조 하드웨어·mount·브래킷은 `tools/*_v5.py` 코드 |
 | mount 도면 | [`mounts_cadcraft_phase1.dxf`](mounts_cadcraft_phase1.dxf) | CADCraft 평면 원본: 외곽·받침·Rear shim은 생성 입력, 홀·머리 자리 레이어는 검사 대상, `*_RELIEFS`는 참고 |
 | 현행 CAD | [`46es_mount_seam_v5.sc`](46es_mount_seam_v5.sc) | 생성 결과 |
-| 스냅 시험편 CAD | [`ctrl_trials_v5.sc`](ctrl_trials_v5.sc) | 생성 결과. 주문 1 스냅 시험편 A·C와 뒤 받침 블록 높이 변형 2개를 담은 소형 모델(브래킷 B와 공칭 블록은 현행 CAD) |
+| 스냅 시험편 CAD | [`ctrl_trials_v5.sc`](ctrl_trials_v5.sc) | 생성 결과. 주문 1 스냅 시험편 A·C, 뒤 받침 블록 높이 변형 2개, 이음 쿠폰 3쌍을 담은 소형 모델(브래킷 B와 공칭 블록은 현행 CAD) |
 | 생성 기록 | [`seam_v5_build.json`](seam_v5_build.json) | 생성 입력 지문과 두 CAD 해시. `check_repository.py`가 대조 |
 | 매개변수 | [`parameters_seam_v5.csv`](parameters_seam_v5.csv) | 생성기가 CAD와 함께 내보냄(독립 원본 아님) |
 | 조립 검토 | [`46es_assembly_review_v5.sc`](46es_assembly_review_v5.sc), [`assembly_reference_v5.json`](assembly_reference_v5.json) | 파생/검토용. 실물·주문용 아님 |

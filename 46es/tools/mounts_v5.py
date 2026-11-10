@@ -18,6 +18,7 @@ from shapely.geometry import LineString, Point, Polygon, box
 from shapely.ops import polygonize, unary_union
 
 from make_key_dxf import load_keys, rect
+import seam_v5
 
 ROOT = Path(__file__).resolve().parents[1]
 DRAWING = ROOT / 'model/mounts_cadcraft_phase1.dxf'
@@ -48,7 +49,7 @@ CASE_HEAD_W = 4.4                  # TBD_case_head_D + TBD_case_head_clr
 CASE_HEAD_Z = 2.0                  # TBD_frame_T - TBD_case_head_H
 CASE_ADJUST = 1.0                  # TBD_case_adjust (slot half straight length)
 LAND_AF = 8.5                      # octagonal keep-clear zone around each SO pocket
-SEAM_NUT_CLEARANCE = ((139.5, 6.6), 2.55)   # seam_M2_X/Y; nut and screw tip above the Front pad
+SEAM_NUT_CLEARANCE = (seam_v5.PRODUCTION.screw, seam_v5.FRONT_PAD_HOLE_R)   # seam_M2_X/Y; nut bottom and screw tip above the Front pad
 # Downturned plate flanges (PLATE_FLANGE_*: split_flange_W 2.0 wide, Z 5-8) run along the plate edges; pads keep
 # PAD_FLANGE_CLEARANCE to their inner faces so the plate can seat. Inner faces: x -0.393+2 / 285.388-2, y -0.367+2 / 94.967-2.
 PLATE_FLANGE_INNER = (1.607, 1.633, 283.388, 92.967)

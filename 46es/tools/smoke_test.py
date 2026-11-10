@@ -10,7 +10,8 @@ import time
 from common import ROOT
 import ctrl_v5
 from mounts_v5 import profiles, expected_volume
-from build_seam_v5 import cover_windows
+from build_seam_v5 import cover_windows, switch_openings
+import seam_v5
 
 
 def read(rel):
@@ -41,10 +42,16 @@ def main():
         cad = order1[body]['cad_volume_mm3']
         assert abs(cad - estimate) / estimate < 0.015, f'{body}: order-1 CAD volume {cad} far from the estimate {estimate:.3f}'
 
+    # Front seam: every variant passes its wall rules; the production screw is where the Front mount pad is drilled.
+    openings = switch_openings()
+    seams = {'production': seam_v5.check(seam_v5.PRODUCTION, openings)}
+    seams.update({name: seam_v5.check(variant) for name, (variant, _) in seam_v5.COUPONS.items()})
+    assert len(seam_v5.coupon_blanks()) == 2
+
     # Cover silhouette window: the generator asserts keycap coverage and the keep-outs itself.
     windows = cover_windows()
 
-    print(f'OK: {len(mounts)} mount profiles, {len(designs)} brackets, {len(windows)} cover windows '
+    print(f'OK: {len(mounts)} mount profiles, {len(designs)} brackets, {len(seams)} seam variants, {len(windows)} cover windows '
           f'({time.perf_counter() - started:.1f} s, no SolidCraft)')
 
 

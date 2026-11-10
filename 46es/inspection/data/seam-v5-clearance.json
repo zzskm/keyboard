@@ -1,8 +1,8 @@
 {
  "generated_vs_rest": {
-  "total_pairs": 987,
-  "candidate_pairs": 94,
-  "pairs_pruned_by_bbox": 893,
+  "total_pairs": 943,
+  "candidate_pairs": 87,
+  "pairs_pruned_by_bbox": 856,
   "intentionally_checked_by_sections": [
    [
     "MOUNT_L_PAIR_V3",
@@ -21,7 +21,6 @@
    "PLATE_L_SPLIT_V1 | PLATE_SPINE_V1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_3",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_5",
-   "PLATE_L_SPLIT_V1 | REF_M2_SEAM_FRONT",
    "PLATE_L_SPLIT_V1 | REF_SO1_M3_UPPER",
    "PLATE_L_SPLIT_V1 | REF_SO2_M3_UPPER",
    "PLATE_L_SPLIT_V1 | REF_SO3_M3_UPPER",
@@ -33,7 +32,6 @@
    "PLATE_R_SPLIT_V1 | PLATE_SPINE_V1",
    "PLATE_R_SPLIT_V1 | REF_M2_PLATE_4",
    "PLATE_R_SPLIT_V1 | REF_M2_PLATE_6",
-   "PLATE_R_SPLIT_V1 | REF_M2_SEAM_FRONT_NUT",
    "PLATE_R_SPLIT_V1 | REF_SO4_M3_UPPER",
    "PLATE_R_SPLIT_V1 | REF_SO5_M3_UPPER",
    "PLATE_R_SPLIT_V1 | STANDOFF_SO4_REF",
@@ -56,14 +54,14 @@
    "STANDOFF_SO5_REF | MOUNT_R_PAIR_V3",
    "STANDOFF_SO6_REF | MOUNT_H03_SO6_MIN_V2"
   ],
-  "pairs_checked": 94,
+  "pairs_checked": 87,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
  "among_generated": {
-  "total_pairs": 210,
-  "candidate_pairs": 39,
-  "pairs_pruned_by_bbox": 171,
+  "total_pairs": 253,
+  "candidate_pairs": 47,
+  "pairs_pruned_by_bbox": 206,
   "intentionally_checked_by_sections": [],
   "overlaps": [],
   "unchecked": [],
@@ -84,16 +82,19 @@
    "PLATE_L_SPLIT_V1 | REF_LEGMAG_L_PLATE",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_2",
+   "PLATE_L_SPLIT_V1 | REF_M2_SEAM_FRONT",
    "PLATE_R_SPLIT_V1 | COVER_R_DRAFT_TBD",
    "PLATE_R_SPLIT_V1 | COVER_T_DRAFT_TBD",
    "PLATE_R_SPLIT_V1 | MOUNT_H03_SO6_MIN_V2",
    "PLATE_R_SPLIT_V1 | MOUNT_R_PAIR_V3",
    "PLATE_R_SPLIT_V1 | REAR_REST_3_V5",
    "PLATE_R_SPLIT_V1 | REF_LEGMAG_R_PLATE",
+   "PLATE_R_SPLIT_V1 | REF_M2_SEAM_FRONT_NUT",
    "REF_M2_PLATE_1 | REF_M2_PLATE_1_NUT",
-   "REF_M2_PLATE_2 | REF_M2_PLATE_2_NUT"
+   "REF_M2_PLATE_2 | REF_M2_PLATE_2_NUT",
+   "REF_M2_SEAM_FRONT | REF_M2_SEAM_FRONT_NUT"
   ],
-  "pairs_checked": 39,
+  "pairs_checked": 47,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
