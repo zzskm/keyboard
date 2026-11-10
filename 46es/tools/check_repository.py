@@ -197,6 +197,109 @@ def print_checks(current, sample):
     return len(PARTS)
 
 
+def numbers(text):
+    return re.findall(r'\d+(?:\.\d+)?', text)
+
+
+def shown(expected, text):
+    """`expected` appears in `text` as written to the precision shown (13 → '13', 95.334 → '95.33' or '95.334')."""
+    for n in numbers(text):
+        places = len(n.partition('.')[2])
+        if abs(float(n) - expected) <= 0.5 * 10 ** -places + 1e-6:
+            return True
+    return False
+
+
+def table_rows(text, heading):
+    """Cells of the table rows under one `## heading` (up to the next heading)."""
+    section = text.split(f'\n## {heading}', 1)[1].split('\n#', 1)[0]
+    return [[c.strip() for c in line.strip().strip('|').split('|')] for line in section.splitlines()
+            if line.startswith('|') and not set(line) <= set('|-: ')]
+
+
+def print_readme_checks():
+    """model/print_v5/README.md part tables against the print records (plan 4-4): the files of each order, material,
+    size to the precision written, and for order 2 the volume and the minimum wall."""
+    from parts_v5 import ORDERS, RESIN, parts
+    text = (ROOT / 'model/print_v5/README.md').read_text(encoding='utf-8')
+    checked = 0
+    for order, heading in (('order1', '주문 1'), ('order2', '주문 2')):
+        records = {p['file']: p for p in read(ORDERS[order]['record'])}
+        walls = {p['file']: p for p in read(ORDERS[order]['wall'])['parts']}
+        registry = {p.file: p for p in parts(order)}
+        rows = table_rows(text, heading)
+        header, rows = rows[0], rows[1:]
+        col = {name: next(i for i, h in enumerate(header) if name in h) for name in ('파일', '재료', 'X×Y×Z')}
+        listed = []
+        for row in rows:
+            name = row[col['파일']].strip('`')
+            head, _, alts = name.rpartition('_')
+            files = [f'{head}_{a}' for a in alts.split('/')] if '/' in alts else [name]
+            listed += files
+            sizes = row[col['X×Y×Z']].split(' / ')
+            for i, file in enumerate(files):
+                record, part = records[file], registry[file]
+                dims = (sizes[i] if len(sizes) == len(files) else sizes[0]).split('×')
+                for axis, (cell, value) in enumerate(zip(dims, record['print_bbox_mm'])):
+                    options = cell.split('/')
+                    cell = options[i] if len(options) == len(files) else cell
+                    require(len(dims) == 3 and shown(value, cell),
+                            f'print_v5/README.md {file}: size {"XYZ"[axis]} {cell.strip()} vs record {value}')
+                require(('투명' in row[col['재료']]) == (part.material == RESIN), f'print_v5/README.md {file}: material')
+                volume = record['cad_volume_mm3'] / 1000
+                for cell in re.findall(r'\(([\d.]+) cm³\)', row[1]):
+                    require(shown(volume, cell), f'print_v5/README.md {file}: {cell} cm³ vs record {volume:.3f}')
+                if order == 'order2':
+                    volume_cell = row[next(i for i, h in enumerate(header) if '부피' in h)]
+                    wall_cell = row[next(i for i, h in enumerate(header) if '최소 벽' in h)]
+                    require(shown(volume, volume_cell), f'print_v5/README.md {file}: volume {volume_cell} vs {volume:.3f} cm³')
+                    require(shown(walls[file]['wall_min_mm'], wall_cell),
+                            f'print_v5/README.md {file}: wall {wall_cell} vs scan {walls[file]["wall_min_mm"]}')
+                checked += 1
+        require(sorted(listed) == sorted(registry), f'print_v5/README.md {heading} files differ from tools/parts_v5.py: '
+                                                    f'{sorted(set(listed) ^ set(registry))}')
+    return checked
+
+
+# docs/design.md 「현행 치수」: row label -> the values its text must show (expressions over the baseline values;
+# OUTLINE_X/Y are the plate halves' combined extent). A row not listed here is prose the check does not read.
+DESIGN_ROWS = {
+    'plate 상면': ['plate_top_Z'],
+    '스위치 상부 개구': ['TBD_upper_plate_T', 'TBD_sw_notch_H'],
+    '스위치 착좌': ['plate_top_Z - TBD_upper_plate_T', 'TBD_sw_hole'],
+    '커버 윗면 / 본체 두께': ['v5_cover_top_Z', 'TBD_cover_T'],
+    'mount–plate 접촉면': ['plate_top_Z - TBD_plate_T'],
+    'plate 뒤 다리': ['v5_rear_foot_L', 'v5_rear_boss_top_Z + v5_rear_foot_gap', 'v5_rear_foot_gap',
+                     *[f'v5_rear_foot_{i}_X {s} v5_rear_foot_L / 2' for i in (1, 2, 3) for s in '-+']],
+    '커버 다리 자석 포켓 위 살': ['v5_legmag_skin'],
+    '커버 창 윤곽': ['v5_cover_silhouette_cell', 'v5_cover_silhouette_min_rail'],
+    '참고 키캡 밑면': ['v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z'],
+    '케이스 테두리': ['v5_rim_ref_Z', 'v5_cover_top_above_rim'],
+    'plate·커버 전체 외곽': ['OUTLINE_X', 'OUTLINE_Y'],
+    '자석': ['TBD_magnet_D', 'TBD_magnet_T'],
+    '다리 자석 포켓': ['TBD_magnet_D + 2 * TBD_magnet_clr', 'TBD_magnet_D + 2 * v5_legmag_plate_clr',
+                  'v5_legmag_L_X', 'v5_legmag_R_X', 'v5_legmag_L_Y', 'v5_legmag_R_Y'],
+}
+
+
+def design_checks():
+    """docs/design.md 「현행 치수」 numbers against the v5 baseline (plan 4-4)."""
+    from verify_seam_v5 import BASELINE
+    baseline = read(BASELINE)
+    plates = [baseline['bodies'][n]['bbox'] for n in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1')]
+    values = dict(baseline['values'],
+                  OUTLINE_X=max(b[1][0] for b in plates) - min(b[0][0] for b in plates),
+                  OUTLINE_Y=max(b[1][1] for b in plates) - min(b[0][1] for b in plates))
+    rows = {r[0]: r[1] for r in table_rows((ROOT / 'docs/design.md').read_text(encoding='utf-8'), '현행 치수')[1:]}
+    for label, expressions in DESIGN_ROWS.items():
+        row = next((k for k in rows if k.startswith(label)), None)
+        require(row, f'design.md 현행 치수: no row {label}')
+        for expression in expressions:
+            value = eval(expression, {'__builtins__': {}}, values)
+            require(shown(value, rows[row]), f'design.md 현행 치수 「{row}」 does not show {expression} = {value:g}')
+    return sum(map(len, DESIGN_ROWS.values()))
+
+
 def main():
     count = source_checks()
     build_checks()
@@ -204,7 +307,9 @@ def main():
     current, sample, review, unchanged = model_checks()
     steps = guide_checks(list(review))
     prints = print_checks(current, sample)
-    print(f'OK: {count} tracked files; links/JSON/Python; {unchanged} CAD bodies as in the v5 baseline; {steps} guide steps; {prints} print meshes')
+    doc_numbers = print_readme_checks() + design_checks()
+    print(f'OK: {count} tracked files; links/JSON/Python; {unchanged} CAD bodies as in the v5 baseline; {steps} guide steps; '
+          f'{prints} print meshes; {doc_numbers} document numbers')
     print('SolidCraft re-evaluation, fresh wall scans and browser interaction were not run.')
 
 

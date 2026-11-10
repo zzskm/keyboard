@@ -8,7 +8,8 @@ The page follows the CAD model without hand work:
   diagrams.py              -> wiring, pin, snap, magnet, test and keycap diagrams (SVG) from the generator sources
 The text (assembly steps, review notes) lives in the spec. Numbers in the text can be
 tokens that are filled from the model: {{p:PARAM}} parameter value, {{v:BODY}} volume in cm3,
-{{d:BODY}} bbox size, {{n:PATTERN}} number of bodies matching a pattern or @group.
+{{d:BODY}} bbox size, {{l:BODY}} longest plan (X/Y) size, {{n:PATTERN}} number of bodies matching a pattern
+or @group.
 
 Usage (paths may be relative to this folder):
   python build_guide.py                                  # guide_v5.json -> out/
@@ -153,7 +154,7 @@ def render_job(cli, model, looks, r, names, groups, cameras, defaults, cached_on
 
 
 # ---------------------------------------------------------------- text
-TOKEN = re.compile(r"\{\{([pvdn]):([^}]+)\}\}")
+TOKEN = re.compile(r"\{\{([pvdln]):([^}]+)\}\}")
 
 
 def fmt_num(v):
@@ -185,12 +186,14 @@ class Ctx:
                 if arg not in self.params:
                     die(f"text token: unknown parameter {arg}")
                 return fmt_num(self.params[arg])
-            if kind in "vd" and arg not in self.bodies:
+            if kind in "vdl" and arg not in self.bodies:
                 die(f"text token: unknown body {arg}")
             if kind == "v":
                 return f"{self.bodies[arg]['volume_mm3'] / 1000:.1f}"
             if kind == "d":
                 return " × ".join(f"{x:.1f}" for x in self.dims(arg))
+            if kind == "l":
+                return f"{max(self.dims(arg)[:2]):.1f}"
             return str(len(expand([arg], self.names, self.groups, "text")))
         return TOKEN.sub(rep, s)
 
