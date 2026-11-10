@@ -1,5 +1,5 @@
 {
- "changed_vs_unchanged": {
+ "generated_vs_rest": {
   "total_pairs": 846,
   "candidate_pairs": 103,
   "pairs_pruned_by_bbox": 743,
@@ -60,7 +60,7 @@
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
- "among_changed": {
+ "among_generated": {
   "total_pairs": 153,
   "candidate_pairs": 36,
   "pairs_pruned_by_bbox": 117,

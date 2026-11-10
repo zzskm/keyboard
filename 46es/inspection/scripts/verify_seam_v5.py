@@ -1,20 +1,26 @@
-"""Audit the flat v5 cover, drawing-built mounts, plate supports, baseline BRep, and current print exports.
+"""Audit the flat v5 cover, drawing-built mounts, plate supports, the v5 baseline and current print exports.
 
-Run with python -B 46es/inspection/scripts/verify_seam_v5.py.
+Run with python -B 46es/inspection/scripts/verify_seam_v5.py [--accept].
 Writes inspection/data/seam-v5-verification.json and seam-v5-clearance.json.
+
+inspection/data/seam-v5-baseline.json is the expected state of the production and trial models: every body's shape
+fingerprint (cad_model.shape_digest) with its volume and box, and every design parameter's expression (plan 4-2/4-3,
+replacing the v4 and flat Z 18 snapshot models). A run fails when anything differs from it. After an intended design
+change, --accept prints the differences, writes the new baseline and verifies; the printed differences go into the
+commit message (AGENTS.md §5).
 """
-import csv, json, math, subprocess, sys
+import argparse, csv, json, math, subprocess, sys
 from pathlib import Path
 
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
-from cad_model import ROOT, live_shapes, document
+from cad_model import ROOT, live_shapes, document, shape_digest
 from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REMOVED_BODIES, REAR_BOSS_X, REAR_FEET,  # noqa: E402
-                           horizontal_faces, top_levels, ctrl_params, rear_foot_volume, cover_windows)
+from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z,  # noqa: E402
+                           horizontal_faces, top_levels, cover_windows)
 import ctrl_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
@@ -22,40 +28,71 @@ from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles,
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 from parts_v5 import ORDERS, by_file, mount_part  # noqa: E402
 
-V4 = ROOT / 'model/baselines/seam_v4.sc'
 V5 = ROOT / 'model/46es_mount_seam_v5.sc'
 TRIALS = ROOT / 'model/ctrl_trials_v5.sc'
-FLAT = ROOT / 'model/baselines/flat_Z18.sc'      # 1st pass, flat cover top Z 18 (plan §5-0)
+BASELINE = ROOT / 'inspection/data/seam-v5-baseline.json'
 # Recorded with their fingerprints (common.fingerprint) so check_repository.py and pipeline.py --status can tell
-# that this verifier or what it read changed after the run (plan 2-3). The baselines are pinned by V4_SHA/FLAT_SHA.
+# that this verifier or what it read changed after the run (plan 2-3).
 VERIFY_INPUTS = ('inspection/scripts/verify_seam_v5.py', 'tools/parts_v5.py', 'model/46es_mount_seam_v5.sc', 'model/ctrl_trials_v5.sc',
-                 'model/parameters_seam_v5.csv', 'inspection/data/seam-v5-print-set.json',
+                 'model/parameters_seam_v5.csv', 'inspection/data/seam-v5-baseline.json', 'inspection/data/seam-v5-print-set.json',
                  'inspection/data/seam-v5-mjf-thin-wall.json', 'inspection/data/seam-v5-trial-print-set.json')
-V4_SHA = '606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b'
-FLAT_SHA = '66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d'
-# The assumed switch envelopes and the Wilmore housing stand-in are reference-only and no longer evaluated in production.
-REMOVED = REMOVED_BODIES
-CHANGED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1',
-                                       'REF_M2_PLATE_1', 'REF_M2_PLATE_2', 'REF_M2_PLATE_1_NUT', 'REF_M2_PLATE_2_NUT'}
-# Copies of the plates made before the v5 features (seam coupon, order 1). TBD_upper_plate_T sits before the copy in
-# the timeline, so they are re-evaluated; the coupon box holds no switch opening, so volume and box must equal v4.
-DERIVED = {'SEAM_COUPON_L_V4', 'SEAM_COUPON_R_V4'}
-ADDED = {'REF_LEGMAG_L_COVER', 'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}   # snap trials: model/ctrl_trials_v5.sc
-NEW_PARAMS = {'v5_rim_ref_Z', 'v5_legmag_skin', 'v5_legmag_skin_min', 'v5_keycap_bottom_above_seat', 'v5_keycap_bottom_rest_Z',
-              'v5_skirt_cover_H', 'v5_cover_top_Z', 'v5_cover_top_above_rim',
-              'v5_key_margin', 'v5_legmag_plate_clr', 'v5_legpad_L', 'v5_lip_relief_clr',
-              'v5_legmag_L_X', 'v5_legmag_L_Y', 'v5_legmag_R_X', 'v5_legmag_R_Y',
-              'v5_rear_boss_D', 'v5_rear_boss_top_Z', 'v5_rear_foot_gap', 'v5_rear_foot_L',
-              'v5_cover_silhouette_cell', 'v5_cover_silhouette_close_r', 'v5_cover_silhouette_fill_L',
-              'v5_cover_silhouette_min_rail', 'v5_cover_silhouette_res'} | {name for name, _, _ in ctrl_params()} \
-    | {f'v5_rear_boss_{i}_X' for i in range(1, len(REAR_BOSS_X) + 1)} | {f'v5_rear_foot_{i}_X' for i in REAR_FEET}
-CHANGED_PARAMS = {'TBD_cover_T', 'TBD_upper_plate_T'}
+# Bodies the v5 generator builds or cuts (drawing-built mounts, snap bracket and its plate screws, leg magnets, rear
+# feet, cover windows): their clearance is checked against every other body and among themselves.
+GENERATED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD',
+                                         'COVER_R_DRAFT_TBD', 'CTRL_BRACKET_SPLIT_V1', 'REF_M2_PLATE_1', 'REF_M2_PLATE_2',
+                                         'REF_M2_PLATE_1_NUT', 'REF_M2_PLATE_2_NUT', 'REF_LEGMAG_L_COVER',
+                                         'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE'}
 MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
-# v4 plate gate reliefs removed with the gate (boxes inside solid plate, Z 8-10); the moved screw holes keep their volume
-PLATE_L_GATE_RELIEF_MM3 = 8.319 * 7.4 * 2.0 + 1.9 * 4.0 * 2.0
-COUPON_L_GATE_RELIEF_MM3 = ((120.7 - 118.0) * 7.4 * 2.0          # gate relief part (the coupon trim starts at X 118)
-                            + math.pi * 1.2 ** 2 * 2.2 + math.pi * 2.2 ** 2 * 2.8)   # v4 hole: clear Z 8-10.2, head Z 10.2-13
 CACHE = ROOT / '.cache/v5'
+
+
+# ---------------------------------------------------------------- baseline (expected state, --accept)
+def snapshot(evaluated, model):
+    """{body: shape fingerprint, volume, box} of one model."""
+    shapes = live_shapes(model)
+    bodies = {b['name']: b for b in evaluated['bodies']}
+    assert set(shapes) == set(bodies), set(shapes) ^ set(bodies)
+    return {n: dict(shape_sha256=shape_digest(shapes[n]), volume_mm3=round(bodies[n]['volume_mm3'], 3),
+                    bbox=[[round(v, 4) for v in bodies[n]['bbox'][k]] for k in ('min', 'max')])
+            for n in sorted(shapes)}
+
+
+def baseline_now(ev, trials_ev, params):
+    return dict(about='Expected v5 state: verify_seam_v5.py fails on any difference; --accept rewrites this file and '
+                      'prints the differences for the commit message. check_repository.py compares the fingerprints.',
+                bodies=snapshot(ev, V5), trials=snapshot(trials_ev, TRIALS), params=dict(sorted(params.items())))
+
+
+def baseline_diff(old, new):
+    """Readable differences between two baselines."""
+    out = []
+    for section in ('bodies', 'trials'):
+        a, b = old.get(section, {}), new[section]
+        out += [f'{section}: added {n} ({b[n]["volume_mm3"]} mm3)' for n in sorted(set(b) - set(a))]
+        out += [f'{section}: removed {n} ({a[n]["volume_mm3"]} mm3)' for n in sorted(set(a) - set(b))]
+        for n in sorted(set(a) & set(b)):
+            if a[n]['shape_sha256'] != b[n]['shape_sha256']:
+                dv = round(b[n]['volume_mm3'] - a[n]['volume_mm3'], 3)
+                box = '' if a[n]['bbox'] == b[n]['bbox'] else f', box {a[n]["bbox"]} -> {b[n]["bbox"]}'
+                out.append(f'{section}: changed {n}: volume {a[n]["volume_mm3"]} -> {b[n]["volume_mm3"]} mm3 ({dv:+}){box}')
+    a, b = old.get('params', {}), new['params']
+    out += [f'param added {n} = {b[n]}' for n in sorted(set(b) - set(a))]
+    out += [f'param removed {n} (was {a[n]})' for n in sorted(set(a) - set(b))]
+    out += [f'param {n}: {a[n]} -> {b[n]}' for n in sorted(set(a) & set(b)) if a[n] != b[n]]
+    return out
+
+
+def check_baseline(ev, trials_ev, params, accept):
+    now = baseline_now(ev, trials_ev, params)
+    old = json.loads(BASELINE.read_text(encoding='utf-8')) if BASELINE.is_file() else {}
+    diff = baseline_diff(old, now)
+    if accept:
+        print('\n'.join(['baseline differences (put them in the commit message):'] + (diff or ['none'])))
+        write_json(BASELINE, now)
+    else:
+        assert not diff, ('the model differs from inspection/data/seam-v5-baseline.json; after an intended change run '
+                          'verify_seam_v5.py --accept and record the differences in the commit message:\n' + '\n'.join(diff))
+    return now
 
 
 def cli_results(script, model, name):
@@ -273,33 +310,22 @@ def leg_magnet_walls(params):
                       plate_wall_to_switch_opening_mm=round(min(edge_distance(p, q) for q in openings) - r_plate, 3),
                       plate_wall_to_front_edge_mm=round(p[1] - edge_y - r_plate, 3),
                       plate_wall_to_pad_end_mm=round(params['v5_legpad_L'] / 2 - r_plate, 3),
-                      plate_floor_mm=round(params['v4_plate_top_Z'] - params['TBD_magnet_T'] - params['TBD_magnet_clr']
+                      plate_floor_mm=round(params['plate_top_Z'] - params['TBD_magnet_T'] - params['TBD_magnet_clr']
                                            - (params['TBD_frame_T'] + params['TBD_standoff_H']), 3),
                       magnet_gap_mm=round(2 * params['TBD_magnet_clr'], 3))
         assert min(v for k, v in out[s].items() if k.endswith('_mm') and k != 'magnet_gap_mm') >= 1.0, out[s]
     return out
 
 
-def cover_levels(params, bodies, flat_bodies):
-    """Check the single top plane; the silhouette window (2026-11-10) only widens the flat baseline's window.
-
-    The window is cut through the full cover height, so each piece loses (flat top area - new top area) × height
-    against the flat snapshot raised to the new top. Keycap clearance is checked by verify_assembly_reference_v5."""
+def cover_levels(params, bodies):
+    """Each cover has one flat top plane at v5_cover_top_Z. Keycap clearance is checked by verify_assembly_reference_v5."""
     top = params['v5_cover_top_Z']
     levels = top_levels(V5)
-    flat_levels = top_levels(FLAT)
     out = {}
     for name in COVERS:
-        area = flat_levels[name][18.0]
-        assert set(flat_levels[name]) == {18.0}, flat_levels[name]
         assert set(levels[name]) == {round(top, 4)}, (name, levels[name])
-        new_area = levels[name][round(top, 4)]
-        assert new_area <= area + 1e-3, (name, new_area, area)
-        bound = flat_bodies[name]['volume_mm3'] + area * (top - 18.0)
-        actual = bodies[name]['volume_mm3']
-        assert actual <= bound * 1.0001, (name, actual, bound)
-        out[name] = dict(top_Z=top, top_area_mm2=new_area, flat_top_area_mm2=area,
-                         window_widened_mm2=round(area - new_area, 3), volume_mm3=round(actual, 3))
+        out[name] = dict(top_Z=top, top_area_mm2=levels[name][round(top, 4)],
+                         volume_mm3=round(bodies[name]['volume_mm3'], 3))
     assert params['v5_legmag_skin'] >= params['v5_legmag_skin_min']
     return out
 
@@ -337,7 +363,7 @@ def verify_mounts(bodies):
 
 def support_contact_plan(params):
     """Build bearing probes so contacts and assembly clearances share one CLI model load."""
-    z = params['v4_plate_top_Z'] - params['TBD_plate_T']
+    z = params['plate_top_Z'] - params['TBD_plate_T']
     mounts = sorted(PLATE_SUPPORT_MOUNTS)
     plates = sorted(set(PLATE_SUPPORT_MOUNTS.values()))
     commands = [dict(command='inspect.clearance', params=dict(
@@ -390,13 +416,12 @@ def support_contacts(params, shapes, plan, results):
 
 
 # ---------------------------------------------------------------- order-2 print set (3rd pass, tools/export_print_v5.py)
-SAME_AS_V4 = {'46es_v5_spine': 'PLATE_SPINE_V1'}
 MJF_MAX = (370.0, 276.0)
 
 
-def check_print_set(bodies, v4_bodies):
+def check_print_set(bodies):
     """print_v5/order2 STL/STEP files: hashes as recorded, one component, no open edges, volume = CAD, MJF 1.0 / resin 0.8
-    walls, box on the bed and inside the MJF build volume; the spine keeps the v4 volume."""
+    walls, box on the bed and inside the MJF build volume."""
     expected = by_file('order2')
     parts = json.loads(ORDERS['order2']['record'].read_text(encoding='utf-8'))
     thin = {t['file']: t for t in json.loads(ORDERS['order2']['wall'].read_text(encoding='utf-8'))['parts']}
@@ -411,8 +436,6 @@ def check_print_set(bodies, v4_bodies):
         assert t['stl_sha256'] == p['stl_sha256'], ('thin-wall scan is of another STL', p['file'])
         assert t['wall_min_mm'] is None or t['wall_min_mm'] >= part.wall_limit - 1e-3, (p['file'], t['wall_min_mm'])
         assert abs(p['cad_volume_mm3'] - bodies[p['body']]['volume_mm3']) < 1e-3, p['file']
-        if p['file'] in SAME_AS_V4:
-            assert abs(p['cad_volume_mm3'] - v4_bodies[SAME_AS_V4[p['file']]]['volume_mm3']) < 1e-3, p['file']
         m = check(str(stl))
         assert len(m['components']) == 1 and m['bad_edge_count'] == 0, p['file']
         c = m['components'][0]
@@ -425,34 +448,22 @@ def check_print_set(bodies, v4_bodies):
     return out
 
 
-def main():
-    assert sha(V4) == V4_SHA, 'v4 changed'
-    assert sha(FLAT) == FLAT_SHA, 'the flat Z 18 snapshot changed'
-    v4, v5 = document(V4), document(V5)
-    for prefix in ['SK22', 'SK24', 'SK25', 'SK34']:
-        a = next(f for f in v4['features'] if f['name'].startswith(prefix))
-        b = next(f for f in v5['features'] if f['name'].startswith(prefix))
-        assert a == b, prefix
-    p4 = {p['name']: p['expr'] for p in v4['params'] if not p['model']}
+def main(accept=False):
+    v5 = document(V5)
     p5 = {p['name']: p['expr'] for p in v5['params'] if not p['model']}
-    assert set(p5) - set(p4) == NEW_PARAMS and not set(p4) - set(p5), (set(p5) - set(p4)) ^ NEW_PARAMS
-    assert {n for n in p4 if p4[n] != p5[n]} == CHANGED_PARAMS
     rows = {r['name']: r for r in csv.DictReader((ROOT / 'model/parameters_seam_v5.csv').open(encoding='utf-8-sig'))}
     assert {n: r['expression'] for n, r in rows.items()} == p5, 'CSV differs from the model'
     assert all(f['name'] != 'COVER_DROP_V5' for f in v5['features'])
 
-    old, new = live_shapes(V4), live_shapes(V5)
-    assert set(new) - set(old) == ADDED and set(old) - set(new) == REMOVED, (set(new) ^ set(old))
-    same = [n for n in old if n in new and n not in CHANGED | DERIVED]
-    assert all(old[n] == new[n] for n in same), 'an untouched body changed'
-    assert all(old[n] != new[n] for n in CHANGED)
-    for n in CHANGED | ADDED:
+    new = live_shapes(V5)
+    for n in GENERATED:
         assert len(new[n]) == 1 and len(new[n][0]['shells']) == 1, n
     trials = live_shapes(TRIALS)       # snap trials A/C: their own model (build_seam_v5.trials_document)
     assert set(trials) == set(ctrl_v5.TRIALS) and not set(trials) & set(new), set(trials)
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev, _ = evaluation(V5)
+    baseline = check_baseline(ev, evaluation(TRIALS)[0], p5, accept)
     errors = [t['name'] for t in ev['timeline'] if t.get('error')]
     warnings = [t['name'] for t in ev['timeline'] if t.get('warning')]
     dof = [s['name'] for s in ev['sketches'] if s.get('dof') != 0]
@@ -461,7 +472,7 @@ def main():
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}
     covers = [n for n in bodies if n.startswith('COVER_')]
     assert sorted(covers) == sorted(COVERS)
-    cover_lo = params['v4_plate_top_Z'] - params['TBD_cover_boss_H']
+    cover_lo = params['plate_top_Z'] - params['TBD_cover_boss_H']
     cover_hi = params['v5_cover_top_Z']
     for n in covers:
         lo, hi = bodies[n]['bbox']['min'][2], bodies[n]['bbox']['max'][2]
@@ -470,44 +481,21 @@ def main():
     assert abs(params['v5_legmag_skin'] - 3.9) < 1e-9
     assert abs(params['v5_keycap_bottom_rest_Z'] - 17.3) < 1e-9
     walls = leg_magnet_walls(params)
-    v4_eval, _ = evaluation(V4)
-    v4_bodies = {b['name']: b for b in v4_eval['bodies']}
-    for n in DERIVED:
-        # the left coupon copies the plate before the new bracket screw holes: it loses the v4 hole at (125, 17)
-        # and the gate relief part, nothing else
-        expected = v4_bodies[n]['volume_mm3'] + (COUPON_L_GATE_RELIEF_MM3 if n == 'SEAM_COUPON_L_V4' else 0.0)
-        assert abs(bodies[n]['volume_mm3'] - expected) < 0.05, (n, bodies[n]['volume_mm3'], expected)
-        assert all(abs(bodies[n]['bbox'][k][i] - v4_bodies[n]['bbox'][k][i]) < 1e-6 for k in ('min', 'max') for i in range(3)), n
-    flat_bodies = {b['name']: b for b in evaluation(FLAT)[0]['bodies']}
-    flat_shapes = live_shapes(FLAT)
-    # the 2nd pass touches the covers only; phase 2 (2026-11-09) moves the left plate's two bracket screw holes and
-    # drops the gate reliefs, and the rear feet (2026-11-09) hang below the rear flanges: each plate may differ from
-    # the snapshot by exactly its feet (and PLATE_L by the phase 2 change), its box only by the feet's bottom Z
-    foot_mm3 = rear_foot_volume(params)
     foot_bottom = params['v5_rear_boss_top_Z'] + params['v5_rear_foot_gap']
-    plate_delta = {}
-    for plate, extra in (('PLATE_L_SPLIT_V1', PLATE_L_GATE_RELIEF_MM3), ('PLATE_R_SPLIT_V1', 0.0)):
-        count = sum(1 for _, p in REAR_FEET.values() if p == plate)
-        delta = bodies[plate]['volume_mm3'] - flat_bodies[plate]['volume_mm3']
-        assert abs(delta - extra - count * foot_mm3) < 0.05, (plate, delta, extra, count, foot_mm3)
-        fb, nb = flat_bodies[plate]['bbox'], bodies[plate]['bbox']
-        assert all(abs(fb[k][i] - nb[k][i]) < 1e-6 for k in ('min', 'max') for i in range(3) if (k, i) != ('min', 2)), plate
-        assert abs(nb['min'][2] - foot_bottom) < 1e-6, (plate, nb['min'])
-        plate_delta[plate] = dict(delta_mm3=round(delta, 3), phase2_mm3=round(extra, 3), feet=count,
-                                  foot_mm3=round(foot_mm3, 3))
-    plate_l_delta = plate_delta['PLATE_L_SPLIT_V1']['delta_mm3']
-    levels = cover_levels(params, bodies, flat_bodies)
+    for plate in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):
+        assert abs(bodies[plate]['bbox']['min'][2] - foot_bottom) < 1e-6, (plate, bodies[plate]['bbox'])
+    levels = cover_levels(params, bodies)
     support_plan = support_contact_plan(params)
 
-    # clearance of the changed/added bodies: against the 106 untouched bodies and among themselves
-    moving = sorted(CHANGED | ADDED)
-    others = sorted(n for n in bodies if n not in CHANGED | ADDED)
+    # clearance of the generated bodies: against every other body and among themselves
+    moving = sorted(GENERATED)
+    others = sorted(n for n in bodies if n not in GENERATED)
     clearance, clearance_batches = {}, []
-    for key, group, against in (('changed_vs_unchanged', moving, others), ('among_changed', moving, None)):
-        skip = [MOUNT_SCREW_INTERFACE] if key == 'changed_vs_unchanged' else []
+    for key, group, against in (('generated_vs_rest', moving, others), ('among_generated', moving, None)):
+        skip = [MOUNT_SCREW_INTERFACE] if key == 'generated_vs_rest' else []
         commands, total_pairs, candidate_pairs, skipped = clearance_candidates(bodies, group, against, 0.01, skip)
         clearance_batches.append((key, commands, total_pairs, candidate_pairs, skipped))
-        if key == 'changed_vs_unchanged':
+        if key == 'generated_vs_rest':
             assert len(skipped) == 1 and frozenset(skipped[0]) == frozenset(MOUNT_SCREW_INTERFACE), skipped
         clearance[key] = dict(total_pairs=total_pairs, candidate_pairs=candidate_pairs,
                               pairs_pruned_by_bbox=total_pairs-candidate_pairs,
@@ -530,12 +518,10 @@ def main():
     clearance['mount_screw_interface'] = verify_mount_screw_interface(sections)
     write_json(ROOT / 'inspection/data/seam-v5-clearance.json', clearance)
 
-    print_set = check_print_set(bodies, v4_bodies)
+    print_set = check_print_set(bodies)
 
-    # Covers and plates against the v4 and flat Z 18 baselines, from the order-2 print set (model/review_v5 was
-    # abolished 2026-11-10: it exported and scanned the same bodies a second time). Resin covers: every wall >= 1.0
-    # (material rule), wedge tips excluded by wall_min_mm.
-    v4_vol = {b['name']: b['volume_mm3'] for b in v4_eval['bodies']}
+    # Covers and plates from the order-2 print set (model/review_v5 was abolished 2026-11-10: it exported and scanned
+    # the same bodies a second time). Resin covers: every wall >= 1.0 (material rule), wedge tips excluded by wall_min_mm.
     by_body = {p['body']: p for p in json.loads((ROOT / 'inspection/data/seam-v5-print-set.json').read_text(encoding='utf-8'))}
     walls_by_file = {r['file']: r for r in print_set}
     parts = []
@@ -545,21 +531,16 @@ def main():
         if body in COVERS:
             assert wall is None or wall >= 1.0 - 1e-3, (p['file'], wall)
         parts.append(dict(file=p['file'], material=p['material'], volume_cm3=round(p['cad_volume_mm3'] / 1000, 2),
-                          v4_volume_cm3=round(v4_vol[body] / 1000, 2),
-                          flat_Z18_volume_cm3=round(flat_bodies[body]['volume_mm3'] / 1000, 2),
                           wall_min_mm=wall, stl_volume_rel_err=walls_by_file[p['file']]['rel']))
     clearance_summary = {k: dict(overlaps=len(clearance[k]['overlaps']), contacts=len(clearance[k]['contacts']),
                                  unchecked=len(clearance[k]['unchecked']))
-                         for k in ('changed_vs_unchanged', 'among_changed')}
-    result = dict(ok=True, inputs=fingerprints(VERIFY_INPUTS), v4_sha=V4_SHA, v5_sha=sha(V5), flat_Z18_sha=FLAT_SHA, print_set=print_set, bodies=len(new), untouched_bodies_exact=len(same),
-                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')),
-                  derived_same_volume_box=sorted(DERIVED), plate_delta_from_flat_Z18=plate_delta,
-                  plate_L_delta_from_flat_Z18_mm3=round(plate_l_delta, 3), rear_foot_bottom_Z=foot_bottom,
-                  changed=sorted(CHANGED), added=sorted(ADDED), timeline=len(ev['timeline']), sketches=len(ev['sketches']),
-                  params=len(p5), new_params=sorted(NEW_PARAMS), changed_params={n: p5[n] for n in sorted(CHANGED_PARAMS)},
+                         for k in ('generated_vs_rest', 'among_generated')}
+    result = dict(ok=True, inputs=fingerprints(VERIFY_INPUTS), v5_sha=sha(V5), baseline_sha=sha(BASELINE),
+                  baseline_bodies=len(baseline['bodies']) + len(baseline['trials']), print_set=print_set, bodies=len(new),
+                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')), rear_foot_bottom_Z=foot_bottom,
+                  generated=sorted(GENERATED), timeline=len(ev['timeline']), sketches=len(ev['sketches']), params=len(p5),
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
-                  plate_supports=seats, mounts=verify_mounts(bodies), removed=sorted(REMOVED),
-                  leg_magnets=walls,
+                  plate_supports=seats, mounts=verify_mounts(bodies), leg_magnets=walls,
                   clearance=clearance_summary, mount_screw_interface=clearance['mount_screw_interface'],
                   parts=parts)
     write_json(ROOT / 'inspection/data/seam-v5-verification.json', result)
@@ -567,4 +548,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--accept', action='store_true',
+                    help='after an intended design change: print the differences from the baseline, rewrite it, verify')
+    main(ap.parse_args().accept)

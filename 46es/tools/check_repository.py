@@ -73,29 +73,20 @@ def verifier_checks():
 
 
 def model_checks():
-    from verify_seam_v5 import V4, V5, FLAT, V4_SHA, FLAT_SHA, CHANGED, DERIVED, ADDED, REMOVED, PLATE_L_GATE_RELIEF_MM3
-    from build_seam_v5 import REAR_FEET
-    require(sha(V4) == V4_SHA, 'v4 baseline changed')
-    require(sha(FLAT) == FLAT_SHA, 'flat baseline changed')
+    from verify_seam_v5 import V5, TRIALS, BASELINE
     doc = document(V5)
     params = {p['name']: p['expr'] for p in doc['params'] if not p['model']}
     with (ROOT / 'model/parameters_seam_v5.csv').open(encoding='utf-8-sig') as f:
         rows = {r['name']: r['expression'] for r in csv.DictReader(f)}
     require(params == rows, 'current parameter CSV differs from CAD')
-    baseline, current = map(live_shapes, (V4, V5))
-    require(set(current) - set(baseline) == ADDED and set(baseline) - set(current) == REMOVED, 'CAD body set changed')
-    same = [n for n in baseline if n in current and n not in CHANGED | DERIVED]
-    require(all(baseline[n] == current[n] for n in same), 'untouched CAD body differs')
-    # Phase 2 (2026-11-09) moved PLATE_L's two bracket screw holes and filled its gate reliefs; the rear feet
-    # (2026-11-09) add material below the rear flanges of both plates. verify_seam_v5 compares the evaluated solids
-    # against the flat snapshot; its record is tied to this V5 below (v5_sha).
-    seam = read(ROOT / 'inspection/data/seam-v5-verification.json')
-    deltas = seam.get('plate_delta_from_flat_Z18', {})
-    for plate, extra in (('PLATE_L_SPLIT_V1', PLATE_L_GATE_RELIEF_MM3), ('PLATE_R_SPLIT_V1', 0.0)):
-        d = deltas.get(plate, {})
-        feet = sum(1 for _, p in REAR_FEET.values() if p == plate)
-        require(d.get('feet') == feet and abs(d.get('delta_mm3', 0) - extra - feet * d.get('foot_mm3', 0)) < 0.05,
-                f'{plate} differs from regression baseline beyond the phase 2 change and the rear feet')
+    # The v5 baseline (verify_seam_v5.py --accept) holds every body's shape fingerprint and every design parameter.
+    baseline = read(BASELINE)
+    require(params == baseline['params'], 'CAD parameters differ from inspection/data/seam-v5-baseline.json')
+    current, trials = live_shapes(V5), live_shapes(TRIALS)
+    for shapes, expected in ((current, baseline['bodies']), (trials, baseline['trials'])):
+        require(set(shapes) == set(expected), f'CAD body set differs from the v5 baseline: {sorted(set(shapes) ^ set(expected))}')
+        differ = sorted(n for n in shapes if shape_digest(shapes[n]) != expected[n]['shape_sha256'])
+        require(not differ, f'CAD bodies differ from the v5 baseline (verify_seam_v5.py --accept): {differ}')
     sample = ROOT / 'model/samples/46es_sw_hole_sample.sc'
     sample_params = {p['name']: p['expr'] for p in document(sample)['params']}
     require(sample_params['SMP_upper'] == params['TBD_upper_plate_T'] == '1.7 mm', 'trial row C differs from plate')
@@ -111,7 +102,7 @@ def model_checks():
                                   ('assembly-reference-v5-verification.json', 'source_sha', sha(V5)),
                                   ('assembly-reference-v5-verification.json', 'model_sha', ref['output_sha'])]:
         require(read(ROOT / 'inspection/data' / record)[key] == expected, f'stale model report: {record}')
-    return current, live_shapes(sample), review, len(same)
+    return current, live_shapes(sample), review, len(current) + len(trials)
 
 
 def printed_checks(printed):
@@ -207,7 +198,7 @@ def main():
     current, sample, review, unchanged = model_checks()
     steps = guide_checks(list(review))
     prints = print_checks(current, sample)
-    print(f'OK: {count} tracked files; links/JSON/Python; {unchanged} unchanged CAD bodies; {steps} guide steps; {prints} print meshes')
+    print(f'OK: {count} tracked files; links/JSON/Python; {unchanged} CAD bodies as in the v5 baseline; {steps} guide steps; {prints} print meshes')
     print('SolidCraft re-evaluation, fresh wall scans and browser interaction were not run.')
 
 

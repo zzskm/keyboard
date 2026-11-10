@@ -36,7 +36,7 @@ PLATE_SUPPORT_MOUNTS = {
 
 # Document values the drawing is checked against (parameters_seam_v5.csv).
 FRAME_T = 3.0
-PAD_TOP_Z = 8.0                    # v4_plate_top_Z - TBD_plate_T
+PAD_TOP_Z = 8.0                    # plate_top_Z - TBD_plate_T
 PAD_ROOT_Z = 1.5                   # pads start inside the frame
 SHIM_ROOT_Z = 2.5
 SHIM_TOP_Z = 3.95                  # split_spine_bottom_Z - split_support_gap
@@ -64,7 +64,7 @@ MX_CONTACTS = ((-3.81, 2.54), (2.54, 5.08))
 MX_CONTACT_SIZE = (1.15, 0.5)
 MX_PIN_DEPTH_FROM_SEAT = 8.6
 MOUNT_PIN_CLEARANCE = 0.4
-RELIEF_FLOOR_Z = 2.1               # v4_plate_top_Z - TBD_upper_plate_T - 8.6 - 0.6
+RELIEF_FLOOR_Z = 2.1               # plate_top_Z - TBD_upper_plate_T - 8.6 - 0.6
 RELIEF_MARGIN = 0.6                # pin footprint to pocket wall (clearance 0.4 + 0.2)
 
 # name -> (mount, numeric anchor, X/Y parameter expressions)
@@ -458,7 +458,7 @@ def emit(feature, sketch, profile_set):
         extrude(f'MOUNT_{suffix}_FRAME', sk, 'TBD_frame_T', 'new_body', mount, new=True)
         for i, pad in enumerate(p['pads'], 1):
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}', plane(PAD_ROOT_Z), ring(pad))
-            extrude(f'MOUNT_{suffix}_PAD_{i}', sk, f'v4_plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', 'join', mount)
+            extrude(f'MOUNT_{suffix}_PAD_{i}', sk, f'plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', 'join', mount)
         if p['shim'] is not None:
             sk = sketch(f'SK_MOUNT_{suffix}_SPINE_SHIM', plane(SHIM_ROOT_Z), ring(p['shim']))
             extrude(f'MOUNT_{suffix}_SPINE_SHIM', sk, f'split_spine_bottom_Z - split_support_gap - {SHIM_ROOT_Z}',
@@ -467,27 +467,27 @@ def emit(feature, sketch, profile_set):
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}_SWITCH_{key}', plane('TBD_frame_T + TBD_standoff_H - 3 - 0.05'),
                         ring(hit))
             extrude(f'MOUNT_{suffix}_PAD_{i}_SWITCH_{key}', sk,
-                    'v4_plate_top_Z - TBD_plate_T - (TBD_frame_T + TBD_standoff_H - 3) + 0.1', 'cut', mount)
+                    'plate_top_Z - TBD_plate_T - (TBD_frame_T + TBD_standoff_H - 3) + 0.1', 'cut', mount)
         if p['nut'] is not None:
             cylinder(f'MOUNT_{suffix}_SEAM_NUT_CLEARANCE', ('seam_M2_X', 'seam_M2_Y'), str(PAD_ROOT_Z),
-                     f'v4_plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', str(SEAM_NUT_CLEARANCE[1]), mount)
+                     f'plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', str(SEAM_NUT_CLEARANCE[1]), mount)
         for name in p['bores']:
             _, _, expr = SO_ANCHORS[name]
-            cylinder(f'MOUNT_{suffix}_{name}_BORE', expr, -1.0, 'v4_plate_top_Z - TBD_plate_T + 2',
+            cylinder(f'MOUNT_{suffix}_{name}_BORE', expr, -1.0, 'plate_top_Z - TBD_plate_T + 2',
                      '(TBD_so_screw_D + TBD_so_clr) / 2', mount)
             sk = sketch(f'SK_MOUNT_{suffix}_{name}_HEX', plane('TBD_frame_T - TBD_so_pocket_D'), ring(p['hexes'][name]))
             extrude(f'MOUNT_{suffix}_{name}_HEX', sk,
-                    'v4_plate_top_Z - TBD_plate_T - (TBD_frame_T - TBD_so_pocket_D) + 0.1', 'cut', mount)
+                    'plate_top_Z - TBD_plate_T - (TBD_frame_T - TBD_so_pocket_D) + 0.1', 'cut', mount)
         for name, (anchor, axis, half, head) in ((n, v[1:]) for n, v in CASE_ANCHORS.items() if v[0] == suffix):
             expr = (f'CAND_{name}_X', f'CAND_{name}_Y')
             half_expr = 'TBD_case_adjust' if half == CASE_ADJUST else str(half)
             stadium(f'MOUNT_{suffix}_{name}_SLOT', expr, axis, half_expr, 'TBD_case_screw_D + TBD_case_screw_clr',
-                    -1.0, 'v4_plate_top_Z - TBD_plate_T + 2', mount)
+                    -1.0, 'plate_top_Z - TBD_plate_T + 2', mount)
             if head:
                 stadium(f'MOUNT_{suffix}_{name}_HEAD', expr, axis, half_expr, 'TBD_case_head_D + TBD_case_head_clr',
                         'TBD_frame_T - TBD_case_head_H',
-                        'v4_plate_top_Z - TBD_plate_T - (TBD_frame_T - TBD_case_head_H) + 0.1', mount)
-        floor = f'v4_plate_top_Z - TBD_upper_plate_T - {MX_PIN_DEPTH_FROM_SEAT} - 0.6'
+                        'plate_top_Z - TBD_plate_T - (TBD_frame_T - TBD_case_head_H) + 0.1', mount)
+        floor = f'plate_top_Z - TBD_upper_plate_T - {MX_PIN_DEPTH_FROM_SEAT} - 0.6'
         for key, pocket in p['reliefs'].items():
             sk = sketch(f'SK_MOUNT_{suffix}_PIN_RELIEF_{key}', plane(floor), ring(pocket.simplify(0.01)))
             extrude(f'MOUNT_{suffix}_PIN_RELIEF_{key}', sk, f'TBD_frame_T + 0.05 - ({floor})', 'cut', mount)

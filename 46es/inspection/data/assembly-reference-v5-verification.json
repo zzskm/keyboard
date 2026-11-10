@@ -35,10 +35,10 @@
   "ok": true,
   "inputs": {
     "inspection/scripts/verify_assembly_reference_v5.py": "ast:c9c125c2dcafb13daf3c10806e85994e1aed017aebedb24c6f204c4beab31ba4",
-    "model/46es_assembly_review_v5.sc": "fd08b8fa84e6fc5607ba2b4277d174621b01d21c94a1454ef03d112af5f24f21",
-    "model/assembly_reference_v5.json": "9f8d444d2a498f71916676b765e7967a8e1302831a18cfc68914fe38ab48c56b",
-    "model/46es_mount_seam_v5.sc": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
-    "inspection/data/seam-v5-trial-print-set.json": "06b362426ba8038b09c93dbc3699d13cf505c454520a736e264df72c161269a3"
+    "model/46es_assembly_review_v5.sc": "76a3da2aa00df733e54f595f699db6212d24e02cd4a171ddba279ef5363da652",
+    "model/assembly_reference_v5.json": "22ea00422af853cda931f0ee3ca3d61bdc0443e4dd0c6ebd848d3394705f4fa6",
+    "model/46es_mount_seam_v5.sc": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
+    "inspection/data/seam-v5-trial-print-set.json": "a6d3cb1954c3e22dab8ab0ee4cdadcb53b6e92e1cdb8e23d98e54abff6d85cef"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -102,8 +102,8 @@
       }
     }
   },
-  "model_sha": "fd08b8fa84e6fc5607ba2b4277d174621b01d21c94a1454ef03d112af5f24f21",
-  "source_sha": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
+  "model_sha": "76a3da2aa00df733e54f595f699db6212d24e02cd4a171ddba279ef5363da652",
+  "source_sha": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 19.000000000000007,
   "cover_above_rim_mm": 5.0,

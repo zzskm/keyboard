@@ -1,18 +1,19 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:d6e7a3a7cc40a5ade6ef17654a220595a5c8444f44b5bd3e20bfdd0a6a36351c",
+  "inspection/scripts/verify_seam_v5.py": "ast:1d548862d5b033c42921d81ad7ff12239155e5247e52004fc052fc5c7d155c62",
   "tools/parts_v5.py": "ast:6cbed26e08be7fc00cba1b4dc7406dbbf0a97354b017593260f853c2ac86ba7f",
-  "model/46es_mount_seam_v5.sc": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
-  "model/ctrl_trials_v5.sc": "c51ae88b45ee4c2387a26faefaf7622f521afa18d74ad00867ccf0812f63bdaf",
-  "model/parameters_seam_v5.csv": "c06ced136480d6452396a95ffdfb605a0b8f2f69b465831c3818a43c58430efa",
-  "inspection/data/seam-v5-print-set.json": "f2b9567ac64d5a223630333801680b57cb607be3297fdc22280d7b94352bd539",
+  "model/46es_mount_seam_v5.sc": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
+  "model/ctrl_trials_v5.sc": "a8884127ff14a8f2b53f9d92de22e8d91be9683dc85c6f59737045721463f61d",
+  "model/parameters_seam_v5.csv": "3fe40cec28dd18f089b8b3f95dba8701f043d490eb3d8e4168a8ca5fbe31cd7d",
+  "inspection/data/seam-v5-baseline.json": "e9adda8b967df2d8390a534876be56e9ab7cd0ae098865ec5c3606c028d69114",
+  "inspection/data/seam-v5-print-set.json": "484811d98e87e97cd3227d06b1a9ddd11d63a2b493d733a528fa4c0f5826ceca",
   "inspection/data/seam-v5-mjf-thin-wall.json": "0ca9db04442c2fb26c7a252f267eb2d3fa87f45de12ffc763ac25384e99860b9",
-  "inspection/data/seam-v5-trial-print-set.json": "06b362426ba8038b09c93dbc3699d13cf505c454520a736e264df72c161269a3"
+  "inspection/data/seam-v5-trial-print-set.json": "a6d3cb1954c3e22dab8ab0ee4cdadcb53b6e92e1cdb8e23d98e54abff6d85cef"
  },
- "v4_sha": "606d1bd91b191c67b2abdc4c054704c905bcb63d6ad89c783263a3cd4f018d2b",
- "v5_sha": "d2c7b56d89df7f4808d817b04d7eb1a3e1fe45b57ad82024491a0fd4930ce308",
- "flat_Z18_sha": "66a2ec87687415a81eec83dbb7ff6d15b1d810af2780a78cc6d699d214a3e43d",
+ "v5_sha": "f41b942efef0dcb983dac9bc7c21af17db6eab28ac7017e10789607efe3b699f",
+ "baseline_sha": "e9adda8b967df2d8390a534876be56e9ab7cd0ae098865ec5c3606c028d69114",
+ "baseline_bodies": 67,
  "print_set": [
   {
    "file": "46es_v5_plate_L",
@@ -107,29 +108,9 @@
   }
  ],
  "bodies": 65,
- "untouched_bodies_exact": 45,
- "timeline_active": 395,
- "derived_same_volume_box": [
-  "SEAM_COUPON_L_V4",
-  "SEAM_COUPON_R_V4"
- ],
- "plate_delta_from_flat_Z18": {
-  "PLATE_L_SPLIT_V1": {
-   "delta_mm3": 390.321,
-   "phase2_mm3": 138.321,
-   "feet": 2,
-   "foot_mm3": 126.0
-  },
-  "PLATE_R_SPLIT_V1": {
-   "delta_mm3": 126.0,
-   "phase2_mm3": 0.0,
-   "feet": 1,
-   "foot_mm3": 126.0
-  }
- },
- "plate_L_delta_from_flat_Z18_mm3": 390.321,
+ "timeline_active": 370,
  "rear_foot_bottom_Z": 0.5,
- "changed": [
+ "generated": [
   "COVER_L_DRAFT_TBD",
   "COVER_R_DRAFT_TBD",
   "COVER_T_DRAFT_TBD",
@@ -140,66 +121,18 @@
   "MOUNT_R_PAIR_V3",
   "PLATE_L_SPLIT_V1",
   "PLATE_R_SPLIT_V1",
+  "REF_LEGMAG_L_COVER",
+  "REF_LEGMAG_L_PLATE",
+  "REF_LEGMAG_R_COVER",
+  "REF_LEGMAG_R_PLATE",
   "REF_M2_PLATE_1",
   "REF_M2_PLATE_1_NUT",
   "REF_M2_PLATE_2",
   "REF_M2_PLATE_2_NUT"
  ],
- "added": [
-  "REF_LEGMAG_L_COVER",
-  "REF_LEGMAG_L_PLATE",
-  "REF_LEGMAG_R_COVER",
-  "REF_LEGMAG_R_PLATE"
- ],
- "timeline": 599,
- "sketches": 109,
+ "timeline": 377,
+ "sketches": 84,
  "params": 235,
- "new_params": [
-  "ctrl5_M2_1_X",
-  "ctrl5_M2_1_Y",
-  "ctrl5_M2_2_X",
-  "ctrl5_M2_2_Y",
-  "ctrl5_clr_z",
-  "ctrl5_end_d",
-  "ctrl5_hook_e",
-  "ctrl5_stop_gap",
-  "v5_cover_silhouette_cell",
-  "v5_cover_silhouette_close_r",
-  "v5_cover_silhouette_fill_L",
-  "v5_cover_silhouette_min_rail",
-  "v5_cover_silhouette_res",
-  "v5_cover_top_Z",
-  "v5_cover_top_above_rim",
-  "v5_key_margin",
-  "v5_keycap_bottom_above_seat",
-  "v5_keycap_bottom_rest_Z",
-  "v5_legmag_L_X",
-  "v5_legmag_L_Y",
-  "v5_legmag_R_X",
-  "v5_legmag_R_Y",
-  "v5_legmag_plate_clr",
-  "v5_legmag_skin",
-  "v5_legmag_skin_min",
-  "v5_legpad_L",
-  "v5_lip_relief_clr",
-  "v5_rear_boss_1_X",
-  "v5_rear_boss_2_X",
-  "v5_rear_boss_3_X",
-  "v5_rear_boss_4_X",
-  "v5_rear_boss_D",
-  "v5_rear_boss_top_Z",
-  "v5_rear_foot_1_X",
-  "v5_rear_foot_2_X",
-  "v5_rear_foot_3_X",
-  "v5_rear_foot_L",
-  "v5_rear_foot_gap",
-  "v5_rim_ref_Z",
-  "v5_skirt_cover_H"
- ],
- "changed_params": {
-  "TBD_cover_T": "v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)",
-  "TBD_upper_plate_T": "1.7 mm"
- },
  "cover_Z": [
   11.5,
   19.0
@@ -209,22 +142,16 @@
   "COVER_L_DRAFT_TBD": {
    "top_Z": 19.0,
    "top_area_mm2": 2446.169,
-   "flat_top_area_mm2": 2511.215,
-   "window_widened_mm2": 65.046,
    "volume_mm3": 15187.38
   },
   "COVER_T_DRAFT_TBD": {
    "top_Z": 19.0,
    "top_area_mm2": 2294.74,
-   "flat_top_area_mm2": 2359.906,
-   "window_widened_mm2": 65.166,
    "volume_mm3": 14030.884
   },
   "COVER_R_DRAFT_TBD": {
    "top_Z": 19.0,
    "top_area_mm2": 2461.08,
-   "flat_top_area_mm2": 2600.172,
-   "window_widened_mm2": 139.092,
    "volume_mm3": 15377.575
   }
  },
@@ -530,58 +457,6 @@
    "layered_volume_mm3": 2190.342
   }
  },
- "removed": [
-  "CTRL_GATE_SPLIT_V1",
-  "REF_HOUSING_WILMORE_NOT_PSD60",
-  "REF_M2_GATE",
-  "REF_M2_GATE_NUT",
-  "REF_SW_ASSUMED_01",
-  "REF_SW_ASSUMED_01 (10)",
-  "REF_SW_ASSUMED_01 (11)",
-  "REF_SW_ASSUMED_01 (12)",
-  "REF_SW_ASSUMED_01 (13)",
-  "REF_SW_ASSUMED_01 (14)",
-  "REF_SW_ASSUMED_01 (15)",
-  "REF_SW_ASSUMED_01 (16)",
-  "REF_SW_ASSUMED_01 (17)",
-  "REF_SW_ASSUMED_01 (18)",
-  "REF_SW_ASSUMED_01 (19)",
-  "REF_SW_ASSUMED_01 (2)",
-  "REF_SW_ASSUMED_01 (20)",
-  "REF_SW_ASSUMED_01 (21)",
-  "REF_SW_ASSUMED_01 (22)",
-  "REF_SW_ASSUMED_01 (23)",
-  "REF_SW_ASSUMED_01 (24)",
-  "REF_SW_ASSUMED_01 (25)",
-  "REF_SW_ASSUMED_01 (26)",
-  "REF_SW_ASSUMED_01 (27)",
-  "REF_SW_ASSUMED_01 (28)",
-  "REF_SW_ASSUMED_01 (29)",
-  "REF_SW_ASSUMED_01 (3)",
-  "REF_SW_ASSUMED_01 (30)",
-  "REF_SW_ASSUMED_01 (31)",
-  "REF_SW_ASSUMED_01 (32)",
-  "REF_SW_ASSUMED_01 (33)",
-  "REF_SW_ASSUMED_01 (34)",
-  "REF_SW_ASSUMED_01 (35)",
-  "REF_SW_ASSUMED_01 (36)",
-  "REF_SW_ASSUMED_01 (37)",
-  "REF_SW_ASSUMED_01 (38)",
-  "REF_SW_ASSUMED_01 (39)",
-  "REF_SW_ASSUMED_01 (4)",
-  "REF_SW_ASSUMED_01 (40)",
-  "REF_SW_ASSUMED_01 (41)",
-  "REF_SW_ASSUMED_01 (42)",
-  "REF_SW_ASSUMED_01 (43)",
-  "REF_SW_ASSUMED_01 (44)",
-  "REF_SW_ASSUMED_01 (45)",
-  "REF_SW_ASSUMED_01 (46)",
-  "REF_SW_ASSUMED_01 (5)",
-  "REF_SW_ASSUMED_01 (6)",
-  "REF_SW_ASSUMED_01 (7)",
-  "REF_SW_ASSUMED_01 (8)",
-  "REF_SW_ASSUMED_01 (9)"
- ],
  "leg_magnets": {
   "L": {
    "center": [
@@ -617,12 +492,12 @@
   }
  },
  "clearance": {
-  "changed_vs_unchanged": {
+  "generated_vs_rest": {
    "overlaps": 0,
    "contacts": 43,
    "unchecked": 0
   },
-  "among_changed": {
+  "among_generated": {
    "overlaps": 0,
    "contacts": 21,
    "unchecked": 0
@@ -669,8 +544,6 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "volume_cm3": 15.19,
-   "v4_volume_cm3": 5.78,
-   "flat_Z18_volume_cm3": 13.07,
    "wall_min_mm": 1.098,
    "stl_volume_rel_err": 6e-06
   },
@@ -678,8 +551,6 @@
    "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
    "volume_cm3": 14.03,
-   "v4_volume_cm3": 5.21,
-   "flat_Z18_volume_cm3": 12.06,
    "wall_min_mm": 1.059,
    "stl_volume_rel_err": 3e-06
   },
@@ -687,8 +558,6 @@
    "file": "46es_v5_cover_R",
    "material": "8001 레진 투명",
    "volume_cm3": 15.38,
-   "v4_volume_cm3": 6.17,
-   "flat_Z18_volume_cm3": 13.61,
    "wall_min_mm": 1.098,
    "stl_volume_rel_err": 5e-06
   },
@@ -696,8 +565,6 @@
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
    "volume_cm3": 38.51,
-   "v4_volume_cm3": 38.12,
-   "flat_Z18_volume_cm3": 38.12,
    "wall_min_mm": 1.0,
    "stl_volume_rel_err": 3.6e-05
   },
@@ -705,8 +572,6 @@
    "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
    "volume_cm3": 40.76,
-   "v4_volume_cm3": 40.64,
-   "flat_Z18_volume_cm3": 40.64,
    "wall_min_mm": 1.047,
    "stl_volume_rel_err": 1.9e-05
   }

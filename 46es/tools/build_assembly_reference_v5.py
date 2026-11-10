@@ -95,6 +95,12 @@ def build():
             return {k: replace(v, substitutions) for k, v in obj.items()}
         return obj
 
+    # The housing features of the base, in timeline order (looked up by name: the base drops unused sketches).
+    housing = ('SK40_HOUSING_PROFILE_REF_WILMORE', 'HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD',
+               'SK41_HOUSING_POSTS_CAND', 'HOUSING_POSTS_CAND', 'HOUSING_USB_CUT_TBD')
+    first = next(i for i, f in enumerate(doc['features']) if f['name'] == housing[0])
+    assert tuple(f['name'] for f in doc['features'][first:first + len(housing)]) == housing
+    assert doc['features'][0]['name'] == 'SK00_CASE_ENVELOPE_TBD'
     # Clone the shared cavity sketch: editing SK00 would resize production bodies.
     cavity = copy.deepcopy(doc['features'][0])
     cavity['id'] = doc['next_id']; doc['next_id'] += 1
@@ -121,14 +127,14 @@ def build():
     cavity = isolate(cavity)
     housing_name = 'REF_HOUSING_PSD60_MEASURED'
     names = {'REF_HOUSING_WILMORE_NOT_PSD60': housing_name}
-    for i in range(5, 11):
+    for i in range(first, first + len(housing)):
         doc['features'][i] = replace(isolate(doc['features'][i]), names)
         doc['features'][i]['suppressed'] = False      # the production model suppresses the reference housing
-    doc['features'][5]['name'] = 'SK40_HOUSING_PROFILE_PSD60_REF'
-    doc['features'][6]['name'] = 'HOUSING_OUTER_PSD60_NOMINAL_REF'
-    doc['features'][7]['sketch'] = cavity['id']
+    doc['features'][first]['name'] = 'SK40_HOUSING_PROFILE_PSD60_REF'
+    doc['features'][first + 1]['name'] = 'HOUSING_OUTER_PSD60_NOMINAL_REF'
+    doc['features'][first + 2]['sketch'] = cavity['id']
     # Resolve the cavity against its own measured inner envelope.
-    doc['features'].insert(7, cavity)
+    doc['features'].insert(first + 2, cavity)
     doc['visibility'] = replace(doc['visibility'], names)
     doc['appearances'] = replace(doc['appearances'], names)
     for feature in doc['features']:

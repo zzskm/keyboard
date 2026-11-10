@@ -138,11 +138,11 @@ REF_ctrl_pcb_T,mm,1.6 mm,1.6,[자료값] Pro Micro PCB 두께,false
 v5_rim_ref_Z,mm,14,14,Approximate PSD60 rim height for comparison only,false
 v5_legmag_skin_min,mm,1.3,1.3,Minimum resin skin above the leg magnet pocket,false
 v5_keycap_bottom_above_seat,mm,6.0,6,"[v5 2차 r2 근거 2026-11-06] 쉴 때 키캡 스커트 밑면 − 스위치 착좌면. r2: 2T upper plate 위에서 키캡을 끝까지 누르면 유격이 거의 없다 → 바닥에서 착좌 + 약 2, 쉴 때 + 약 6. r2 실측(upper plate 윗면 → 스커트 밑면 g)으로 확정: 2 + g",false
-v5_keycap_bottom_rest_Z,mm,v4_plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat,17.3,[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3,false
+v5_keycap_bottom_rest_Z,mm,plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat,17.3,[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3,false
 v5_skirt_cover_H,mm,1.7,1.7,"[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. 대안 1.2(턱 Z 18.5) / 0.7(Z 18)",false
 v5_cover_top_Z,mm,v5_keycap_bottom_rest_Z + v5_skirt_cover_H,19,Single flat cover top at Z 19,false
 v5_cover_top_above_rim,mm,v5_cover_top_Z - v5_rim_ref_Z,5,Flat cover top minus approximate rim height,false
-v5_legmag_skin,mm,v5_cover_top_Z - v4_plate_top_Z - TBD_magnet_T - TBD_magnet_clr,3.9,Actual material over the lower leg magnet pocket,false
+v5_legmag_skin,mm,v5_cover_top_Z - plate_top_Z - TBD_magnet_T - TBD_magnet_clr,3.9,Actual material over the lower leg magnet pocket,false
 TBD_cover_T,mm,v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T),6,Flat cover thickness from the plate top to Z 19,false
 TBD_cover_lip_H,mm,1 mm,1,[설계 미확정] 커버 테두리 립 높이 = plate 가장자리 단차(rabbet) 깊이,false
 TBD_cover_lip_clr,mm,0.3 mm,0.3,[미확정] 커버 립 ↔ plate 단차 안쪽 여유. M18,false
@@ -194,7 +194,7 @@ split_gate_cap_H,mm,3.2 mm,3.2,"[candidate] nut pocket floor7.8, bottom bearing1
 split_gate_nut_Z,mm,split_gate_cap_Z+1.4 mm,7.8,"[검토 후보] nut 바닥7.8, 금속너트 AF4/H1.6, 포켓AF4.4 깊이1.8, 아래 받침1.4.",false
 side_pair_bridge_W,mm,8 mm,8,[review v3] L/R pair connector width; existing mounting holes remain unchanged,false
 side_pair_bridge_end_setback,mm,3.7 mm,3.7,[review v3] Distance from case-hole axes to connector ends; clears existing head slots,false
-v4_plate_top_Z,mm,TBD_frame_T + TBD_standoff_H + TBD_plate_T,13,[v4 2026-11-05] plate 윗면 Z(13). 이음·자석 기준,false
+plate_top_Z,mm,TBD_frame_T + TBD_standoff_H + TBD_plate_T,13,[v4 2026-11-05] plate 윗면 Z(13). 이음·자석 기준,false
 seam_tab_T,mm,2.4 mm,2.4,[v4 2026-11-05] 앞 이음 반턱: L tab 두께 = R 포켓 깊이(plate 윗면에서). R 바닥 남은 두께 = TBD_plate_T - seam_tab_T. MJF에서는 층 배수 제약 없음,false
 seam_M2_X,mm,139.5 mm,139.5,[v4 MJF 2026-11-05] 앞 이음 M2 중심 X. 139.8→139.5: tab 끝 카운터보어 벽 0.9→1.2(MJF 최소 벽 1.0). 너트 포켓은 이음면 쪽으로 열었다(SEAM_FRONT_NUT_OPEN_R_MJF),false
 seam_M2_Y,mm,6.6 mm,6.6,[v4 2026-11-05] 앞 이음 M2 중심 Y(tab 폭 3.0~10.2 가운데),false

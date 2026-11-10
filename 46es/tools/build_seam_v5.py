@@ -1,12 +1,17 @@
-"""Build the v5 production CAD from the fixed v4 baseline.
+"""Build the v5 production CAD from the v5 base timeline (model/seam_v5_base.json).
 
 The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
 three-piece outline, keycap clearance, and magnet seats, with one flat face
 per piece. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
-snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The v4
-frame/mask/pair chain, the v4 bracket/gate chain and the
-reference-only switch envelopes and Wilmore housing are suppressed in the production model.
+snap, no gate). The plates get three rear feet over the PSD60 rear-wall bosses (REAR_FEET). The base holds the
+plates, spine, covers, seam coupons and reference hardware; its reference-only switch envelopes and Wilmore housing
+stay suppressed (the review model re-enables the housing).
+
+model/seam_v5_base.json is source, one parameter or feature per line. It was cut from the v4 document on 2026-11-10
+(suppressed v4 mount/bracket chains, orphan sketches and dimensions dropped, the fixed v5 edits folded in, every
+body's BRep unchanged); the v4 file is in git history (tag 46es-pre-cleanup-2026-11-09 and earlier). Parts of it
+move into generator code step by step when the shape stays identical (plan 4-5).
 
 Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
@@ -40,7 +45,7 @@ from cad_eval_cache import seed as seed_evaluation
 from export_print_v5 import prebuild, seal_prebuilt
 from common import ROOT, CLI, sha, fingerprints, write_json
 
-SOURCE = ROOT / 'model/baselines/seam_v4.sc'
+BASE = ROOT / 'model/seam_v5_base.json'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
 # Order-1 snap trial brackets A/C (tools/ctrl_v5.py TRIALS): free bodies without plate cuts, so they live in a small
 # parameter-only model of their own (plan 3-3, user 2026-11-10) instead of the production timeline.
@@ -77,26 +82,12 @@ REAR_FOOT_GAP = 0.5
 REAR_FOOT_OVERLAP = 0.5            # foot top reaches into the flange
 REAR_FOOT_CHORD_MARGIN = 2.0       # the boss chord under the foot stays whole for this photo error (each side)
 REAR_FLANGES = ('PLATE_FLANGE_L_REAR', 'PLATE_FLANGE_R_REAR_A', 'PLATE_FLANGE_R_REAR_B')
-PLATE_REAR_Y = 94.967              # rear plate edge (flange outer face), as in the v4 flange features
-# v4 bracket, gate, their plate cuts and reference screws; replaced by tools/ctrl_v5.py (2026-11-09).
-LEGACY_CTRL = ('CTRL_SPLIT_ROOF_V1', 'CTRL_RAIL_F_SPLIT_V1', 'CTRL_RAIL_B_SPLIT_V1', 'CTRL_STOP_SPLIT_V1',
-               'CTRL_LIP_F_LOW_SPLIT_V1', 'CTRL_LIP_F_UP_SPLIT_V1', 'CTRL_LIP_B_LOW_SPLIT_V1', 'CTRL_LIP_B_UP_SPLIT_V1',
-               *(f'CTRL_MOUNT_{i}_{part}' for i in (1, 2) for part in ('BOSS', 'CLEAR', 'HEAD', 'NUT_SK', 'NUT_POCKET')),
-               'CTRL_GATE_MOUNT_EAR', 'CTRL_GATE_CAP', 'CTRL_GATE_STOP_FINGER', 'CTRL_GATE_M2_CLEAR', 'SK_CTRL_GATE_NUT',
-               'CTRL_GATE_NUT_POCKET', 'CTRL_ROOF_WIRING_WINDOW', 'PLATE_CTRL_GATE_CAP_RELIEF_V1',
-               'PLATE_CTRL_GATE_FINGER_RELIEF_V1')
-LEGACY_CTRL_REFS = ('REF_M2_PLATE_1', 'REF_M2_PLATE_2', 'REF_M2_GATE')   # feature-name prefixes
-
-# v4 bodies that only existed to carve the old mounts; every feature touching them is suppressed.
-LEGACY_MOUNT_BODIES = ('MOUNT_R_SPLIT_V1', 'MOUNT_L_SPLIT_V1', 'MOUNT_H01_SO2_MIN_V2', 'MOUNT_H02_SO3_MIN_V2',
-                       'MOUNT_H03_SO6_MIN_V2', 'MOUNT_H04_SO4_MIN_V2', 'MOUNT_L_PAIR_V3', 'MOUNT_R_PAIR_V3',
-                       'MASK_MOUNT_')
-# Reference-only solids (not printed, not used by the production checks). The review model
+PLATE_REAR_Y = 94.967              # rear plate edge (flange outer face), as in the base flange features
+# Reference-only solids of the base, suppressed in production. The review model
 # (tools/build_assembly_reference_v5.py) re-enables the housing features with measured PSD60 values.
-REFERENCE_FEATURES = {7: 'HOUSING_OUTER_REF_WIL', 8: 'HOUSING_CAVITY_TBD', 10: 'HOUSING_POSTS_CAND',
-                      11: 'HOUSING_USB_CUT_TBD', 242: 'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED',
-                      243: 'REF_SWITCH_LATCH_BOUND_ASSUMED', 244: 'REF_SWITCH_UPPER_BOUND_ASSUMED'}
-REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01', 'CTRL_GATE_SPLIT_V1', 'REF_M2_GATE', 'REF_M2_GATE_NUT'} | {f'REF_SW_ASSUMED_01 ({i})' for i in range(2, 47)}
+REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_POSTS_CAND', 'HOUSING_USB_CUT_TBD',
+                      'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED', 'REF_SWITCH_LATCH_BOUND_ASSUMED',
+                      'REF_SWITCH_UPPER_BOUND_ASSUMED')
 
 
 # ------------------------------------------------------------------------------------ build record
@@ -104,7 +95,7 @@ REMOVED_BODIES = {'REF_HOUSING_WILMORE_NOT_PSD60', 'REF_SW_ASSUMED_01', 'CTRL_GA
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
 BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
-                'firmware/46es_kbfirmware.json', 'model/baselines/seam_v4.sc')
+                'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
 BUILD_RECORD = ROOT / 'model/seam_v5_build.json'
 
 
@@ -389,8 +380,12 @@ def cover_windows():
 
 
 def read_source():
-    with zipfile.ZipFile(SOURCE) as archive:
-        return json.loads(archive.read('document.json')), archive.read('container.json')
+    """The base document and its container record; every feature other than REFERENCE_FEATURES evaluates."""
+    base = json.loads(BASE.read_text(encoding='utf-8'))
+    doc = base['document']
+    off = sorted(f['name'] for f in doc['features'] if f['suppressed'])
+    assert off == sorted(REFERENCE_FEATURES), off
+    return doc, json.dumps(base['container'], separators=(',', ':'))
 
 
 def helpers(doc):
@@ -441,38 +436,6 @@ def evaluate(seed, pending, after=()):
     return evaluated, elapsed
 
 
-def strip_legacy(doc):
-    """Suppress the v4 mount chain and the reference-only solids; returns the suppressed feature names."""
-    def legacy(body):
-        return isinstance(body, str) and body.startswith(LEGACY_MOUNT_BODIES)
-
-    suppressed = []
-    for f in doc['features']:
-        if f.get('suppressed'):
-            continue
-        refs = set()
-        for key in ('targets', 'participants', 'body_names', 'bodies', 'tools'):
-            if isinstance(f.get(key), list):
-                refs |= set(f[key])
-        refs |= {f[key] for key in ('target', 'body') if isinstance(f.get(key), str)}
-        if not any(legacy(b) for b in refs):
-            continue
-        others = {b for b in refs if not legacy(b)}
-        if others:
-            # shared feature: keep it for the other bodies (the ring/lap hardware removal)
-            assert f['type'] == 'remove', (f['id'], f['name'], others)
-            f['bodies'] = [b for b in f['bodies'] if not legacy(b)]
-            continue
-        f['suppressed'] = True
-        suppressed.append(f['name'])
-    by_id = {f['id']: f for f in doc['features']}
-    for fid, name in REFERENCE_FEATURES.items():
-        assert by_id[fid]['name'] == name, (fid, by_id[fid]['name'])
-        by_id[fid]['suppressed'] = True
-        suppressed.append(name)
-    return suppressed
-
-
 def check_mounts(evaluated, mounts):
     """Every mount is one closed body whose volume and box follow the drawing and the parameters."""
     bodies = {b['name']: b for b in evaluated['bodies']}
@@ -481,7 +444,7 @@ def check_mounts(evaluated, mounts):
         index = name[2]
         evaluated_anchor = (values[f'REF_SO_dX{index}'] - values['TBD_pcb0_dx'], values[f'REF_SO_dY{index}'] - values['TBD_pcb0_dy'])
         assert all(abs(a - b) < 1e-6 for a, b in zip(anchor, evaluated_anchor)), (name, anchor, evaluated_anchor)
-    assert abs(values['v4_plate_top_Z'] - values['TBD_plate_T'] - PAD_TOP_Z) < 1e-9
+    assert abs(values['plate_top_Z'] - values['TBD_plate_T'] - PAD_TOP_Z) < 1e-9
     assert abs(values['split_spine_bottom_Z'] - values['split_support_gap'] - SHIM_TOP_Z) < 1e-9
     assert abs(values['split_flange_W'] - 2.0) < 1e-9 and abs(values['split_flange_H'] - 3.0) < 1e-9
     assert abs(-values['TBD_pcb0_dx'] + values['TBD_plate_gap'] + values['split_flange_W'] - PLATE_FLANGE_INNER[0]) < 1e-9
@@ -502,7 +465,7 @@ def check_mounts(evaluated, mounts):
 def rear_foot_plan(doc):
     """Foot X spans on the rear flanges and how much photo error each boss estimate tolerates.
 
-    The flange spans come from the v4 flange features themselves, so a moved flange fails here instead of
+    The flange spans come from the base flange features themselves, so a moved flange fails here instead of
     leaving a foot in the air."""
     flanges = {}
     for f in doc['features']:
@@ -536,7 +499,7 @@ def check_rear_feet(evaluated, plan):
     bodies = {b['name']: b for b in evaluated['bodies']}
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     assert abs(values['TBD_case_in_D'] - values['TBD_pcb0_dy'] - (95.934 - 0.667)) < 1e-6
-    assert abs(values['v4_plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H'] - 5.0) < 1e-9
+    assert abs(values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H'] - 5.0) < 1e-9
     bottom = values['v5_rear_boss_top_Z'] + values['v5_rear_foot_gap']
     for plate in {p['plate'] for p in plan.values()}:
         b = bodies[plate]
@@ -565,22 +528,9 @@ def rear_foot_clearance(plan, mounts, bodies, minimum=1.0):
 
 def rear_foot_volume(values):
     """Material one foot adds below the flange bottom (Z 5)."""
-    flange_bottom = values['v4_plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
+    flange_bottom = values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
     return values['v5_rear_foot_L'] * values['split_flange_W'] * (
         flange_bottom - values['v5_rear_boss_top_Z'] - values['v5_rear_foot_gap'])
-
-
-def strip_ctrl(doc):
-    """Suppress the v4 controller bracket, gate, plate gate reliefs and their reference screws."""
-    names = []
-    for f in doc['features']:
-        name = f.get('name', '')
-        if name in LEGACY_CTRL or name.startswith(LEGACY_CTRL_REFS):
-            f['suppressed'] = True
-            names.append(name)
-    missing = set(LEGACY_CTRL) - set(names)
-    assert not missing, missing
-    return names
 
 
 def ctrl_params():
@@ -656,7 +606,7 @@ def build(probe=False):
     new_param('v5_keycap_bottom_above_seat', 6.0, '[v5 2차 r2 근거 2026-11-06] 쉴 때 키캡 스커트 밑면 − 스위치 착좌면. r2: 2T upper plate 위에서 '
               '키캡을 끝까지 누르면 유격이 거의 없다 → 바닥에서 착좌 + 약 2, 쉴 때 + 약 6. r2 실측(upper plate 윗면 → 스커트 밑면 g)으로 '
               '확정: 2 + g', before='TBD_cover_T')
-    new_param('v5_keycap_bottom_rest_Z', 'v4_plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat',
+    new_param('v5_keycap_bottom_rest_Z', 'plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat',
               '[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3', before='TBD_cover_T')
     # Z 19 kept (user 2026-11-10); the lower candidates 1.2 (Z 18.5) / 0.7 (Z 18) are tried on codex/46es-cover-plate-trial.
     new_param('v5_skirt_cover_H', 1.7, '[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
@@ -665,29 +615,9 @@ def build(probe=False):
               'Single flat cover top at Z 19', before='TBD_cover_T')
     new_param('v5_cover_top_above_rim', 'v5_cover_top_Z - v5_rim_ref_Z',
               'Flat cover top minus approximate rim height', before='TBD_cover_T')
-    new_param('v5_legmag_skin', 'v5_cover_top_Z - v4_plate_top_Z - TBD_magnet_T - TBD_magnet_clr',
+    new_param('v5_legmag_skin', 'v5_cover_top_Z - plate_top_Z - TBD_magnet_T - TBD_magnet_clr',
               'Actual material over the lower leg magnet pocket', before='TBD_cover_T')
-    cover_t = params['TBD_cover_T']
-    cover_t['expr'] = 'v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T)'
-    cover_t['comment'] = 'Flat cover thickness from the plate top to Z 19'
-    # --- 4. upper plate layer ------------------------------------------------------------------------
-    upper = params['TBD_upper_plate_T']
-    assert upper['expr'] == '2 mm', upper['expr']
-    upper['expr'] = '1.7 mm'
-    upper['comment'] = ('[v5 사용자 결정 2026-11-06] upper plate 층 두께 1.7(v4: 2 = r2 P3 2T). r2는 키캡을 끼우면 유격이 거의 없지만 '
-                        '작동한다(사용자 확인) → 출력 공차를 감수하지 않도록 0.3 얇게. 스위치 착좌 Z 11 → 11.3, 14.0 홀 층 1.5 유지, '
-                        '아래 릴리프 TBD_sw_notch_H 1.5 → 1.8')
-    # Assumed switch envelopes (v4 features 242-244) were fixed to the v4 seat Z 11; make them follow the seat.
-    # They are suppressed in the production model (strip_legacy) and stay suppressed in the review model.
-    by_id = {f['id']: f for f in doc['features']}
-    seat_shift = '(2 - TBD_upper_plate_T)'
-    for fid, name, key, old, new in [
-            (242, 'REF_SWITCH_LOWER_PINS_BOUND_ASSUMED', 'start_offset', '-3.3', f'-3.3 + {seat_shift}'),
-            (243, 'REF_SWITCH_LATCH_BOUND_ASSUMED', 'start_offset', None, seat_shift),
-            (244, 'REF_SWITCH_UPPER_BOUND_ASSUMED', 'start_offset', '-2', '-TBD_upper_plate_T')]:
-        f = by_id[fid]
-        assert f['name'] == name and f['extent'].get(key) == old, (name, f['extent'])
-        f['extent'][key] = new
+    # TBD_cover_T (cover top at v5_cover_top_Z) and TBD_upper_plate_T 1.7 (2026-11-06) are set in the base.
     # --- 3. key margin (documentation parameter; sketch rectangles are fixed numbers) -----------
     new_param('v5_key_margin', KEY_MARGIN, '[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. '
               'SK35_COVER_SILHOUETTE_V5_* 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)')
@@ -725,23 +655,23 @@ def build(probe=False):
         X, Y = f'v5_legmag_{s}_X', f'v5_legmag_{s}_Y'
         # plate: fill the rabbet under the leg tip (local support), then the pocket
         feature('box', f'PLATE_LEGPAD_{s}_V5', corner=[f'{X} - v5_legpad_L/2', front_plate,
-                                                      'v4_plate_top_Z - TBD_cover_lip_H - 0.05'],
+                                                      'plate_top_Z - TBD_cover_lip_H - 0.05'],
                 length='v5_legpad_L', width='TBD_cover_wall + TBD_cover_lip_clr + 0.05',
                 height='TBD_cover_lip_H + 0.05', operation='join', participants=[plate])
         feature('box', f'COVER_LIP_RELIEF_{s}_V5', corner=[f'{X} - v5_legpad_L/2 - v5_lip_relief_clr',
                                                           '-TBD_pcb0_dy + TBD_cover_gap - 1',
-                                                          'v4_plate_top_Z - TBD_cover_lip_H - 0.5'],
+                                                          'plate_top_Z - TBD_cover_lip_H - 0.5'],
                 length='v5_legpad_L + 2*v5_lip_relief_clr', width='TBD_cover_wall + 1.5',
                 height='TBD_cover_lip_H + 0.5', operation='cut', participants=[cover])
-        feature('cylinder', f'COVER_LEGMAG_{s}_V5', axis=[0., 0., 1.], base=[X, Y, 'v4_plate_top_Z - 1'],
+        feature('cylinder', f'COVER_LEGMAG_{s}_V5', axis=[0., 0., 1.], base=[X, Y, 'plate_top_Z - 1'],
                 height='1 + TBD_magnet_T + TBD_magnet_clr', radius='(TBD_magnet_D + 2*TBD_magnet_clr) / 2',
                 operation='cut', participants=[cover])
         feature('cylinder', f'PLATE_LEGMAG_{s}_V5', axis=[0., 0., 1.],
-                base=[X, Y, 'v4_plate_top_Z - TBD_magnet_T - TBD_magnet_clr'],
+                base=[X, Y, 'plate_top_Z - TBD_magnet_T - TBD_magnet_clr'],
                 height='TBD_magnet_T + TBD_magnet_clr + 1', radius='(TBD_magnet_D + 2*v5_legmag_plate_clr) / 2',
                 operation='cut', participants=[plate])
-        for side, z in [('COVER', 'v4_plate_top_Z + TBD_magnet_clr'),
-                        ('PLATE', 'v4_plate_top_Z - TBD_magnet_clr - TBD_magnet_T')]:
+        for side, z in [('COVER', 'plate_top_Z + TBD_magnet_clr'),
+                        ('PLATE', 'plate_top_Z - TBD_magnet_clr - TBD_magnet_T')]:
             name = f'REF_LEGMAG_{s}_{side}'
             feature('cylinder', name, axis=[0., 0., 1.], base=[X, Y, z], height='TBD_magnet_T',
                     radius='TBD_magnet_D / 2', operation='new_body', body_names=[name])
@@ -768,20 +698,17 @@ def build(probe=False):
                 corner=[f'v5_rear_foot_{i}_X - v5_rear_foot_L/2', f'{PLATE_REAR_Y} - split_flange_W',
                         'v5_rear_boss_top_Z + v5_rear_foot_gap'],
                 length='v5_rear_foot_L', width='split_flange_W',
-                height=(f'v4_plate_top_Z - TBD_plate_T - split_flange_H + {REAR_FOOT_OVERLAP}'
+                height=(f'plate_top_Z - TBD_plate_T - split_flange_H + {REAR_FOOT_OVERLAP}'
                         ' - v5_rear_boss_top_Z - v5_rear_foot_gap'),
                 operation='join', participants=[plate])
 
-    # Phase 2 (2026-11-09): the v4 bracket/gate chain is suppressed; tools/ctrl_v5.py builds the snap bracket,
+    # Phase 2 (2026-11-09): tools/ctrl_v5.py builds the snap bracket (the base has no bracket),
     # its two plate screw holes and the reference M2 screws. The order-1 trial variants A/C are built into
     # model/ctrl_trials_v5.sc (trials_document); their keep-out checks run here with the production bracket's.
-    suppressed_ctrl = strip_ctrl(doc)
     for name, expr, comment in ctrl_params():
         new_param(name, expr, comment)
 
-    # Mounts: the v4 frame → split → mask → pair chain is suppressed; the four bodies are
-    # rebuilt under their existing names straight from the CADCraft drawing.
-    suppressed = strip_legacy(doc)
+    # Mounts: the four bodies are built under their order-1 names straight from the CADCraft drawing.
     mounts = mount_profiles()
     emit_mounts(feature, sketch, mounts)
     ctrl_report = dict(production=ctrl_v5.check())
@@ -804,7 +731,6 @@ def build(probe=False):
     seal_prebuilt(TRIALS_OUTPUT, trials_pending)
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     bodies = {b['name']: b for b in evaluated['bodies']}
-    assert not REMOVED_BODIES & set(bodies), REMOVED_BODIES & set(bodies)
     top_z = values['v5_cover_top_Z']
     assert values['v5_legmag_skin'] >= values['v5_legmag_skin_min']
     assert abs((values['TBD_magnet_D'] + 2 * values['TBD_magnet_clr']) / 2 - LEGMAG_POCKET_R) < 1e-9
@@ -817,9 +743,9 @@ def build(probe=False):
     feet_report = check_rear_feet(evaluated, feet)
     feet_report['plan_clearance_mm'] = rear_foot_clearance(feet, mounts, bodies)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
-    info = dict(model=str(pending if probe else OUTPUT), source_sha=sha(SOURCE),
+    info = dict(model=str(pending if probe else OUTPUT), base_sha=sha(BASE),
                 bodies=evaluated['body_count'], timeline=len(evaluated['timeline']), active_features=active,
-                suppressed_legacy=len(suppressed) + len(suppressed_ctrl), run_seconds=round(elapsed, 1),
+                run_seconds=round(elapsed, 1),
                 trials_model=str(trials_pending if probe else TRIALS_OUTPUT), trials_run_seconds=round(trials_elapsed, 1),
                 evaluation_ms=round(sum(f.get('ms', 0) for f in evaluated['timeline'])),
                 cover_top_Z=top_z, cover_T=values['TBD_cover_T'], cover_levels=levels, mounts=mount_report,
@@ -858,7 +784,7 @@ def refresh_record():
 
 
 def trials_document():
-    """Parameter-only copy of the v4 document holding the order-1 snap trials A and C. They are free bodies beside the
+    """Parameter-only copy of the base document holding the order-1 snap trials A and C. They are free bodies beside the
     coupons (no plate cut, no reference screws), so they need the parameters and nothing else."""
     doc, container = read_source()
     doc['features'] = []
@@ -875,7 +801,7 @@ def trials_document():
 def build_ctrl():
     """Fast loop for bracket work (plan 3-2): the production bracket B and the snap trials A/C alone, from a
     parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates.
-    A covers-only build is not offered: the covers come from the v4 timeline (plan 4-5)."""
+    A covers-only build is not offered: the covers come from the base timeline (plan 4-5)."""
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = trials_document()
     doc['name'] = '46es v5 snap brackets B, A, C only - bracket check'
@@ -903,7 +829,7 @@ def build_ctrl():
 
 
 def build_mounts():
-    """Fast loop for mount work: the four mounts alone, from a parameter-only copy of the v4 document."""
+    """Fast loop for mount work: the four mounts alone, from a parameter-only copy of the base document."""
     sys.path.insert(0, str(ROOT / 'inspection/scripts'))
     from mesh_section import read_stl, compare
     CACHE.mkdir(parents=True, exist_ok=True)
@@ -913,8 +839,6 @@ def build_mounts():
     doc['visibility'] = {key: [] for key in doc['visibility']}
     doc['appearances'] = {'bodies': {}}
     doc['name'] = '46es v5 mounts only - drawing check'
-    upper = next(p for p in doc['params'] if p['name'] == 'TBD_upper_plate_T')
-    upper['expr'] = '1.7 mm'                     # the pin relief floor follows the v5 seat
     feature, sketch = helpers(doc)
     mounts = mount_profiles()
     emit_mounts(feature, sketch, mounts)
