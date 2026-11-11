@@ -3,16 +3,16 @@
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:fa43b70a862299fa72e0465d36faaeb7f2a44a7d6021f44f62a9147c9caa9ad6",
   "tools/parts_v5.py": "ast:839720f6bedcab1815303d58dc2dc8c632f4a6606ae74d9b17d691526c492c6c",
-  "model/46es_mount_seam_v5.sc": "7115fefd6eb03f68c6f84c2b59ff71f2a9039dd38cd0a4c20df7672643f812c2",
-  "model/ctrl_trials_v5.sc": "f3d41d945833ceb524885370b49e8a11a60fb85f542d08c792cdeb4d0f256c41",
-  "model/parameters_seam_v5.csv": "7229023e0a4f0b931444ced4cdd62f4b8ed4551f4034bbd7b965b30e2769b8f3",
-  "inspection/data/seam-v5-baseline.json": "8d90fcdd28f30ba6162e431f307f5f326b663dae06824553e7728497f83d7942",
-  "inspection/data/seam-v5-print-set.json": "7aa9f549b604416343f10c1a7d0c9cf5fab34e01dc444a8d923781f5d35f8b61",
+  "model/46es_mount_seam_v5.sc": "08703959f28c237df1fef5ac3a400e705069ecc8ca465cee58a2a8825e73c3fa",
+  "model/ctrl_trials_v5.sc": "528baf8859b957a82e9dcd7fff42068c6682ecaf0174334d91ac87e38adbd301",
+  "model/parameters_seam_v5.csv": "ef85d2167f373848f6e048dd4aca74dda67def37182b287b885f3b07bf9c2104",
+  "inspection/data/seam-v5-baseline.json": "5333e6585123b79bb301fa46d57a32d97dd2093da5ecedcb359c227fcf2fb8ac",
+  "inspection/data/seam-v5-print-set.json": "3cde162ec5cc0159ba2f9cd7585738766f4767d385ac38b15893823c2dc9c7c4",
   "inspection/data/seam-v5-mjf-thin-wall.json": "a4746feff18529134188cb35750cbfbd0725774562eea6bd21dea0a17b0881e4",
-  "inspection/data/seam-v5-trial-print-set.json": "017e6b63a9ff2db66724e3886df2e0d6b11cd69c30f8e7e1ff7628130564a8ac"
+  "inspection/data/seam-v5-trial-print-set.json": "ef566d76b07732ac4cbd72a47c8134fc82a535e1c294a25111012744a35d1f59"
  },
- "v5_sha": "7115fefd6eb03f68c6f84c2b59ff71f2a9039dd38cd0a4c20df7672643f812c2",
- "baseline_sha": "8d90fcdd28f30ba6162e431f307f5f326b663dae06824553e7728497f83d7942",
+ "v5_sha": "08703959f28c237df1fef5ac3a400e705069ecc8ca465cee58a2a8825e73c3fa",
+ "baseline_sha": "5333e6585123b79bb301fa46d57a32d97dd2093da5ecedcb359c227fcf2fb8ac",
  "baseline_bodies": 76,
  "print_set": [
   {
@@ -145,7 +145,7 @@
  ],
  "timeline": 352,
  "sketches": 78,
- "params": 245,
+ "params": 244,
  "cover_Z": [
   11.5,
   19.0

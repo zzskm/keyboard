@@ -297,7 +297,6 @@
    {"comment":"[candidate] 0.15..0.3 mm upper butt clearance","expr":"0.2 mm","model":false,"name":"split_mount_lap_gap","unit":"mm"},
    {"comment":"[candidate] H02 rear support; do not move over case screw","expr":"56 mm","model":false,"name":"split_support_Y","unit":"mm"},
    {"comment":"[assembly target] 0..0.1 mm spine bottom to Rear frame top after shim film; not as-printed accuracy","expr":"0.05 mm","model":false,"name":"split_support_gap","unit":"mm"},
-   {"comment":"[candidate] mount support footprint6x6","expr":"6 mm","model":false,"name":"split_support_size","unit":"mm"},
    {"comment":"[candidate] interrupted perimeter flange width; switch guards required","expr":"2 mm","model":false,"name":"split_flange_W","unit":"mm"},
    {"comment":"[candidate] underside flange depth, Z5..8 at default; mount top3","expr":"3 mm","model":false,"name":"split_flange_H","unit":"mm"},
    {"comment":"[candidate 2026-11-05] Inboard U bypass width; preserves entire USB notch, verify local print","expr":"4 mm","model":false,"name":"split_usb_bridge_W","unit":"mm"},

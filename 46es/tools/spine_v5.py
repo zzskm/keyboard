@@ -20,6 +20,8 @@ check()); the expressions follow the parameters for sizes and heights only.
 """
 import math
 
+from hardware_v5 import CASE_HEAD_H
+
 BODY = 'PLATE_SPINE_V1'
 CENTER_X = 130.881                    # split_center_X (REF_SO_dX6 - TBD_pcb0_dx) the fixed positions below are drawn on
 STEM_Y0, STEM_W = 42.0, 41            # stem from the front screw pair to the rear pads
@@ -47,7 +49,7 @@ WIRE_NOTCH_L = 6
 NUT4_OPEN = dict(corner=[144.2, 81.9, 4.9], length='2.3', width='2.2', height='1.9')
 # Over the H02 case screw head (Rear mount head recess, slot along Y +-TBD_case_adjust): back to the old bottom Z 4
 H02_HEAD_MARGIN = 0.3
-H02_HEAD_TOP_Z = 4.0                  # pre-2026-11-11 stem bottom: 0.7 above the assumed pan head (1.3 in a 1.0 recess)
+H02_HEAD_TOP_Z = 4.0                  # pre-2026-11-11 stem bottom: 0.7 above the assumed pan head (CASE_HEAD_H 1.3, 1.0 recessed)
 FRAME_TOP_Z = 3.0                     # TBD_frame_T: the stem bears on the Rear mount frame top
 
 
@@ -120,4 +122,5 @@ def check(values):
     assert abs(values['TBD_frame_T'] - FRAME_TOP_Z) < 1e-9, values['TBD_frame_T']
     assert abs(bottom - FRAME_TOP_Z - values['split_support_gap']) < 1e-9, bottom
     assert abs(bottom + values['spine_wire_H'] - 6.0) < 1e-9, values['spine_wire_H']
-    assert H02_HEAD_TOP_Z > values['TBD_frame_T'] - values['TBD_case_head_H'] + 1.3 > bottom
+    head_top = values['TBD_frame_T'] - values['TBD_case_head_H'] + CASE_HEAD_H
+    assert H02_HEAD_TOP_Z - head_top >= 0.5 and head_top > bottom, (head_top, bottom)

@@ -4,7 +4,7 @@
   "firmware/46es_kbfirmware.json": "1b0dbb379cfec7261b49bc7074cef33837958754ebdd0528759a4f424e757951",
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/mounts_cadcraft_phase1.dxf": "508e10e5a97221a15b44e25cb2d5d957e1bd180dc2a307589924e006494a73e2",
-  "model/seam_v5_base.json": "4f224b9fcec989eee771f1955e319ffa4be7ca6b998c30899883aa0257fac293",
+  "model/seam_v5_base.json": "584214905378856a9ff6d597ed38ae0ea7843c694be22e3525103366129c7a5a",
   "tools/build_seam_v5.py": "ast:78a4e1074ee24c5cd4d54b30033ff432e7a7a700b2d8f630acacdfbbe08e1655",
   "tools/coupon_v5.py": "ast:fc11d62042ed238df1faf5a0e8b526f9d66d4d2f378526870db907ffc79012b7",
   "tools/cover_logo_xifiction.json": "953d82c25ee394e16a754c1aa1e1600a6d619a5d716fc815b7df51f3cfa51773",
@@ -15,10 +15,10 @@
   "tools/make_key_dxf.py": "ast:55f2262eea711da74fb9777051a6e0c954e537eec613ff83925822c7b9829a52",
   "tools/mounts_v5.py": "ast:9a913aa86bcb55c41e8b73a90774cfdcc5d5eca04b3fd028657b0d1ac840c797",
   "tools/seam_v5.py": "ast:47ef2d5a15d399b8e40215bbb9feecb812a8a0e0f655eb27c2f275d59a1c2595",
-  "tools/spine_v5.py": "ast:cc47b5ebb6babdd809b953d246fb5ade7bb290399c2da819028c006a26c54d71"
+  "tools/spine_v5.py": "ast:96c4f61dcfb697da5edcf8c6ce963b2791ddc005bb996d9fb9f21c6c956af05b"
  },
  "output": "model/46es_mount_seam_v5.sc",
- "output_sha": "7115fefd6eb03f68c6f84c2b59ff71f2a9039dd38cd0a4c20df7672643f812c2",
+ "output_sha": "08703959f28c237df1fef5ac3a400e705069ecc8ca465cee58a2a8825e73c3fa",
  "trials_output": "model/ctrl_trials_v5.sc",
- "trials_output_sha": "f3d41d945833ceb524885370b49e8a11a60fb85f542d08c792cdeb4d0f256c41"
+ "trials_output_sha": "528baf8859b957a82e9dcd7fff42068c6682ecaf0174334d91ac87e38adbd301"
 }

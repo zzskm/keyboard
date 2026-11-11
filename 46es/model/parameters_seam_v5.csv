@@ -183,7 +183,6 @@ split_mount_lap_T,mm,3 mm,3,[candidate] 3 mm tongue thickness below Z0,false
 split_mount_lap_gap,mm,0.2 mm,0.2,[candidate] 0.15..0.3 mm upper butt clearance,false
 split_support_Y,mm,56 mm,56,[candidate] H02 rear support; do not move over case screw,false
 split_support_gap,mm,0.05 mm,0.05,[assembly target] 0..0.1 mm spine bottom to Rear frame top after shim film; not as-printed accuracy,false
-split_support_size,mm,6 mm,6,[candidate] mount support footprint6x6,false
 split_flange_W,mm,2 mm,2,[candidate] interrupted perimeter flange width; switch guards required,false
 split_flange_H,mm,3 mm,3,"[candidate] underside flange depth, Z5..8 at default; mount top3",false
 split_usb_bridge_W,mm,4 mm,4,"[candidate 2026-11-05] Inboard U bypass width; preserves entire USB notch, verify local print",false

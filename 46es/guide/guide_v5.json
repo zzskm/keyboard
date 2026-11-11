@@ -875,7 +875,7 @@
           "tone": "warn",
           "tag": "확인",
           "title": "중앙 처짐과 shim",
-          "text": "둘레 프레임이 없어 전체 강성이 plate와 spine에 더 의존한다. 중앙 받침 틈 {{p:split_support_gap}}을 shim으로 맞춘 뒤 눌렀을 때 들뜸과 휨을 본다."
+          "text": "둘레 프레임이 없어 전체 강성이 plate와 spine에 더 의존한다. spine 밑면과 Rear 프레임 윗면 사이 틈 {{p:split_support_gap}}을 shim으로 맞춘 뒤 눌렀을 때 들뜸과 휨을 본다."
         },
         {
           "id": "usb",
@@ -1157,7 +1157,7 @@
           "id": "rear-pads"
         },
         {
-          "item": "중앙 shim",
+          "item": "spine 밑 shim",
           "qty": "시험분",
           "spec": "절연 박판",
           "decide": "공칭 틈 0.05에 맞춰 0–0.1",
