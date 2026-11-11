@@ -609,10 +609,10 @@
           "text": "X {{p:split_center_X}} 부근에서 좌·우로 나눴다. 3층 구조(위 {{p:TBD_upper_plate_T}} = 16.5 개구, 가운데 {{p:TBD_sw_ledge_T}} = 14.0 홀, 아래 {{p:TBD_sw_notch_H}} = 릴리프. <b>v5</b>: 위층 2 → 1.7, 스위치 착좌 Z 11.3)와 46키 배치는 원본과 같다. 두 조각을 합친 외곽은 285.8 × 95.3이다. <b>앞 이음</b>: 왼쪽 조각 윗면 쪽 {{p:seam_tab_T}}가 곧은 반턱 tab으로 나와(끝 X {{p:v5_seam_tab_end_X}}) 오른쪽 조각의 위가 열린 포켓에 위에서 얹히고, M2×5 1개와 너트로 조인다(SO6 오른쪽, 커버 T 조각 아래). tab 옆면과 끝의 걸림 턱이 여유 {{p:v5_seam_fit}}로 위치를 잡는다. 너트는 오른쪽 조각 아랫면의 닫힌 육각 포켓(맞변 {{p:v5_seam_nut_AF}}, 깊이 {{p:seam_nut_D}})에 눌러 끼워 둔다. <b>뒤 받침 블록</b>: 뒤 가장자리 플랜지는 PSD60 뒤 벽 보스 ①②③ 위에 붙인 별도 블록 3개({{p:v5_rear_rest_L}} × {{p:v5_rear_rest_W}} × {{p:v5_rear_rest_H}}, 왼쪽 조각 아래 2, 오른쪽 1)에 얹힌다. plate에는 다리가 없다(출력 높이 8). 블록 밑의 공칭 틈 {{p:v5_rear_rest_gap}}은 블록을 보스에 붙이는 점착 패드 자리이고, 높이는 주문 1의 3종에서 고른다. 보스 ④는 우 mount 뒤 모서리 밑이라 블록이 없다. 보스 위치·지름은 제품 사진에서 추정했고 윗면 높이는 지지대와 같다고 가정했다(실측 M22)."
         },
         {
-          "z": "Z 4–8.5",
+          "z": "Z {{p:split_spine_bottom_Z}}–8.5",
           "color": "#9aa0a8",
           "title": "spine.",
-          "text": "두 조각 이음부 밑(Y 38–87)에서 M2 4개로 plate를 잇는다(폭 {{p:split_spine_W}}). 중앙 mount의 받침({{p:split_support_size}} × {{p:split_support_size}}, 상면 Z 3.95)이 {{p:split_support_gap}} 아래에서 받친다. 줄기 아랫면에 배선 홈 3곳(Y 49·64·72, 폭 {{p:spine_wire_W}} × 높이 {{p:spine_wire_H}})이 있다."
+          "text": "두 조각 이음부 밑(Y 38–87)에서 M2 4개로 plate를 잇는다(폭 {{p:split_spine_W}}). 줄기 밑면이 중앙 mount(Rear) 프레임 윗면 Z 3에 {{p:split_support_gap}} 틈으로 얹혀 Y 43–83 구간을 받친다(따로 둔 받침 없음, H02 케이스 나사머리 위만 Z 4로 비움). 줄기 아랫면에 배선 홈 3곳(Y 49·64·72, 폭 {{p:spine_wire_W}} × 높이 {{p:spine_wire_H}})이 있다."
         },
         {
           "z": "Z 0–8",
@@ -630,7 +630,7 @@
           "z": "받침 윗면 Z 8",
           "color": "#9aa0a8",
           "title": "mount 4개.",
-          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine 받침), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 일체형 받침 7곳이 plate 밑면에 닿는다. SO1–SO6 체결 홀 외곽은 맞은편 면 사이 8.5 mm의 팔각형이다. Rear는 새 plate 받침과 spine shim 기준면(Z 3.95)을 사용한다. 핀 회피부는 스위치 배열에서 계산해 좌 10·11, 우 18·33·46 위치에 둔다."
+          "text": "좌 pair(H05·H01 ↔ SO1·SO2), 우 pair(H06·H04 ↔ SO5·SO4), 중앙(H02 ↔ SO3, spine이 프레임에 얹힘), 앞(H03 ↔ SO6, 컨트롤러 앞을 지나는 69.8 mm). 케이스 나사 자리는 방향별 장공이다. 일체형 받침 7곳이 plate 밑면에 닿는다. SO1–SO6 체결 홀 외곽은 맞은편 면 사이 8.5 mm의 팔각형이다. Rear는 plate 받침 1곳과, spine 줄기 밑면(Z {{p:split_spine_bottom_Z}})이 얹히는 프레임 윗면 Z 3을 쓴다(spine 받침 없음). 핀 회피부는 스위치 배열에서 계산해 좌 10·11, 우 18·33·46 위치에 둔다."
         },
         {
           "z": "Z 0 기준",
@@ -670,7 +670,7 @@
         },
         {
           "render": "sec-support",
-          "caption": "중앙 받침 단면(Y 55.5). 새 mount 받침은 plate 밑면에 닿는다. 기존 spine 받침의 공칭 틈 {{p:split_support_gap}}은 shim으로 맞춘다."
+          "caption": "중앙 받침 단면(Y 55.5). mount 받침은 plate 밑면에 닿는다. spine 밑면과 Rear 프레임 윗면의 공칭 틈 {{p:split_support_gap}}은 shim으로 맞춘다."
         },
         {
           "render": "sec-rearfoot",
@@ -724,14 +724,14 @@
           "fix": "tab 여유와 너트 포켓 맞변은 주문 1 이음 쿠폰 3쌍(S0 옛 dovetail, S1 현행, S2 넓힌 여유)으로 주문 2 전에 정한다. 조립 때 tab(plate)은 깎지 않는다. 헐거우면 에폭시로 채운다(조립 11). spine은 다듬거나 spine만 다시 출력"
         },
         {
-          "where": "spine ↔ 중앙 받침",
+          "where": "spine ↔ 중앙 mount 프레임",
           "worst": "{{p:split_support_gap}}",
           "worst_sub": "공칭 틈. 출력 오차는 포함하지 않음",
           "absorb": "shim 0–0.1",
           "absorb_sub": "절연 박판",
           "tone": "wait",
           "verdict": "현물 맞춤",
-          "fix": "shim 두께를 바꾸거나 받침 윗면을 사포로"
+          "fix": "shim 두께를 바꾸거나 spine 밑면을 사포로"
         },
         {
           "where": "하우징 벽 ↔ plate 외곽",
@@ -963,7 +963,7 @@
             "MOUNT_H02_SO3_MIN_V2"
           ],
           "orient": "자유 · STL은 밑면이 아래",
-          "note": "주문 1 · H02 ↔ SO3. spine 받침 {{p:split_support_size}} × {{p:split_support_size}}"
+          "note": "주문 1 · H02 ↔ SO3. spine이 프레임 윗면에 직접 얹힘"
         },
         {
           "label": "앞 mount",
@@ -1281,7 +1281,7 @@
               "id": "trial",
               "title": "plate 임시 장착으로 위치 맞추기",
               "render": "st-trial",
-              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. Rear의 spine shim과 새 plate 받침의 접촉을 각각 확인한다. 좌·우 mount의 핀 회피부에서 스위치 다리와 mount 사이 여유를 본다. / 뒤 받침 블록(공칭 높이 {{p:v5_rear_rest_H}})을 케이스 뒤 벽 보스 ①②③ 위에 붙이지 않은 채 올리고 plate를 얹는다. 블록 뒷면은 plate 뒤 가장자리 선에 맞춘다. 블록 윗면과 plate 뒤 플랜지 밑면 사이 틈을 필러 게이지로 잰다(설계 {{p:v5_rear_rest_gap}} = 패드 자리). 높이 3종(4.2 / 4.5 / 4.8)과 패드 두께를 골라 틈을 메우고, 패드로 블록을 보스 윗면에 붙인다. 우 mount 뒤 모서리가 보스 ④에 얹혀 흔들리지 않는지도 본다.",
+              "text": "이은 plate를 mount 위에 얹는다. 지지대 구멍과 받침 7곳이 힘을 가하지 않아도 맞는지 확인한다. Rear의 plate 받침 접촉과, spine 밑면과 Rear 프레임 윗면 사이 틈을 각각 확인한다. 좌·우 mount의 핀 회피부에서 스위치 다리와 mount 사이 여유를 본다. / 뒤 받침 블록(공칭 높이 {{p:v5_rear_rest_H}})을 케이스 뒤 벽 보스 ①②③ 위에 붙이지 않은 채 올리고 plate를 얹는다. 블록 뒷면은 plate 뒤 가장자리 선에 맞춘다. 블록 윗면과 plate 뒤 플랜지 밑면 사이 틈을 필러 게이지로 잰다(설계 {{p:v5_rear_rest_gap}} = 패드 자리). 높이 3종(4.2 / 4.5 / 4.8)과 패드 두께를 골라 틈을 메우고, 패드로 블록을 보스 윗면에 붙인다. 우 mount 뒤 모서리가 보스 ④에 얹혀 흔들리지 않는지도 본다.",
               "check": "나사 없이 지지대 구멍 6곳이 맞고, plate가 받침 위에서 흔들리지 않는다. 뒤 받침 블록 3곳은 플랜지 밑면에 가볍게 닿는다(블록이 먼저 닿아 plate가 지지대에서 뜨지 않는다).",
               "fix": "pair의 두 지지대 간격이 plate와 다르면 mount 쪽 포켓을 줄로 넓힌다(열린 항목 「pair의 지지대 간격」). 블록이 보스를 벗어나거나 plate를 들면 plate는 깎지 말고 낮은 블록·얇은 패드로 바꾼다. 그 보스의 위치·높이를 재어(M22) 다음 출력의 블록 치수를 정한다."
             },
@@ -1371,7 +1371,7 @@
               "id": "module",
               "title": "plate 모듈 장착",
               "render": "st-module",
-              "text": "중앙 받침 위에 shim을, 케이스 뒤 벽 보스 ①②③ 윗면에 시험 조립에서 고른 패드를 붙이고 plate 모듈을 지지대에 얹은 뒤 위 M3×4(탄소강) 6개를 조인다. inside 케이블은 하우징 뒤쪽 USB 아웃렛으로 보낸다.",
+              "text": "Rear 프레임 윗면의 spine 자리에 shim을, 케이스 뒤 벽 보스 ①②③ 윗면에 시험 조립에서 고른 패드를 붙이고 plate 모듈을 지지대에 얹은 뒤 위 M3×4(탄소강) 6개를 조인다. inside 케이블은 하우징 뒤쪽 USB 아웃렛으로 보낸다.",
               "check": "plate가 하우징 벽 어디에도 닿지 않는다(설계 틈 {{p:TBD_plate_gap}}). 위·아래 나사 끝이 서로 닿지 않는다(공칭 0.5).",
               "fix": "벽에 닿으면 plate를 깎지 말고 닿는 쪽 mount를 케이스 나사 장공 안에서 반대로 옮긴다(조립 04–08)."
             },

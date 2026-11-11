@@ -9,6 +9,12 @@ What stays in the base: the plate side of the joint (the seats PLATE_SPINE_*_SEA
 SPINE_M2_*_CLEAR/_HEAD cut into the plates). SPINE_M2_1/2_CLEAR used to cut the plates and the spine in one feature;
 the base keeps the plate cut and the spine gets SPINE_M2_1/2_SPINE_CLEAR here, as screws 3 and 4 already had.
 
+2026-11-11: the stem bottom split_spine_bottom_Z came down from Z 4 to the Rear mount frame top + split_support_gap
+(Z 3.05), and the Rear mount's spine shim (Z 2.5-3.95, 6 x 5.45) was removed: the stem now bears on the frame along
+its length instead of on one 24 mm2 pad. Over the H02 case screw head (pan head 1.3 in a 1.0 recess, top Z 3.3) the
+stem keeps its old bottom Z 4 (SPINE_H02_HEAD_RELIEF), and the wire grooves keep their top at Z 6, so the passage to
+the frame stays 3 high.
+
 Plan positions are fixed numbers, as in the base. They sit on split_center_X 130.881 (asserted after evaluation by
 check()); the expressions follow the parameters for sizes and heights only.
 """
@@ -39,6 +45,10 @@ WIRE_NOTCH_Y = (49, 64, 72)           # wiring grooves across the spine bottom
 WIRE_NOTCH_L = 6
 # MJF: open the nut 4 pocket to the spine edge so the pocket has no 0.3 mm skin (MJF 2026-11-06)
 NUT4_OPEN = dict(corner=[144.2, 81.9, 4.9], length='2.3', width='2.2', height='1.9')
+# Over the H02 case screw head (Rear mount head recess, slot along Y +-TBD_case_adjust): back to the old bottom Z 4
+H02_HEAD_MARGIN = 0.3
+H02_HEAD_TOP_Z = 4.0                  # pre-2026-11-11 stem bottom: 0.7 above the assumed pan head (1.3 in a 1.0 recess)
+FRAME_TOP_Z = 3.0                     # TBD_frame_T: the stem bears on the Rear mount frame top
 
 
 def plane(z):
@@ -93,9 +103,21 @@ def emit(feature):
                 corner=[f'split_center_X - {WIRE_NOTCH_L / 2:g}', f'{y} - spine_wire_W/2', 'split_spine_bottom_Z - 0.5'],
                 length=str(WIRE_NOTCH_L), width='spine_wire_W', height='spine_wire_H + 0.5')
     feature('box', 'SPINE_M2_4_NUT_OPEN_MJF', operation='cut', participants=[BODY], **NUT4_OPEN)
+    head = f'(TBD_case_head_D + TBD_case_head_clr)/2 + {H02_HEAD_MARGIN:g}'
+    feature('box', 'SPINE_H02_HEAD_RELIEF', operation='cut', participants=[BODY],
+            corner=['split_center_X - split_spine_W/2 - 0.5', f'CAND_H02_Y - TBD_case_adjust - ({head})',
+                    'split_spine_bottom_Z - 0.5'],
+            length=f'CAND_H02_X + {head} - (split_center_X - split_spine_W/2 - 0.5)',
+            width=f'2*(TBD_case_adjust + {head})', height=f'{H02_HEAD_TOP_Z:g} - (split_spine_bottom_Z - 0.5)')
 
 
 def check(values):
-    """The fixed plan positions were drawn on split_center_X 130.881 and the nut corners' stored positions on split_nut_AF."""
+    """The fixed plan positions were drawn on split_center_X 130.881 and the nut corners' stored positions on split_nut_AF;
+    the stem bottom sits split_support_gap above the Rear frame top, the head relief and grooves rise above it."""
     assert abs(values['split_center_X'] - CENTER_X) < 1e-9, values['split_center_X']
     assert abs(values['split_nut_AF'] - NUT_AF) < 1e-9, values['split_nut_AF']
+    bottom = values['split_spine_bottom_Z']
+    assert abs(values['TBD_frame_T'] - FRAME_TOP_Z) < 1e-9, values['TBD_frame_T']
+    assert abs(bottom - FRAME_TOP_Z - values['split_support_gap']) < 1e-9, bottom
+    assert abs(bottom + values['spine_wire_H'] - 6.0) < 1e-9, values['spine_wire_H']
+    assert H02_HEAD_TOP_Z > values['TBD_frame_T'] - values['TBD_case_head_H'] + 1.3 > bottom

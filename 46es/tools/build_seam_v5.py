@@ -45,7 +45,7 @@ import zipfile
 from make_key_dxf import load_keys, rect
 from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT, PLATE_SUPPORT_MOUNTS,  # noqa: F401
                        MX_GUIDES, MX_CONTACTS, MX_CONTACT_SIZE, MX_PIN_DEPTH_FROM_SEAT, MOUNT_PIN_CLEARANCE,
-                       PAD_ROOT_Z, PAD_TOP_Z, SHIM_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER, SEAM_NUT_CLEARANCE,
+                       PAD_ROOT_Z, PAD_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER, SEAM_NUT_CLEARANCE,
                        profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
 import ctrl_v5
 import coupon_v5
@@ -612,7 +612,6 @@ def check_mounts(evaluated, mounts):
         evaluated_anchor = (values[f'REF_SO_dX{index}'] - values['TBD_pcb0_dx'], values[f'REF_SO_dY{index}'] - values['TBD_pcb0_dy'])
         assert all(abs(a - b) < 1e-6 for a, b in zip(anchor, evaluated_anchor)), (name, anchor, evaluated_anchor)
     assert abs(values['plate_top_Z'] - values['TBD_plate_T'] - PAD_TOP_Z) < 1e-9
-    assert abs(values['split_spine_bottom_Z'] - values['split_support_gap'] - SHIM_TOP_Z) < 1e-9
     assert abs(values['split_flange_W'] - 2.0) < 1e-9 and abs(values['split_flange_H'] - 3.0) < 1e-9
     assert abs(-values['TBD_pcb0_dx'] + values['TBD_plate_gap'] + values['split_flange_W'] - PLATE_FLANGE_INNER[0]) < 1e-9
     report = {}

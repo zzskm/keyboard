@@ -82,8 +82,8 @@
    ]
   },
   "MOUNT_H02_SO3_MIN_V2": {
-   "shape_sha256": "4924a15781f9e31361be2bedae5d519d8368a2951f9cc6b2f74ca6d50b74547c",
-   "volume_mm3": 1592.202,
+   "shape_sha256": "3ae6fdb7ecfe3ca2ef7c87cff489ee830c3589e6aeba0821487581e9bc8ca3b5",
+   "volume_mm3": 1561.137,
    "bbox": [
     [
      123.0452,
@@ -178,13 +178,13 @@
    ]
   },
   "PLATE_SPINE_V1": {
-   "shape_sha256": "a8a605fb5562840e835ebf9e814eedcf7cc6530287b2e37bd93e7d4f250d9fb5",
-   "volume_mm3": 1691.245,
+   "shape_sha256": "c75c86ae45a8c588ffab2878000871811fe062dee8d638a0b87d31cfd3599a6a",
+   "volume_mm3": 1805.932,
    "bbox": [
     [
      115.881,
      38.0,
-     4.0
+     3.05
     ],
     [
      145.881,
@@ -1392,7 +1392,7 @@
   "seam_tab_T": "2.4 mm",
   "side_pair_bridge_W": "8 mm",
   "side_pair_bridge_end_setback": "3.7 mm",
-  "spine_wire_H": "2 mm",
+  "spine_wire_H": "2.95 mm",
   "spine_wire_W": "3 mm",
   "split_H05_adjust": "0.9 mm",
   "split_M2_clear_D": "2.4 mm",
@@ -1417,7 +1417,7 @@
   "split_nut_depth": "1.8 mm",
   "split_plate_gap": "0.5 mm",
   "split_spine_W": "4 mm",
-  "split_spine_bottom_Z": "4 mm",
+  "split_spine_bottom_Z": "3.05 mm",
   "split_spine_seat_D": "0.5 mm",
   "split_support_Y": "56 mm",
   "split_support_gap": "0.05 mm",
@@ -1639,7 +1639,7 @@
   "seam_tab_T": 2.4,
   "side_pair_bridge_W": 8.0,
   "side_pair_bridge_end_setback": 3.7,
-  "spine_wire_H": 2.0,
+  "spine_wire_H": 2.95,
   "spine_wire_W": 3.0,
   "split_H05_adjust": 0.9,
   "split_M2_clear_D": 2.4,
@@ -1664,7 +1664,7 @@
   "split_nut_depth": 1.8,
   "split_plate_gap": 0.5,
   "split_spine_W": 4.0,
-  "split_spine_bottom_Z": 4.0,
+  "split_spine_bottom_Z": 3.05,
   "split_spine_seat_D": 0.5,
   "split_support_Y": 56.0,
   "split_support_gap": 0.05,

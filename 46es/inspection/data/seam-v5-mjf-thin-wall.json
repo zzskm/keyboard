@@ -302,13 +302,13 @@
   },
   {
    "file": "46es_v5_spine",
-   "stl_sha256": "5a3c02870ad1b7f82ff499dc9718d9385ce87af856a06f9e32002e72b3b99870",
-   "facets": 3266,
-   "samples": 61576,
-   "min_mm": 1.0,
-   "wall_min_mm": 1.0,
+   "stl_sha256": "3b38c28f612b107152bbe851afdf32cfa43b36285e1b589f9abc2511354af367",
+   "facets": 3282,
+   "samples": 62025,
+   "min_mm": 1.174,
+   "wall_min_mm": null,
    "below_limit": [],
-   "below_warn_count": 4
+   "below_warn_count": 2
   },
   {
    "file": "46es_v5_ctrl_bracket",

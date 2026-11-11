@@ -3,16 +3,16 @@
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:fa43b70a862299fa72e0465d36faaeb7f2a44a7d6021f44f62a9147c9caa9ad6",
   "tools/parts_v5.py": "ast:839720f6bedcab1815303d58dc2dc8c632f4a6606ae74d9b17d691526c492c6c",
-  "model/46es_mount_seam_v5.sc": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
-  "model/ctrl_trials_v5.sc": "2af712d5129d8facf24cb6f6cc3a4da3ee49becddb7b09000d50952565141536",
-  "model/parameters_seam_v5.csv": "988651d459d842fbfa30a63f5cf742289c2ae63cc5f6360670e4259ac83a9160",
-  "inspection/data/seam-v5-baseline.json": "c2dd8cef483f35fcb030695c59b6c80785e59be6ef468ada09d2436a61997834",
-  "inspection/data/seam-v5-print-set.json": "99df3296c8de2a24398fe90302017724108049210ecd6a03d3bdea6b502547eb",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "c102b5cf9b7100620dba961e5721b4ccbdda26ecdb5386183f804daf954e97f6",
-  "inspection/data/seam-v5-trial-print-set.json": "ab440e790dc3947f49cc82e0ad81be20b8f3e2fc733d1a4b4a76b5d278d8c570"
+  "model/46es_mount_seam_v5.sc": "7115fefd6eb03f68c6f84c2b59ff71f2a9039dd38cd0a4c20df7672643f812c2",
+  "model/ctrl_trials_v5.sc": "f3d41d945833ceb524885370b49e8a11a60fb85f542d08c792cdeb4d0f256c41",
+  "model/parameters_seam_v5.csv": "7229023e0a4f0b931444ced4cdd62f4b8ed4551f4034bbd7b965b30e2769b8f3",
+  "inspection/data/seam-v5-baseline.json": "8d90fcdd28f30ba6162e431f307f5f326b663dae06824553e7728497f83d7942",
+  "inspection/data/seam-v5-print-set.json": "7aa9f549b604416343f10c1a7d0c9cf5fab34e01dc444a8d923781f5d35f8b61",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "a4746feff18529134188cb35750cbfbd0725774562eea6bd21dea0a17b0881e4",
+  "inspection/data/seam-v5-trial-print-set.json": "017e6b63a9ff2db66724e3886df2e0d6b11cd69c30f8e7e1ff7628130564a8ac"
  },
- "v5_sha": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
- "baseline_sha": "c2dd8cef483f35fcb030695c59b6c80785e59be6ef468ada09d2436a61997834",
+ "v5_sha": "7115fefd6eb03f68c6f84c2b59ff71f2a9039dd38cd0a4c20df7672643f812c2",
+ "baseline_sha": "8d90fcdd28f30ba6162e431f307f5f326b663dae06824553e7728497f83d7942",
  "baseline_bodies": 76,
  "print_set": [
   {
@@ -45,14 +45,14 @@
    "file": "46es_v5_spine",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 1.691,
+   "volume_cm3": 1.806,
    "size": [
     30.0,
     49.0,
-    4.5
+    5.45
    ],
-   "wall_min_mm": 1.0,
-   "rel": 5.2e-05
+   "wall_min_mm": null,
+   "rel": 4.9e-05
   },
   {
    "file": "46es_v5_ctrl_bracket",
@@ -108,7 +108,7 @@
   }
  ],
  "bodies": 64,
- "timeline_active": 346,
+ "timeline_active": 345,
  "rear_rest_Z": [
   0.5,
   5.0
@@ -143,8 +143,8 @@
   "REF_M2_SEAM_FRONT",
   "REF_M2_SEAM_FRONT_NUT"
  ],
- "timeline": 353,
- "sketches": 79,
+ "timeline": 352,
+ "sketches": 78,
  "params": 245,
  "cover_Z": [
   11.5,
@@ -394,8 +394,8 @@
      "ok": true
     },
     "3.6": {
-     "section_area": 62.921,
-     "expected_area": 62.921,
+     "section_area": 30.221,
+     "expected_area": 30.221,
      "symmetric_difference_mm2": 0.0008,
      "boundary_deviation_mm": 0.0009,
      "ok": true
@@ -421,8 +421,8 @@
    },
    "pin_reliefs": {},
    "plate_pads": 1,
-   "volume_mm3": 1592.202,
-   "layered_volume_mm3": 1592.212
+   "volume_mm3": 1561.137,
+   "layered_volume_mm3": 1561.147
   },
   "MOUNT_H03_SO6_MIN_V2": {
    "stl": "46es_v5_mount_H03_SO6.stl",

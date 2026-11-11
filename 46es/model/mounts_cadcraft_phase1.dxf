@@ -655,7 +655,7 @@ LAYER
 100
 AcDbSymbolTable
  70
-39
+38
   0
 LAYER
   5
@@ -1268,28 +1268,6 @@ REAR_ANCHORS
 0
  62
 2
-  6
-Continuous
-370
--3
-390
-334D
-  0
-LAYER
-  5
-3373
-330
-3356
-100
-AcDbSymbolTableRecord
-100
-AcDbLayerTableRecord
-  2
-REAR_SHIM
- 70
-0
- 62
-4
   6
 Continuous
 370
@@ -6052,38 +6030,6 @@ AcDbPolyline
 127.7633056640625
  20
 87.94499969482422
-  0
-LWPOLYLINE
-  5
-1265
-330
-332D
-100
-AcDbEntity
-  8
-REAR_SHIM
-100
-AcDbPolyline
- 90
-4
- 70
-1
- 10
-133.55
- 20
-53.0
- 10
-133.55
- 20
-59.0
- 10
-128.1
- 20
-59.0
- 10
-128.1
- 20
-53.0
   0
 LWPOLYLINE
   5

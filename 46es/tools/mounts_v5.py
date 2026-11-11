@@ -1,7 +1,8 @@
 """The four v5 mounts, built directly from the CADCraft drawing.
 
-model/mounts_cadcraft_phase1.dxf is the plan-view source: outlines, plate
-pads and the Rear spine shim are extruded as drawn. Fastener holes, hex
+model/mounts_cadcraft_phase1.dxf is the plan-view source: outlines and plate
+pads are extruded as drawn (the Rear spine shim was removed on 2026-11-11;
+the spine bears on the Rear frame top, spine_v5.py). Fastener holes, hex
 pockets and head recesses follow the document parameters at the GH60/SO
 anchors; the drawing's hole layers are checked against them. Pin reliefs
 are derived from the switch layout (make_key_dxf) and the KS-3X1 pin
@@ -39,8 +40,6 @@ PLATE_SUPPORT_MOUNTS = {
 FRAME_T = 3.0
 PAD_TOP_Z = 8.0                    # plate_top_Z - TBD_plate_T
 PAD_ROOT_Z = 1.5                   # pads start inside the frame
-SHIM_ROOT_Z = 2.5
-SHIM_TOP_Z = 3.95                  # split_spine_bottom_Z - split_support_gap
 SO_BORE_D = 3.4                    # TBD_so_screw_D + TBD_so_clr
 SO_HEX_AF = 5.4                    # TBD_so_AF + TBD_so_pocket_clr
 SO_POCKET_Z = 2.0                  # TBD_frame_T - TBD_so_pocket_D
@@ -138,7 +137,7 @@ def slot(center, axis, half_straight, width):
 
 
 def read_drawing(path=DRAWING):
-    """Outlines, pads, shim and the hole/relief layers of the CADCraft drawing."""
+    """Outlines, pads and the hole/relief layers of the CADCraft drawing."""
     entities = list(ezdxf.readfile(path).modelspace())
 
     def polylines(layer):
@@ -192,7 +191,7 @@ def read_drawing(path=DRAWING):
     keep = box(x0 + c, y0 + c, x1 - c, y1 - c)
     pads = {suffix: [clean(p.intersection(keep)) for p in shapes] for suffix, shapes in pads.items()}
     return dict(
-        outlines=outlines, pads=pads, shim=single('REAR_SHIM'),
+        outlines=outlines, pads=pads,
         octagons={name: p for p in polylines('L_SO_SUPPORT_OCTAGON')
                   for name, (_, anchor, _) in SO_ANCHORS.items() if p.centroid.distance(Point(anchor)) < 0.01},
         holes={s: polylines(f'{s}_THROUGH_HOLES') for s in MOUNTS},
@@ -236,8 +235,6 @@ def check_drawing(drawing):
         for pad in pads:
             if pad.difference(outlines[suffix]).area > 1e-6:
                 raise ValueError(f'{suffix} plate pad leaves the outline')
-    if drawing['shim'].difference(outlines['REAR']).area > 1e-6:
-        raise ValueError('Rear shim leaves the outline')
 
 
 def switch_pins():
@@ -367,7 +364,6 @@ def profiles(drawing=None):
                     # take slivers thinner than MIN_WALL left beside the cut along with it
                     thin = [r for r in parts(pad.difference(hit)) if r.buffer(-MIN_WALL / 2).is_empty]
                     clearances[(i, key['index'])] = unary_union([hit, *thin]).buffer(0)
-        shim = drawing['shim'] if suffix == 'REAR' else None
         for name, land in lands.items():
             blockers = list(reliefs.values()) + list(heads.values()) + list(slots.values()) + ([nut] if nut else [])
             if any(land.intersection(b).area > 1e-6 for b in blockers):
@@ -378,7 +374,7 @@ def profiles(drawing=None):
             if wall < MIN_WALL - 1e-6:
                 raise ValueError(f'{suffix} {name}: wall to the outline is {wall:.3f} < {MIN_WALL}; widen the drawing there')
         out[suffix] = dict(mount=mount, outline=outline, pads=pads, bores=bores, hexes=hexes, lands=lands,
-                           slots=slots, heads=heads, reliefs=reliefs, clearances=clearances, nut=nut, shim=shim)
+                           slots=slots, heads=heads, reliefs=reliefs, clearances=clearances, nut=nut)
         # No knife-edge of material next to anything the generator cuts, in any Z band.
         cuts = [*bores.values(), *hexes.values(), *slots.values(), *heads.values(), *reliefs.values(),
                 *clearances.values(), *([nut] if nut else [])]
@@ -398,7 +394,6 @@ def layers(profile):
     reliefs = unary_union(list(profile['reliefs'].values())) if profile['reliefs'] else Polygon()
     clearances = unary_union(list(profile['clearances'].values())) if profile['clearances'] else Polygon()
     nut = profile['nut'] or Polygon()
-    shim = profile['shim'] or Polygon()
     frame = outline.difference(through)
     frame_nut = frame.difference(nut)                       # the nut clearance starts at PAD_ROOT_Z
     frame_cut = frame_nut.difference(pockets)
@@ -409,8 +404,7 @@ def layers(profile):
         (PAD_ROOT_Z, SO_POCKET_Z, frame_nut),
         (SO_POCKET_Z, RELIEF_FLOOR_Z, frame_cut),
         (RELIEF_FLOOR_Z, FRAME_T, frame_relieved),
-        (FRAME_T, SHIM_TOP_Z, pads_cut.union(shim.difference(through))),
-        (SHIM_TOP_Z, SWITCH_BODY_Z, pads_cut),
+        (FRAME_T, SWITCH_BODY_Z, pads_cut),
         (SWITCH_BODY_Z, PAD_TOP_Z, pads_cut.difference(clearances)),
     )]
 
@@ -460,10 +454,6 @@ def emit(feature, sketch, profile_set):
         for i, pad in enumerate(p['pads'], 1):
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}', plane(PAD_ROOT_Z), ring(pad))
             extrude(f'MOUNT_{suffix}_PAD_{i}', sk, f'plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', 'join', mount)
-        if p['shim'] is not None:
-            sk = sketch(f'SK_MOUNT_{suffix}_SPINE_SHIM', plane(SHIM_ROOT_Z), ring(p['shim']))
-            extrude(f'MOUNT_{suffix}_SPINE_SHIM', sk, f'split_spine_bottom_Z - split_support_gap - {SHIM_ROOT_Z}',
-                    'join', mount)
         for (i, key), hit in p['clearances'].items():
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}_SWITCH_{key}', plane('TBD_frame_T + TBD_standoff_H - 3 - 0.05'),
                         ring(hit))

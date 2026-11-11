@@ -58,7 +58,8 @@ def generate(text):
     changes, count = [], 0
     for order, heading in HEADINGS.items():
         records = {p['file']: p for p in read(ORDERS[order]['record'])}
-        walls = {p['file']: p['wall_min_mm'] for p in read(ORDERS[order]['wall'])['parts']}
+        wall_record = read(ORDERS[order]['wall'])
+        walls = {p['file']: p['wall_min_mm'] for p in wall_record['parts']}
         registry = {p.file for p in parts(order)}
         start = next(i for i, line in enumerate(lines) if line.startswith(f'## {heading}'))
         first = next(i for i in range(start + 1, len(lines)) if lines[i].startswith('|'))
@@ -76,7 +77,9 @@ def generate(text):
             if order == 'order2':
                 (file,) = files
                 new[col('부피')] = volume(records[file]['cad_volume_mm3'])
-                new[col('최소 벽')] = f'{walls[file]:.2f}'
+                # None: the scan found no wall (near-parallel faces) below its warn level
+                new[col('최소 벽')] = (f'≥{wall_record["warn_mm"]:.2f}' if walls[file] is None
+                                     else f'{walls[file]:.2f}')
             for j, cell in enumerate(cells):
                 if re.search(r'\([\d.]+ cm³\)', cell):
                     (file,) = files

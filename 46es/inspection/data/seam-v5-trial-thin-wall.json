@@ -442,9 +442,9 @@
   },
   {
    "file": "46es_v5_mount_H02_SO3",
-   "stl_sha256": "9d0b04844138d4b10c56d630be87817017345cf0ae6546165071161ccb23541b",
-   "facets": 3126,
-   "samples": 138776,
+   "stl_sha256": "36503ae3beb9e8c49ecf28021a40797066cd2c5238bd6bb6406c4d43d0c6055e",
+   "facets": 3104,
+   "samples": 131874,
    "min_mm": 1.22,
    "wall_min_mm": 1.304,
    "below_limit": [],
