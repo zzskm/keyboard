@@ -11,6 +11,9 @@ straight half-lap with a locating hook and a closed press-fit nut pocket.
     it by its flats; the floor above it keeps >= 1.0. It is pressed in (screw pull-in) and pushed out with the screw.
     A side-insert slot would need 1.0 + 1.8 + 1.0 = 3.8 of material where R has TBD_plate_T - tab_T = 2.6.
 The v4 seam stays as Seam(kind='dovetail') for the order-1 control coupon S0.
+2026-11-11 (decision): the screw is a common ISO 7380 M2x5 button head (head 3.5-3.8 x 1.3) instead of the
+low-head NBK SSH-M2-5 (4 x 1.1), which is hard to buy; the counterbore went 1.2 -> 1.4 so the head top stays
+at Z 12.9 (0.1 under the cover) and the tab keeps MIN_WALL under the head. S0 keeps the v4 1.2.
 
 The numbers here are the source; the seam_* parameters of the document are documentation and are checked against
 them after evaluation (build_seam_v5.check_seam). Features are fixed numbers, as for the mounts and the bracket.
@@ -30,7 +33,8 @@ NECK_END_X, TAB_END_X, HOOK_Y = 144.2, 147.4, 2.4   # hook: the last 3.2 mm of t
 RABBET_INNER_Y = 1.933                        # -TBD_pcb0_dy + TBD_plate_gap + TBD_cover_wall + TBD_cover_lip_clr
 COVER_LIP_H = 1.0                             # TBD_cover_lip_H
 M2_CLEAR_D, M2_HEAD_D = 2.4, 4.4              # split_M2_clear_D, split_M2_head_D
-SCREW_L, SCREW_HEAD_H = 5.0, 1.1              # low-head M2x5 (NBK SSH-M2-5)
+SCREW_L, SCREW_HEAD_H = 5.0, 1.3              # ISO 7380 M2x5 button head: k 1.3, dk 3.5 (max 3.8)
+SCREW_HEAD_D = 3.8
 NUT_AF, NUT_H = 4.0, 1.6                      # DIN 934 M2: across flats 4.0 (3.82-4.0), height 1.6
 REF_NUT_AF = 3.9                              # reference nut drawn inside its tolerance so it clears a 4.0 pocket
 MIN_WALL = 1.0
@@ -49,7 +53,7 @@ class Seam:
     fit: float = 0.15                # locating clearance per side (tab sides, hook shoulder)
     end_gap: float = 0.3             # tab end and hook outer faces: not locating
     screw: tuple = (140.4, 6.6)      # M2 axis
-    cb_D: float = 1.2                # head counterbore in the tab
+    cb_D: float = 1.4                # head counterbore in the tab (head top = PLATE_TOP_Z - cb_D + SCREW_HEAD_H)
     nut_AF: float = 4.0              # nut pocket across flats (press fit on a 4.0 nut)
     nut_D: float = 1.3               # nut pocket depth from the plate underside
     nut_open: bool = False           # v4: pocket open to the seam face
@@ -61,7 +65,7 @@ class Seam:
 
 
 PRODUCTION = Seam()
-DOVETAIL = Seam(kind='dovetail', screw=(139.5, 6.6), nut_AF=4.4, nut_D=1.0, nut_open=True)
+DOVETAIL = Seam(kind='dovetail', screw=(139.5, 6.6), cb_D=1.2, nut_AF=4.4, nut_D=1.0, nut_open=True)
 # Order-1 coupons: (variant, offset of the pair from the plate position). S2 widens the locating clearance and the nut
 # pocket by one step each; the lap fit (hand insertion) and the nut fit (press, shake) are read separately.
 COUPONS = {'S0': (DOVETAIL, (60.0, -60.0)),
@@ -114,6 +118,9 @@ def check(seam, openings=()):
         pocket_to_switch_opening=round(min((pocket.distance(o) for o in openings), default=float('inf')), 3),
         tab_plan_area=round(tab.area, 2))
     assert tab.contains(head), (seam, 'counterbore leaves the tab')
+    if seam.kind == 'lap':
+        report['head_top_Z'] = round(PLATE_TOP_Z - seam.cb_D + SCREW_HEAD_H, 3)
+        assert report['head_top_Z'] <= PLATE_TOP_Z - 0.1 + 1e-9 and SCREW_HEAD_D < M2_HEAD_D, (seam, report)
     assert pocket.buffer(1e-9).contains(tab.intersection(Polygon([(R_EDGE_X, -5), (200, -5), (200, 30), (R_EDGE_X, 30)]))), \
         (seam, 'tab outside its pocket')
     assert report['nut_below_plate'] >= 0 and report['nut_Z'][0] > report['screw_tip_Z'], (seam, report)   # full thread
@@ -179,7 +186,7 @@ def emit(feature, sketch, seam=PRODUCTION, left='PLATE_L_SPLIT_V1', right='PLATE
     feature('cylinder', screw, axis=[0.0, 0.0, 1.0], base=[sx, sy, seat - SCREW_L], body_names=[screw],
             height=str(SCREW_L), operation='new_body', radius='(2 mm) / 2')
     feature('cylinder', f'{screw}_HEAD_JOIN', axis=[0.0, 0.0, 1.0], base=[sx, sy, seat], height=str(SCREW_HEAD_H),
-            operation='join', participants=[screw], radius='(4 mm) / 2')
+            operation='join', participants=[screw], radius=f'({SCREW_HEAD_D:g} mm) / 2')
     nut_Z = round(PLATE_BOTTOM_Z + seam.nut_D - NUT_H, 6)
     sk = sketch(f'{nut}_SK', plane(nut_Z), [hexagon(sx, sy, REF_NUT_AF)])
     feature('extrude', f'{nut}_HEX', sketch=sk, profiles=dict(type='all'), extent=cut(NUT_H), operation='new_body',

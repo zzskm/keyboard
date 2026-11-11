@@ -5,9 +5,9 @@
  "parts": [
   {
    "file": "46es_v5_plate_L",
-   "stl_sha256": "53d73bb4394823a54917cfe5c07afce799e3e1d237358ac321e8e40bb8ab46b8",
+   "stl_sha256": "66ffe40cff4d9b27901eaa57aed7d0d64aebd5532da65ed158a0cd18110742e8",
    "facets": 8846,
-   "samples": 1004312,
+   "samples": 1004300,
    "min_mm": 0.026,
    "wall_min_mm": 1.0,
    "below_limit": [
@@ -123,7 +123,7 @@
     },
     {
      "min_mm": 0.79,
-     "points": 8901,
+     "points": 8899,
      "wall_min_mm": 1.047,
      "wall_points_below_limit": 0,
      "at_print": [

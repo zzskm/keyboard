@@ -271,11 +271,11 @@
   },
   {
    "file": "46es_v5_seam_coupon_S1_L",
-   "stl_sha256": "e6db8a7fb637c8901bb46aed12291dd1ace1ff37c2c2690e184a4b532356b210",
-   "facets": 2110,
-   "samples": 33996,
-   "min_mm": 1.2,
-   "wall_min_mm": 1.2,
+   "stl_sha256": "9277281836f9b93eb5d8f1cf6fb7bb2cb7fb328b13830d5ddc8344bdc188944d",
+   "facets": 1930,
+   "samples": 33812,
+   "min_mm": 1.0,
+   "wall_min_mm": 1.0,
    "below_limit": [],
    "below_warn_count": 1
   },
@@ -291,11 +291,11 @@
   },
   {
    "file": "46es_v5_seam_coupon_S2_L",
-   "stl_sha256": "d2d9048d961acc4b30122bf85f44560b28c8208b46c95a45bd61e9c59d91ccca",
-   "facets": 2110,
-   "samples": 33996,
-   "min_mm": 1.2,
-   "wall_min_mm": 1.2,
+   "stl_sha256": "fc54971de8ab3e355cb9db3fff1490490124714e4583c89511bd8d3fbb6fbad6",
+   "facets": 1930,
+   "samples": 33812,
+   "min_mm": 1.0,
+   "wall_min_mm": 1.0,
    "below_limit": [],
    "below_warn_count": 1
   },

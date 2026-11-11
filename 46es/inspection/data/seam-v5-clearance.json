@@ -1,8 +1,8 @@
 {
  "generated_vs_rest": {
   "total_pairs": 943,
-  "candidate_pairs": 87,
-  "pairs_pruned_by_bbox": 856,
+  "candidate_pairs": 91,
+  "pairs_pruned_by_bbox": 852,
   "intentionally_checked_by_sections": [
    [
     "MOUNT_L_PAIR_V3",
@@ -54,14 +54,14 @@
    "STANDOFF_SO5_REF | MOUNT_R_PAIR_V3",
    "STANDOFF_SO6_REF | MOUNT_H03_SO6_MIN_V2"
   ],
-  "pairs_checked": 87,
+  "pairs_checked": 91,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
  "among_generated": {
   "total_pairs": 253,
-  "candidate_pairs": 47,
-  "pairs_pruned_by_bbox": 206,
+  "candidate_pairs": 49,
+  "pairs_pruned_by_bbox": 204,
   "intentionally_checked_by_sections": [],
   "overlaps": [],
   "unchecked": [],
@@ -94,7 +94,7 @@
    "REF_M2_PLATE_2 | REF_M2_PLATE_2_NUT",
    "REF_M2_SEAM_FRONT | REF_M2_SEAM_FRONT_NUT"
   ],
-  "pairs_checked": 47,
+  "pairs_checked": 49,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },

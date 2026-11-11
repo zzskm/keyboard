@@ -24,6 +24,7 @@ from shapely.affinity import rotate
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import unary_union
 
+from hardware_v5 import M2_HEAD_D as REF_M2_HEAD_D, M2_HEAD_H as REF_M2_HEAD_H
 from make_key_dxf import load_keys, rect
 from mounts_v5 import (MIN_WALL, MOUNT_PIN_CLEARANCE, RELIEF_FLOOR_Z, SWITCH_BODY_Z, hexagon, profiles as mount_profiles,
                        ring, switch_pins, layers as mount_layers)
@@ -38,7 +39,7 @@ PCB_Z, PCB_T = 2.0, 1.6                # TBD_ctrl_pcb_Z (component face), REF_ct
 PLUG_W = 12.0                          # TBD_usb_plug_W
 PLATE_BOTTOM = 8.0                     # TBD_frame_T + TBD_standoff_H
 ROOF_GAP, ROOF_T = 0.3, 1.5            # split_bracket_gap, split_bracket_T
-M2_SEAT_Z, M2_L = 10.2, 6.0            # split_M2_plate_seat_Z (NBK SSH-M2-6, tip Z 4.2)
+M2_SEAT_Z, M2_L = 10.2, 6.0            # split_M2_plate_seat_Z (ISO 7380 M2x6 button head, tip Z 4.2)
 M2_CLEAR_D, M2_HEAD_D = 2.4, 4.4       # split_M2_clear_D, split_M2_head_D
 NUT_AF, NUT_H = 4.0, 1.6               # DIN 934 M2
 NUT_POCKET_AF = 4.4
@@ -370,7 +371,7 @@ def emit(feature, sketch, design=None, body=BODY, plate=PLATE, references=True):
             feature('cylinder', f'{name}_V5', axis=[0., 0., 1.], base=[x, y, f'split_M2_plate_seat_Z-{M2_L}'],
                     height=str(M2_L), radius='(2 mm) / 2', operation='new_body', body_names=[name])
             feature('cylinder', f'{name}_V5_HEAD_JOIN', axis=[0., 0., 1.], base=[x, y, 'split_M2_plate_seat_Z'],
-                    height='1.1', radius='(4 mm) / 2', operation='join', participants=[name])
+                    height=str(REF_M2_HEAD_H), radius=f'({REF_M2_HEAD_D:g} mm) / 2', operation='join', participants=[name])
             sk = sketch(f'{name}_V5_NUT_SK', plane(ROOF_Z - NUT_H), ring(nut_hexagon((x, y), NUT_AF)))
             feature('extrude', f'{name}_V5_NUT_HEX', sketch=sk, profiles=dict(type='all'),
                     extent=dict(convention='total_distance', direction='positive', distance=str(NUT_H)),

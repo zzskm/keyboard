@@ -89,7 +89,7 @@ def run(base_url, shot_prefix, executable=None):
         page.locator('.parts-catalog summary').first.click()
         page.locator('#asm-scope').select_option('all')
         assert page.locator('.assembly-part').count() == len(parts)
-        page.locator('#asm-search').fill('NBK SSH-M2-5')
+        page.locator('#asm-search').fill('M2×5 ISO 7380')
         assert page.locator('.assembly-part').count() == 1
         page.locator('#asm-search').fill('')
         page.locator('.part-select').first.click()

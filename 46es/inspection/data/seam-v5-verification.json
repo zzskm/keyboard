@@ -3,23 +3,23 @@
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:fa43b70a862299fa72e0465d36faaeb7f2a44a7d6021f44f62a9147c9caa9ad6",
   "tools/parts_v5.py": "ast:839720f6bedcab1815303d58dc2dc8c632f4a6606ae74d9b17d691526c492c6c",
-  "model/46es_mount_seam_v5.sc": "08703959f28c237df1fef5ac3a400e705069ecc8ca465cee58a2a8825e73c3fa",
-  "model/ctrl_trials_v5.sc": "528baf8859b957a82e9dcd7fff42068c6682ecaf0174334d91ac87e38adbd301",
-  "model/parameters_seam_v5.csv": "ef85d2167f373848f6e048dd4aca74dda67def37182b287b885f3b07bf9c2104",
-  "inspection/data/seam-v5-baseline.json": "5333e6585123b79bb301fa46d57a32d97dd2093da5ecedcb359c227fcf2fb8ac",
-  "inspection/data/seam-v5-print-set.json": "3cde162ec5cc0159ba2f9cd7585738766f4767d385ac38b15893823c2dc9c7c4",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "a4746feff18529134188cb35750cbfbd0725774562eea6bd21dea0a17b0881e4",
-  "inspection/data/seam-v5-trial-print-set.json": "ef566d76b07732ac4cbd72a47c8134fc82a535e1c294a25111012744a35d1f59"
+  "model/46es_mount_seam_v5.sc": "9de3f6d21272baea4bd4cedc6d621d2ece77cd9621fb717d247814b0ea66a63b",
+  "model/ctrl_trials_v5.sc": "9d7f5ea9bf5303098cfdf85beeb4700cb7c4dd0d8ba0a5535371b8cdeaa23a23",
+  "model/parameters_seam_v5.csv": "24c85b37fd885129fad80981b837b67dacded30e530d9e2b9533129c2d5c04bb",
+  "inspection/data/seam-v5-baseline.json": "804e85f78ff66bb7b2db670a5b263d160944f378cbd42f30c4e5c9dec8fe43c9",
+  "inspection/data/seam-v5-print-set.json": "1bfdfd6ad8bf250591785705e322e34186ba32bd7f60f2d9821375ad6e35407a",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "36d63eb62e40dadd9487e230b0c6c018a6c967be57ad6ad5a2cf2b36b455cf99",
+  "inspection/data/seam-v5-trial-print-set.json": "77f8fb3b86e2f9bd3915362a2972bb8615db176aebd935adbbfaefddbb1d931c"
  },
- "v5_sha": "08703959f28c237df1fef5ac3a400e705069ecc8ca465cee58a2a8825e73c3fa",
- "baseline_sha": "5333e6585123b79bb301fa46d57a32d97dd2093da5ecedcb359c227fcf2fb8ac",
+ "v5_sha": "9de3f6d21272baea4bd4cedc6d621d2ece77cd9621fb717d247814b0ea66a63b",
+ "baseline_sha": "804e85f78ff66bb7b2db670a5b263d160944f378cbd42f30c4e5c9dec8fe43c9",
  "baseline_bodies": 76,
  "print_set": [
   {
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 38.361,
+   "volume_cm3": 38.358,
    "size": [
     147.79,
     95.33,

@@ -15,6 +15,8 @@ import math
 # M2 screws through the plate halves and the spine (spine_v5.SCREWS), nut under the spine: REF_M2_PLATE_3..6
 SPINE_SCREWS = [(3, 126.381, 42.0), (4, 135.381, 42.0), (5, 121.881, 83.0), (6, 142.881, 83.0)]
 SPINE_SCREW_L = 6
+# ISO 7380 M2 button head (2026-11-11, was the low-head NBK SSH-M2-6 4 x 1.1): k 1.3, dk 3.5 drawn at its max 3.8
+M2_HEAD_H, M2_HEAD_D = 1.3, 3.8
 SPINE_NUT_Z, SPINE_NUT_H, SPINE_NUT_AF = 5.2, 1.6, 4
 # M3 standoff screws (upper from the plate, lower from the case floor) and the magnet above each standoff
 STANDOFFS = [(1, 6.494000000000001, 6.5200000000000005), (2, 6.494000000000001, 87.945), (3, 130.881, 87.945),
@@ -50,7 +52,7 @@ def emit(feature):
     for i, x, y in SPINE_SCREWS:
         name = f'REF_M2_PLATE_{i}'
         screw(name, x, y, f'split_M2_plate_seat_Z-{SPINE_SCREW_L}', SPINE_SCREW_L, '(2 mm) / 2',
-              'split_M2_plate_seat_Z', '1.1', '(4 mm) / 2')
+              'split_M2_plate_seat_Z', str(M2_HEAD_H), f'({M2_HEAD_D:g} mm) / 2')
         sk = feature('sketch', f'{name}_NUT_SK', sketch=hex_sketch(x, y, SPINE_NUT_AF),
                      plane=dict(base=dict(name='XY', type='origin'), distance=str(SPINE_NUT_Z), type='offset'))
         feature('extrude', f'{name}_NUT_HEX', body_names=[f'{name}_NUT'], operation='new_body', profiles=dict(type='all'),

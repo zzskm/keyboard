@@ -146,8 +146,8 @@
    ]
   },
   "PLATE_L_SPLIT_V1": {
-   "shape_sha256": "69a658919c3e6e1304c232e766d02756aa3a42cf4758bfe9ac90b5fb95b7d764",
-   "volume_mm3": 38360.623,
+   "shape_sha256": "2c5adf8571667a5555685ac5bd2f5a11bfd1fa08d88b4e3920bae73f957d3720",
+   "volume_mm3": 38358.487,
    "bbox": [
     [
      -0.393,
@@ -402,18 +402,18 @@
    ]
   },
   "REF_M2_PLATE_1": {
-   "shape_sha256": "ea6b9bb769c0a39cbe7361f4b31f74d0327a5a74802dcaede32711d89df776f8",
-   "volume_mm3": 32.668,
+   "shape_sha256": "30908aebd56258d68c0fa7219a87ec26308ececa90afda6663731b62cdf0c1c4",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     119.7,
-     16.9645,
+     119.8,
+     17.0645,
      4.2
     ],
     [
-     123.7,
-     20.9644,
-     11.3
+     123.6,
+     20.8644,
+     11.5
     ]
    ]
   },
@@ -434,18 +434,18 @@
    ]
   },
   "REF_M2_PLATE_2": {
-   "shape_sha256": "c6fdec972e6a1937b406fcead837677e509e884ab0bb2cb5b65722abc9ec6992",
-   "volume_mm3": 32.668,
+   "shape_sha256": "b47fa17e00d1b84fb46c294c53d03eb19676a7eff50d483366b321114f5a45b9",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     119.7,
-     23.1645,
+     119.8,
+     23.2645,
      4.2
     ],
     [
-     123.7,
-     27.1644,
-     11.3
+     123.6,
+     27.0644,
+     11.5
     ]
    ]
   },
@@ -466,18 +466,18 @@
    ]
   },
   "REF_M2_PLATE_3": {
-   "shape_sha256": "4e22272d06f7d19434238e3c87e9d0b63813b1f6a40822354574589f4f601c58",
-   "volume_mm3": 32.668,
+   "shape_sha256": "66b75e25322178c2c5aeb28f48d61373c660a82a863891037ea5d73de9041248",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     124.381,
-     40.0001,
+     124.481,
+     40.1001,
      4.2
     ],
     [
-     128.381,
-     43.9999,
-     11.3
+     128.281,
+     43.8999,
+     11.5
     ]
    ]
   },
@@ -498,18 +498,18 @@
    ]
   },
   "REF_M2_PLATE_4": {
-   "shape_sha256": "f57b9369659572e162b0459bec5ef29ece54a11d5e8e6ccee0fab740b0e6f52c",
-   "volume_mm3": 32.668,
+   "shape_sha256": "fc96c32d44f194d66a0158520ff8782cf2135ab03fc624b4c4bd04f1ad4ab027",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     133.381,
-     40.0001,
+     133.481,
+     40.1001,
      4.2
     ],
     [
-     137.381,
-     43.9999,
-     11.3
+     137.281,
+     43.8999,
+     11.5
     ]
    ]
   },
@@ -530,18 +530,18 @@
    ]
   },
   "REF_M2_PLATE_5": {
-   "shape_sha256": "556e7a071f72ca375a198e3eb00071b9f0327aefb586fa34abd5fa50efdd16fb",
-   "volume_mm3": 32.668,
+   "shape_sha256": "a633d87390c9bbc160617df9f30102c827908ae47793275bdcd3a1c7cbf9d88e",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     119.881,
-     81.0001,
+     119.981,
+     81.1001,
      4.2
     ],
     [
-     123.881,
-     84.9999,
-     11.3
+     123.781,
+     84.8999,
+     11.5
     ]
    ]
   },
@@ -562,18 +562,18 @@
    ]
   },
   "REF_M2_PLATE_6": {
-   "shape_sha256": "a87f3e5b2a96b999bbf132ddc78e1a7bb7b79061c19a12b6130b624658673ed5",
-   "volume_mm3": 32.668,
+   "shape_sha256": "8ac3e351ab5b3aeb7a93d66d3a8266341203f986013e9c923cea6b6a5ab82dea",
+   "volume_mm3": 33.588,
    "bbox": [
     [
-     140.881,
-     81.0001,
+     140.981,
+     81.1001,
      4.2
     ],
     [
-     144.881,
-     84.9999,
-     11.3
+     144.781,
+     84.8999,
+     11.5
     ]
    ]
   },
@@ -594,17 +594,17 @@
    ]
   },
   "REF_M2_SEAM_FRONT": {
-   "shape_sha256": "0a3ba051b266022d609e5eab521a127b32f63e7709c00a583583bd213e257175",
-   "volume_mm3": 29.527,
+   "shape_sha256": "6c5b18362da6f042c6085a663d1b69b72c9a272f264edeb09072923586e1908f",
+   "volume_mm3": 30.447,
    "bbox": [
     [
-     138.4,
-     4.6001,
-     6.8
+     138.5,
+     4.7001,
+     6.6
     ],
     [
-     142.4,
-     8.5999,
+     142.3,
+     8.4999,
      12.9
     ]
    ]
@@ -1140,8 +1140,8 @@
    ]
   },
   "SEAM_COUPON_S1_L": {
-   "shape_sha256": "0378ae223291af9b300257b6639ad10cefff7ad7f2bf23f079bd344b3783c4fe",
-   "volume_mm3": 1912.558,
+   "shape_sha256": "9acb757d9e80a61df7beaf02585388290776e1da3d4e76ea0a4e357c6159b7b3",
+   "volume_mm3": 1910.422,
    "bbox": [
     [
      118.0,
@@ -1172,8 +1172,8 @@
    ]
   },
   "SEAM_COUPON_S2_L": {
-   "shape_sha256": "44e57e1c561dcc58281daab613a04c922c6fed83c2fbee4c2e1e767cb152d266",
-   "volume_mm3": 1912.558,
+   "shape_sha256": "da04d360311b5ad8dddbb21d7c6c3442f063afb3d738124d66c5cd1501e55f1c",
+   "volume_mm3": 1910.422,
    "bbox": [
     [
      228.0,
@@ -1387,7 +1387,7 @@
   "plate_top_Z": "TBD_frame_T + TBD_standoff_H + TBD_plate_T",
   "seam_M2_X": "140.4 mm",
   "seam_M2_Y": "6.6 mm",
-  "seam_cb_D": "1.2 mm",
+  "seam_cb_D": "1.4 mm",
   "seam_nut_D": "1.3 mm",
   "seam_tab_T": "2.4 mm",
   "side_pair_bridge_W": "8 mm",
@@ -1633,7 +1633,7 @@
   "plate_top_Z": 13.0,
   "seam_M2_X": 140.4,
   "seam_M2_Y": 6.6,
-  "seam_cb_D": 1.2,
+  "seam_cb_D": 1.4,
   "seam_nut_D": 1.3,
   "seam_tab_T": 2.4,
   "side_pair_bridge_W": 8.0,
