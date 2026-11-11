@@ -1,0 +1,4 @@
+# Preserve the archived CAD files byte for byte.
+*.dwg binary
+*.dxf binary
+*.f3d binary
