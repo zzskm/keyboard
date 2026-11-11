@@ -1,27 +1,53 @@
-"""Decoration on the cover top (user 2026-11-10): the name engraved small on the left piece.
+"""Decoration on the cover top (user 2026-11-10, font and text 2026-11-11): the name engraved small on the left piece.
 
-TEXT in a square single-stroke face drawn here (no font file): every letter is straight strokes on a GLYPH_W x
-TEXT_HEIGHT cell, square corners and flat ends, all the same height, the e as three bars. Strokes are TEXT_STROKE wide; with
-bars half a height apart the rib between them is TEXT_HEIGHT / 2 - TEXT_STROKE, which the resin wall rule (1.0)
-keeps from going smaller; letters are TEXT_GAP apart (rib TEXT_GAP - TEXT_STROKE). It sits on L at the top of the left block beside the key
-window (place picked by the user on a screenshot), centred on TEXT_AT.
+TEXT is set in the Xifiction font by Nowak.tv (user 2026-11-11), from dafont: https://www.dafont.com/xifiction.font
+("Free for personal use" there; the file says "freeware [for non-commercial use]"). The
+font file is not committed: FONT_DATA holds only the outlines of the glyphs TEXT uses, flattened to straight
+segments in font units, and `python 46es/tools/cover_pattern_v5.py --font Xifiction.ttf` rewrites it from the TTF.
+The glyphs sit on a 200-unit grid in a 1200 x 1600 cell with a 1399 advance: strokes 400, counters and the gap
+between letters 200 (199), so at TEXT_HEIGHT (the 1600 cell) the stroke is TEXT_HEIGHT / 4 and the narrowest rib
+TEXT_HEIGHT / 8. That rib is below the resin wall rule (1.0) at any size that fits the left block; the user chose
+this place and a smaller size anyway (2026-11-11) and the boss tab carries the same engraving to test it.
+It sits on L at the top of the left block beside the key window (place picked by the user on a screenshot),
+centred on TEXT_AT.
 
 It is cut v5_cover_pattern_depth down from the top (Z 19 -> 18), a blind pocket, nothing goes through. The loops are
-fixed numbers in the sketch, regenerated from these constants (like the window outline). A groove is
+fixed numbers in the sketch, regenerated from these constants and FONT_DATA (like the window outline). A groove is
 (outer loop, [island loops]); the cut leaves the islands standing.
 """
+import json
+from pathlib import Path
+
 from cover_v5 import COVER_L, SPLIT_CUTS
 
 DEPTH = 1.0            # engraving depth (parameter v5_cover_pattern_depth)
-TEXT = '46es'
-TEXT_HEIGHT = 2.8      # letter height on the stroke centre lines (rib between bars 2.8 / 2 - 0.4 = 1.0)
-TEXT_STROKE = 0.4
-GLYPH_W = 1.5          # letter width on the stroke centre lines
-TEXT_GAP = 1.5         # gap between letters (rib 1.1); the name is 4 x 1.5 + 3 x 1.5 + stroke = 10.9 wide
+TEXT = 'kb46es/26'
+TEXT_HEIGHT = 2.0      # glyph cell height (font units 0..1600): stroke 0.5, narrowest rib 0.25, 15.5 wide
 TEXT_AT = (11.0, 40.5)  # centre of the text box: L left block (X -0.4..22, Y 29..45), under its rear edge
 TEXT_EDGE = 1.0        # full-height wall kept from the text to the cover edge and window
+FONT_DATA = Path(__file__).with_name('cover_logo_xifiction.json')
+CURVE_SEGMENTS = 6     # straight segments per quadratic curve when FONT_DATA is written
 # Cover outline: the case inner size minus the cover gap, corner radius TBD_cover_R (cover_v5 outline sketch).
 CASE_IN, PCB0, COVER_GAP, COVER_R_CORNER = (286.381, 95.934), (0.693, 0.667), 0.3, 2.5
+
+
+def font():
+    return json.loads(FONT_DATA.read_text(encoding='utf-8'))
+
+
+def scale():
+    """mm per font unit at TEXT_HEIGHT."""
+    return TEXT_HEIGHT / font()['cell_height']
+
+
+def stroke():
+    """Glyph stroke width in mm (400 units)."""
+    return round(font()['stroke'] * scale(), 4)
+
+
+def rib():
+    """Narrowest rib left standing in mm: counters and the gap between letters (200 units)."""
+    return round(font()['rib'] * scale(), 4)
 
 
 def top_face(windows):
@@ -35,28 +61,75 @@ def top_face(windows):
     return outline.difference(cut), cut
 
 
-def glyphs():
-    """Square single-stroke letters on a GLYPH_W x TEXT_HEIGHT cell, in units of TEXT_HEIGHT: {char: [polyline]}."""
-    w = GLYPH_W / TEXT_HEIGHT
-    return {
-        '4': [[(0, 1), (0, 0.5), (w, 0.5)], [(w, 1), (w, 0)]],
-        '6': [[(w, 1), (0, 1), (0, 0), (w, 0), (w, 0.5), (0, 0.5)]],
-        'e': [[(0, 1), (w, 1)], [(0, 0.5), (w, 0.5)], [(0, 0), (w, 0)]],
-        's': [[(w, 1), (0, 1), (0, 0.5), (w, 0.5), (w, 0), (0, 0)]],
-    }
-
-
 def text_shape():
-    """The name as one shapely geometry: stroke centre lines scaled to TEXT_HEIGHT, widened to TEXT_STROKE with
-    mitred corners and square ends."""
-    from shapely.geometry import LineString
+    """The name as one shapely geometry: the glyph outlines of FONT_DATA scaled to TEXT_HEIGHT, centred on TEXT_AT.
+    Each glyph's contours are combined even-odd (outer ring, counters as holes)."""
+    from shapely.geometry import Polygon
     from shapely.ops import unary_union
-    table = glyphs()
-    width = GLYPH_W * len(TEXT) + TEXT_GAP * (len(TEXT) - 1)
-    x0, y0 = TEXT_AT[0] - width / 2, TEXT_AT[1] - TEXT_HEIGHT / 2
-    lines = [LineString([(x0 + i * (GLYPH_W + TEXT_GAP) + u * TEXT_HEIGHT, y0 + v * TEXT_HEIGHT) for u, v in st])
-             for i, ch in enumerate(TEXT) for st in table[ch]]
-    return unary_union([ln.buffer(TEXT_STROKE / 2, cap_style=3, join_style=2) for ln in lines])
+    data = font()
+    k = scale()
+    advance = [data['glyphs'][ch]['advance'] for ch in TEXT]
+    left, right = data['glyphs'][TEXT[0]]['xmin'], sum(advance[:-1]) + data['glyphs'][TEXT[-1]]['xmax']
+    x0, y0 = TEXT_AT[0] - (left + right) / 2 * k, TEXT_AT[1] - TEXT_HEIGHT / 2
+    out, pen = [], 0.0
+    for ch, adv in zip(TEXT, advance):
+        glyph = Polygon()
+        for ring in data['glyphs'][ch]['contours']:
+            glyph = glyph.symmetric_difference(Polygon([(x0 + (pen + u) * k, y0 + v * k) for u, v in ring]))
+        out.append(glyph)
+        pen += adv
+    return unary_union(out)
+
+
+def write_font_data(ttf):
+    """FONT_DATA from the TTF: the TEXT glyphs' contours, quadratic curves split into CURVE_SEGMENTS lines."""
+    from fontTools.pens.basePen import BasePen
+    from fontTools.ttLib import TTFont
+    from common import write_json
+
+    class Pen(BasePen):
+        def __init__(self, glyphs):
+            super().__init__(glyphs)
+            self.rings, self.ring = [], []
+
+        def _moveTo(self, p):
+            self.ring = [p]
+
+        def _lineTo(self, p):
+            self.ring.append(p)
+
+        def _qCurveToOne(self, a, b):
+            p0 = self.ring[-1]
+            for i in range(1, CURVE_SEGMENTS + 1):
+                t = i / CURVE_SEGMENTS
+                self.ring.append(tuple((1 - t) ** 2 * p0[j] + 2 * (1 - t) * t * a[j] + t * t * b[j] for j in (0, 1)))
+
+        def _curveToOne(self, a, b, c):
+            raise ValueError('cubic outline: expected a TrueType font')
+
+        def _closePath(self):
+            ring = [(round(x, 2), round(y, 2)) for x, y in self.ring]
+            ring = [q for i, q in enumerate(ring) if q != ring[i - 1]]
+            self.rings.append([list(q) for q in ring])
+            self.ring = []
+
+    f = TTFont(ttf)
+    names = {r.nameID: r.toUnicode() for r in f['name'].names if r.platformID == 3}
+    glyph_set, cmap = f.getGlyphSet(), f.getBestCmap()
+    glyphs = {}
+    for ch in sorted(set(TEXT)):
+        g = glyph_set[cmap[ord(ch)]]
+        pen = Pen(glyph_set)
+        g.draw(pen)
+        xs = [x for r in pen.rings for x, _ in r]
+        glyphs[ch] = dict(name=cmap[ord(ch)], advance=g.width, xmin=min(xs), xmax=max(xs), contours=pen.rings)
+    write_json(FONT_DATA, dict(
+        font=names.get(4), version=names.get(5), license=names.get(0), units_per_em=f['head'].unitsPerEm,
+        source='https://www.dafont.com/xifiction.font (Nowak.tv, "Free for personal use")',
+        cell_height=1600, stroke=400, rib=200,
+        note='Outlines of the glyphs in cover_pattern_v5.TEXT only, curves flattened. Rewrite with '
+             'python 46es/tools/cover_pattern_v5.py --font <Xifiction.ttf>',
+        glyphs=glyphs))
 
 
 def _loops(shape):
@@ -119,3 +192,11 @@ def check_levels(levels, top_z, windows, tol=0.02):
             assert abs(faces[floor_z] - floors[name]) <= tol * floors[name], (name, faces[floor_z], floors[name])
             out[name] = dict(floor_Z=floor_z, floor_area_mm2=faces[floor_z], expected_mm2=round(floors[name], 3))
     return out
+
+
+if __name__ == '__main__':
+    import argparse
+    ap = argparse.ArgumentParser(description='Rewrite FONT_DATA from the font file')
+    ap.add_argument('--font', required=True)
+    write_font_data(ap.parse_args().font)
+    print(FONT_DATA, text_shape().bounds)

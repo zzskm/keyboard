@@ -5,9 +5,10 @@
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
   "model/seam_v5_base.json": "af492ddb93c29c88e456976af79410a87f0288525c7f9038fb0a48d53523b910",
-  "tools/build_seam_v5.py": "ast:ccdd149008fb157ae3623de1af7c0d4ce518b49111e28391bc724da7f4593a8c",
-  "tools/coupon_v5.py": "ast:cac1fe415a604120ec5a202db785976180251a44d80e99981126afb9c42d2950",
-  "tools/cover_pattern_v5.py": "ast:6986e5f351504d0e626b0624845c3b00b3deb53d33df583957bfe0563c3364c4",
+  "tools/build_seam_v5.py": "ast:3c1c2d4b31a7645259a2dfeb9c3d3b60ccf87ed0e2da1f84f2162edca988614d",
+  "tools/coupon_v5.py": "ast:fc11d62042ed238df1faf5a0e8b526f9d66d4d2f378526870db907ffc79012b7",
+  "tools/cover_logo_xifiction.json": "953d82c25ee394e16a754c1aa1e1600a6d619a5d716fc815b7df51f3cfa51773",
+  "tools/cover_pattern_v5.py": "ast:ae2d60c0c82573ef7da6fafb3d9f2e94d25b790765155a5bd36d9fc39fb9d3c5",
   "tools/cover_v5.py": "ast:71675a63b6a44021ce62c6ee5fbf7e35c29cb07d265f32194407963470998046",
   "tools/ctrl_v5.py": "ast:1f0f4e73fff0ea917f889020f0fc6ddd55a32a12f63f6b8730a836e1af92082c",
   "tools/hardware_v5.py": "ast:907dcefe4dc8b5123c366efd24cd3937c5f9c112cf4fb8282add7ba7e0962d8b",
@@ -17,7 +18,7 @@
   "tools/spine_v5.py": "ast:ccbb0d545f5d59e578b6a3e0e9bc565e7d2f8d25b4b2fad44754095b9e418fe5"
  },
  "output": "model/46es_mount_seam_v5.sc",
- "output_sha": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
+ "output_sha": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
  "trials_output": "model/ctrl_trials_v5.sc",
- "trials_output_sha": "45461325d905aed2d034f9b8da07f7c04dd2ca1e5785905ad19a808aea39ca8a"
+ "trials_output_sha": "2b3c4134536ad7d325d0363e24bee5cb3670989a52c4ca7c4384309ba933a324"
 }

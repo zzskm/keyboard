@@ -10,10 +10,10 @@ design value 5.4. Now:
   - B coupon: TBD_plate_T thick with the plate's layers; every range is centred on the design value through
     parameter expressions (SMP_* in the trials document), plus the plate leg magnet pocket in MJF.
   - Boss tab: TBD_cover_T thick with the production boss and pockets, and the cover name on its cosmetic face (the
-    face printed down, as the cover top) at the production stroke 0.4 and at twice the size (stroke 0.8, the JLC3DP
-    engraving minimum for SLA), read mirrored in the model so it reads right from that face.
-The hex pockets and the engraving are fixed-number sketches (the hexagon of tools/mounts_v5.py, the letters of
-tools/cover_pattern_v5.py); check() compares the evaluated bodies with volumes and boxes computed from the evaluated
+    face printed down, as the cover top) at the production size (stroke 0.5, rib 0.25) and at 1.6 times it (stroke
+    0.8, the JLC3DP engraving minimum for SLA, rib 0.4), read mirrored in the model so it reads right from that face.
+The hex pockets and the engraving are fixed-number sketches (the hexagon of tools/mounts_v5.py, the glyph outlines
+of tools/cover_pattern_v5.py); check() compares the evaluated bodies with volumes and boxes computed from the evaluated
 parameters.
 """
 import math
@@ -38,7 +38,7 @@ TAB_SIZE = 30.0
 TAB_FLAT = (7.0, 15.0, 23.0)       # flat magnet pockets, X from the tab corner, at Y 6
 TAB_FLAT_Y = 6.0
 # Cover name on the tab's cosmetic face: (scale, centre from the tab corner). Scale 1 is the cover_L engraving.
-TAB_TEXT = {'X1': (1.0, (15.0, 23.5)), 'X2': (2.0, (15.0, 11.0))}
+TAB_TEXT = {'X1': (1.0, (15.0, 23.5)), 'X1_6': (1.6, (15.0, 11.0))}
 TEXT_EDGE = 1.0
 COLOR = [143, 191, 106]
 
@@ -280,5 +280,6 @@ def check(evaluated, production_values):
         hex_AF=list(HEX_AF),
         plate_leg_magnet=[round(values['SMP_legmag_min'] + i * values['SMP_legmag_step'], 3) for i in range(len(ROW_D['LEGMAG']))],
         tab_flat_magnet=[round(values['SMP_magf_min'] + i * values['SMP_magf_step'], 3) for i in range(len(TAB_FLAT))],
-        tab_text_stroke=[round(cover_pattern_v5.TEXT_STROKE * s, 3) for s, _ in TAB_TEXT.values()])
+        tab_text_stroke=[round(cover_pattern_v5.stroke() * s, 3) for s, _ in TAB_TEXT.values()],
+        tab_text_rib=[round(cover_pattern_v5.rib() * s, 3) for s, _ in TAB_TEXT.values()])
     return report

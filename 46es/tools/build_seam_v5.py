@@ -117,7 +117,7 @@ REFERENCE_FEATURES = ('HOUSING_OUTER_REF_WIL', 'HOUSING_CAVITY_TBD', 'HOUSING_PO
 # Everything the production CAD is generated from. check_repository.py recomputes these fingerprints and the
 # output hash, so a commit that changes an input without regenerating the CAD (or the reverse) fails CI.
 BUILD_INPUTS = ('tools/build_seam_v5.py', 'tools/mounts_v5.py', 'tools/ctrl_v5.py', 'tools/cover_v5.py',
-                'tools/cover_pattern_v5.py', 'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/coupon_v5.py',
+                'tools/cover_pattern_v5.py', 'tools/cover_logo_xifiction.json', 'tools/spine_v5.py', 'tools/hardware_v5.py', 'tools/seam_v5.py', 'tools/coupon_v5.py',
                 'tools/make_key_dxf.py',
                 'model/mounts_cadcraft_phase1.dxf', 'inspection/data/features_by_panel.json',
                 'firmware/46es_kbfirmware.json', 'model/seam_v5_base.json')
@@ -765,8 +765,11 @@ def cover_params(doc):
     p = cover_pattern_v5
     new_param('v5_cover_pattern_depth', p.DEPTH, '[v5 사용자 결정 2026-11-10] 커버 윗면 장식 음각 깊이. L 왼쪽 블록 위쪽의 '
               f'이름 "{p.TEXT}" 하나, 관통 없음. 윤곽은 tools/cover_pattern_v5.py에서 재생성하는 고정 숫자')
-    new_param('v5_cover_pattern_text_height', p.TEXT_HEIGHT, '[v5 2026-11-10] 이름 글자 높이(획 중심선 기준, 각진 단일 획)')
-    new_param('v5_cover_pattern_text_stroke', p.TEXT_STROKE, '[v5 2026-11-10] 이름 획 폭(끝·모서리 직각)')
+    new_param('v5_cover_pattern_text_height', p.TEXT_HEIGHT, '[v5 사용자 결정 2026-11-11] 이름 글자 칸 높이(Xifiction 폰트 1600 단위, '
+              'tools/cover_logo_xifiction.json)')
+    new_param('v5_cover_pattern_text_stroke', p.stroke(), '[v5 2026-11-11] 이름 획 폭 = 글자 높이 / 4(폰트 고정 비율, 참고값)')
+    new_param('v5_cover_pattern_text_rib', p.rib(), '[v5 2026-11-11] 이름 글자 안 틈·글자 사이 살 = 글자 높이 / 8(폰트 고정 비율, '
+              '레진 벽 기준 1.0 미달을 사용자가 수용, 보스 탭으로 시험)')
     new_param('v5_cover_pattern_skin', 'v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z - TBD_magnet_T - TBD_magnet_clr',
               '장식 바닥 아래 살의 하한(다리 자석 포켓 위 기준, 보스 자석 포켓은 더 낮음)')
     # --- 2. leg magnets ------------------------------------------------------------------------------

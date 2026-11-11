@@ -1,7 +1,7 @@
 """Find walls thinner than a limit in binary STL parts (for the MJF minimum wall check).
 
 python -I thin_wall_scan.py [--limit 1.0] [--warn 1.5] [--spacing 0.5] [--json OUT.json]
-                            [--map PRINT_SET.json EVAL.json] STL...
+                            [--map PRINT_SET.json EVAL.json] [--exclude REGIONS.json] STL...
 
 From points spread over every facet, a ray goes straight into the material (against the
 facet's outward normal). The distance to where it leaves the part again is the wall thickness
@@ -16,6 +16,12 @@ the limit (or None) is a corner, cusp or wedge tip, not a thin wall.
 --map takes the print-set JSON (file -> body, print_flip_about_X) and a `solidcraft-cli eval`
 JSON (body bbox) and also gives each group in assembly coordinates, undoing
 tools/orient_print_stl.py (turn about X, then box moved to 0,0,0).
+
+--exclude (needs --map) takes {file: [{name, xy: [x0, y0, x1, y1], face: top|bottom, depth}]} in assembly
+coordinates: a region `depth` deep under the body's top or above its bottom face. A group whose box lies inside a
+region is listed under `excluded` (with the region name) instead of `below_limit`, and its walls count in
+`excluded_wall_min_mm`, not in `wall_min_mm`. It is for features thinner than the material wall on purpose
+(the engraved cover name); the caller checks those against their own floor.
 
 numpy and scipy only. Facets must be wound outward (the exported STLs are; checked by the sign of
 the volume).
@@ -183,7 +189,10 @@ def main():
     ap.add_argument('--spacing', type=float, default=0.5)
     ap.add_argument('--json')
     ap.add_argument('--map', nargs=2, metavar=('PRINT_SET', 'EVAL'))
+    ap.add_argument('--exclude')
     args = ap.parse_args()
+    regions = json.load(open(args.exclude, encoding='utf-8')) if args.exclude else {}
+    assert not regions or args.map, '--exclude needs --map'
     sys.stdout.reconfigure(encoding='utf-8')
     pmap = {}
     if args.map:
@@ -209,14 +218,32 @@ def main():
                     g[k + '_assembly'] = [round(float(x), 3) for x in to_assembly(g[k + '_print'], flip, bb)]
                 g['box_assembly'] = [[round(float(x), 2) for x in to_assembly(c, flip, bb)]
                                      for c in g['box_print']]
+        excluded = []
+        for r in regions.get(name, []):
+            flip, bb = pmap[name]
+            x0, y0, x1, y1 = r['xy']
+            z0, z1 = (bb[1][2] - r['depth'], bb[1][2]) if r['face'] == 'top' else (bb[0][2], bb[0][2] + r['depth'])
+            lo, hi = (x0 - .05, y0 - .05, z0 - .05), (x1 + .05, y1 + .05, z1 + .05)
+            for g in gs:
+                if g in excluded:
+                    continue
+                a, b = g['box_assembly']
+                if all(lo[k] <= min(a[k], b[k]) and max(a[k], b[k]) <= hi[k] for k in range(3)):
+                    g['excluded_by'] = r['name']
+                    excluded.append(g)
+        gs = [g for g in gs if g not in excluded]
         fin = th[np.isfinite(th)]
         wall_mins = [g['wall_min_mm'] for g in gs if g['wall_min_mm'] is not None]
+        ex_mins = [g['wall_min_mm'] for g in excluded if g['wall_min_mm'] is not None]
         rec = {'file': name, 'stl_sha256': hashlib.sha256(open(f, 'rb').read()).hexdigest(),
                'facets': int(len(tris)), 'samples': int(len(pts)),
                'min_mm': round(float(fin.min()), 3) if len(fin) else None,
                'wall_min_mm': min(wall_mins) if wall_mins else None,
                'below_limit': [g for g in gs if g['min_mm'] < args.limit],
                'below_warn_count': sum(1 for g in gs if g['min_mm'] >= args.limit)}
+        if name in regions:
+            rec['excluded_wall_min_mm'] = min(ex_mins) if ex_mins else None
+            rec['excluded'] = excluded
         report.append(rec)
         print(f"{name}: facets {rec['facets']}, samples {rec['samples']}, "
               f"min {rec['min_mm']} (walls {rec['wall_min_mm']}), <{args.limit}: {len(rec['below_limit'])}, "

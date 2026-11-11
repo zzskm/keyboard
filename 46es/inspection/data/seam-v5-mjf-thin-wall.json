@@ -433,11 +433,11 @@
   },
   {
    "file": "46es_v5_cover_L",
-   "stl_sha256": "5d14cc870cae6e80893c4e052eaf7a48d41f0282f3f517ad476fdeb46bcba33f",
-   "facets": 3226,
-   "samples": 307032,
-   "min_mm": 0.264,
-   "wall_min_mm": 1.0,
+   "stl_sha256": "71d4036e9dd58271189c4309ac321b9ea97cd5c24d0e667a723b75fbc52abc2a",
+   "facets": 4138,
+   "samples": 386039,
+   "min_mm": 0.031,
+   "wall_min_mm": 1.098,
    "below_limit": [
     {
      "min_mm": 0.264,
@@ -660,7 +660,66 @@
      ]
     }
    ],
-   "below_warn_count": 5
+   "below_warn_count": 4,
+   "excluded_wall_min_mm": 0.249,
+   "excluded": [
+    {
+     "min_mm": 0.031,
+     "points": 1366,
+     "wall_min_mm": 0.249,
+     "wall_points_below_limit": 958,
+     "at_print": [
+      4.665,
+      54.217,
+      0.778
+     ],
+     "to_print": [
+      4.668,
+      54.186,
+      0.778
+     ],
+     "dir_print": [
+      0.093,
+      -0.996,
+      -0.0
+     ],
+     "box_print": [
+      [
+       4.15,
+       53.52,
+       0.07
+      ],
+      [
+       19.03,
+       55.41,
+       0.93
+      ]
+     ],
+     "at_assembly": [
+      4.272,
+      40.75,
+      18.222
+     ],
+     "to_assembly": [
+      4.275,
+      40.781,
+      18.222
+     ],
+     "box_assembly": [
+      [
+       3.76,
+       41.45,
+       18.93
+      ],
+      [
+       18.64,
+       39.56,
+       18.07
+      ]
+     ],
+     "excluded_by": "L_name"
+    }
+   ]
   },
   {
    "file": "46es_v5_cover_T",

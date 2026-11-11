@@ -3,16 +3,16 @@
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:fa43b70a862299fa72e0465d36faaeb7f2a44a7d6021f44f62a9147c9caa9ad6",
   "tools/parts_v5.py": "ast:839720f6bedcab1815303d58dc2dc8c632f4a6606ae74d9b17d691526c492c6c",
-  "model/46es_mount_seam_v5.sc": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
-  "model/ctrl_trials_v5.sc": "45461325d905aed2d034f9b8da07f7c04dd2ca1e5785905ad19a808aea39ca8a",
-  "model/parameters_seam_v5.csv": "f3b581f3845ed2130bb1bdea7f49c72369322d07589d5c23ee68c5850f341523",
-  "inspection/data/seam-v5-baseline.json": "d7071142d8ed3a819d3d8b6c7fe834b9e2f312e0acd373f6787efa89655d05db",
-  "inspection/data/seam-v5-print-set.json": "205ab54dc63a381bb203c21cec4c5ea71a7ad271d2f6f1cd05b536d9cf2b1809",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "3d9874834b9a173fca1a7230dc4076a784a6d4f3a82f6b390704d16d40e92816",
-  "inspection/data/seam-v5-trial-print-set.json": "f91c64fd7238dcd1c13cf6dc0571d04f413baa6f6b621c21637f7e0d5395f6cd"
+  "model/46es_mount_seam_v5.sc": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "model/ctrl_trials_v5.sc": "2b3c4134536ad7d325d0363e24bee5cb3670989a52c4ca7c4384309ba933a324",
+  "model/parameters_seam_v5.csv": "3a272e544bfa80eaf39940d06840eeab0f7aa90340fbe223804b1d45a57a5680",
+  "inspection/data/seam-v5-baseline.json": "c3183f5ac14070f7ca75c66bd55c3f53cb59ca695468ba0cd8ef5378031e6579",
+  "inspection/data/seam-v5-print-set.json": "f9b5e1c6dcfea0759efc58d4ce8a24fc9c582f77ea958ac75eb3b04d6a45d2ce",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "c80901b3676d9e3916fa96273ccf0f1e3b8b0304d7a46b11ff36bc853bd8be8d",
+  "inspection/data/seam-v5-trial-print-set.json": "3ef3dd04d79142f101c1f66ab8899f3ee7615fcd57e5e810a1417039596570be"
  },
- "v5_sha": "92c89b02aaca06a545df367961caca8881276237c2efd4721b202ab63511f9e9",
- "baseline_sha": "d7071142d8ed3a819d3d8b6c7fe834b9e2f312e0acd373f6787efa89655d05db",
+ "v5_sha": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+ "baseline_sha": "c3183f5ac14070f7ca75c66bd55c3f53cb59ca695468ba0cd8ef5378031e6579",
  "baseline_bodies": 76,
  "print_set": [
   {
@@ -71,13 +71,13 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 15.176,
+   "volume_cm3": 15.167,
    "size": [
     101.75,
     95.33,
     7.5
    ],
-   "wall_min_mm": 1.0,
+   "wall_min_mm": 1.098,
    "rel": 6e-06
   },
   {
@@ -145,7 +145,7 @@
  ],
  "timeline": 357,
  "sketches": 81,
- "params": 244,
+ "params": 245,
  "cover_Z": [
   11.5,
   19.0
@@ -154,11 +154,11 @@
  "cover_levels": {
   "COVER_L_DRAFT_TBD": {
    "top_Z": 19.0,
-   "top_area_mm2": 2434.889,
-   "volume_mm3": 15176.1,
+   "top_area_mm2": 2425.891,
+   "volume_mm3": 15167.102,
    "floor_Z": 18.0,
-   "floor_area_mm2": 11.28,
-   "expected_mm2": 11.28
+   "floor_area_mm2": 20.277,
+   "expected_mm2": 20.277
   },
   "COVER_T_DRAFT_TBD": {
    "top_Z": 19.0,
@@ -559,8 +559,8 @@
   {
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
-   "volume_cm3": 15.18,
-   "wall_min_mm": 1.0,
+   "volume_cm3": 15.17,
+   "wall_min_mm": 1.098,
    "stl_volume_rel_err": 6e-06
   },
   {

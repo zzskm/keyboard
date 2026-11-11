@@ -35,6 +35,7 @@ from check_stl import check  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
 from cad_model import shape_digests  # noqa: E402
 from parts_v5 import PARTS, ORDERS, WALL_SCAN  # noqa: E402
+import cover_pattern_v5  # noqa: E402
 
 CACHE = ROOT / '.cache/print_v5'
 PREBUILT = ROOT / '.cache/v5/export'
@@ -218,6 +219,7 @@ def export_order(order, parts, folders, bodies, input_hashes, digests, kept, scr
         subprocess.run([sys.executable, '-I', str(ROOT / 'inspection/scripts/thin_wall_scan.py'),
                         '--limit', str(WALL_SCAN['limit']), '--warn', str(WALL_SCAN['warn']),
                         '--json', str(thin), '--map', str(record_path), str(ev_path),
+                        '--exclude', str(write_engravings(out_dir / 'engravings.json')),
                         *[str(out_dir / (r['file'] + '.stl')) for r in fresh]], check=True, capture_output=True)
         report = json.loads(thin.read_text(encoding='utf-8'))
         scan.update({t['file']: t for t in report['parts']})
@@ -230,6 +232,9 @@ def export_order(order, parts, folders, bodies, input_hashes, digests, kept, scr
         wall = t['wall_min_mm']
         if wall is not None and wall < part.wall_limit - 0.001:
             raise ValueError(f"{r['file']}: wall {wall} mm is below {part.wall_limit} mm")
+        rib = t.get('excluded_wall_min_mm')
+        if rib is not None and rib < cover_pattern_v5.rib() - 0.02:
+            raise ValueError(f"{r['file']}: engraved name rib {rib} mm is below the font rib {cover_pattern_v5.rib()} mm")
         rows.append(dict(file=r['file'], material=r['material'], volume_cm3=round(r['cad_volume_mm3'] / 1000, 2),
                          size=r['print_bbox_mm'], wall_min_mm=t['wall_min_mm'], min_mm=t['min_mm']))
     folder = ROOT / 'model/print_v5' / order
@@ -240,6 +245,19 @@ def export_order(order, parts, folders, bodies, input_hashes, digests, kept, scr
     targets[record_path] = paths['record']
     publish(order, scratch, targets, {p.source: input_hashes[p.source] for p in parts})
     return rows
+
+
+def write_engravings(path):
+    """thin_wall_scan.py --exclude regions: the engraved cover name and its boss tab copies. Its ribs are the font's
+    (cover_pattern_v5.rib(), 0.25 at the production size), below the resin wall on purpose (user 2026-11-11); export
+    checks them against that rib instead of the material wall."""
+    import coupon_v5
+    regions = {'46es_v5_cover_L': [dict(name='L_name', xy=list(cover_pattern_v5.text_shape().bounds), face='top',
+                                        depth=cover_pattern_v5.DEPTH)],
+               '46es_v5_boss_tab': [dict(name=f'tab_text_{k}', xy=list(shape.bounds), face='bottom',
+                                         depth=cover_pattern_v5.DEPTH) for k, shape in coupon_v5.tab_texts().items()]}
+    write_json(path, regions)
+    return path
 
 
 def publish(order, scratch, targets, input_hashes):

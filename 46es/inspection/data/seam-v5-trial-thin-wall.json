@@ -15,13 +15,128 @@
   },
   {
    "file": "46es_v5_boss_tab",
-   "stl_sha256": "cb000bc1cfaaab1cdb3c75fc20acb05eded26493739562b2bd60e4f6c1b3f1c8",
-   "facets": 6940,
-   "samples": 177220,
-   "min_mm": 1.0,
-   "wall_min_mm": 1.0,
+   "stl_sha256": "9cf4f476bb70ef0b226e6b9a4f72fa87853e5bc7c7892509edab1387ce932d61",
+   "facets": 7920,
+   "samples": 189224,
+   "min_mm": 0.032,
+   "wall_min_mm": 1.099,
    "below_limit": [],
-   "below_warn_count": 2
+   "below_warn_count": 1,
+   "excluded_wall_min_mm": 0.249,
+   "excluded": [
+    {
+     "min_mm": 0.032,
+     "points": 1360,
+     "wall_min_mm": 0.249,
+     "wall_points_below_limit": 959,
+     "at_print": [
+      21.728,
+      23.75,
+      0.778
+     ],
+     "to_print": [
+      21.725,
+      23.781,
+      0.778
+     ],
+     "dir_print": [
+      -0.093,
+      0.996,
+      -0.0
+     ],
+     "box_print": [
+      [
+       7.37,
+       22.56,
+       0.07
+      ],
+      [
+       22.24,
+       24.44,
+       0.93
+      ]
+     ],
+     "at_assembly": [
+      181.728,
+      -276.25,
+      0.778
+     ],
+     "to_assembly": [
+      181.725,
+      -276.219,
+      0.778
+     ],
+     "box_assembly": [
+      [
+       167.37,
+       -277.44,
+       0.07
+      ],
+      [
+       182.24,
+       -275.56,
+       0.93
+      ]
+     ],
+     "excluded_by": "tab_text_X1"
+    },
+    {
+     "min_mm": 0.05,
+     "points": 1548,
+     "wall_min_mm": 0.398,
+     "wall_points_below_limit": 1227,
+     "at_print": [
+      25.765,
+      11.399,
+      0.778
+     ],
+     "to_print": [
+      25.76,
+      11.45,
+      0.778
+     ],
+     "dir_print": [
+      -0.093,
+      0.996,
+      -0.0
+     ],
+     "box_print": [
+      [
+       2.74,
+       9.49,
+       0.05
+      ],
+      [
+       26.59,
+       12.51,
+       0.95
+      ]
+     ],
+     "at_assembly": [
+      185.765,
+      -288.601,
+      0.778
+     ],
+     "to_assembly": [
+      185.76,
+      -288.55,
+      0.778
+     ],
+     "box_assembly": [
+      [
+       162.74,
+       -290.51,
+       0.05
+      ],
+      [
+       186.59,
+       -287.49,
+       0.95
+      ]
+     ],
+     "excluded_by": "tab_text_X1_6"
+    }
+   ]
   },
   {
    "file": "46es_v5_seam_coupon_S0_L",

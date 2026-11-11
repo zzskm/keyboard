@@ -208,9 +208,10 @@ v5_cover_silhouette_close_r,mm,0.0,0,"[v5 2026-11-09] 오목 모서리 둥글림
 v5_cover_silhouette_fill_L,mm,16.0,16,[v5 2026-11-09] 가로/세로 선분 닫힘 길이. 이보다 좁은 틈·쐐기를 직선으로 메움(계단 모서리 유지),false
 v5_cover_silhouette_min_rail,mm,1.1,1.1,[v5 2026-11-10] 커버 외곽 안쪽 최소 살 폭(창을 이 선에서 자름). 9·31·40번 키캡+여유가 외곽 1.16 안까지 와서 1.1(레진 벽 한계 1.0),false
 v5_cover_silhouette_res,mm,0.1,0.1,[v5 2026-11-09] 래스터 해상도,false
-v5_cover_pattern_depth,mm,1.0,1,"[v5 사용자 결정 2026-11-10] 커버 윗면 장식 음각 깊이. L 왼쪽 블록 위쪽의 이름 ""46es"" 하나, 관통 없음. 윤곽은 tools/cover_pattern_v5.py에서 재생성하는 고정 숫자",false
-v5_cover_pattern_text_height,mm,2.8,2.8,"[v5 2026-11-10] 이름 글자 높이(획 중심선 기준, 각진 단일 획)",false
-v5_cover_pattern_text_stroke,mm,0.4,0.4,[v5 2026-11-10] 이름 획 폭(끝·모서리 직각),false
+v5_cover_pattern_depth,mm,1.0,1,"[v5 사용자 결정 2026-11-10] 커버 윗면 장식 음각 깊이. L 왼쪽 블록 위쪽의 이름 ""kb46es/26"" 하나, 관통 없음. 윤곽은 tools/cover_pattern_v5.py에서 재생성하는 고정 숫자",false
+v5_cover_pattern_text_height,mm,2.0,2,"[v5 사용자 결정 2026-11-11] 이름 글자 칸 높이(Xifiction 폰트 1600 단위, tools/cover_logo_xifiction.json)",false
+v5_cover_pattern_text_stroke,mm,0.5,0.5,"[v5 2026-11-11] 이름 획 폭 = 글자 높이 / 4(폰트 고정 비율, 참고값)",false
+v5_cover_pattern_text_rib,mm,0.25,0.25,"[v5 2026-11-11] 이름 글자 안 틈·글자 사이 살 = 글자 높이 / 8(폰트 고정 비율, 레진 벽 기준 1.0 미달을 사용자가 수용, 보스 탭으로 시험)",false
 v5_cover_pattern_skin,mm,v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z - TBD_magnet_T - TBD_magnet_clr,2.9,"장식 바닥 아래 살의 하한(다리 자석 포켓 위 기준, 보스 자석 포켓은 더 낮음)",false
 v5_legmag_plate_clr,mm,0.15,0.15,"[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, 헐거우면 에폭시로 채움(plate 재출력 없음)",false
 v5_legpad_L,mm,8,8,[v5 설계 후보] 다리 자석 자리에서 plate 가장자리 단차(rabbet)를 메우는 받침 길이(X),false
