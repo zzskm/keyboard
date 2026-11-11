@@ -18,7 +18,7 @@ fixed numbers in the sketch, regenerated from these constants and FONT_DATA (lik
 import json
 from pathlib import Path
 
-from cover_v5 import COVER_L, SPLIT_CUTS
+from cover_v5 import COVER_L
 
 DEPTH = 1.0            # engraving depth (parameter v5_cover_pattern_depth)
 TEXT = 'kb46es/26'
@@ -51,13 +51,13 @@ def rib():
 
 
 def top_face(windows):
-    """Plan polygon of the cover top face: outline minus the split cut and the silhouette window."""
+    """Plan polygon of the cover top face: outline minus the window cut (silhouette and split gaps)."""
     from shapely.geometry import Polygon, box
     from shapely.ops import unary_union
     x0, y0 = COVER_GAP - PCB0[0], COVER_GAP - PCB0[1]
     x1, y1 = CASE_IN[0] - PCB0[0] - COVER_GAP, CASE_IN[1] - PCB0[1] - COVER_GAP
     outline = box(x0, y0, x1, y1).buffer(-COVER_R_CORNER).buffer(COVER_R_CORNER)
-    cut = unary_union([Polygon(p) for p in SPLIT_CUTS] + [Polygon(p) for p in windows])
+    cut = unary_union([Polygon(p) for p in windows])
     return outline.difference(cut), cut
 
 

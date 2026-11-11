@@ -2,8 +2,8 @@
  "about": "Expected v5 state: verify_seam_v5.py fails on any difference; --accept rewrites this file and prints the differences for the commit message. check_repository.py compares the fingerprints.",
  "bodies": {
   "COVER_L_DRAFT_TBD": {
-   "shape_sha256": "cac51c1a0ac05b87e2955d53cc960e1ed60b7618d1d203c1554c50409035eabd",
-   "volume_mm3": 15167.102,
+   "shape_sha256": "56c58794460456d8bca47826f69c93308603b4210472121680749794577dce7a",
+   "volume_mm3": 15570.385,
    "bbox": [
     [
      -0.393,
@@ -11,15 +11,15 @@
      11.5
     ],
     [
-     101.3538,
+     101.3543,
      94.967,
      19.0
     ]
    ]
   },
   "COVER_R_DRAFT_TBD": {
-   "shape_sha256": "011d79fef00a281179696866bb2628ccfc9ec274b9ded1d59616ceaeca9d38e0",
-   "volume_mm3": 15377.575,
+   "shape_sha256": "efb6447b78bb15d5d30c77a22f40d76f2c847371bee7ea36499dbbc0236499a0",
+   "volume_mm3": 15756.633,
    "bbox": [
     [
      156.7139,
@@ -34,16 +34,16 @@
    ]
   },
   "COVER_T_DRAFT_TBD": {
-   "shape_sha256": "88fd05da00812af994d6e97f86c81e0d689e084366a58e5fb152d9b8c7b7400a",
-   "volume_mm3": 14030.884,
+   "shape_sha256": "d7cfc36630ac23f4b7f8c275636e72f8d633f8da51ccfbd64ccf67fb1cebef0a",
+   "volume_mm3": 14187.233,
    "bbox": [
     [
-     87.0353,
+     87.6835,
      -0.367,
      11.5
     ],
     [
-     174.5355,
+     174.0312,
      94.967,
      19.0
     ]

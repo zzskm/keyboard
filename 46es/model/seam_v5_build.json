@@ -5,11 +5,11 @@
   "inspection/data/features_by_panel.json": "371b21a41b714b1694d1f7c43e97121821d22f60dd8840bea91220dcb88d0c14",
   "model/mounts_cadcraft_phase1.dxf": "0c1d6a19dfcd5f497324b863b13b00dd70950787ee53dd50ac03e740cdf9a7a9",
   "model/seam_v5_base.json": "af492ddb93c29c88e456976af79410a87f0288525c7f9038fb0a48d53523b910",
-  "tools/build_seam_v5.py": "ast:3c1c2d4b31a7645259a2dfeb9c3d3b60ccf87ed0e2da1f84f2162edca988614d",
+  "tools/build_seam_v5.py": "ast:0a906a2ec9d9b5d5ff0afd09118306fbb9d79bbebf078390e60dece19ac78b58",
   "tools/coupon_v5.py": "ast:fc11d62042ed238df1faf5a0e8b526f9d66d4d2f378526870db907ffc79012b7",
   "tools/cover_logo_xifiction.json": "953d82c25ee394e16a754c1aa1e1600a6d619a5d716fc815b7df51f3cfa51773",
-  "tools/cover_pattern_v5.py": "ast:ae2d60c0c82573ef7da6fafb3d9f2e94d25b790765155a5bd36d9fc39fb9d3c5",
-  "tools/cover_v5.py": "ast:71675a63b6a44021ce62c6ee5fbf7e35c29cb07d265f32194407963470998046",
+  "tools/cover_pattern_v5.py": "ast:a024f7c5be6c70ed25541b8118ba6c4e195937e18e920362ac12063d22eebd9d",
+  "tools/cover_v5.py": "ast:f51ff8618d92471353b1f7adcad2c7dcc415cdf9b1a4d0b5d12e4c8155f909c1",
   "tools/ctrl_v5.py": "ast:1f0f4e73fff0ea917f889020f0fc6ddd55a32a12f63f6b8730a836e1af92082c",
   "tools/hardware_v5.py": "ast:907dcefe4dc8b5123c366efd24cd3937c5f9c112cf4fb8282add7ba7e0962d8b",
   "tools/make_key_dxf.py": "ast:55f2262eea711da74fb9777051a6e0c954e537eec613ff83925822c7b9829a52",
@@ -18,7 +18,7 @@
   "tools/spine_v5.py": "ast:ccbb0d545f5d59e578b6a3e0e9bc565e7d2f8d25b4b2fad44754095b9e418fe5"
  },
  "output": "model/46es_mount_seam_v5.sc",
- "output_sha": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+ "output_sha": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
  "trials_output": "model/ctrl_trials_v5.sc",
- "trials_output_sha": "2b3c4134536ad7d325d0363e24bee5cb3670989a52c4ca7c4384309ba933a324"
+ "trials_output_sha": "2af712d5129d8facf24cb6f6cc3a4da3ee49becddb7b09000d50952565141536"
 }

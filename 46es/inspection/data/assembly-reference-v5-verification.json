@@ -35,10 +35,10 @@
   "ok": true,
   "inputs": {
     "inspection/scripts/verify_assembly_reference_v5.py": "ast:370f6d54c3d2ad0921ce2477ac022996651685a22c80fccb0827617b5be80bf9",
-    "model/46es_assembly_review_v5.sc": "ae524ec8bd4b7eeaf8f70065ed12e7ad5791a8f3da37e028487bd7b002ee3f59",
-    "model/assembly_reference_v5.json": "1d88d63ceb628e07bcf3e21ec64ff520d633745f213baf4ac3912b1e8a04040d",
-    "model/46es_mount_seam_v5.sc": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
-    "inspection/data/seam-v5-trial-print-set.json": "3ef3dd04d79142f101c1f66ab8899f3ee7615fcd57e5e810a1417039596570be"
+    "model/46es_assembly_review_v5.sc": "46a48871c53d05628ad6858b102a0e6406f9f65bdcd37be8553d8d965f28a73b",
+    "model/assembly_reference_v5.json": "4f0b4d48fe8f3f119bf38d536cb9ee4c312486a8189e4b2c020e53f8fe2def75",
+    "model/46es_mount_seam_v5.sc": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
+    "inspection/data/seam-v5-trial-print-set.json": "ab440e790dc3947f49cc82e0ad81be20b8f3e2fc733d1a4b4a76b5d278d8c570"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -115,21 +115,21 @@
       }
     }
   },
-  "model_sha": "ae524ec8bd4b7eeaf8f70065ed12e7ad5791a8f3da37e028487bd7b002ee3f59",
-  "source_sha": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "model_sha": "46a48871c53d05628ad6858b102a0e6406f9f65bdcd37be8553d8d965f28a73b",
+  "source_sha": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
   "rim_Z": 14.000000000000007,
-  "cover_top_Z": 19.000000000000007,
+  "cover_top_Z": 18.999999999999996,
   "cover_above_rim_mm": 5.0,
   "cover_levels": {
     "COVER_L_DRAFT_TBD": {
       "18.0": 20.277,
-      "19.0": 2425.891
+      "19.0": 2493.247
     },
     "COVER_T_DRAFT_TBD": {
-      "19.0": 2294.74
+      "19.0": 2320.967
     },
     "COVER_R_DRAFT_TBD": {
-      "19.0": 2461.08
+      "19.0": 2524.426
     }
   },
   "keycap": {
@@ -167,18 +167,18 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          41,
-          1.095,
-          "COVER_R_DRAFT_TBD"
-        ],
-        [
           36,
           1.097,
           "COVER_R_DRAFT_TBD"
         ],
         [
-          46,
+          23,
           1.098,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          19,
+          1.1,
           "COVER_R_DRAFT_TBD"
         ]
       ]
@@ -214,18 +214,18 @@
           "COVER_T_DRAFT_TBD"
         ],
         [
-          41,
-          1.095,
-          "COVER_R_DRAFT_TBD"
-        ],
-        [
           36,
           1.097,
           "COVER_R_DRAFT_TBD"
         ],
         [
-          46,
+          23,
           1.098,
+          "COVER_T_DRAFT_TBD"
+        ],
+        [
+          19,
+          1.1,
           "COVER_R_DRAFT_TBD"
         ]
       ]

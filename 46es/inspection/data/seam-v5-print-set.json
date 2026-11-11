@@ -19,7 +19,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "53d73bb4394823a54917cfe5c07afce799e3e1d237358ac321e8e40bb8ab46b8",
   "step_sha256": "c1a92f17d1394674bae56211fc970226ddf1ab69271e5182eceee6eee1c98b1d",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
   "shape_sha256": "69a658919c3e6e1304c232e766d02756aa3a42cf4758bfe9ac90b5fb95b7d764"
  },
  {
@@ -42,7 +42,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "d0200da2f4c339a17916b578a318e739c6898405cc8abbc54f8aa4d241df85c4",
   "step_sha256": "38a87b542589c7b18ce228331c16cdf8eb754c04e03d60964de519b8bad29539",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
   "shape_sha256": "8e4ccb3c92af4c0d7987cb8566830eb07383aab79bd4fcf7a18842ece1f2bc82"
  },
  {
@@ -65,7 +65,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "5a3c02870ad1b7f82ff499dc9718d9385ce87af856a06f9e32002e72b3b99870",
   "step_sha256": "91e30501384fd6a5e1404321411568f4021343f7b208e78037e2fb58cd9b2fa5",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
   "shape_sha256": "a8a605fb5562840e835ebf9e814eedcf7cc6530287b2e37bd93e7d4f250d9fb5"
  },
  {
@@ -88,7 +88,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "60aa77a29fc7a3398c3e0372fb5c05504b22bd46b6447177766a43868cd7b388",
   "step_sha256": "14edf20aecbe9406f547d331c72a75e12acfa01e86c624d05387a6774e05e3ee",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
   "shape_sha256": "ab53b867d3223b53cba27765acac5fb761c858d14e40e2aea808b3c9f95d66e0"
  },
  {
@@ -97,11 +97,11 @@
   "body": "COVER_L_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 15167.1024,
-  "stl_triangles": 4138,
+  "cad_volume_mm3": 15570.3846,
+  "stl_triangles": 3616,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 15167.011,
+  "stl_volume_mm3": 15570.2925,
   "stl_rel_volume_error": 6e-06,
   "print_bbox_mm": [
    101.747,
@@ -109,10 +109,10 @@
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "71d4036e9dd58271189c4309ac321b9ea97cd5c24d0e667a723b75fbc52abc2a",
-  "step_sha256": "2e7ea9f6ea5e9d8f95bbc39e6d1443164a1c39a012c322a8de925c7b97988994",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
-  "shape_sha256": "cac51c1a0ac05b87e2955d53cc960e1ed60b7618d1d203c1554c50409035eabd"
+  "stl_sha256": "6a63b7a90a175588f55f8392dbcbbe999124427a5916f28da6366935b5f58b85",
+  "step_sha256": "af362fe8f9463d67e1b3bdd57cb62c050b171eb86fd4241c4cf65ac932c8fd1c",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
+  "shape_sha256": "56c58794460456d8bca47826f69c93308603b4210472121680749794577dce7a"
  },
  {
   "order": "order2",
@@ -120,22 +120,22 @@
   "body": "COVER_T_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 14030.8841,
-  "stl_triangles": 1812,
+  "cad_volume_mm3": 14187.2331,
+  "stl_triangles": 1732,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 14030.8393,
+  "stl_volume_mm3": 14187.1889,
   "stl_rel_volume_error": 3e-06,
   "print_bbox_mm": [
-   87.5,
+   86.348,
    95.334,
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "b9155f62e60b2b7741196048e65e7b681699d9b86f64ef265797205f9df2b22c",
-  "step_sha256": "a07f55e007d1249d3a6fc3b919f2a7f2da93509a7a3ac51d593bd6137455d06b",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
-  "shape_sha256": "88fd05da00812af994d6e97f86c81e0d689e084366a58e5fb152d9b8c7b7400a"
+  "stl_sha256": "d5760df308a8e53ef335d31f5666d3b4d0720ce87d8b4e962f79084fad1abcb1",
+  "step_sha256": "9ae829517da0331070c0c6aac2fc5b3be5e6356a78a5b79c530c6280e7d406b7",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
+  "shape_sha256": "d7cfc36630ac23f4b7f8c275636e72f8d633f8da51ccfbd64ccf67fb1cebef0a"
  },
  {
   "order": "order2",
@@ -143,11 +143,11 @@
   "body": "COVER_R_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 15377.5752,
-  "stl_triangles": 3136,
+  "cad_volume_mm3": 15756.6329,
+  "stl_triangles": 2702,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 15377.4989,
+  "stl_volume_mm3": 15756.5553,
   "stl_rel_volume_error": 5e-06,
   "print_bbox_mm": [
    128.674,
@@ -155,9 +155,9 @@
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "0d5ef01e455606b81efdaf2745719b23c081a69b36249d97e926c55ef738b618",
-  "step_sha256": "7806307e779118c8397b1aaef561bf2990dd9131846eee31be8b985351a1045c",
-  "source_sha256": "49d16b0b95a8a554cd9ba50a8c236af7695dd12372f707ad450c9eb3c5d5b1bf",
-  "shape_sha256": "011d79fef00a281179696866bb2628ccfc9ec274b9ded1d59616ceaeca9d38e0"
+  "stl_sha256": "00a1a70d27cad3de01b528ca8e646a2b70390e65362117acc07d33d137d39a16",
+  "step_sha256": "d286f1fdcda9f37436970739a9191001f0dea03693cf7fea799cd75720397f9a",
+  "source_sha256": "da5de6ecbc2c1995d394a10cd1fe2e2a21c65663a4a76888bc28dcdf489ed86d",
+  "shape_sha256": "efb6447b78bb15d5d30c77a22f40d76f2c847371bee7ea36499dbbc0236499a0"
  }
 ]

@@ -1,15 +1,18 @@
-"""The three cover pieces' base shape: outline slab, edge lip, the r2 P4 cut that splits it into L/T/R, magnet bosses.
+"""The three cover pieces' base shape: outline slab, edge lip, the window cut that splits it into L/T/R, magnet bosses.
 
 Moved out of model/seam_v5_base.json into code on 2026-11-10 (plan 4-5, step 2). The features are the base's, in the
 same order, with the same expressions and the same stored sketch coordinates; they now run after the base timeline.
 Only cover features touch the cover bodies, so every body's BRep stayed identical (checked with build_seam_v5.py
 --probe against the committed CAD and the order-2 export hashes).
 
-build_seam_v5.py then cuts the silhouette window, the leg magnet pockets and the lip reliefs into these bodies.
+The outline is the base's constrained corner rectangle (it follows the case parameters), copied exactly, last digits
+and constraint order included, because a different solve rebuilds the covers with different BRep bytes.
 
-The outline is the base's constrained corner rectangle (it follows the case parameters); the split cut is fixed
-numbers as the r2-era sketch stored them. Both are copied exactly, last digits and constraint order included,
-because a different solve or a rounded value rebuilds the covers with different BRep bytes.
+Since 2026-11-11 the cut that parts the slab is the cover window itself (build_seam_v5.cover_windows(): the key block
+silhouettes joined with straight split gaps through the rail above keys 9 and 31 and below keys 22 and 40). Before,
+it was the r2 P4 window outline and the silhouette window was cut afterwards; the two differed by up to 2.3 mm and
+left small jogs (git show 09b16b0:46es/tools/cover_v5.py for the r2 numbers). build_seam_v5.py then cuts the
+decoration, the leg magnet pockets and the lip reliefs into these bodies.
 """
 
 COVER_L, COVER_T, COVER_R = 'COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD'
@@ -43,30 +46,8 @@ OUTLINE_CONSTRAINTS = [
     dict(a=2, b=7, id='k18', type='tangent'), dict(a=3, b=7, id='k19', type='tangent'), dict(a=4, b=7, id='k20', type='equal'),
 ]
 
-# r2 P4 window outlines left and right of the centre piece. Cutting them through the slab leaves three bodies:
-# L (the remainder keeps the name), T and R. The silhouette window later replaces the key openings.
-SPLIT_CUTS = [
-    [(68.23719, 95.133), (67.763028, 90.621651), (45.57334, 91.784563), (45.205813, 84.771729), (26.18192, 85.768729),
-     (26.18192, 82.77284), (7.00102, 83.76984), (5.007, 45.721654), (24.030892, 44.724655), (23.19089, 28.696451),
-     (20.205683, 28.696451), (19.21686, 9.828577), (52.521155, 8.083173), (52.888716, 15.096664), (71.912609, 14.099664),
-     (71.241107, 10.269195), (101.487521, 4.389888), (100.504561, -0.667), (100.504561, -3.667), (117.638797, -3.667),
-     (117.638797, -0.667), (121.632661, 19.879647), (117.997711, 20.58621), (128.902558, 76.686793),
-     (108.088247, 80.732686), (108.549698, 83.646172), (86.551018, 87.130421), (87.392122, 95.133),
-     (87.392122, 98.133), (68.23719, 98.133)],
-    [(174.176011, 95.133), (175.017116, 87.130421), (153.018436, 83.646172), (153.485693, 80.696031),
-     (132.859956, 76.686793), (143.764803, 20.58621), (141.129854, 20.074027), (145.161501, -0.667),
-     (145.161501, -3.667), (157.439305, -3.667), (157.439305, -0.667), (156.59552, 3.673899), (182.166146, 8.644325),
-     (181.707415, 11.004289), (200.61542, 13.3259), (200.451027, 14.664774), (223.213426, 15.857701),
-     (224.074473, 6.015885), (243.051982, 7.676202), (243.466958, 2.933), (262.444467, 4.593317),
-     (262.029491, 9.336519), (281.007, 10.996836), (279.346666, 29.974544), (260.369157, 28.314227),
-     (259.123799, 42.548733), (256.738358, 42.340034), (256.157, 53.433), (281.007, 53.433), (281.007, 91.533),
-     (257.157, 91.533), (257.157, 83.90557), (235.543222, 82.77284), (235.386214, 85.768729), (216.362321, 84.771729),
-     (215.994794, 91.784563), (193.805106, 90.621651), (193.330944, 95.133), (193.330944, 98.133), (174.176011, 98.133)],
-]
-
-# Names of the two pieces the split cut makes, in the order the cut returns them when it runs after the base timeline
-# (between the plate features, as in the base, the order was T, R). The order is the kernel's, not ours: check()
-# fails the build if a piece ends up under the wrong name.
+# Names of the two pieces the split cut makes, in the order the kernel returns them. The order is the kernel's, not
+# ours: check() fails the build if a piece ends up under the wrong name.
 SPLIT_NAMES = [COVER_R, COVER_T]
 # Plan X range each piece must fall in (centre piece between the two split cuts).
 PIECE_X = {COVER_L: (-1, 102), COVER_T: (86, 176), COVER_R: (156, 286)}
@@ -116,8 +97,9 @@ def polygons_sketch(polygons):
     return dict(constraints=constraints, counters=dict(k=n, l=n, p=n), curves=curves, points=pts)
 
 
-def emit(feature):
-    """Append the cover pieces to the timeline through build_seam_v5.helpers' feature()."""
+def emit(feature, windows):
+    """Append the cover pieces to the timeline through build_seam_v5.helpers' feature(); windows are the two plan
+    polygons of build_seam_v5.cover_windows()."""
     sk = feature('sketch', 'SK30_COVER_DRAFT_TBD', plane=plane(PLATE_TOP), sketch=outline_sketch())
     feature('extrude', 'COVER_DRAFT_TBD', body_names=[COVER_L], operation='new_body', sketch=sk,
             extent=dict(convention='total_distance', direction='positive', distance='TBD_cover_T'),
@@ -125,10 +107,10 @@ def emit(feature):
     for name, x, y, length, width in LIPS:
         feature('box', name, operation='join', participants=[COVER_L], corner=[x, y, f'{PLATE_TOP} - TBD_cover_lip_H'],
                 length=length, width=width, height='TBD_cover_lip_H')
-    sk = feature('sketch', 'SK34_COVER_WINDOWS_REF_r2_P4_NOT_FOR_PRODUCTION', plane=plane(f'{PLATE_TOP} + TBD_cover_T'),
-                 sketch=polygons_sketch(SPLIT_CUTS))
-    feature('extrude', 'COVER_WINDOWS_REF_r2_P4', body_names=SPLIT_NAMES, operation='cut', sketch=sk,
-            extent=dict(convention='total_distance', direction='negative', distance='TBD_cover_T + TBD_cover_lip_H'),
+    sk = feature('sketch', 'SK35_COVER_SILHOUETTE_V5', plane=plane(f'{PLATE_TOP} + TBD_cover_T'),
+                 sketch=polygons_sketch(windows))
+    feature('extrude', 'COVER_SILHOUETTE_V5', body_names=SPLIT_NAMES, operation='cut', sketch=sk,
+            extent=dict(convention='total_distance', direction='negative', distance='TBD_cover_T + TBD_cover_lip_H + 0.5'),
             profiles=dict(type='all'), targets=[COVER_L])
     so = lambda i: [f'REF_SO_dX{i} - TBD_pcb0_dx', f'REF_SO_dY{i} - TBD_pcb0_dy']
     for i, body in BOSSES:

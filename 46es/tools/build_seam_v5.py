@@ -390,9 +390,11 @@ def cover_windows():
     import numpy, scipy, shapely
     import make_key_dxf
     sources = [inspect.getsource(f) for f in (cover_window_cuts, silhouette_polys, _trace_boundary, _dp, key_rects,
-                                              overlap, make_key_dxf.rect, make_key_dxf.load_keys)]
+                                              overlap, make_key_dxf.rect, make_key_dxf.load_keys, split_gaps,
+                                              clean_outline, _line_cross, _turn)]
     key_data = dict(keys=load_keys(.693, .667), silhouette=COVER_SILHOUETTE, edge_gap=COVER_EDGE_GAP,
                     magnets=LEG_MAGNETS, pocket_r=LEGMAG_POCKET_R, window_wall=LEGMAG_WINDOW_WALL, margin=KEY_MARGIN,
+                    splits=COVER_SPLITS, clean=COVER_CLEAN,
                     cap=CAP_1U, sources=sources, versions=[numpy.__version__, scipy.__version__, shapely.__version__])
     digest = hashlib.sha256(json.dumps(key_data, sort_keys=True, default=str).encode()).hexdigest()[:16]
     cached = CACHE / 'prep' / f'cover_windows_{digest}.json'
@@ -405,14 +407,15 @@ def cover_windows():
 
 
 def cover_window_cuts():
-    """Plan polygons of the cover window cuts (GH60 PCB coordinates)."""
+    """Plan polygons of the cover cut, one per key block (GH60 PCB coordinates): the silhouette window joined with
+    the split gaps that part the slab into L/T/R (COVER_SPLITS), its outline cleaned of small kinks (clean_outline)."""
     in_w, in_d, gap = 286.381, 95.934, COVER_EDGE_GAP
     edge = (-.693 + gap, in_w - .693 - gap, -.667 + gap, in_d - .667 - gap)
     s = COVER_SILHOUETTE
     keys = load_keys(.693, .667)
     polys, _, _ = silhouette_polys(keys, cell=s['cell'], close_r=s['close_r'], min_rail=s['min_rail'],
                                    edge=edge, res=s['res'], fill_L=s['fill_L'], width='w_u')
-    from shapely.geometry import Polygon, Point
+    from shapely.geometry import Polygon, Point, box
     from shapely.ops import unary_union
     # The leg magnets were placed against the per-key window (wall 1.17-1.18); the silhouette's 0.15 oversize came within 0.98
     # of the L pocket. Moving the magnet would move the plate pocket, so the window keeps clear of both pockets.
@@ -421,11 +424,126 @@ def cover_window_cuts():
     shapes = [Polygon(p).buffer(0).difference(keep) for p in polys]
     polys = [[(round(x, 4), round(y, 4)) for x, y in g.exterior.coords[:-1]]
              for s in shapes for g in getattr(s, 'geoms', [s])]
+    gaps = split_gaps(keys)
+    x0, x1, y0, y1 = edge
+    rail = box(x0 + s['min_rail'], y0 + s['min_rail'], x1 - s['min_rail'], y1 - s['min_rail'])
+    slab = box(x0, y0, x1, y1)
+    c = COVER_CLEAN
+    need = unary_union([Polygon(q) for q in key_rects(keys, KEY_MARGIN + c['margin_extra'])])
+    keep_in = keep.buffer(-1e-3)
+    out = []
+    for poly in polys:
+        cut = Polygon(poly)
+        mine = [g for g in gaps if cut.intersects(g)]
+        cut = unary_union([cut] + mine)
+        # The cleanup may take cover material up to the rail line (or as far as the raster already took it), never
+        # into the magnet keep-out, may move a piece end by at most tol, and keeps every keycap + margin and the
+        # full rail crossing of each gap.
+        allowed = unary_union([rail, cut] + [g.buffer(c['tol'], join_style=2) for g in mine])
+        must = unary_union([need.intersection(cut.buffer(0.5))] + [g.intersection(slab).buffer(-0.05) for g in mine])
+        out.append(clean_outline(list(cut.exterior.coords)[:-1], allowed, keep_in, must, c))
+    polys = [[(round(x, 4), round(y, 4)) for x, y in p] for p in out]
     window = unary_union([Polygon(p) for p in polys])
-    assert not window.intersects(keep.buffer(-1e-3))
+    assert len(polys) == 2 and all(Polygon(p).is_valid for p in polys)
+    assert not window.intersects(keep_in)
     short = [i for i, r in enumerate(key_rects(keys, KEY_MARGIN), 1) if not window.covers(Polygon(r))]
     assert not short, f'cover window misses keycap + {KEY_MARGIN} at keys {short}'
+    assert len(slab.buffer(-0.01).difference(window).geoms) == 3, 'the split gaps must part the slab into L/T/R'
     return polys
+
+
+# Split gaps (2026-11-11): the cover slab is parted into L/T/R where the back rail crosses above keys 9 (E) and
+# 31 (I) and the front rail below keys 22 and 40. Until 2026-11-11 the parting cut was the r2 P4 window outline
+# (cover_v5 SPLIT_CUTS); it differed from the silhouette window by up to 2.3 mm and left jogs around PgUp/PgDn, the
+# left Ctrl and the piece ends at E and I. Now each gap is the key's window strip (cell width) carried straight out
+# through the rail, so a piece ends in the line of the key's window side. The front gaps keep the r2 inner line
+# (7.0 from the key centre, clear of the leg magnets). Entries: r2 key centre, +1 back / -1 front, local x range.
+COVER_SPLITS = [((77.187, 83.231), 1, None, None), ((185.962, 83.231), 1, None, None),
+                ((97.127, 15.742), -1, 7.0, None), ((162.342, 15.026), -1, None, -7.0)]
+# Outline cleanup: a vertex within tol of its neighbours' chord is dropped, an edge up to corner_max long becomes the
+# corner where its neighbours meet, a step up to step_max between parallel edges (< parallel_deg) becomes one line.
+# The column steps of the layout (>= 2.2 mm) stay. Keycaps keep KEY_MARGIN + margin_extra.
+COVER_CLEAN = dict(tol=0.6, corner_max=2.5, step_max=1.5, parallel_deg=4.0, margin_extra=0.02)
+
+
+def split_gaps(keys):
+    """Shapely polygons of the split gaps: the key's window strip from its centre 40 mm outwards, past the rail."""
+    from shapely.geometry import Polygon
+    half = (COVER_SILHOUETTE['cell'] - CAP_1U) / 2
+    out = []
+    for (rx, ry), side, lo, hi in COVER_SPLITS:
+        k = next(k for k in keys if abs(k['x'] + .693 - rx) < .01 and abs(k['y'] + .667 - ry) < .01)
+        w = CAP_1U + (k['w_u'] - 1) * 19.05 + 2 * half
+        lo = -w / 2 if lo is None else lo
+        hi = w / 2 if hi is None else hi
+        out.append(Polygon(rect(k['x'], k['y'], hi - lo, 40.0, k['rot'], off=((lo + hi) / 2, side * 20.0))))
+    return out
+
+
+def _line_cross(p1, p2, p3, p4):
+    """Intersection of the lines p1-p2 and p3-p4 (None when parallel)."""
+    d1, d2 = (p2[0] - p1[0], p2[1] - p1[1]), (p4[0] - p3[0], p4[1] - p3[1])
+    den = d1[0] * d2[1] - d1[1] * d2[0]
+    if abs(den) < 1e-12:
+        return None
+    t = ((p3[0] - p1[0]) * d2[1] - (p3[1] - p1[1]) * d2[0]) / den
+    return (p1[0] + t * d1[0], p1[1] + t * d1[1])
+
+
+def _turn(u, v):
+    """Unsigned angle between two direction vectors (rad)."""
+    import math
+    a = math.atan2(u[1], u[0]) - math.atan2(v[1], v[0])
+    return abs((a + math.pi) % (2 * math.pi) - math.pi)
+
+
+def clean_outline(pts, allowed, keep, must, c):
+    """Greedy kink and small-step removal on one closed outline. A change is kept only if the outline stays valid,
+    inside allowed, off keep and covering must. Deterministic: candidates in vertex order, the first that fits wins."""
+    import math
+    from shapely.geometry import Polygon
+
+    def candidates(pts):
+        n = len(pts)
+        for i in range(n):                          # a vertex close to its neighbours' chord
+            (ax, ay), (bx, by), p = pts[i - 1], pts[(i + 1) % n], pts[i]
+            if abs((bx - ax) * (ay - p[1]) - (ax - p[0]) * (by - ay)) / (math.hypot(bx - ax, by - ay) or 1e-9) <= c['tol']:
+                yield pts[:i] + pts[i + 1:]
+        for i in range(n):                          # edge a-b between p-a and b-q
+            p, a, b, q = pts[i - 1], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]
+            e1, e2 = (a[0] - p[0], a[1] - p[1]), (q[0] - b[0], q[1] - b[1])
+            length = math.dist(a, b)
+            if length <= c['corner_max']:           # short edge -> the corner where its neighbours meet
+                x = _line_cross(p, a, b, q)
+                if x and math.dist(x, a) <= c['corner_max'] and math.dist(x, b) <= c['corner_max']:
+                    out = list(pts)
+                    out[i] = x
+                    del out[(i + 1) % n]
+                    yield out
+            if length <= c['step_max'] and _turn(e1, e2) < math.radians(c['parallel_deg']):   # small step -> one line
+                x = _line_cross(a, (a[0] + e2[0], a[1] + e2[1]), q, pts[(i + 3) % n])       # b-q moved onto a
+                if x and math.dist(x, q) <= 3 * c['step_max']:
+                    out = list(pts)
+                    out[(i + 2) % n] = x
+                    del out[(i + 1) % n]
+                    yield out
+                x = _line_cross(b, (b[0] - e1[0], b[1] - e1[1]), pts[i - 2], p)              # p-a moved onto b
+                if x and math.dist(x, p) <= 3 * c['step_max']:
+                    out = list(pts)
+                    out[i - 1] = x
+                    del out[i]
+                    yield out
+
+    pts = [tuple(p) for p in pts]
+    while True:
+        for cand in candidates(pts):
+            poly = Polygon(cand)
+            if len(cand) >= 4 and poly.is_valid and allowed.covers(poly) and not poly.intersects(keep) \
+                    and poly.covers(must):
+                pts = [tuple(p) for p in cand]
+                break
+        else:
+            return pts
 
 
 def read_source():
@@ -751,7 +869,7 @@ def cover_params(doc):
     # TBD_cover_T (cover top at v5_cover_top_Z) and TBD_upper_plate_T 1.7 (2026-11-06) are set in the base.
     # --- 3. key margin (documentation parameter; sketch rectangles are fixed numbers) -----------
     new_param('v5_key_margin', KEY_MARGIN, '[v5 사용자 목표 2026-11-06] 키캡(실제 폭, 바닥 외곽) ↔ 커버 창 최소 여유. '
-              'SK35_COVER_SILHOUETTE_V5_* 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)')
+              'SK35_COVER_SILHOUETTE_V5 창 윤곽은 이 여유를 담는 고정 숫자(tools/build_seam_v5.py에서 재생성)')
     # --- 3b. 커버 창 단순화 파라미터 (v5 2026-11-09) ---------------------------------------
     s = COVER_SILHOUETTE
     new_param('v5_cover_silhouette_cell', s['cell'], '[v5 2026-11-10] 커버 창 실루엣 래스터 셀 크기. 키 블록마다 실제 키캡 폭(r2 칸 폭 아님)의 회전 셀 사각형을 합침. '
@@ -788,13 +906,7 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
     reference magnets (in the production timeline order). Without plates (--covers) only the cover features."""
     top_plane = dict(type='offset', base=dict(type='origin', name='XY'),
                      distance='TBD_frame_T + TBD_standoff_H + TBD_plate_T + TBD_cover_T')
-    # 커버 창 단순화: 기존 개별 키 마진 그룹 대신 실루엣 통합 윤곽 사용 (v5 2026-11-09)
-    for i, poly in enumerate(cover_windows(), 1):
-        sk = sketch(f'SK35_COVER_SILHOUETTE_V5_{i}', top_plane, [poly])
-        feature('extrude', f'COVER_SILHOUETTE_V5_{i}', sketch=sk, profiles=dict(type='all'),
-                extent=dict(convention='total_distance', direction='negative',
-                            distance='TBD_cover_T + TBD_cover_lip_H + 0.5'),
-                operation='cut', targets=list(COVERS))
+    # The silhouette window is the split cut of cover_v5.emit (2026-11-11), so only the decoration is cut here.
     cover_pattern_v5.emit(feature, sketch, cover_windows(), top_plane)
 
     front_plate = '-TBD_pcb0_dy + TBD_plate_gap'
@@ -834,7 +946,7 @@ def emit_code_bodies(doc, feature):
     so they run after the base timeline with the BRep of the base-era chain. Sketch visibility is the base's:
     cover and spine sketches hidden, the four reference nut sketches shown."""
     first = doc['next_id']
-    cover_v5.emit(feature)
+    cover_v5.emit(feature, cover_windows())
     spine_v5.emit(feature)
     doc['visibility']['hidden_sketches'] += [f['id'] for f in doc['features']
                                              if f['id'] >= first and f['type'] == 'sketch']
@@ -1040,7 +1152,7 @@ def build_covers():
     doc['name'] = '46es v5 cover pieces only - cover check'
     cover_params(doc)
     feature, sketch = helpers(doc)
-    cover_v5.emit(feature)
+    cover_v5.emit(feature, cover_windows())
     emit_cover_cuts(doc, feature, sketch, plates=False)
     seed = CACHE / 'seed_covers_v5.sc'
     write_seed(doc, container, seed)
