@@ -8,8 +8,8 @@
         "pid": "0x4653",
         "device_version": "0.0.1"
     },
-    "processor": "RP2040",
-    "bootloader": "rp2040",
+    "processor": "atmega32u4",
+    "bootloader": "caterina",
     "features": {
         "bootmagic": false,
         "extrakey": true,
@@ -18,25 +18,26 @@
     "diode_direction": "COL2ROW",
     "matrix_pins": {
         "rows": [
-            "GP1",
-            "GP2",
-            "GP3",
-            "GP4"
+            "D1",
+            "D0",
+            "D4",
+            "C6"
         ],
         "cols": [
-            "GP5",
-            "GP6",
-            "GP7",
-            "GP8",
-            "GP9",
-            "GP10",
-            "GP11"
+            "D7",
+            "E6",
+            "B4",
+            "B5",
+            "F4",
+            "F5",
+            "F6"
         ]
     },
     "split": {
         "enabled": true,
         "serial": {
-            "driver": "vendor"
+            "pin": "D2",
+            "driver": "bitbang"
         }
     },
     "layouts": {

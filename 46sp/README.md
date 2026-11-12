@@ -30,6 +30,8 @@
 
 ## 출력 모델 (MJF)
 
+> **재검토 중(2026-11-12 사용자 정정)**: 기조립된 합판 case를 그대로 쓴다. 아래 출력 모델은 case까지 새로 출력하는 방향으로 만든 것이라 다시 설계한다. 컨트롤러 받침도 RP2040-Zero 치수(23.5 × 18)로 남아 있다. 기존 case의 3D 형상은 f3d에서 내보낸 STEP으로 받는다.
+
 2026-11-12 결정: 출력은 46es처럼 외주 MJF(검정), 좌우 연결은 보유 AUX(3.5 mm 잭과 케이블)를 쓴다. 반쪽마다 **plate**와 **case** 두 부품이다. [46sp-print.sc](model/46sp-print.sc)는 [tools/build_print.py](tools/build_print.py)가 r3 DXF에서 만든다.
 
 ```powershell
@@ -60,7 +62,7 @@ python 46sp/tools/build_print.py    # 약 2분, 46sp/model/46sp-print.sc를 다�
 | [r3-supports.sc](model/r3-supports.sc) | 리브 11개, 창이 있는 옆 지지판 4개. `rib_t` 기본값 1.5 mm, `cheek_t` 기본값 5 mm |
 | [r3-switches.json](model/r3-switches.json) | 플레이트별 스위치 개구 중심과 DXF 핸들. 좌표는 가공 전개도 기준 |
 | [r3-rib-saddle.sc](model/r3-rib-saddle.sc) | r3 짧은 리브 하단에 맞춘 합판 고정 받침 시제품 |
-| [pro-micro-carrier.sc](model/pro-micro-carrier.sc) | 초기 Pro Micro 받침 시제품. RP2040-Zero 장착부 설계 참고 |
+| [pro-micro-carrier.sc](model/pro-micro-carrier.sc) | 초기 Pro Micro 받침 시제품. 출력 장착부 설계 참고 |
 | [switch-fit.sc](model/switch-fit.sc) | 1.5 mm 시험편. −X부터 13.9, 14.0, 14.1 mm 정사각 개구 |
 
 r3 주석의 5T 검정 아스텔과 1.5T 투명 압출판을 각 그룹의 모델 두께로 적용했다. 옆 지지판도 5 mm로 가정했다. SolidCraft의 플레이트와 지지 부품은 가공 전개 좌표에 놓여 있다. 아크릴 현물의 두께와 조립 후 행별 각도·높이는 대조가 필요하다.
@@ -81,24 +83,24 @@ python 46sp/build_r3.py --cli 'C:\Program Files\SolidCraft\solidcraft-cli.exe'
 
 ## 좌우 연결과 펌웨어
 
-**RP2040-Zero 두 개**를 사용한다. PC는 데이터 전송이 가능한 USB 케이블로 왼쪽 보드의 USB-C에 연결한다. 오른쪽은 왼쪽에서 5 V 전원을 받고, 키 입력은 `GP0` 단선으로 **QMK RP2040 PIO 반이중 시리얼**을 통해 왼쪽에 전달한다. 각 보드의 GPIO는 3.3 V 신호를 사용한다. [RP2040-Zero 회로도](https://files.waveshare.com/upload/4/4c/RP2040_Zero.pdf) · [QMK RP2040](https://docs.qmk.fm/platformdev_rp2040#split-keyboard-support) · [QMK 시리얼](https://docs.qmk.fm/drivers/serial)
+**ATmega32U4 Pro Micro 두 개**(보유 USB-C 보드, 5 V)를 사용한다(사용자 정정 2026-11-12, 2026-11-11의 RP2040-Zero 전환을 되돌림). PC는 데이터 전송이 가능한 USB 케이블로 왼쪽 보드의 USB-C에 연결한다. 오른쪽은 왼쪽에서 5 V 전원을 받고, 키 입력은 `D2` 단선으로 **QMK AVR bitbang 시리얼**을 통해 왼쪽에 전달한다. 4행 × 7열을 각 반쪽에서 스캔하므로 좌우 사이에는 전원, 접지, 데이터 세 가닥이면 된다. [QMK Split Keyboard](https://docs.qmk.fm/features/split_keyboard) · [QMK 시리얼](https://docs.qmk.fm/drivers/serial)
 
-보유 AUX 3.5 mm 잭을 두 케이스의 안쪽 벽에 고정하고 케이블로 1↔1, 2↔2, 3↔3을 잇는다. 아래 번호는 배선 규약이다. 잭의 팁·링·슬리브와 번호의 대응은 실물 잭과 케이블의 연속성을 재서 정한다. 구입한 보드의 핀 라벨을 확인하고, 전원 공급 전에 케이블의 연속성과 5 V–GND 단락 여부를 확인한다. 좌우 케이블은 USB 전원을 뺀 상태에서 탈착한다.
+보유 AUX 3.5 mm 잭을 두 케이스에 고정하고 케이블로 1↔1, 2↔2, 3↔3을 잇는다. 아래 번호는 배선 규약이다. 잭의 팁·링·슬리브와 번호의 대응은 실물 잭과 케이블의 연속성을 재서 정한다. 보드의 핀 라벨을 확인하고, 전원 공급 전에 케이블의 연속성과 5 V–GND 단락 여부를 확인한다. 좌우 케이블은 USB 전원을 뺀 상태에서 탈착한다.
 
 | 연결 핀 | 왼쪽 | 오른쪽 |
 |---|---|---|
 | 1 | GND | GND |
-| 2 | 5V | 5V |
-| 3 | GP0 | GP0 |
+| 2 | VCC (5 V) | VCC (5 V) |
+| 3 | D2 (RXI) | D2 (RXI) |
 
-| 매트릭스 | RP2040-Zero 핀 순서 (좌우 동일) |
-|---|---|
-| R0–R3 | GP1, GP2, GP3, GP4 |
-| C0–C6 | GP5, GP6, GP7, GP8, GP9, GP10, GP11 |
+| 매트릭스 | AVR 핀 순서 (좌우 동일) | Pro Micro 인쇄 라벨 |
+|---|---|---|
+| R0–R3 | D1, D0, D4, C6 | 2, 3, 4, 5 |
+| C0–C6 | D7, E6, B4, B5, F4, F5, F6 | 6, 7, 8, 9, A3, A2, A1 |
 
 다이오드는 `COL2ROW`로 배선한다. 열 → 스위치 → 다이오드 → 행 순서이며 다이오드 띠가 행을 향한다. 행은 뒤에서 앞으로 R0–R3, 열은 같은 세로 열의 키가 같은 열 선을 쓰도록 지정한다. 왼쪽은 바깥 열이 C0이고(R0·R1은 C0–C5, 바깥 키가 없는 R2는 C1–C5, 엄지는 C0–C2), 오른쪽은 안쪽 열이 C0이다(R0·R1은 C0–C6, R2는 C0–C4, 엄지는 C0–C2). 오른쪽 네 키 크로스의 왼쪽·위·아래·오른쪽을 R3의 C3–C6에 붙인다. [keyboard.json](firmware/46sp/keyboard.json)의 오른쪽 행 4–7은 QMK가 두 반쪽의 행을 합친 번호다.
 
-QMK Firmware 체크아웃의 `keyboards/46sp/`로 [firmware/46sp/](firmware/46sp/)를 복사하고 `qmk compile -kb 46sp -km default`를 실행한다. 좌우 케이블을 분리한 상태에서 각 보드의 BOOT 버튼을 누른 채 USB를 연결하고, `RPI-RP2` 드라이브에 같은 `46sp_default.uf2`를 복사한다. 좌우의 5 V 핀이 이어지므로 플래시 중에는 보드 하나만 PC에 연결한다. 케이스에서 왼쪽 USB-C에 평소 접근할 수 있게 하고, 양쪽의 USB-C와 BOOT 버튼에 정비 시 접근할 수 있게 한다. [QMK RP2040 플래시](https://docs.qmk.fm/platformdev_rp2040)
+QMK Firmware 체크아웃의 `keyboards/46sp/`로 [firmware/46sp/](firmware/46sp/)를 복사하고 `qmk compile -kb 46sp -km default`를 실행한다. 좌우 케이블을 분리한 상태에서 보드 하나만 USB로 연결하고 `qmk flash -kb 46sp -km default`를 실행한 뒤, 기다리라는 표시가 나오면 RST 핀을 GND에 짧게 대어(Caterina 부트로더, 약 8초 대기) 같은 빌드를 기록한다. 다른 쪽도 같은 방법으로 기록한다. 좌우의 5 V 핀이 이어지므로 플래시 중에는 보드 하나만 PC에 연결한다. 케이스에서 왼쪽 USB-C에 평소 접근할 수 있게 하고, 양쪽의 USB-C와 RST 핀에 정비 시 접근할 수 있게 한다. FN 레이어의 `QK_BOOT`(Y 자리)는 USB를 꽂은 왼쪽 보드를 부트로더로 보낸다. [QMK 플래시](https://docs.qmk.fm/newbs_flashing)
 
 기본 키맵은 [46es 펌웨어](../46es/firmware/46es_kbfirmware.json)의 BASE·NUM·SYM·FN 네 레이어를 물리 위치 그대로 옮겼다. 46es의 `RESET`은 `QK_BOOT`(FN 레이어의 Y 자리), `LSFT(LGUI(KC_S))`는 `LSG(KC_S)`로 썼다. 첫 하드웨어 시험은 왼쪽 단독 입력, USB를 뺀 뒤 좌우 케이블 연결, 왼쪽 USB 재연결, 오른쪽 입력 및 양손 동시 입력 순서로 진행한다.
 
@@ -106,6 +108,6 @@ QMK Firmware 체크아웃의 `keyboards/46sp/`로 [firmware/46sp/](firmware/46sp
 
 - 사용자 확인에 따라 기존 합판 케이스·아크릴 플레이트·키스위치의 조립은 완료된 상태다. 내부 구조 미설계로 중단된 작업을 3D 프린팅 전환으로 이어간다.
 - CAD 재생성에서 플레이트 9개와 내부 지지 부품 15개가 각각 닫힌 솔리드이며 부피가 원본 윤곽과 일치했다. r3 2723 리브와 받침의 겹침은 SolidCraft에서 0 mm³였다.
-- 45키 펌웨어는 QMK `d194c077ed964195ec16d255c7a4b89a794cf03b`, QMK CLI 1.2.0, Arm GCC 13.2.1에서 RP2040용 `46sp_default.uf2`로 빌드했다. 시리얼을 포함한 GPIO 12개는 중복이 없다.
+- 45키 펌웨어는 ATmega32U4/Caterina(QMK `d194c077ed`)와 RP2040(QMK `d194c077ed964195ec16d255c7a4b89a794cf03b`, QMK CLI 1.2.0, Arm GCC 13.2.1)으로 각각 빌드한 적이 있다. 2026-11-12에 같은 ATmega32U4 핀 배정으로 되돌렸다. 시리얼을 포함한 핀 12개는 중복이 없다.
 - 46키로 바꾼 뒤(2026-11-12) 스크립트로 46개 매트릭스 위치가 겹치지 않는 것과, 네 레이어의 46키가 46es 키맵과 물리 위치별로 모두 같은 것을 확인했다. 이 PC에는 QMK가 없어 46키 펌웨어는 아직 컴파일하지 않았다. 실제 보드의 플래시와 좌우 입력 시험도 남아 있다.
 - 출력 모델 [46sp-print.sc](model/46sp-print.sc)(2026-11-12): 부품 4개 닫힘, plate 부피가 계산값과 0.01 % 안(왼쪽 44144.0 / 44143.8, 오른쪽 53462.3 / 53462.0 mm³), 스위치 여유 간섭 없음. 출력 공차 시험, 실물 치수 대조, 기존 스위치 이식, 배선·펌웨어 실기 시험이 남아 있다.

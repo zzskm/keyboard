@@ -12,7 +12,7 @@
 | 46es | M2 육각 너트 | **7개**. DIN 934 M2, 맞변 4 mm, 높이 1.6 mm. | [DIN 934 너트](https://www.aliexpress.com/item/32874684920.html) |
 | 46es | 원형 네오디뮴 자석 | 장착 **10개**(보스 6개, 다리 4개). 시험·예비 포함 **20개 이상**. 지름 **3 mm × 두께 2 mm**, 니켈 도금, N52 우선. 링크는 설계에서 허용하는 N35 후보이다. | [Ø3×2 N35 후보](https://www.aliexpress.com/item/1005013035412043.html) |
 | 46es | 스위치 | **최소 7개 추가**. 보유 Gateron 5핀 Milky Yellow 39개를 모두 46es에 쓰는 기준이다. 46es 지정품은 KS-3 Milky Yellow Pro 5핀이다. 보유품 버전을 확인하고 같은 버전으로 보충한다. | [Milky Yellow Pro 5핀 후보](https://www.aliexpress.com/item/1005008685972487.html) |
-| 46sp | RP2040-Zero | **2개**. USB-C, 2 MB 플래시, 동일 핀맵·헤더 미납땜 옵션. 좌우에 하나씩 사용한다. [보드 사양](https://www.waveshare.com/rp2040-zero.htm) | [RP2040-Zero](https://www.aliexpress.com/item/1005007891491779.html) |
+| 46sp | 컨트롤러 | **구매하지 않는다.** 보유 USB-C ATmega32U4 Pro Micro 2개를 좌우에 하나씩 쓴다(사용자 2026-11-12). RP2040-Zero 2개 구매안은 취소했다. | — |
 
 스위치 추가 수량 7개는 보유 39개가 46sp에 장착된 스위치와 별도라는 가정이다. 46sp는 장착분을 이식하며 46키로 진행하므로, 46sp 몫의 추가 구매량은 46개에서 이식 가능한 장착분을 뺀 수량이다. 기존 판(r3)의 개구는 45개다. [46sp 이식 확인 항목](46sp/TODO.md#1-기존-조립체-기록과-출력-조건-확인)
 
@@ -23,7 +23,7 @@
 | 공용 | 다이오드 | 두 대 모두 새로 배선하면 **92개**(46키 × 2). 보유량이 부족하면 리드형 **1N4148 DO-35 100개 묶음** 1개. | [1N4148 100개](https://www.aliexpress.com/item/1005008123602046.html) |
 | 공용 | 내부 배선재 | 부족하면 **26 AWG 주석도금 구리 연선**. 행·열 구분에 두 색을 쓸 수 있다. | [실리콘 피복 연선](https://www.aliexpress.com/item/1005001877127749.html) |
 | 46es | 투명 2액형 에폭시 | 커버와 플레이트의 자석 고정용 **1세트**. 보유 접착제의 종류를 확인한다. | [투명 AB 에폭시](https://www.aliexpress.com/item/1005010228922245.html) |
-| 46es | Pro Micro | **구매하지 않는다.** 기존에 쓰던 키보드의 컨트롤러를 분해해 쓴다(사용자 2026-11-12). 현행 스냅 브래킷은 약 33 × 18 mm Micro-B 보드 기준이므로 분해한 보드의 길이·폭·두께·USB 소켓을 재고(M15), 다르면 `46es/tools/ctrl_v5.py`를 고친다. 보유 USB-C 보드 2개는 46es에 쓰지 않는다. | [보드가 상했을 때 Micro-B 후보](https://www.aliexpress.com/item/1005010111006659.html) |
+| 46es | Pro Micro | **구매하지 않는다.** 기존에 쓰던 키보드의 컨트롤러를 분해해 쓴다(사용자 2026-11-12). 현행 스냅 브래킷은 약 33 × 18 mm Micro-B 보드 기준이므로 분해한 보드의 길이·폭·두께·USB 소켓을 재고(M15), 다르면 `46es/tools/ctrl_v5.py`를 고친다. 보유 USB-C 보드 2개는 46es에 쓰지 않고 46sp에 쓴다. | [보드가 상했을 때 Micro-B 후보](https://www.aliexpress.com/item/1005010111006659.html) |
 | 46es | 키캡 | 부족분만 구매. OEM 프로파일 기준 **1u 43개, 1.25u·2u·2.25u 각 1개**. 구매 세트의 폭과 행별 높이를 대조한다. | [OEM 무각 키캡 후보](https://www.aliexpress.com/item/1005003894469722.html) |
 | 46sp | PC 연결 케이블 | 보유 케이블이 없으면 **USB-C 데이터 케이블 1개**. 링크는 PC 쪽이 USB-A인 경우의 후보이다. | [USB-A → USB-C 데이터 케이블](https://www.aliexpress.com/item/1005012403639360.html) |
 
@@ -37,7 +37,7 @@
 | 46sp | 케이스 체결품·범폰 | 보유한 M3×8 평머리 200개(`3×8 NI F/N` 표기), M3×5 둥근머리 200개(`NI P/N 3×5` 표기), **M3×10 십자 접시머리 55개**, 원형 황동 인서트 14개(M3, 외경 Ø5 mm × 높이 4 mm, 20개 중 6개는 46es), 흑철색 M3×10 둥근머리 육각 볼트 94개(100개 중 6개는 46es), 범폰 8개를 기준으로 머리 자리·체결 깊이·보스·바닥을 검토한다. 설계 후 부족분을 산다. | [체결 확인 항목](46sp/TODO.md#3-체결-방식-상세-설계) |
 | 46es | 뒤 받침 블록 점착 패드 | **3개와 시험분**. 공칭 틈 0.5 mm를 기준으로 블록 높이와 함께 시험 조립 후 두께를 고른다. | [얇은 실리콘 시트 후보](https://www.aliexpress.com/item/1005010616602064.html) |
 
-AUX를 재사용할 경우 전원을 뺀 상태에서 케이블 양 끝과 단자의 연속성을 측정해 GND·5 V·GP0를 각각 대응시키고 선 사이의 단락 여부를 확인한다. USB 전원을 분리하고 AUX 케이블을 탈착한다. [QMK 좌우 연결](https://docs.qmk.fm/features/split_keyboard#hardware-configuration) · [46sp 배선](46sp/README.md#좌우-연결과-펌웨어)
+AUX를 재사용할 경우 전원을 뺀 상태에서 케이블 양 끝과 단자의 연속성을 측정해 GND·5 V·D2를 각각 대응시키고 선 사이의 단락 여부를 확인한다. USB 전원을 분리하고 AUX 케이블을 탈착한다. [QMK 좌우 연결](https://docs.qmk.fm/features/split_keyboard#hardware-configuration) · [46sp 배선](46sp/README.md#좌우-연결과-펌웨어)
 
 ## 46es에 쓰는 보유품
 
