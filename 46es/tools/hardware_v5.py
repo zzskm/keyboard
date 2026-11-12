@@ -1,5 +1,5 @@
-"""Reference hardware drawn in the production CAD: M2 screws and nuts at the spine, M3 standoff screws and magnets,
-PSD60 case screws. Hidden bodies for the guide and the clearance checks, never printed.
+"""Reference hardware drawn in the production CAD: M2 screws and nuts at the spine, the SO M3 screws, heat-set inserts
+and magnets, PSD60 case screws. Hidden bodies for the guide and the clearance checks, never printed.
 
 Moved out of model/seam_v5_base.json into code on 2026-11-10 (plan 4-5, step 3). The features are the base's, in
 the same order and with the same expressions; they now run after the base timeline. Only their own features touch
@@ -18,10 +18,15 @@ SPINE_SCREW_L = 6
 # ISO 7380 M2 button head (2026-11-11, was the low-head NBK SSH-M2-6 4 x 1.1): k 1.3, dk 3.5 drawn at its max 3.8
 M2_HEAD_H, M2_HEAD_D = 1.3, 3.8
 SPINE_NUT_Z, SPINE_NUT_H, SPINE_NUT_AF = 5.2, 1.6, 4
-# M3 standoff screws (upper from the plate, lower from the case floor) and the magnet above each standoff
+# SO fasteners (2026-11-12): the stock black M3x10 button head goes from the plate counterbore floor (Z 9.5) through
+# the heat-set insert in the mount boss (Z 4-8) and the frame bore, its tip 0.5 below the mount (case cavity). Until
+# 2026-11-12 an M3x4 above and an M3x5 below held a 6 mm brass hex standoff. Magnet above each screw head.
 STANDOFFS = [(1, 6.494000000000001, 6.5200000000000005), (2, 6.494000000000001, 87.945), (3, 130.881, 87.945),
              (4, 250.42, 89.007), (5, 278.519, 6.5200000000000005), (6, 130.881, 6.5200000000000005)]
-M3_UPPER_Z, M3_UPPER_L, M3_LOWER_L, M3_HEAD_H, M3_HEAD_R = 5.5, 4, 5, 1.65, 2.85
+M3_SEAT_Z, M3_L, M3_HEAD_H, M3_HEAD_R = 9.5, 10, 1.65, 2.85     # seat = plate_top_Z - TBD_so_cb_D
+# The installed insert is drawn as the filled heat-set hole minus INSERT_GAP, so the clearance pass sees no coincident
+# faces with the mount (the knurl melts into the hole wall in reality); its bore is the M3 shank.
+INSERT_TOP_Z, INSERT_GAP = 8.0, 0.05                              # flush with the boss top (plate_top_Z - TBD_plate_T)
 MAGNET_Z = 11.6
 # PSD60 case screws H01..H06: (index, X, Y, shank bottom Z); H05 sits 1 mm higher
 CASE_SCREWS = [(1, 25.1993, 66.6992, -3.0), (2, 128.2, 47.6, -3.0), (3, 190.4994, 9.3993, -3.0),
@@ -60,9 +65,13 @@ def emit(feature):
         feature('cylinder', f'{name}_NUT_THREAD_VOID', axis=Z_AXIS, base=[x, y, SPINE_NUT_Z - 0.2], height='2',
                 operation='cut', participants=[f'{name}_NUT'], radius='(2 mm) / 2')
     for i, x, y in STANDOFFS:
-        screw(f'REF_SO{i}_M3_UPPER', x, y, M3_UPPER_Z, M3_UPPER_L, '(3 mm) / 2',
-              M3_UPPER_Z + M3_UPPER_L, str(M3_HEAD_H), str(M3_HEAD_R))
-        screw(f'REF_SO{i}_M3_LOWER', x, y, 0.0, M3_LOWER_L, '(3 mm) / 2', -M3_HEAD_H, str(M3_HEAD_H), str(M3_HEAD_R))
+        screw(f'REF_SO{i}_M3_UPPER', x, y, M3_SEAT_Z - M3_L, M3_L, '(3 mm) / 2',
+              M3_SEAT_Z, str(M3_HEAD_H), str(M3_HEAD_R))
+        name = f'REF_SO{i}_INSERT'
+        feature('cylinder', name, axis=Z_AXIS, base=[x, y, f'{INSERT_TOP_Z:g} - v5_so_insert_H'], body_names=[name],
+                height='v5_so_insert_H', operation='new_body', radius=f'v5_so_insert_hole_D / 2 - {INSERT_GAP:g}')
+        feature('cylinder', f'{name}_BORE', axis=Z_AXIS, base=[x, y, f'{INSERT_TOP_Z:g} - v5_so_insert_H - 0.1'],
+                height='v5_so_insert_H + 0.2', operation='cut', participants=[name], radius='(3 mm) / 2')
         feature('cylinder', f'REF_SO{i}_MAGNET', axis=Z_AXIS, base=[x, y, MAGNET_Z], body_names=[f'REF_SO{i}_MAGNET'],
                 height='TBD_magnet_T', operation='new_body', radius='TBD_magnet_D / 2')
     for i, x, y, z in CASE_SCREWS:

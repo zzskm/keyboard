@@ -21,6 +21,7 @@ check()); the expressions follow the parameters for sizes and heights only.
 import math
 
 from hardware_v5 import CASE_HEAD_H
+from mounts_v5 import BOSS_D
 
 BODY = 'PLATE_SPINE_V1'
 CENTER_X = 130.881                    # split_center_X (REF_SO_dX6 - TBD_pcb0_dx) the fixed positions below are drawn on
@@ -36,7 +37,9 @@ SWITCH_GUARDS = {
                                  (154.97768389244638, 61.29896343378928), (136.81758099866462, 57.76899701932318)],
 }
 GUARD_Z, GUARD_H = 3, 7
-SO3_RELIEF_D = 6.8                    # around the SO3 standoff below the spine
+SO3_RELIEF_CLR = 0.3
+# around the SO3 insert boss below the spine (2026-11-12; Ø6.8 around the old hex standoff before)
+SO3_RELIEF_D = BOSS_D + 2 * SO3_RELIEF_CLR
 # M2 screws through plate and spine, nut under the spine: (name, X, Y, spine clearance feature height)
 SCREWS = [('SPINE_M2_1', 126.381, 42.0, 10), ('SPINE_M2_2', 135.381, 42.0, 10),
           ('SPINE_M2_3', 121.881, 83.0, 5), ('SPINE_M2_4', 142.881, 83.0, 5)]

@@ -46,7 +46,8 @@ from make_key_dxf import load_keys, rect
 from mounts_v5 import (MOUNTS, LEFT_MOUNT, RIGHT_MOUNT, REAR_MOUNT, FRONT_MOUNT, PLATE_SUPPORT_MOUNTS,  # noqa: F401
                        MX_GUIDES, MX_CONTACTS, MX_CONTACT_SIZE, MX_PIN_DEPTH_FROM_SEAT, MOUNT_PIN_CLEARANCE,
                        PAD_ROOT_Z, PAD_TOP_Z, SO_ANCHORS, PLATE_FLANGE_INNER, SEAM_NUT_CLEARANCE,
-                       profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts)
+                       profiles as mount_profiles, expected_sections, expected_volume, emit as emit_mounts,
+                       PARAMS as MOUNT_PARAMS)
 import ctrl_v5
 import coupon_v5
 import cover_v5
@@ -101,7 +102,7 @@ REAR_REST_H = REAR_FLANGE_BOTTOM_Z - REAR_BOSS_TOP_Z - REAR_REST_GAP
 REAR_REST_CHORD_MARGIN = 2.0       # the boss chord under the flange stays under the block for this photo error (each side)
 REAR_REST_COLOR = [226, 172, 60]
 # Order-1 height variants (model/ctrl_trials_v5.sc): the boss top height is an assumption and MJF is +-0.3, so the
-# block that leaves room for the pad without lifting the plate off the standoffs is picked at trial assembly.
+# block that leaves room for the pad without lifting the plate off the SO bosses is picked at trial assembly.
 REAR_REST_TRIALS = {'REAR_REST_TRIAL_LO': dict(dh=-0.3, origin=(156.0, -50.0)),
                     'REAR_REST_TRIAL_HI': dict(dh=0.3, origin=(156.0, -42.0))}
 REAR_FLANGES = ('PLATE_FLANGE_L_REAR', 'PLATE_FLANGE_R_REAR_A', 'PLATE_FLANGE_R_REAR_B')
@@ -579,6 +580,15 @@ def helpers(doc):
     return feature, sketch
 
 
+def add_mount_params(doc):
+    """The SO insert boss parameters of tools/mounts_v5.py (2026-11-12), for every document that builds mounts,
+    reference inserts or the B coupon."""
+    names = {p['name'] for p in doc['params']}
+    for name, expr, comment in MOUNT_PARAMS:
+        assert name not in names, name
+        doc['params'].append(dict(name=name, expr=expr, comment=comment, model=False, unit='mm'))
+
+
 def write_seed(doc, container, path):
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('document.json', json.dumps(doc, ensure_ascii=False))
@@ -956,6 +966,7 @@ def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
     new_param = cover_params(doc)
+    add_mount_params(doc)
     feature, sketch = helpers(doc)
     emit_seam(doc, feature, sketch)
     s2 = seam_v5.COUPONS['S2'][0]
@@ -978,7 +989,7 @@ def build(probe=False):
     new_param('v5_rear_boss_top_Z', REAR_BOSS_TOP_Z, '[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지대 윗면. 근거: r2 맨 아래 판 P0(2T, 폭 4 테두리, '
               'H01·H05·H06 M2 구멍)가 노치 없이 이 보스 위를 지났다. 실측 M22')
     new_param('v5_rear_rest_gap', REAR_REST_GAP, '[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 '
-              '보스 위에 붙인다. 딱 맞춰 만들면 지지대 6개가 정한 plate 높이와 겹친다(과구속)')
+              '보스 위에 붙인다. 딱 맞춰 만들면 SO 보스 6개가 정한 plate 높이와 겹친다(과구속)')
     new_param('v5_rear_rest_L', REAR_REST_L, f'[v5 설계 2026-11-10] 뒤 받침 블록 길이(X). 보스 추정 위치가 ±{REAR_REST_CHORD_MARGIN:g} 틀려도 '
               '플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다')
     new_param('v5_rear_rest_W', REAR_REST_W, '[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + '
@@ -1103,6 +1114,7 @@ def trials_document(rests=True):
         emit_rear_rest_trials(feature, doc)
         seam_v5.emit_coupons(feature, sketch, doc)
         cover_params(doc)
+        add_mount_params(doc)
         coupon_v5.add_params(doc)
         coupon_v5.emit(feature, sketch, doc)
     return doc, container
@@ -1186,6 +1198,7 @@ def build_mounts():
     doc['visibility'] = {key: [] for key in doc['visibility']}
     doc['appearances'] = {'bodies': {}}
     doc['name'] = '46es v5 mounts only - drawing check'
+    add_mount_params(doc)
     feature, sketch = helpers(doc)
     mounts = mount_profiles()
     emit_mounts(feature, sketch, mounts)

@@ -27,7 +27,7 @@ import ctrl_v5  # noqa: E402
 import cover_pattern_v5  # noqa: E402
 from common import CLI, sha, fingerprints, write_json  # noqa: E402
 from cad_eval_cache import evaluation  # noqa: E402
-from mounts_v5 import SO_ANCHORS, LAND_AF, MIN_WALL, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
+from mounts_v5 import SO_ANCHORS, SO_PLATES, LAND_AF, MIN_WALL, INSERT_HOLE_D, BOSS_WALL_MIN, parts as mount_parts, profiles as mount_profiles, expected_sections, expected_volume, layers  # noqa: E402
 from mesh_section import read_stl, align, compare, section  # noqa: E402
 from parts_v5 import ORDERS, WALL_SCAN, by_file, mount_part  # noqa: E402
 
@@ -47,7 +47,6 @@ GENERATED = set(PLATE_SUPPORT_MOUNTS) | {'PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1',
                                          'REF_LEGMAG_L_PLATE', 'REF_LEGMAG_R_COVER', 'REF_LEGMAG_R_PLATE',
                                          *(REAR_REST_BODY.format(i) for i in REAR_RESTS),
                                          'REF_M2_SEAM_FRONT', 'REF_M2_SEAM_FRONT_NUT'}
-MOUNT_SCREW_INTERFACE = ('REF_SO2_M3_LOWER', 'MOUNT_L_PAIR_V3')
 CACHE = ROOT / '.cache/v5'
 
 
@@ -204,47 +203,50 @@ def point_segment_distance(point, a, b):
 
 
 def verify_mount_screw_interface(section_sketches):
+    """SO2 on the left mount, from SolidCraft XY sections: the frame bore (Z 0.5-2.5) keeps the M3 shank clear, the
+    heat-set hole (Z 3.5-4.5) is the insert hole and the boss keeps its wall around it. Since 2026-11-12 the M3x10 runs
+    from the plate through the insert and the bore; the drawn insert sits INSERT_GAP inside the hole wall."""
     center, shaft_radius = (6.494, 87.945), 1.5
     features = {f['name']: f for f in document(V5)['features']}
-    shaft = features['REF_SO2_M3_LOWER']
-    head = features['REF_SO2_M3_LOWER_HEAD_JOIN']
-    assert math.dist(shaft['base'], [*center, 0.0]) < 1e-6 and shaft['height'] == '5' and shaft['radius'] == '(3 mm) / 2'
+    shaft = features['REF_SO2_M3_UPPER']
+    head = features['REF_SO2_M3_UPPER_HEAD_JOIN']
+    assert math.dist(shaft['base'], [*center, -0.5]) < 1e-6 and shaft['height'] == '10' and shaft['radius'] == '(3 mm) / 2'
     assert shaft['axis'] == [0.0, 0.0, 1.0]
-    assert math.dist(head['base'], [*center, -1.65]) < 1e-6 and head['height'] == '1.65' and head['radius'] == '2.85'
+    assert math.dist(head['base'], [*center, 9.5]) < 1e-6 and head['height'] == '1.65' and head['radius'] == '2.85'
     assert len(section_sketches) == 5
 
-    shaft_hole_radii = []
-    for section in section_sketches[:2]:
+    def circle_at(section):
         circles = [curve for curve in section['curves'] if curve['type'] == 'circle'
                    and math.dist(curve['center_at'], center) < 1e-3]
-        assert len(circles) == 1 and abs(circles[0]['radius'] - 1.7) < 0.002, circles
-        shaft_hole_radii.append(circles[0]['radius'])
+        assert len(circles) == 1, circles
+        return circles[0]['radius']
 
-    counterbore = section_loops(section_sketches[2])
-    local = [loop for loop in counterbore if inside(center, loop)
-             and max(math.dist(center, p) for p in loop) < 4.0]
-    assert len(local) == 1, [(len(loop), loop[:4]) for loop in counterbore]
-    counterbore_min_radius = min(point_segment_distance(center, a, b)
-                                  for loop in local for a, b in zip(loop, loop[1:] + loop[:1]))
-    assert counterbore_min_radius >= shaft_radius + 0.5, counterbore_min_radius
+    def others(section):
+        """Distance from the axis to the nearest section curve that is not the hole circle around it."""
+        best = math.inf
+        for curve in section['curves']:
+            if curve['type'] == 'circle' and math.dist(curve['center_at'], center) < 1e-3:
+                continue
+            if curve['type'] == 'line':
+                best = min(best, point_segment_distance(center, curve['start_at'], curve['end_at']))
+            else:            # arcs and circles: their sampled points, enough for a wall of a millimetre
+                points = [curve.get('start_at'), curve.get('end_at'), curve.get('mid_at')]
+                best = min([best] + [math.dist(center, q) for q in points if q])
+        return best
 
-    upper_clearances = []
-    for section in section_sketches[3:]:
-        loops = section_loops(section)
-        assert all(not inside(center, loop) for loop in loops), 'screw axis unexpectedly lies in mount section'
-        distances = [point_segment_distance(center, a, b) for loop in loops
-                     for a, b in zip(loop, loop[1:] + loop[:1])]
-        clearance = min(distances) - shaft_radius
-        assert clearance >= 0.5, clearance
-        upper_clearances.append(clearance)
-    return dict(pair=list(MOUNT_SCREW_INTERFACE), center_mm=list(center), shaft_radius_mm=shaft_radius,
-                shaft_z_mm=[0.0, 5.0], head_radius_mm=2.85, head_top_z_mm=0.0,
-                shaft_hole_radii_mm=shaft_hole_radii,
-                shaft_radial_clearances_mm=[r - shaft_radius for r in shaft_hole_radii],
-                counterbore_min_radius_mm=counterbore_min_radius,
-                counterbore_radial_clearance_mm=counterbore_min_radius - shaft_radius,
-                upper_section_z_mm=[3.5, 4.5], upper_radial_clearances_mm=upper_clearances,
-                check='SolidCraft XY sections + source fastener cylinders; exact overlap boolean returns no result')
+    bore_radii = [circle_at(section) for section in section_sketches[:3]]
+    assert all(abs(r - 1.7) < 0.002 for r in bore_radii), bore_radii
+    insert_radii = [circle_at(section) for section in section_sketches[3:]]
+    assert all(abs(r - INSERT_HOLE_D / 2) < 0.002 for r in insert_radii), insert_radii
+    boss_walls = [others(section) - r for section, r in zip(section_sketches[3:], insert_radii)]
+    assert min(boss_walls) >= BOSS_WALL_MIN - 1e-3, boss_walls
+    return dict(pair=['REF_SO2_M3_UPPER', 'MOUNT_L_PAIR_V3'], center_mm=list(center), shaft_radius_mm=shaft_radius,
+                shaft_z_mm=[-0.5, 9.5], head_bottom_z_mm=9.5,
+                bore_section_z_mm=[0.5, 1.5, 2.5], bore_radii_mm=bore_radii,
+                bore_radial_clearances_mm=[round(r - shaft_radius, 4) for r in bore_radii],
+                insert_section_z_mm=[3.5, 4.5], insert_hole_radii_mm=insert_radii,
+                boss_wall_min_mm=round(min(boss_walls), 4),
+                check='SolidCraft XY sections of the left mount at SO2 + the reference M3 cylinder')
 
 
 # ---------------------------------------------------------------- planar geometry (leg magnet walls)
@@ -345,7 +347,8 @@ def cover_levels(params, bodies):
 
 def verify_mounts(bodies):
     """Each printed mount equals the drawing: sections of the order-1 STL at four heights, the AF 8.5 keep-clear
-    land around every hex pocket, the hex pocket wall, and the evaluated volume against the layered profile."""
+    land around every SO bore at the frame top, the SO insert boss around its heat-set hole (2026-11-12; a hex
+    pocket before), and the evaluated volume against the layered profile."""
     out = {}
     for suffix, profile in mount_profiles().items():
         mount = profile['mount']
@@ -355,16 +358,23 @@ def verify_mounts(bodies):
         sections = compare(tris, expected_sections(profile))
         assert all(level['ok'] for level in sections.values()), (mount, sections)
         top = section(tris, 2.95)
+        boss_level = section(tris, 6.0)
         lands = {}
         for name, land in profile['lands'].items():
-            zone = land.difference(profile['hexes'][name].buffer(0.02)).difference(profile['bores'][name])
+            zone = land.difference(profile['bores'][name])
             assert top.buffer(0.02).covers(zone), (name, 'the octagonal land is cut')
             cuts = list(profile['reliefs'].values()) + list(profile['heads'].values()) + list(profile['slots'].values())
-            wall = min([profile['hexes'][name].boundary.distance(profile['outline'].boundary)]
-                       + [profile['hexes'][name].distance(c) for c in cuts])
-            assert wall >= MIN_WALL - 1e-6, (name, wall)
+            bore_wall = min([profile['bores'][name].boundary.distance(profile['outline'].boundary)]
+                            + [profile['bores'][name].distance(c) for c in cuts])
+            assert bore_wall >= MIN_WALL - 1e-6, (name, bore_wall)
+            boss, hole = profile['bosses'][name], profile['inserts'][name]
+            ring = boss.difference(hole)
+            assert boss_level.buffer(0.02).covers(ring), (name, 'the insert boss is not in the printed mount')
+            boss_wall = hole.boundary.distance(boss.boundary)
+            assert boss_wall >= BOSS_WALL_MIN - 1e-6, (name, boss_wall)
             lands[name] = dict(center=list(SO_ANCHORS[name][1]), across_flats_mm=LAND_AF,
-                               land_area_mm2=round(land.area, 3), hex_pocket_wall_min_mm=round(wall, 3))
+                               land_area_mm2=round(land.area, 3), bore_wall_min_mm=round(bore_wall, 3),
+                               boss_area_mm2=round(boss.area, 3), insert_hole_wall_min_mm=round(boss_wall, 3))
         expected = expected_volume(profile)
         assert abs(bodies[mount]['volume_mm3'] - expected) / expected < 0.002, (mount, bodies[mount]['volume_mm3'], expected)
         reliefs = {str(k): [round(v, 3) for v in r.bounds] for k, r in profile['reliefs'].items()}
@@ -381,7 +391,7 @@ def support_contact_plan(params):
     plates = sorted(set(PLATE_SUPPORT_MOUNTS.values()))
     commands = [dict(command='inspect.clearance', params=dict(
         bodies=mounts, against=plates, clearance=0.01, min_volume=0.000001))]
-    probes = {}
+    probes, faces = {}, {}
     support_number = 0
     for suffix, profile in mount_profiles().items():
         mount = profile['mount']
@@ -396,9 +406,20 @@ def support_contact_plan(params):
                 sketch=f'SK_{feature_name}', profiles='all',
                 start_offset=z - SEAT_ROOT_Z - 0.05, distance=0.1, operation='new')))
             probes[probe_name] = (mount, plate, pad.intersection(top).area, feature_name)
+        # SO insert bosses (2026-11-12) carry the plate like the standoffs did: their annular tops are seats too
+        for name, boss in profile['bosses'].items():
+            support_number += 1
+            feature_name = f'MOUNT_{suffix}_{name}_BOSS'
+            probe_name = f'SEAT_PROBE_{support_number}'
+            commands.append(dict(command='solid.extrude', params=dict(
+                name=probe_name, body_name=probe_name,
+                sketch=f'SK_{feature_name}', profiles='all',
+                start_offset=z - SEAT_ROOT_Z - 0.05, distance=0.1, operation='new')))
+            probes[probe_name] = (mount, SO_PLATES[name], boss.intersection(top).area, feature_name)
+        faces[mount] = sorted(part.area for part in mount_parts(top))
     commands.append(dict(command='inspect.clearance', params=dict(
         bodies=list(probes), against=plates, clearance=0.01, min_volume=0.000001)))
-    return dict(commands=commands, probes=probes, mounts=mounts, plates=plates, z=z)
+    return dict(commands=commands, probes=probes, faces=faces, mounts=mounts, plates=plates, z=z)
 
 
 def support_contacts(params, shapes, plan, results):
@@ -412,7 +433,7 @@ def support_contacts(params, shapes, plan, results):
     # Identical curved side faces make the probe/mount Boolean ambiguous.
     # Read the upward bearing faces directly, and use the probes on the plate side.
     for mount in mounts:
-        expected = sorted(area for owner, _, area, _ in probes.values() if owner == mount)
+        expected = plan['faces'][mount]          # one face per connected seat region (a pad and a boss may join)
         faces = sorted(area for solid in shapes[mount] for height, area in horizontal_faces(solid)
                        if abs(height - z) < 5e-4 and area > 1e-6)
         assert len(faces) == len(expected), (mount, faces, expected)
@@ -511,11 +532,9 @@ def main(accept=False):
     others = sorted(n for n in bodies if n not in GENERATED)
     clearance, clearance_batches = {}, []
     for key, group, against in (('generated_vs_rest', moving, others), ('among_generated', moving, None)):
-        skip = [MOUNT_SCREW_INTERFACE] if key == 'generated_vs_rest' else []
-        commands, total_pairs, candidate_pairs, skipped = clearance_candidates(bodies, group, against, 0.01, skip)
+        commands, total_pairs, candidate_pairs, skipped = clearance_candidates(bodies, group, against, 0.01)
         clearance_batches.append((key, commands, total_pairs, candidate_pairs, skipped))
-        if key == 'generated_vs_rest':
-            assert len(skipped) == 1 and frozenset(skipped[0]) == frozenset(MOUNT_SCREW_INTERFACE), skipped
+        assert not skipped, skipped
         clearance[key] = dict(total_pairs=total_pairs, candidate_pairs=candidate_pairs,
                               pairs_pruned_by_bbox=total_pairs-candidate_pairs,
                               intentionally_checked_by_sections=skipped)

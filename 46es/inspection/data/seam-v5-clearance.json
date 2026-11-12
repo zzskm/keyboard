@@ -1,14 +1,9 @@
 {
  "generated_vs_rest": {
-  "total_pairs": 943,
-  "candidate_pairs": 91,
-  "pairs_pruned_by_bbox": 852,
-  "intentionally_checked_by_sections": [
-   [
-    "MOUNT_L_PAIR_V3",
-    "REF_SO2_M3_LOWER"
-   ]
-  ],
+  "total_pairs": 805,
+  "candidate_pairs": 77,
+  "pairs_pruned_by_bbox": 728,
+  "intentionally_checked_by_sections": [],
   "overlaps": [],
   "unchecked": [],
   "contacts": [
@@ -21,40 +16,29 @@
    "PLATE_L_SPLIT_V1 | PLATE_SPINE_V1",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_3",
    "PLATE_L_SPLIT_V1 | REF_M2_PLATE_5",
+   "PLATE_L_SPLIT_V1 | REF_SO1_INSERT",
    "PLATE_L_SPLIT_V1 | REF_SO1_M3_UPPER",
+   "PLATE_L_SPLIT_V1 | REF_SO2_INSERT",
    "PLATE_L_SPLIT_V1 | REF_SO2_M3_UPPER",
+   "PLATE_L_SPLIT_V1 | REF_SO3_INSERT",
    "PLATE_L_SPLIT_V1 | REF_SO3_M3_UPPER",
+   "PLATE_L_SPLIT_V1 | REF_SO6_INSERT",
    "PLATE_L_SPLIT_V1 | REF_SO6_M3_UPPER",
-   "PLATE_L_SPLIT_V1 | STANDOFF_SO1_REF",
-   "PLATE_L_SPLIT_V1 | STANDOFF_SO2_REF",
-   "PLATE_L_SPLIT_V1 | STANDOFF_SO3_REF",
-   "PLATE_L_SPLIT_V1 | STANDOFF_SO6_REF",
    "PLATE_R_SPLIT_V1 | PLATE_SPINE_V1",
    "PLATE_R_SPLIT_V1 | REF_M2_PLATE_4",
    "PLATE_R_SPLIT_V1 | REF_M2_PLATE_6",
+   "PLATE_R_SPLIT_V1 | REF_SO4_INSERT",
    "PLATE_R_SPLIT_V1 | REF_SO4_M3_UPPER",
+   "PLATE_R_SPLIT_V1 | REF_SO5_INSERT",
    "PLATE_R_SPLIT_V1 | REF_SO5_M3_UPPER",
-   "PLATE_R_SPLIT_V1 | STANDOFF_SO4_REF",
-   "PLATE_R_SPLIT_V1 | STANDOFF_SO5_REF",
    "REF_CASE_H01_M2 | MOUNT_L_PAIR_V3",
    "REF_CASE_H02_M2 | MOUNT_H02_SO3_MIN_V2",
    "REF_CASE_H03_M2 | MOUNT_H03_SO6_MIN_V2",
    "REF_CASE_H04_M2 | MOUNT_R_PAIR_V3",
    "REF_CASE_H05_M2 | MOUNT_L_PAIR_V3",
-   "REF_CASE_H06_M2 | MOUNT_R_PAIR_V3",
-   "REF_SO1_M3_LOWER | MOUNT_L_PAIR_V3",
-   "REF_SO3_M3_LOWER | MOUNT_H02_SO3_MIN_V2",
-   "REF_SO4_M3_LOWER | MOUNT_R_PAIR_V3",
-   "REF_SO5_M3_LOWER | MOUNT_R_PAIR_V3",
-   "REF_SO6_M3_LOWER | MOUNT_H03_SO6_MIN_V2",
-   "STANDOFF_SO1_REF | MOUNT_L_PAIR_V3",
-   "STANDOFF_SO2_REF | MOUNT_L_PAIR_V3",
-   "STANDOFF_SO3_REF | MOUNT_H02_SO3_MIN_V2",
-   "STANDOFF_SO4_REF | MOUNT_R_PAIR_V3",
-   "STANDOFF_SO5_REF | MOUNT_R_PAIR_V3",
-   "STANDOFF_SO6_REF | MOUNT_H03_SO6_MIN_V2"
+   "REF_CASE_H06_M2 | MOUNT_R_PAIR_V3"
   ],
-  "pairs_checked": 91,
+  "pairs_checked": 77,
   "pairs_reused": 0,
   "pairs_pruned": 0
  },
@@ -100,7 +84,7 @@
  },
  "mount_screw_interface": {
   "pair": [
-   "REF_SO2_M3_LOWER",
+   "REF_SO2_M3_UPPER",
    "MOUNT_L_PAIR_V3"
   ],
   "center_mm": [
@@ -109,29 +93,34 @@
   ],
   "shaft_radius_mm": 1.5,
   "shaft_z_mm": [
-   0.0,
-   5.0
+   -0.5,
+   9.5
   ],
-  "head_radius_mm": 2.85,
-  "head_top_z_mm": 0.0,
-  "shaft_hole_radii_mm": [
-   1.6999999999999849,
-   1.6999999999999849
+  "head_bottom_z_mm": 9.5,
+  "bore_section_z_mm": [
+   0.5,
+   1.5,
+   2.5
   ],
-  "shaft_radial_clearances_mm": [
-   0.19999999999998486,
-   0.19999999999998486
+  "bore_radii_mm": [
+   1.699999999999985,
+   1.6999999999999869,
+   1.6999999999999864
   ],
-  "counterbore_min_radius_mm": 2.699999999999999,
-  "counterbore_radial_clearance_mm": 1.1999999999999988,
-  "upper_section_z_mm": [
+  "bore_radial_clearances_mm": [
+   0.2,
+   0.2,
+   0.2
+  ],
+  "insert_section_z_mm": [
    3.5,
    4.5
   ],
-  "upper_radial_clearances_mm": [
-   2.199997253417962,
-   2.199997253417962
+  "insert_hole_radii_mm": [
+   2.1000000000000054,
+   2.1000000000000063
   ],
-  "check": "SolidCraft XY sections + source fastener cylinders; exact overlap boolean returns no result"
+  "boss_wall_min_mm": 1.8998,
+  "check": "SolidCraft XY sections of the left mount at SO2 + the reference M3 cylinder"
  }
 }

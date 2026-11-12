@@ -2,9 +2,15 @@
 
 model/mounts_cadcraft_phase1.dxf is the plan-view source: outlines and plate
 pads are extruded as drawn (the Rear spine shim was removed on 2026-11-11;
-the spine bears on the Rear frame top, spine_v5.py). Fastener holes, hex
-pockets and head recesses follow the document parameters at the GH60/SO
-anchors; the drawing's hole layers are checked against them. Pin reliefs
+the spine bears on the Rear frame top, spine_v5.py). Fastener holes, SO
+insert bosses and head recesses follow the document parameters at the
+GH60/SO anchors; the drawing's hole layers are checked against them.
+
+SO1-SO6 since 2026-11-12: a printed boss (Z 1.5-8) with a heat-set M3 insert
+from the stock (round brass, OD 5 x 4) replaces the brass hex standoff, its
+1 mm hex pocket in the frame and the lower M3 screw. The upper M3 (stock black
+M3x10 button head) runs through the plate, the insert and the frame bore.
+Pin reliefs
 are derived from the switch layout (make_key_dxf) and the KS-3X1 pin
 positions, so a changed outline gets its reliefs recomputed.
 
@@ -41,13 +47,16 @@ FRAME_T = 3.0
 PAD_TOP_Z = 8.0                    # plate_top_Z - TBD_plate_T
 PAD_ROOT_Z = 1.5                   # pads start inside the frame
 SO_BORE_D = 3.4                    # TBD_so_screw_D + TBD_so_clr
-SO_HEX_AF = 5.4                    # TBD_so_AF + TBD_so_pocket_clr
-SO_POCKET_Z = 2.0                  # TBD_frame_T - TBD_so_pocket_D
+SO_POCKET_Z = 2.0                  # band boundary kept from the hex pocket era: the case head recesses start here too
+INSERT_D, INSERT_H = 5.0, 4.0      # v5_so_insert_D, v5_so_insert_H: stock round brass M3 insert (PURCHASE.md)
+INSERT_HOLE_D = 4.2                # v5_so_insert_hole_D: heat-set hole; the B coupon row D tries 4.0-4.6
+BOSS_D = 8.0                       # v5_so_boss_D: printed boss around the insert, inside the AF 8.5 land
+BOSS_WALL_MIN = 1.2                # insert hole to the boss edge where the outline or a plate flange clips the boss
 CASE_SLOT_W = 2.4                  # TBD_case_screw_D + TBD_case_screw_clr
 CASE_HEAD_W = 4.4                  # TBD_case_head_D + TBD_case_head_clr
 CASE_HEAD_Z = 2.0                  # TBD_frame_T - TBD_case_head_H
 CASE_ADJUST = 1.0                  # TBD_case_adjust (slot half straight length)
-LAND_AF = 8.5                      # octagonal keep-clear zone around each SO pocket
+LAND_AF = 8.5                      # octagonal keep-clear zone around each SO boss
 SEAM_NUT_CLEARANCE = (seam_v5.PRODUCTION.screw, seam_v5.FRONT_PAD_HOLE_R)   # seam_M2_X/Y; nut bottom and screw tip above the Front pad
 # Downturned plate flanges (PLATE_FLANGE_*: split_flange_W 2.0 wide, Z 5-8) run along the plate edges; pads keep
 # PAD_FLANGE_CLEARANCE to their inner faces so the plate can seat. Inner faces: x -0.393+2 / 285.388-2, y -0.367+2 / 94.967-2.
@@ -56,6 +65,18 @@ PAD_FLANGE_CLEARANCE = 0.3
 SWITCH_BODY_Z = 4.95               # TBD_frame_T + TBD_standoff_H - 3 - 0.05: nothing above this under a switch body
 SWITCH_BODY_CLR = 0.15
 MIN_WALL = 1.0                     # MJF
+# Document parameters of the SO insert bosses (added by build_seam_v5.py to the production and mount-only models)
+PARAMS = [
+    ('v5_so_insert_D', f'{INSERT_D:g} mm', '[보유품 2026-11-12] SO 열압입 인서트 외경. 원형 황동 M3 인서트 20개(외경 Ø5 × 높이 4, '
+     'PURCHASE.md) 중 6개. 2026-11-12 이전의 황동 육각 지지대(길이 6, 맞변 5)와 아래 M3×5를 대신한다'),
+    ('v5_so_insert_H', f'{INSERT_H:g} mm', '[보유품 2026-11-12] SO 인서트 높이. 보스 윗면(plate 밑면)과 같은 높이로 넣는다'),
+    ('v5_so_insert_hole_D', f'{INSERT_HOLE_D:g} mm', '[설계 후보 2026-11-12] SO 인서트 열압입 구멍. 외경 5 인서트의 일반 권장 4.0–4.4 중간. '
+     'MJF 출력 편차는 주문 1 B 쿠폰 행 D(4.0/4.2/4.4/4.6)와 mount 4개로 확인'),
+    ('v5_so_boss_D', f'{BOSS_D:g} mm', '[설계 2026-11-12] SO 인서트 보스 지름(Z 1.5–8). AF 8.5 팔각 보존 구역 안. 외곽선·plate 플랜지에 걸리면 잘리고, '
+     f'그때도 구멍까지 살 {BOSS_WALL_MIN:g} 이상'),
+    ('v5_so_insert_hole_depth', 'plate_top_Z - TBD_plate_T - TBD_frame_T', '[유도값 2026-11-12] 인서트 구멍 깊이 = 보스 윗면 Z 8 − 프레임 윗면 Z 3 = 5. '
+     '인서트 4 + 녹은 수지 자리 1. 아래 프레임에는 M3 관통 Ø3.4'),
+]
 
 # KS-3X1 drawing XY, with conservative cylindrical guides and rectangular contacts.
 # Both reference pin families extend to Z 2.7 at the v5 switch seat (Z 11.3).
@@ -67,6 +88,9 @@ MOUNT_PIN_CLEARANCE = 0.4
 RELIEF_FLOOR_Z = 2.1               # plate_top_Z - TBD_upper_plate_T - 8.6 - 0.6
 RELIEF_MARGIN = 0.6                # pin footprint to pocket wall (clearance 0.4 + 0.2)
 
+# Plate half each SO boss carries (the counterbores: L has SO1, SO2, SO3, SO6; R has SO4, SO5)
+SO_PLATES = {'SO1': 'PLATE_L_SPLIT_V1', 'SO2': 'PLATE_L_SPLIT_V1', 'SO3': 'PLATE_L_SPLIT_V1',
+             'SO4': 'PLATE_R_SPLIT_V1', 'SO5': 'PLATE_R_SPLIT_V1', 'SO6': 'PLATE_L_SPLIT_V1'}
 # name -> (mount, numeric anchor, X/Y parameter expressions)
 SO_ANCHORS = {
     'SO1': ('L', (6.494, 6.520), ('REF_SO_dX1 - TBD_pcb0_dx', 'REF_SO_dY1 - TBD_pcb0_dy')),
@@ -136,6 +160,13 @@ def slot(center, axis, half_straight, width):
     return LineString(ends).buffer(width / 2, quad_segs=32)
 
 
+def flange_keep():
+    """Plan area that stays PAD_FLANGE_CLEARANCE inside the plate's downturned flanges (pads and SO bosses)."""
+    x0, y0, x1, y1 = PLATE_FLANGE_INNER
+    c = PAD_FLANGE_CLEARANCE
+    return box(x0 + c, y0 + c, x1 - c, y1 - c)
+
+
 def read_drawing(path=DRAWING):
     """Outlines, pads and the hole/relief layers of the CADCraft drawing."""
     entities = list(ezdxf.readfile(path).modelspace())
@@ -186,9 +217,7 @@ def read_drawing(path=DRAWING):
         if len(pads[suffix]) != count or any(not p.is_valid for p in pads[suffix]):
             raise ValueError(f'{suffix} must have {count} valid plate pad profiles')
     # Pads are drawn to the rail edges; keep them clear of the plate's downturned flanges.
-    x0, y0, x1, y1 = PLATE_FLANGE_INNER
-    c = PAD_FLANGE_CLEARANCE
-    keep = box(x0 + c, y0 + c, x1 - c, y1 - c)
+    keep = flange_keep()
     pads = {suffix: [clean(p.intersection(keep)) for p in shapes] for suffix, shapes in pads.items()}
     return dict(
         outlines=outlines, pads=pads,
@@ -211,7 +240,6 @@ def check_drawing(drawing):
     expected = {s: [] for s in MOUNTS}
     for name, (suffix, anchor, _) in SO_ANCHORS.items():
         expected[suffix].append(('hole', name, Point(anchor).buffer(SO_BORE_D / 2, quad_segs=32)))
-        expected[suffix].append(('recess', name, hexagon(anchor, SO_HEX_AF)))
     for name, (suffix, anchor, axis, half, head) in CASE_ANCHORS.items():
         expected[suffix].append(('hole', name, slot(anchor, axis, half, CASE_SLOT_W)))
         if head:
@@ -343,12 +371,22 @@ def profiles(drawing=None):
         so = {name: anchor for name, (s, anchor, _) in SO_ANCHORS.items() if s == suffix}
         case = {name: (anchor, axis, half, head) for name, (s, anchor, axis, half, head) in CASE_ANCHORS.items() if s == suffix}
         bores = {name: Point(a).buffer(SO_BORE_D / 2, quad_segs=48) for name, a in so.items()}
-        hexes = {name: hexagon(a, SO_HEX_AF) for name, a in so.items()}
+        inserts = {name: Point(a).buffer(INSERT_HOLE_D / 2, quad_segs=48) for name, a in so.items()}
         lands = {name: octagon(a, LAND_AF).intersection(outline) for name, a in so.items()}
+        bosses = {name: clean(Point(a).buffer(BOSS_D / 2, quad_segs=48).intersection(outline).intersection(flange_keep()))
+                  for name, a in so.items()}
         slots = {name: slot(a, axis, half, CASE_SLOT_W) for name, (a, axis, half, _) in case.items()}
         heads = {name: slot(a, axis, half, CASE_HEAD_W) for name, (a, axis, half, head) in case.items() if head}
-        reliefs = pin_reliefs(outline, pads, [h.buffer(MIN_WALL, join_style='mitre') for h in hexes.values()],
-                              list(heads.values()), keys)
+        reliefs = pin_reliefs(outline, pads, list(bosses.values()), list(heads.values()), keys)
+        for name, boss in bosses.items():
+            wall = inserts[name].boundary.distance(boss.boundary)
+            if boss.geom_type != 'Polygon' or wall < BOSS_WALL_MIN - 1e-6:
+                raise ValueError(f'{name} boss: insert hole wall {wall:.3f} < {BOSS_WALL_MIN}')
+            if not lands[name].buffer(1e-6).covers(boss):
+                raise ValueError(f'{name} boss leaves its AF {LAND_AF} land')
+            hit = [k['index'] for k in keys if boss.intersects(k['body'].buffer(SWITCH_BODY_CLR, join_style='mitre'))]
+            if hit:
+                raise ValueError(f'{name} boss meets switch bodies {hit}')
         # Switch bodies above SWITCH_BODY_Z: cut the pads where a 13.98 housing (+0.15) overlaps.
         nut = None
         if suffix == 'FRONT':
@@ -369,14 +407,14 @@ def profiles(drawing=None):
             if any(land.intersection(b).area > 1e-6 for b in blockers):
                 raise ValueError(f'{name} land (AF {LAND_AF}) is cut by a relief, case fastener or nut clearance')
         # Every pocket and hole keeps an MJF wall to the outline; a thinner spot is a drawing problem.
-        for name, shape in {**hexes, **heads, **slots, **bores}.items():
+        for name, shape in {**heads, **slots, **bores}.items():
             wall = shape.boundary.distance(outline.boundary)
             if wall < MIN_WALL - 1e-6:
                 raise ValueError(f'{suffix} {name}: wall to the outline is {wall:.3f} < {MIN_WALL}; widen the drawing there')
-        out[suffix] = dict(mount=mount, outline=outline, pads=pads, bores=bores, hexes=hexes, lands=lands,
-                           slots=slots, heads=heads, reliefs=reliefs, clearances=clearances, nut=nut)
+        out[suffix] = dict(mount=mount, outline=outline, pads=pads, bores=bores, inserts=inserts, bosses=bosses,
+                           lands=lands, slots=slots, heads=heads, reliefs=reliefs, clearances=clearances, nut=nut)
         # No knife-edge of material next to anything the generator cuts, in any Z band.
-        cuts = [*bores.values(), *hexes.values(), *slots.values(), *heads.values(), *reliefs.values(),
+        cuts = [*bores.values(), *inserts.values(), *slots.values(), *heads.values(), *reliefs.values(),
                 *clearances.values(), *([nut] if nut else [])]
         for z0, z1, shape in layers(out[suffix]):
             for part in feather_edges(shape, cuts):
@@ -390,15 +428,18 @@ def layers(profile):
     """Plan material of one mount per prismatic Z band: [(z0, z1, polygon), ...]."""
     outline, pads = profile['outline'], unary_union(profile['pads'])
     through = unary_union(list(profile['bores'].values()) + list(profile['slots'].values()))
-    pockets = unary_union(list(profile['hexes'].values()) + list(profile['heads'].values()))
+    pockets = unary_union(list(profile['heads'].values()))
     reliefs = unary_union(list(profile['reliefs'].values())) if profile['reliefs'] else Polygon()
     clearances = unary_union(list(profile['clearances'].values())) if profile['clearances'] else Polygon()
     nut = profile['nut'] or Polygon()
+    bosses = unary_union(list(profile['bosses'].values())) if profile['bosses'] else Polygon()
+    inserts = unary_union(list(profile['inserts'].values())) if profile['inserts'] else Polygon()
     frame = outline.difference(through)
     frame_nut = frame.difference(nut)                       # the nut clearance starts at PAD_ROOT_Z
     frame_cut = frame_nut.difference(pockets)
     frame_relieved = frame_cut.difference(reliefs)
-    pads_cut = pads.difference(through).difference(pockets).difference(nut)
+    # above the frame: plate pads and SO insert bosses; the insert holes run from the frame top to the plate
+    pads_cut = pads.union(bosses).difference(through).difference(pockets).difference(nut).difference(inserts)
     return [(z0, z1, clean(shape)) for z0, z1, shape in (
         (0.0, PAD_ROOT_Z, frame),
         (PAD_ROOT_Z, SO_POCKET_Z, frame_nut),
@@ -454,6 +495,9 @@ def emit(feature, sketch, profile_set):
         for i, pad in enumerate(p['pads'], 1):
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}', plane(PAD_ROOT_Z), ring(pad))
             extrude(f'MOUNT_{suffix}_PAD_{i}', sk, f'plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', 'join', mount)
+        for name, boss in p['bosses'].items():
+            sk = sketch(f'SK_MOUNT_{suffix}_{name}_BOSS', plane(PAD_ROOT_Z), ring(boss))
+            extrude(f'MOUNT_{suffix}_{name}_BOSS', sk, f'plate_top_Z - TBD_plate_T - {PAD_ROOT_Z}', 'join', mount)
         for (i, key), hit in p['clearances'].items():
             sk = sketch(f'SK_MOUNT_{suffix}_PAD_{i}_SWITCH_{key}', plane('TBD_frame_T + TBD_standoff_H - 3 - 0.05'),
                         ring(hit))
@@ -466,9 +510,8 @@ def emit(feature, sketch, profile_set):
             _, _, expr = SO_ANCHORS[name]
             cylinder(f'MOUNT_{suffix}_{name}_BORE', expr, -1.0, 'plate_top_Z - TBD_plate_T + 2',
                      '(TBD_so_screw_D + TBD_so_clr) / 2', mount)
-            sk = sketch(f'SK_MOUNT_{suffix}_{name}_HEX', plane('TBD_frame_T - TBD_so_pocket_D'), ring(p['hexes'][name]))
-            extrude(f'MOUNT_{suffix}_{name}_HEX', sk,
-                    'plate_top_Z - TBD_plate_T - (TBD_frame_T - TBD_so_pocket_D) + 0.1', 'cut', mount)
+            cylinder(f'MOUNT_{suffix}_{name}_INSERT', expr, 'TBD_frame_T', 'v5_so_insert_hole_depth + 0.1',
+                     '(v5_so_insert_hole_D) / 2', mount)
         for name, (anchor, axis, half, head) in ((n, v[1:]) for n, v in CASE_ANCHORS.items() if v[0] == suffix):
             expr = (f'CAND_{name}_X', f'CAND_{name}_Y')
             half_expr = 'TBD_case_adjust' if half == CASE_ADJUST else str(half)

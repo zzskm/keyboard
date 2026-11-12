@@ -71,8 +71,7 @@ REF_SO_dX6,mm,131.574 mm,131.574,[DWG참고] r2 적층 볼트 위치 6 X,false
 REF_SO_dY6,mm,7.187 mm,7.187,[DWG참고] r2 적층 볼트 위치 6 Y,false
 TBD_so_screw_D,mm,3 mm,3,"[DWG참고·미확정] 프레임–plate 나사 호칭경. r2 최하층 Ø3.0 구멍 참고. 기존 육각 부품 실측 M13. 커버 자석이 이 나사의 머리를 끌어당기므로 탄소강(흑색·아연도금) 버튼헤드여야 함, 스테인리스 A2 불가",false
 TBD_so_clr,mm,0.4 mm,0.4,"[설계 후보 2026-11-04] M3 나사 구멍 직경 여유0.4, Ø3.4. 실물·출력 미검증",false
-TBD_so_AF,mm,5 mm,5,"[검토 후보 2026-11-05] M3 암-암 관통 황동 지지대, 길이6, AF5(예: Harwin R30-1000602, 알리 일반품은 맞변 표기 확인). 보유 지지대(암-암 길이5, 맞변 4.33–4.5로 4.5 유력, AF5 아님: r2 육각 구멍 AF4.711/AC5.44에 들어가던 것. 2026-11-06 정정)와 구분. 발주/현물 확인 전.",false
-TBD_standoff_H,mm,REF_draft_standoff_H,5,[높이 유지 2026-11-05] mount 상면3→plate 하면8 간격5. 지지대 전체길이는5+포켓1=6. 배선8mm로 자동 상승하지 않음.,false
+TBD_standoff_H,mm,REF_draft_standoff_H,5,[높이 유지 2026-11-05 · SO 보스 2026-11-12] mount 프레임 윗면 Z3 → plate 밑면 Z8 간격 5 = SO 인서트 보스 높이. 2026-11-12 전에는 황동 지지대(길이 6 = 5 + 포켓 1). 배선 8 mm로 자동 상승하지 않음.,false
 TBD_ctrl_X,mm,REF_SO_dX6 - TBD_pcb0_dx - TBD_ctrl_L/2,114.381,[사용자 결정 2026-11-04·치수 미확정] 컨트롤러 PCB 좌하단 X. 키보드 중앙 하단(좌·우 썸키 사이 빈 공간) 근처: 스탠드오프 6 X(=좌우 ±11° 열 가운데)에 PCB 중심을 맞춤. 실측 M15,false
 TBD_ctrl_Y,mm,13.064485 mm,13.064485,[위치 보존 2026-11-05] SO AF 변경과 분리한 고정 PCB 좌하단Y. 실제 PCB/플러그는 미확정.,false
 TBD_ctrl_L,mm,33 mm,33,[자료값·미확정] Pro Micro PCB 길이 33.0 (사용자 언급 Pro Micro). 실측 M15,false
@@ -124,8 +123,6 @@ TBD_frame_boss_D,mm,10 mm,10,[설계 미확정] 케이스 구멍·스탠드오�
 TBD_case_slot_L,mm,5 mm,5,"[GH60 자료값·미확정] H02–H04 장공 전체 길이(GH60 5×2.5 참고, X 방향 가정). 실측 M08",false
 TBD_case_head_D,mm,4 mm,4,[자료값·미확정] M2 팬헤드 머리 지름 약 3.8 → 프레임 상면 카운터보어 지름. M09,false
 TBD_case_head_H,mm,1 mm,1,[설계 미확정] 케이스 나사 카운터보어 깊이(머리 1.3 중 1.0 묻힘). M09,false
-TBD_so_pocket_D,mm,1 mm,1,"[검토 후보 2026-11-05] 3T mount 포켓 깊이1, floor Z2. 6mm 금속 지지대 상단Z8 유지.",false
-TBD_so_pocket_clr,mm,0.4 mm,0.4,"[설계 후보 2026-11-04] 육각 포켓 맞변 여유0.4, 면당0.2. AF·출력 확인 필요",false
 TBD_usb_outlet_W,mm,12 mm,12,[미확정·자리표시] 패널형 USB 연장 케이블 암 커넥터 하우징 폭(규격 미확인). M16,false
 TBD_usb_outlet_H,mm,8 mm,8,[미확정·자리표시] 같은 커넥터 하우징 높이. M16,false
 TBD_usb_outlet_D,mm,12 mm,12,[미확정·자리표시] 같은 커넥터 깊이(개구부 면 → 안쪽). M16,false
@@ -219,6 +216,11 @@ v5_legmag_L_X,mm,94.0,94,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 X
 v5_legmag_L_Y,mm,2.5,2.5,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
 v5_legmag_R_X,mm,167.7,167.7,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2),false
 v5_legmag_R_Y,mm,2.5,2.5,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
+v5_so_insert_D,mm,5 mm,5,"[보유품 2026-11-12] SO 열압입 인서트 외경. 원형 황동 M3 인서트 20개(외경 Ø5 × 높이 4, PURCHASE.md) 중 6개. 2026-11-12 이전의 황동 육각 지지대(길이 6, 맞변 5)와 아래 M3×5를 대신한다",false
+v5_so_insert_H,mm,4 mm,4,[보유품 2026-11-12] SO 인서트 높이. 보스 윗면(plate 밑면)과 같은 높이로 넣는다,false
+v5_so_insert_hole_D,mm,4.2 mm,4.2,[설계 후보 2026-11-12] SO 인서트 열압입 구멍. 외경 5 인서트의 일반 권장 4.0–4.4 중간. MJF 출력 편차는 주문 1 B 쿠폰 행 D(4.0/4.2/4.4/4.6)와 mount 4개로 확인,false
+v5_so_boss_D,mm,8 mm,8,"[설계 2026-11-12] SO 인서트 보스 지름(Z 1.5–8). AF 8.5 팔각 보존 구역 안. 외곽선·plate 플랜지에 걸리면 잘리고, 그때도 구멍까지 살 1.2 이상",false
+v5_so_insert_hole_depth,mm,plate_top_Z - TBD_plate_T - TBD_frame_T,5,[유도값 2026-11-12] 인서트 구멍 깊이 = 보스 윗면 Z 8 − 프레임 윗면 Z 3 = 5. 인서트 4 + 녹은 수지 자리 1. 아래 프레임에는 M3 관통 Ø3.4,false
 v5_seam_fit,mm,0.15,0.15,"[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). 주문 1 쿠폰 S2는 0.25, S0는 옛 dovetail",false
 v5_seam_nut_AF,mm,4.0,4,"[2026-11-10 tools/seam_v5.py] 앞 이음 너트 포켓 맞변(닫힌 육각, M2 너트 4.0을 눌러 끼움). 주문 1 쿠폰 S2는 4.2, S0는 옛 4.4(이음면 쪽 열림)",false
 v5_seam_tab_end_X,mm,147.4,147.4,[2026-11-10 tools/seam_v5.py] 앞 이음 tab 끝 X(L 조각의 오른쪽 끝). 걸림 턱은 X 144.2부터 +Y로 2.4,false
@@ -228,7 +230,7 @@ v5_rear_boss_3_X,mm,170.1,170.1,"[사진 추정·미실측 2026-11-09] PSD60 뒤
 v5_rear_boss_4_X,mm,245.8,245.8,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 4 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22 · 우 mount 뒤 모서리(SO4 옆) 밑이라 받침 블록 없음",false
 v5_rear_boss_D,mm,9.0,9,[사진 추정·미실측 2026-11-09] 뒤 벽 보스 지름(약 8–10). 벽에 반쯤 묻힌 반원. 실측 M22,false
 v5_rear_boss_top_Z,mm,0.0,0,"[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지대 윗면. 근거: r2 맨 아래 판 P0(2T, 폭 4 테두리, H01·H05·H06 M2 구멍)가 노치 없이 이 보스 위를 지났다. 실측 M22",false
-v5_rear_rest_gap,mm,0.5,0.5,[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 보스 위에 붙인다. 딱 맞춰 만들면 지지대 6개가 정한 plate 높이와 겹친다(과구속),false
+v5_rear_rest_gap,mm,0.5,0.5,[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 보스 위에 붙인다. 딱 맞춰 만들면 SO 보스 6개가 정한 plate 높이와 겹친다(과구속),false
 v5_rear_rest_L,mm,14.0,14,[v5 설계 2026-11-10] 뒤 받침 블록 길이(X). 보스 추정 위치가 ±2 틀려도 플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다,false
 v5_rear_rest_W,mm,4.0,4,[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + 보스 앞쪽으로 2,false
 v5_rear_rest_H,mm,plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap,4.5,[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 1 높이 변형 4.2 / 4.8,false

@@ -82,13 +82,13 @@
    ]
   },
   "MOUNT_H02_SO3_MIN_V2": {
-   "shape_sha256": "3ae6fdb7ecfe3ca2ef7c87cff489ee830c3589e6aeba0821487581e9bc8ca3b5",
-   "volume_mm3": 1561.137,
+   "shape_sha256": "6c33949cc4e18936d502538784a45f44390db0a38031b38868bdbcfb603dfb86",
+   "volume_mm3": 1759.331,
    "bbox": [
     [
      123.0452,
      42.8778,
-     0.0
+     -0.0
     ],
     [
      136.0358,
@@ -98,13 +98,13 @@
    ]
   },
   "MOUNT_H03_SO6_MIN_V2": {
-   "shape_sha256": "674697fc15992120944d4ea8df154841bd3ce47e95cb5264ac1d6c5104a97279",
-   "volume_mm3": 2190.326,
+   "shape_sha256": "7b8a8c2ca0e33716c88c30a95d1e5a568bcdd37132a1bc3c9ccc9f58268ef97f",
+   "volume_mm3": 2388.519,
    "bbox": [
     [
      125.881,
      2.52,
-     0.0
+     -0.0
     ],
     [
      194.499,
@@ -114,8 +114,8 @@
    ]
   },
   "MOUNT_L_PAIR_V3": {
-   "shape_sha256": "f20dfc640bc687db0961f1b1b5fd673809754470a99ccbeb34cba383284dd1a3",
-   "volume_mm3": 3923.042,
+   "shape_sha256": "dd43cb58f50fed491572fd7e5ffb7ffd29d664929646b5ed851513dfdca931ff",
+   "volume_mm3": 4313.317,
    "bbox": [
     [
      -0.393,
@@ -130,13 +130,13 @@
    ]
   },
   "MOUNT_R_PAIR_V3": {
-   "shape_sha256": "2edd76c562fab1a29bcf6b5eb040f09e8d85eecf88c2a3bd5e1be91a444bbdd7",
-   "volume_mm3": 3950.889,
+   "shape_sha256": "f8d571841cbe1b605f7016cda236d39aa6924fdfdbc745d953f0f804350cc22a",
+   "volume_mm3": 4343.596,
    "bbox": [
     [
      244.046,
      1.6001,
-     -0.0
+     0.0
     ],
     [
      285.05,
@@ -178,8 +178,8 @@
    ]
   },
   "PLATE_SPINE_V1": {
-   "shape_sha256": "c75c86ae45a8c588ffab2878000871811fe062dee8d638a0b87d31cfd3599a6a",
-   "volume_mm3": 1805.932,
+   "shape_sha256": "de17646cb2294c0619d3b929888d973d105374fbfc66888dcfcc8daefd8c26a3",
+   "volume_mm3": 1773.851,
    "bbox": [
     [
      115.881,
@@ -625,30 +625,30 @@
     ]
    ]
   },
-  "REF_SO1_M3_LOWER": {
-   "shape_sha256": "794638e692f2d927d61e6803e411061f9c602d5555612289583aff9e01003106",
-   "volume_mm3": 77.436,
+  "REF_SO1_INSERT": {
+   "shape_sha256": "d7cf4c40396e0d2e62a00660be71080e8857b3532dae502ee5150ea4d05e61f7",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     3.644,
-     3.6701,
-     -1.65
+     4.444,
+     4.4701,
+     4.0
     ],
     [
-     9.344,
-     9.3699,
-     5.0
+     8.544,
+     8.5699,
+     8.0
     ]
    ]
   },
   "REF_SO1_M3_UPPER": {
-   "shape_sha256": "5a0c3076039beac69e1cb28c632dbb57192caa6397aa6279e328954ff690a8f3",
-   "volume_mm3": 70.369,
+   "shape_sha256": "591fd4050e4ad553e29dd161acc2aca7ba232f51d92836cf2bb4cbd0ce2815ce",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      3.644,
      3.6701,
-     5.5
+     -0.5
     ],
     [
      9.344,
@@ -673,30 +673,30 @@
     ]
    ]
   },
-  "REF_SO2_M3_LOWER": {
-   "shape_sha256": "4f354efe1b1968cc83e8a2229bb8fb56ee58680add41141fce8cb7f74f4f6f63",
-   "volume_mm3": 77.436,
+  "REF_SO2_INSERT": {
+   "shape_sha256": "a96902936f28bd895b76ecce9bc7ac93b1d66cf7bf2a126c85985eb030daec88",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     3.644,
-     85.0951,
-     -1.65
+     4.444,
+     85.8951,
+     4.0
     ],
     [
-     9.344,
-     90.7949,
-     5.0
+     8.544,
+     89.9949,
+     8.0
     ]
    ]
   },
   "REF_SO2_M3_UPPER": {
-   "shape_sha256": "fd21d05b05a19c681182bfc51bc4a0e9e8b94fead78f3d8c9589efeb38cebf90",
-   "volume_mm3": 70.369,
+   "shape_sha256": "3dfc552530c6145fc1f6d9c8c61227e837ec78e4ff574036ac394a9a43464e1a",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      3.644,
      85.0951,
-     5.5
+     -0.5
     ],
     [
      9.344,
@@ -721,30 +721,30 @@
     ]
    ]
   },
-  "REF_SO3_M3_LOWER": {
-   "shape_sha256": "182df082078738b58e705ebe21b8ec2b91651fbad259a59b366c730bd58c3009",
-   "volume_mm3": 77.436,
+  "REF_SO3_INSERT": {
+   "shape_sha256": "c3c2040095e8d277a35472c11b22e5afa4cc5d2b20aa5780139cbeb7d3b20e61",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     128.031,
-     85.0951,
-     -1.65
+     128.831,
+     85.8951,
+     4.0
     ],
     [
-     133.731,
-     90.7949,
-     5.0
+     132.931,
+     89.9949,
+     8.0
     ]
    ]
   },
   "REF_SO3_M3_UPPER": {
-   "shape_sha256": "377ab1f3aab5d305aafe66224206275a9a98b6063996fd5dadf1174b4265c1d5",
-   "volume_mm3": 70.369,
+   "shape_sha256": "5b1f931a4fd8077c40005e425abfe0eae00374b3e2a053d0e99bbebcb3135b6f",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      128.031,
      85.0951,
-     5.5
+     -0.5
     ],
     [
      133.731,
@@ -769,30 +769,30 @@
     ]
    ]
   },
-  "REF_SO4_M3_LOWER": {
-   "shape_sha256": "c8e41e274178f6863102b80e06bc55ac32efce38e5d8ef82108da915933ad1f7",
-   "volume_mm3": 77.436,
+  "REF_SO4_INSERT": {
+   "shape_sha256": "c445a95119f974646454df629de5a0371b956a09b24326c00807d3d211a7a4a1",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     247.57,
-     86.1571,
-     -1.65
+     248.37,
+     86.9571,
+     4.0
     ],
     [
-     253.27,
-     91.8569,
-     5.0
+     252.47,
+     91.0569,
+     8.0
     ]
    ]
   },
   "REF_SO4_M3_UPPER": {
-   "shape_sha256": "1afbd9dc1d93387c178ac0c7a2cc83f4ec5474e3a59e6aa7d1f0af73b06a5198",
-   "volume_mm3": 70.369,
+   "shape_sha256": "98270f2e285c21b29267663f6b624974923e0ad102b211dff643955ea86a6262",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      247.57,
      86.1571,
-     5.5
+     -0.5
     ],
     [
      253.27,
@@ -817,30 +817,30 @@
     ]
    ]
   },
-  "REF_SO5_M3_LOWER": {
-   "shape_sha256": "0abc839834ac1b03402dc8de1e1b5291de41d35aef84fe993e68eeaf7d84178a",
-   "volume_mm3": 77.436,
+  "REF_SO5_INSERT": {
+   "shape_sha256": "1c645a1f1341901cdb7afd32919407d44b0b227aad5320a90b94f3ecc63cadd5",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     275.669,
-     3.6701,
-     -1.65
+     276.469,
+     4.4701,
+     4.0
     ],
     [
-     281.369,
-     9.3699,
-     5.0
+     280.569,
+     8.5699,
+     8.0
     ]
    ]
   },
   "REF_SO5_M3_UPPER": {
-   "shape_sha256": "4a0e694d96e2f8289302e2ff855db662fe75eb31202d9ed47718a4e3a44f3ab1",
-   "volume_mm3": 70.369,
+   "shape_sha256": "ff5f04721818da74c186a94b056e4e2f5aa5baeb7f256b5e5c0f43b2b3891800",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      275.669,
      3.6701,
-     5.5
+     -0.5
     ],
     [
      281.369,
@@ -865,30 +865,30 @@
     ]
    ]
   },
-  "REF_SO6_M3_LOWER": {
-   "shape_sha256": "e40535420d9f361219c9c024bd00a8af75728c54f642aca7d9419a6b4e11cd06",
-   "volume_mm3": 77.436,
+  "REF_SO6_INSERT": {
+   "shape_sha256": "90f3179d9fa567a59fa1d8f175a8e9ad60f8067ff62ab68ef9caf4a2b736a966",
+   "volume_mm3": 24.533,
    "bbox": [
     [
-     128.031,
-     3.6701,
-     -1.65
+     128.831,
+     4.4701,
+     4.0
     ],
     [
-     133.731,
-     9.3699,
-     5.0
+     132.931,
+     8.5699,
+     8.0
     ]
    ]
   },
   "REF_SO6_M3_UPPER": {
-   "shape_sha256": "3776a4b14a88f2e5036c2785cab21e964080c7b25b234157100ed282a50664a2",
-   "volume_mm3": 70.369,
+   "shape_sha256": "fb6b44a2d314fb6914d7a300d384bd4700fe8d76bbca2273ad8c95eeb943dc0c",
+   "volume_mm3": 112.773,
    "bbox": [
     [
      128.031,
      3.6701,
-     5.5
+     -0.5
     ],
     [
      133.731,
@@ -910,102 +910,6 @@
      132.381,
      8.02,
      13.6
-    ]
-   ]
-  },
-  "STANDOFF_SO1_REF": {
-   "shape_sha256": "d1d0e5367c85843d404360af68fa2b759594a29e394479f6ad15894d18414d0e",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     3.6072,
-     4.02,
-     2.0
-    ],
-    [
-     9.3808,
-     9.02,
-     8.0
-    ]
-   ]
-  },
-  "STANDOFF_SO2_REF": {
-   "shape_sha256": "daf7c21ea760360389caaa9e98b13fa6692ef2fb53c16b6adbeea8cab8467d29",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     3.6072,
-     85.445,
-     2.0
-    ],
-    [
-     9.3808,
-     90.445,
-     8.0
-    ]
-   ]
-  },
-  "STANDOFF_SO3_REF": {
-   "shape_sha256": "a2c85be940c71de5df32d5689831def751a0d2ef30217d8326d22f250e4c46b8",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     127.9942,
-     85.445,
-     2.0
-    ],
-    [
-     133.7678,
-     90.445,
-     8.0
-    ]
-   ]
-  },
-  "STANDOFF_SO4_REF": {
-   "shape_sha256": "fd474850ab8a2e01efd030d1cf47d92d1a7ee933c781d21345de73ef8ddf596c",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     247.5332,
-     86.507,
-     2.0
-    ],
-    [
-     253.3068,
-     91.507,
-     8.0
-    ]
-   ]
-  },
-  "STANDOFF_SO5_REF": {
-   "shape_sha256": "593af368c0ab852ccad26014d7056faef187acb85cf253927d5e47fc149fb282",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     275.6322,
-     4.02,
-     2.0
-    ],
-    [
-     281.4058,
-     9.02,
-     8.0
-    ]
-   ]
-  },
-  "STANDOFF_SO6_REF": {
-   "shape_sha256": "f7b608778f5ac9e65297aca3a7ddcbeb377f3c9e58705445f00a955d32382151",
-   "volume_mm3": 87.499,
-   "bbox": [
-    [
-     127.9942,
-     4.02,
-     2.0
-    ],
-    [
-     133.7678,
-     9.02,
-     8.0
     ]
    ]
   },
@@ -1204,8 +1108,8 @@
    ]
   },
   "SW_HOLE_SAMPLE": {
-   "shape_sha256": "2aba53d630bcf35b1c9a4c5f4c81817621dcc6ccfa1cb7870fd22ef7b85f64cb",
-   "volume_mm3": 28313.943,
+   "shape_sha256": "53fe20796bfa259e3df9571d1933d00518fead667acb7f4dd355e2fe4df13e02",
+   "volume_mm3": 28294.885,
    "bbox": [
     [
      -0.0,
@@ -1345,13 +1249,10 @@
   "TBD_plate_C": "3 mm",
   "TBD_plate_T": "5 mm",
   "TBD_plate_gap": "0.3 mm",
-  "TBD_so_AF": "5 mm",
   "TBD_so_cb_D": "TBD_so_head_H + TBD_cover_boss_H",
   "TBD_so_clr": "0.4 mm",
   "TBD_so_head_D": "6 mm",
   "TBD_so_head_H": "2 mm",
-  "TBD_so_pocket_D": "1 mm",
-  "TBD_so_pocket_clr": "0.4 mm",
   "TBD_so_screw_D": "3 mm",
   "TBD_standoff_H": "REF_draft_standoff_H",
   "TBD_support_H": "REF_WIL_support_H",
@@ -1464,7 +1365,12 @@
   "v5_seam_fit": "0.15",
   "v5_seam_nut_AF": "4.0",
   "v5_seam_tab_end_X": "147.4",
-  "v5_skirt_cover_H": "1.7"
+  "v5_skirt_cover_H": "1.7",
+  "v5_so_boss_D": "8 mm",
+  "v5_so_insert_D": "5 mm",
+  "v5_so_insert_H": "4 mm",
+  "v5_so_insert_hole_D": "4.2 mm",
+  "v5_so_insert_hole_depth": "plate_top_Z - TBD_plate_T - TBD_frame_T"
  },
  "values": {
   "CAND_H01_X": 25.1993,
@@ -1591,13 +1497,10 @@
   "TBD_plate_C": 3.0,
   "TBD_plate_T": 5.0,
   "TBD_plate_gap": 0.3,
-  "TBD_so_AF": 5.0,
   "TBD_so_cb_D": 3.5,
   "TBD_so_clr": 0.4,
   "TBD_so_head_D": 6.0,
   "TBD_so_head_H": 2.0,
-  "TBD_so_pocket_D": 1.0,
-  "TBD_so_pocket_clr": 0.4,
   "TBD_so_screw_D": 3.0,
   "TBD_standoff_H": 5.0,
   "TBD_support_H": 6.196,
@@ -1710,6 +1613,11 @@
   "v5_seam_fit": 0.15,
   "v5_seam_nut_AF": 4.0,
   "v5_seam_tab_end_X": 147.4,
-  "v5_skirt_cover_H": 1.7
+  "v5_skirt_cover_H": 1.7,
+  "v5_so_boss_D": 8.0,
+  "v5_so_insert_D": 5.0,
+  "v5_so_insert_H": 4.0,
+  "v5_so_insert_hole_D": 4.2,
+  "v5_so_insert_hole_depth": 5.0
  }
 }

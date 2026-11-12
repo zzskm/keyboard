@@ -37,7 +37,7 @@ python 46es/guide/publish_guide.py --dry-run  # 빌드·브라우저 검사만
 
 ```sh
 # 예시: 마운트와 컨트롤러 변경 검토
-python -B 46es/guide/review_guide.py --steps standoff trial ctrl wire module --views iso bottom
+python -B 46es/guide/review_guide.py --steps insert trial ctrl wire module --views iso bottom
 ```
 
 명령이 출력하는 `guide/.cache/visual-review/`의 실행 폴더에는 로컬 `site/`, 캡처와 `review.json`이 들어간다. 기록은 원본 CAD·검토 CAD·가이드 spec 해시(`pipeline.py --status`의 review 단계가 이것으로 판정), 실제 단계 ID·제목, 이미지 파일을 묶는다. 캡처 후에는 부품 표시·강조·수량, 체결 방향, 설치 및 분해 접근 공간을 눈으로 확인하고 변경 보고에 판정을 적는다. 예를 들어 마운트 변경이면 장착 단계와 plate를 얹은 상태를 함께 확인한다. 자동 캡처 직후 기록 상태는 `pending_manual_review`다.

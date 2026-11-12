@@ -302,9 +302,9 @@
   },
   {
    "file": "46es_v5_spine",
-   "stl_sha256": "3b38c28f612b107152bbe851afdf32cfa43b36285e1b589f9abc2511354af367",
-   "facets": 3282,
-   "samples": 62025,
+   "stl_sha256": "6c784b4b36e1b08eb8fc4953b16db39de50592d3e1f0ede8b3800d8cb7c4437e",
+   "facets": 3622,
+   "samples": 61925,
    "min_mm": 1.174,
    "wall_min_mm": null,
    "below_limit": [],

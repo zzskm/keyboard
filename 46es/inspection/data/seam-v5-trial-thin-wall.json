@@ -5,13 +5,13 @@
  "parts": [
   {
    "file": "46es_v5_sw_hole_coupon",
-   "stl_sha256": "993ec75b18f15f8e88ee7735234688b703123ffe2b9a966b7e3071771acb8c45",
-   "facets": 14904,
-   "samples": 1030544,
-   "min_mm": 1.5,
-   "wall_min_mm": 1.5,
+   "stl_sha256": "a6cce972594cbc43f4a50675a29c07e427956799dd22f6a61d2de41e7239b92c",
+   "facets": 16056,
+   "samples": 1050824,
+   "min_mm": 1.0,
+   "wall_min_mm": 1.0,
    "below_limit": [],
-   "below_warn_count": 45
+   "below_warn_count": 49
   },
   {
    "file": "46es_v5_boss_tab",
@@ -311,19 +311,19 @@
   },
   {
    "file": "46es_v5_mount_L",
-   "stl_sha256": "7676cb18626201195691e32d8d894cd6f74276f1eb9d0a37a1bde51f03940269",
-   "facets": 2900,
-   "samples": 180310,
-   "min_mm": 1.334,
-   "wall_min_mm": 1.5,
+   "stl_sha256": "9b697767c82fe6943de3de5d6713d1d0b75f356a864d476216303e7c8a5c126f",
+   "facets": 6460,
+   "samples": 240113,
+   "min_mm": 1.494,
+   "wall_min_mm": null,
    "below_limit": [],
-   "below_warn_count": 5
+   "below_warn_count": 1
   },
   {
    "file": "46es_v5_mount_R",
-   "stl_sha256": "0e4bc8ba186e123e37d4b5c97d5dd1e690e24334528eff0ede9935797fc169d5",
-   "facets": 3340,
-   "samples": 143355,
+   "stl_sha256": "7971235cb179687b4462bf9c2392f3068bd3743d24a415faeddd2c4f2619d066",
+   "facets": 6962,
+   "samples": 239804,
    "min_mm": 0.441,
    "wall_min_mm": null,
    "below_limit": [
@@ -335,12 +335,12 @@
      "at_print": [
       31.349,
       25.634,
-      5.204
+      5.967
      ],
      "to_print": [
       31.311,
       26.074,
-      5.204
+      5.967
      ],
      "dir_print": [
       -0.087,
@@ -362,12 +362,12 @@
      "at_assembly": [
       275.395,
       27.234,
-      5.204
+      5.967
      ],
      "to_assembly": [
       275.357,
       27.674,
-      5.204
+      5.967
      ],
      "box_assembly": [
       [
@@ -390,17 +390,17 @@
      "at_print": [
       20.884,
       64.747,
-      2.16
+      2.88
      ],
      "to_print": [
       20.884,
       65.678,
-      2.16
+      2.88
      ],
      "dir_print": [
       0.0,
       1.0,
-      -0.0
+      0.0
      ],
      "box_print": [
       [
@@ -417,12 +417,12 @@
      "at_assembly": [
       264.93,
       66.347,
-      2.16
+      2.88
      ],
      "to_assembly": [
       264.93,
       67.278,
-      2.16
+      2.88
      ],
      "box_assembly": [
       [
@@ -438,13 +438,13 @@
      ]
     }
    ],
-   "below_warn_count": 2
+   "below_warn_count": 1
   },
   {
    "file": "46es_v5_mount_H02_SO3",
-   "stl_sha256": "36503ae3beb9e8c49ecf28021a40797066cd2c5238bd6bb6406c4d43d0c6055e",
-   "facets": 3104,
-   "samples": 131874,
+   "stl_sha256": "8a93bd6703783ce7c8048c879a3262b2894410c89edabfa95047f05e1ef2e5fd",
+   "facets": 6556,
+   "samples": 296133,
    "min_mm": 1.22,
    "wall_min_mm": 1.304,
    "below_limit": [],
@@ -452,13 +452,13 @@
   },
   {
    "file": "46es_v5_mount_H03_SO6",
-   "stl_sha256": "fc4b1c1f24d3d3226707bb510ed779c800220b2fae2789daaed7a96a34776a5c",
-   "facets": 4276,
-   "samples": 86164,
+   "stl_sha256": "60bdb9f27b075a69c521b17fbda39c7bb07d3baae816ce53cc3a30917056e9ce",
+   "facets": 7076,
+   "samples": 122062,
    "min_mm": 1.152,
    "wall_min_mm": 1.152,
    "below_limit": [],
-   "below_warn_count": 4
+   "below_warn_count": 2
   },
   {
    "file": "46es_v5_ctrl_bracket",

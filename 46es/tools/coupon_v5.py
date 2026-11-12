@@ -1,5 +1,5 @@
-"""Order-1 test coupons built from the current parameters: the B coupon (switch holes, screw seats, standoff hex
-pockets and plate leg magnet pockets, MJF) and the boss tab (cover boss, magnet pockets and the cover name engraving,
+"""Order-1 test coupons built from the current parameters: the B coupon (switch holes, screw seats, SO insert
+holes and plate leg magnet pockets, MJF) and the boss tab (cover boss, magnet pockets and the cover name engraving,
 8001 resin). build_seam_v5.py puts them into model/ctrl_trials_v5.sc (trials_document).
 
 2026-11-10: until then both were the hand-made model/samples/46es_sw_hole_sample.sc, whose only link to the design was
@@ -12,8 +12,9 @@ design value 5.4. Now:
   - Boss tab: TBD_cover_T thick with the production boss and pockets, and the cover name on its cosmetic face (the
     face printed down, as the cover top) at the production size (stroke 0.5, rib 0.25) and at 1.6 times it (stroke
     0.8, the JLC3DP engraving minimum for SLA, rib 0.4), read mirrored in the model so it reads right from that face.
-The hex pockets and the engraving are fixed-number sketches (the hexagon of tools/mounts_v5.py, the glyph outlines
-of tools/cover_pattern_v5.py); check() compares the evaluated bodies with volumes and boxes computed from the evaluated
+2026-11-12: row D's four standoff hex pockets (AF 5.2-5.8 x 1) became heat-set holes for the stock M3 insert
+(OD 5 x 4) that replaced the standoffs, 4.0-4.6 around v5_so_insert_hole_D, each over the M3 bore.
+The engraving is a fixed-number sketch (the glyph outlines of tools/cover_pattern_v5.py); check() compares the evaluated bodies with volumes and boxes computed from the evaluated
 parameters.
 """
 import math
@@ -31,9 +32,7 @@ NOTCH_H = 1.5                      # row A latch notch height under the hole lay
 CHAMFER = 3.0
 # Row D: (name, X of each feature from the coupon corner); diameters come from the SMP_* parameters below
 ROW_D = dict(M2=(7.0, 13.0, 19.0, 25.0), M3=(32.0, 39.0, 46.0, 53.0), CB=(62.0, 71.0, 80.0),
-             HEX=(90.0, 99.0, 108.0, 117.0), LEGMAG=(126.0, 132.0, 138.0))
-HEX_STEP = 0.2
-HEX_AF = tuple(round(mounts_v5.SO_HEX_AF + HEX_STEP * (i - 1), 6) for i in range(len(ROW_D['HEX'])))   # 5.2 .. 5.8
+             INSERT=(90.0, 99.0, 108.0, 117.0), LEGMAG=(126.0, 132.0, 138.0))
 TAB_SIZE = 30.0
 TAB_FLAT = (7.0, 15.0, 23.0)       # flat magnet pockets, X from the tab corner, at Y 6
 TAB_FLAT_Y = 6.0
@@ -64,8 +63,9 @@ PARAMS = [
     ('SMP_m3_min', 'TBD_so_screw_D + TBD_so_clr - 2 * SMP_m3_step', '[쿠폰] 행 D M3 관통 첫 값. 셋째가 plate·mount M3 구멍'),
     ('SMP_cb_step', '0.2 mm', '[쿠폰] 행 D 카운터보어 단계'),
     ('SMP_cb_min', 'TBD_so_head_D - SMP_cb_step', '[쿠폰] 행 D 카운터보어 첫 값. 둘째가 plate 카운터보어(보스 편측 여유 0.2/0.3/0.4)'),
-    ('SMP_hex_step', f'{HEX_STEP:g} mm', '[쿠폰] 행 D 육각 포켓 맞변 단계(스케치는 고정 숫자, coupon_v5.HEX_AF)'),
-    ('SMP_hex_min', 'TBD_so_AF + TBD_so_pocket_clr - SMP_hex_step', '[쿠폰] 행 D 육각 포켓 첫 맞변. 둘째가 mount 포켓'),
+    ('SMP_ins_step', '0.2 mm', '[쿠폰 2026-11-12] 행 D SO 인서트 열압입 구멍 단계(옛 육각 포켓 자리)'),
+    ('SMP_ins_min', 'v5_so_insert_hole_D - SMP_ins_step', '[쿠폰 2026-11-12] 행 D 인서트 구멍 첫 값. 둘째가 mount 보스 구멍. '
+     '깊이 v5_so_insert_H(아랫면에서), 위로 M3 관통 Ø3.4, 위 살 1.0'),
     ('SMP_legmag_step', '0.1 mm', '[쿠폰] 행 D plate 다리 자석 포켓 단계'),
     ('SMP_legmag_min', 'TBD_magnet_D + 2 * v5_legmag_plate_clr - SMP_legmag_step',
      '[쿠폰 2026-11-10] 행 D plate 다리 자석 포켓(MJF) 첫 값. 둘째가 plate 포켓 Ø3.3'),
@@ -142,15 +142,9 @@ def emit(feature, sketch, doc):
     for i, x in enumerate(ROW_D['CB']):          # plate counterbore from the top over the M3 hole
         cyl(f'SMP_CB_{i}', X + x, y, f'SMP_cb_min + {i} * SMP_cb_step', 'SMP_T - TBD_so_cb_D', 'TBD_so_cb_D + 1')
         cyl(f'SMP_CB_HOLE_{i}', X + x, y, 'TBD_so_screw_D + TBD_so_clr', -1.0, 'SMP_T + 2')
-    y_hex = _num(Y + 3 * 19.05 + 2 * 6 + 5 - 6)   # SMP_W - SMP_margin as a number (checked in check())
-    rings = [[(round(px, 6), round(py, 6)) for px, py in mounts_v5.hexagon((X + x, y_hex), af).exterior.coords[:-1]]
-             for x, af in zip(ROW_D['HEX'], HEX_AF)]
-    sk = sketch('SK_SMP_HEX_POCKETS', plane(-0.5), rings)       # mount pocket: from the face the standoff enters
-    feature('extrude', 'SMP_HEX_POCKETS', sketch=sk, profiles=dict(type='all'),
-            extent=dict(convention='total_distance', direction='positive', distance='0.5 + TBD_so_pocket_D'),
-            operation='cut', targets=[COUPON])
-    for i, x in enumerate(ROW_D['HEX']):
-        cyl(f'SMP_HEX_HOLE_{i}', X + x, y, 'TBD_so_screw_D + TBD_so_clr', -1.0, 'SMP_T + 2')
+    for i, x in enumerate(ROW_D['INSERT']):      # SO insert: heat-set hole from the underside over the M3 bore
+        cyl(f'SMP_INSERT_{i}', X + x, y, f'SMP_ins_min + {i} * SMP_ins_step', -1.0, 'v5_so_insert_H + 1')
+        cyl(f'SMP_INSERT_BORE_{i}', X + x, y, 'TBD_so_screw_D + TBD_so_clr', -1.0, 'SMP_T + 2')
     for i, x in enumerate(ROW_D['LEGMAG']):      # plate leg magnet pocket, from the plate top
         cyl(f'SMP_LEGMAG_{i}', X + x, y, f'SMP_legmag_min + {i} * SMP_legmag_step',
             'SMP_T - TBD_magnet_T - TBD_magnet_clr', 'TBD_magnet_T + TBD_magnet_clr + 1')
@@ -204,9 +198,9 @@ def expected(values):
     for i in range(len(ROW_D['CB'])):
         cb = v['TBD_so_cb_D']
         cut += disc(v['SMP_cb_min'] + i * v['SMP_cb_step']) * cb + disc(bore) * (T - cb)
-    for af in HEX_AF:
-        depth = v['TBD_so_pocket_D']
-        cut += math.sqrt(3) / 2 * af * af * depth + disc(bore) * (T - depth)
+    for i in range(len(ROW_D['INSERT'])):
+        depth = v['v5_so_insert_H']
+        cut += disc(v['SMP_ins_min'] + i * v['SMP_ins_step']) * depth + disc(bore) * (T - depth)
     mag_h = v['TBD_magnet_T'] + v['TBD_magnet_clr']
     cut += sum(disc(v['SMP_legmag_min'] + i * v['SMP_legmag_step']) * mag_h for i in range(len(ROW_D['LEGMAG'])))
     x, y = COUPON_AT
@@ -228,7 +222,7 @@ def walls(values):
     p, m = v['SMP_pitch'], v['SMP_margin']
     W = 3 * p + 2 * m + v['SMP_rowD']
     largest = dict(M2=v['SMP_m2_min'] + 3 * v['SMP_m2_step'], M3=v['SMP_m3_min'] + 3 * v['SMP_m3_step'],
-                   CB=v['SMP_cb_min'] + 2 * v['SMP_cb_step'], HEX=2 * max(HEX_AF) / math.sqrt(3),
+                   CB=v['SMP_cb_min'] + 2 * v['SMP_cb_step'], INSERT=v['SMP_ins_min'] + 3 * v['SMP_ins_step'],
                    LEGMAG=v['SMP_legmag_min'] + 2 * v['SMP_legmag_step'])
     xs = sorted((x, largest[k] / 2) for k, row in ROW_D.items() for x in row)
     out = dict(row_D_between=round(min(b[0] - b[1] - a[0] - a[1] for a, b in zip(xs, xs[1:])), 3),
@@ -240,6 +234,7 @@ def walls(values):
                ledge=v['SMP_ledge'],
                under_counterbore=round(v['SMP_T'] - v['TBD_so_cb_D'], 3),
                over_leg_magnet=round(v['SMP_T'] - v['TBD_magnet_T'] - v['TBD_magnet_clr'], 3),
+               over_insert=round(v['SMP_T'] - v['v5_so_insert_H'], 3),
                boss_magnet_wall=round((v['TBD_cover_boss_D'] - v['TBD_magnet_D'] - 2 * v['TBD_magnet_clr']) / 2, 3))
     from shapely.geometry import box
     x, y = TAB_AT
@@ -253,11 +248,10 @@ def check(evaluated, production_values):
     production model; walls keep the material limits. Returns the report."""
     values = {q['name']: q['value'] for q in evaluated['params'] if q.get('value') is not None}
     for name in ('TBD_plate_T', 'TBD_upper_plate_T', 'TBD_sw_ledge_T', 'TBD_sw_hole', 'TBD_so_cb_D', 'TBD_so_head_D',
-                 'TBD_cover_boss_D', 'TBD_cover_T', 'TBD_magnet_D', 'v5_legmag_plate_clr', 'TBD_so_pocket_D'):
+                 'TBD_cover_boss_D', 'TBD_cover_T', 'TBD_magnet_D', 'v5_legmag_plate_clr', 'v5_so_insert_hole_D',
+                 'v5_so_insert_H'):
         assert abs(values[name] - production_values[name]) < 1e-9, (name, values[name], production_values[name])
-    assert abs(values['SMP_hex_min'] + values['SMP_hex_step'] - mounts_v5.SO_HEX_AF) < 1e-9, 'hex sketch is stale'
-    assert abs(values['SMP_hex_step'] - HEX_STEP) < 1e-9
-    assert abs(values['SMP_W'] - values['SMP_margin'] - (3 * 19.05 + 2 * 6 + 5 - 6)) < 1e-9, 'hex row Y is stale'
+    assert abs(values['SMP_ins_min'] + values['SMP_ins_step'] - mounts_v5.INSERT_HOLE_D) < 1e-9, 'insert row is stale'
     assert abs(values['SMP_T'] - values['SMP_upper'] - values['SMP_ledge'] - production_values['TBD_sw_notch_H']) < 1e-9
     bodies = {b['name']: b for b in evaluated['bodies']}
     report = {}
@@ -277,7 +271,7 @@ def check(evaluated, production_values):
         m2=[round(values['SMP_m2_min'] + i * values['SMP_m2_step'], 3) for i in range(len(ROW_D['M2']))],
         m3=[round(values['SMP_m3_min'] + i * values['SMP_m3_step'], 3) for i in range(len(ROW_D['M3']))],
         counterbore=[round(values['SMP_cb_min'] + i * values['SMP_cb_step'], 3) for i in range(len(ROW_D['CB']))],
-        hex_AF=list(HEX_AF),
+        insert_hole=[round(values['SMP_ins_min'] + i * values['SMP_ins_step'], 3) for i in range(len(ROW_D['INSERT']))],
         plate_leg_magnet=[round(values['SMP_legmag_min'] + i * values['SMP_legmag_step'], 3) for i in range(len(ROW_D['LEGMAG']))],
         tab_flat_magnet=[round(values['SMP_magf_min'] + i * values['SMP_magf_step'], 3) for i in range(len(TAB_FLAT))],
         tab_text_stroke=[round(cover_pattern_v5.stroke() * s, 3) for s, _ in TAB_TEXT.values()],
