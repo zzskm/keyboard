@@ -11,7 +11,8 @@ front block, clear of the bone bar grooves.
 
 Coordinates are those of source/46sp_r3_left.step: X across the half (0 = middle of the plate, +X = the user's left), Y to the front
 (0 = back face), Z up (0 = case bottom). The right half uses the same frame for its own case; its case width
-comes from the right bone bars (158) because there is no right STEP yet.
+comes from the right bone bars (158); otherwise the right case is the left one mirrored (user 2026-11-13: the
+same, with the AUX jack on the other side), and there is no right STEP.
 
     python 46sp/tools/build_plate_cover.py            # ~1 min, writes model/46sp-plate-cover.sc and the STLs
     python 46sp/tools/build_plate_cover.py --check-case   # also checks the left parts against the case STEP
@@ -65,11 +66,19 @@ LOGO_ROW, LOGO_X = 3, (24.0, 61.0)     # left row 4, between the first keycap (X
 CURVE_SEGMENTS = 6
 
 COVER_T = 3.0
-COVER_Y = (4.0, 205.0)   # inside the rounded bottom edges of the back and front faces
+# The cover follows the case's footprint on Z 0 (left STEP, sections at Z 0.02): side walls and the back
+# block's outer half Y 5.25..204.25, the front block ends at 201.5, the back block's inner half starts at 9.4.
+COVER_Y = (5.25, 204.25)
+FRONT_INNER_Y = 201.5
+BACK_INNER_Y = 9.4
 COVER_SIDE_IN = 0.3      # cover sides this far inside the case sides
 SCREW_D, CS_D, CS_ANGLE = 3.4, 6.6, 90.0     # wood screw 3 mm countersunk
 SCREWS_Y_WALL, SCREW_FRONT = (45.0, 125.0), (162.0, 0.47)   # (Y, X as a share of the inner half width)
 BONE_GROOVES_Y = [(14.72, 20.93), (178.64, 184.84), (189.84, 196.04)]
+# The back block's inner half (left case: X -63..0, body (10) inside_bw_b) sits further forward than the outer
+# half (body (9)). The right case is the left one mirrored (user 2026-11-13: the same, with the AUX jack on the
+# other side), so its step is at +X.
+INNER_SIDE = {"L": -1, "R": 1}   # sign of X on the inner side (toward the other half)
 
 
 # ---------------------------------------------------------------- drawing
@@ -394,13 +403,21 @@ def build_cover(r, half):
     inner = cfg["case_half"] - 12.0
     screws = [(sx * cfg["wall_x"], y) for y in SCREWS_Y_WALL for sx in (-1, 1)]
     screws += [(sx * SCREW_FRONT[1] * inner, SCREW_FRONT[0]) for sx in (-1, 1)]
+    sx = INNER_SIDE[half]
+    back_step, front_step = BACK_INNER_Y - COVER_Y[0], COVER_Y[1] - FRONT_INNER_Y
+    r.c("solid.box", length=inner, width=back_step + 1.0, height=COVER_T + 1.0,
+        corner=[min(0.0, sx * inner), COVER_Y[0] - 1.0, -COVER_T - 0.5], operation="cut", targets=[name],
+        name=f"{name}_BackStep")
+    r.c("solid.box", length=2 * inner, width=front_step + 1.0, height=COVER_T + 1.0,
+        corner=[-inner, FRONT_INNER_Y, -COVER_T - 0.5], operation="cut", targets=[name], name=f"{name}_FrontStep")
     for k, (x, y) in enumerate(screws):
         r.c("solid.hole", position=[x, y, -COVER_T], direction=[0, 0, 1], diameter=SCREW_D, type="countersink",
             cs_diameter=CS_D, cs_angle=CS_ANGLE, targets=[name], name=f"{name}_Screw{k}")
     cs_depth = (CS_D - SCREW_D) / 2 / math.tan(math.radians(CS_ANGLE / 2))
     per = math.pi / 4 * SCREW_D ** 2 * COVER_T + math.pi / 12 * cs_depth * (CS_D ** 2 + CS_D * SCREW_D + SCREW_D ** 2) \
         - math.pi / 4 * SCREW_D ** 2 * cs_depth
-    return 2 * w * (COVER_Y[1] - COVER_Y[0]) * COVER_T - per * len(screws), screws
+    area = 2 * w * (COVER_Y[1] - COVER_Y[0]) - inner * back_step - 2 * inner * front_step
+    return area * COVER_T - per * len(screws), screws
 
 
 # ---------------------------------------------------------------- checks
