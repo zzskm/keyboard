@@ -61,6 +61,8 @@ python 46sp/tools/render_plate_46key.py 46sp/source/46sp_plate_r3.converted.dxf 
 python 46sp/tools/build_plate_cover.py --check-case   # 약 15초. --font <Xifiction.ttf>는 로고 글자 윤곽을 다시 뽑는다
 ```
 
+실물 case에 넣은 조립체와 조립 그림은 [tools/build_assembly.py](tools/build_assembly.py)가 [46sp-assembly.sc](model/46sp-assembly.sc)와 `images/assembly-*.png`로 만들고, 조립 순서는 [조립 가이드](ASSEMBLY.md)에 있다.
+
 | 왼쪽 | 오른쪽 |
 |---|---|
 | ![왼쪽 plate와 cover, 앞에서](images/plate-cover-left.png) | ![오른쪽 plate와 cover, 앞에서](images/plate-cover-right.png) |
