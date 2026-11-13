@@ -1,10 +1,11 @@
 """Assembly model of 46sp as built: the existing plywood case with the r3 acrylic cheeks, the print plate and cover.
 
 Bodies (left half in the STEP frame, the right half placed RIGHT_DX to the user's right):
-  case     - left: side walls, front block and back blocks of source/46sp_r3_left.step (its acrylic plates and
-             its older f3d cheeks are removed). Right: the same mirrored, the blocks stretched to the right
-             width (inner 150 -> plate 158) and the walls moved out by 12; its inner back block is the
-             unrecessed one (no USB outlet, user 2026-11-13).
+  case     - left: side walls, front block and back block of source/46sp_r3_left.step (its acrylic plates and
+             its older f3d cheeks are removed). The STEP's inner back block (inside_bw_b) is another version's
+             shape with a 2.28 step on its back face; it is replaced by the outer one mirrored, so the back is
+             flush (user 2026-11-13). Right: the same mirrored, the blocks stretched to the right width
+             (inner 150 -> plate 158) and the walls moved out by 12.
   cheeks   - r3 DWG 229E/22A0 (and 22B6/22CB for the right outer end), 5T, outer face on the wall pocket bottom.
   bones    - the 6 mm tie bars of dxf/46sp_bone.dxf in the bottom grooves and the two slanted slots.
   plate, cover - from tools/build_plate_cover.py.
@@ -62,8 +63,11 @@ class Names:
 def case_left(r):
     r.c("solid.remove", bodies=STEP_BODIES["plates"] + STEP_BODIES["cheeks"])
     for key, new in (("wall_out", "Wall_L_out"), ("wall_in", "Wall_L_in"), ("front", "Front_L"),
-                     ("back_out", "Back_L_out"), ("back_in", "Back_L_in")):
+                     ("back_out", "Back_L_out")):
         r.c("body.rename", body=STEP_BODIES[key], name=new)
+    r.c("solid.remove", bodies=[STEP_BODIES["back_in"]])        # the stepped inside_bw_b
+    r.c("solid.mirror", bodies=["Back_L_out"], plane="YZ")
+    r.c("body.rename", body="Back_L_out (2)", name="Back_L_in")
 
 
 def case_right(r):
