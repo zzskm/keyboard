@@ -29,7 +29,7 @@ SWITCHES = ROOT / "model/46key-switches.json"
 U = 19.05
 HOLE = 14.0
 CAP = 18.2            # keycap bottom width (MX profile caps are 18.0-18.2)
-CHEEK_T = 4.0         # cheek (keypad_side) thickness in 46sp_r3_left.step: X 63..67
+CHEEK_T = 5.0         # cheek thickness: r3 DWG label "검정아스텔 5T" (plates and cheeks); the f3d STEP has 4
 THUMB_SHIFT = -10.0   # 178A is drawn 10 mm right of where it sits (ends 265/284.75/337 = R3 255, R2 274.75, R0 327)
 
 PLATES = {  # name: (outline handle, r3 openings, 46-key openings)

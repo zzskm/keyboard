@@ -46,6 +46,7 @@ DRAW_TURN, DRAW_DY, DRAW_DZ = -13.0, 9.7206, -26.1899
 RIGHT_CHEEK_SHIFT = 157.83 - 16.12   # 22B6/22CB are drawn this far right of 229E/22A0
 
 SLOT_CLEAR = 0.25        # per side: 5.5 slot -> 5.0 plate
+CHEEK_T = 5.0            # r3 DWG label "검정아스텔 5T" covers the plates and the cheeks (the f3d STEP cheek is 4)
 PLATE_T = 5.0
 LATCH_T = 1.5
 HOLE = 14.0
@@ -432,7 +433,7 @@ def plan_checks(sec, keys, half, logo, screws):
     problems = []
     for rk, x, s in keys:
         row = sec["thumb_row"] if rk == "T" else sec["rows4"][rk]
-        if not (x0 + 4 + 1.0 <= x - CAP / 2 and x + CAP / 2 <= x1 - 4 - 1.0):
+        if not (x0 + CHEEK_T + 1.0 <= x - CAP / 2 and x + CAP / 2 <= x1 - CHEEK_T - 1.0):
             problems.append(f"{half} key X {x:.2f}: keycap within 1 mm of a cheek")
         if not (1.5 <= s - RELIEF / 2 and s + RELIEF / 2 <= row["length"] - 1.5):
             problems.append(f"{half} key X {x:.2f}: relief within 1.5 mm of the row ends (s {s:.2f})")
@@ -501,8 +502,9 @@ def main():
         build_plate(left, "L", sec, keys["L"])
         build_cover(left, "L")
         # STEP bodies: (4)(5) acrylic cheeks, (6)(7) side walls, (8) front block, (9)(10) back blocks.
-        # The STEP cheek slot is the f3d one (about 3.5 wide, rows 26.86/19.05/19.05/26.86), not the r3 DWG slot
-        # the plate follows (5.5, rows 28.05/20.9/20.9/26.05), so the tongues overlap it; that is reported apart.
+        # The STEP cheek is an older f3d one (4 thick, slot about 3.5 wide, rows 26.86/19.05/19.05/26.86); the cut
+        # cheeks are the r3 DWG ones (5T, slot 5.5, rows 28.05/20.9/20.9/26.05) the plate follows, so the tongues
+        # overlap the STEP cheek; that is reported apart.
         cheeks = {"본체1 (4)", "본체1 (5)"}
         case = sorted(cheeks) + ["본체1 (6)", "본체1 (7)", "본체1 (8)", "본체1 (9)", "본체1 (10)"]
         check = left.cmds + [{"command": "inspect.interference", "params": {"bodies": ["Plate_L", "Cover_L"] + case}}]
