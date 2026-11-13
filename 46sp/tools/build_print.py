@@ -40,8 +40,9 @@ LEG_D, LEG_BOTTOM_Z, INSERT_HOLE_D, INSERT_HOLE_DEPTH, PILOT_D, PILOT_DEPTH = 7.
 PAD_D, PAD_TOP_Z, CB_D, CB_DEPTH, SCREW_D, SCREW_L = 11.0, 4.0, 6.4, 2.0, 3.4, 10.0
 LEG_CLEAR = 0.3
 
-# RP2040-Zero (23.5 x 18 PCB, USB-C on a short edge) and a 3.5 mm panel jack.
-MCU_L, MCU_W, MCU_GAP, MCU_WALL_T, MCU_WALL_H, MCU_BACK_GAP = 23.5, 18.0, 0.2, 1.2, 2.0, 1.0
+# Pro Micro (ATmega32U4, 33 x 18 PCB, USB-C on a short edge; the short edge faces the back wall)
+# and a 3.5 mm panel jack.
+MCU_L, MCU_W, MCU_GAP, MCU_WALL_T, MCU_WALL_H, MCU_BACK_GAP = 33.0, 18.0, 0.2, 1.2, 2.0, 1.0
 USB_OPEN_W, USB_OPEN_H, USB_CENTER_ABOVE_FLOOR = 11.0, 6.5, 3.4
 JACK_D, JACK_FROM_BACK, JACK_ABOVE_FLOOR = 6.2, 6.5, 5.5
 
@@ -262,12 +263,12 @@ def build_half(r, half, cfg, rows, bottom, top, key_list):
         r.c("solid.cylinder", diameter=SCREW_D, height=PAD_TOP_Z + 1, base=[x, y, -0.5], axis="Z",
             operation="cut", targets=[case], name=f"{case}_ScrewHole{k}")
 
-    # RP2040-Zero cradle at the back wall, USB-C through the back wall
+    # Pro Micro cradle at the back wall: its length runs front to back, USB-C through the back wall
     mx = cfg["mcu_x"]
     inner_back = yb - WALL
     pcb_back = inner_back - MCU_BACK_GAP
-    py0 = pcb_back - MCU_W - MCU_GAP
-    gx0, gx1 = mx - MCU_L / 2 - MCU_GAP, mx + MCU_L / 2 + MCU_GAP
+    py0 = pcb_back - MCU_L - MCU_GAP
+    gx0, gx1 = mx - MCU_W / 2 - MCU_GAP, mx + MCU_W / 2 + MCU_GAP
     t = MCU_WALL_T
     for name, (cx0, cx1, cy0, cy1) in {
             "Left": (gx0 - t, gx0, py0 - t, inner_back), "Right": (gx1, gx1 + t, py0 - t, inner_back),
