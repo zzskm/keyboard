@@ -11,8 +11,8 @@ front block, clear of the bone bar grooves.
 
 Coordinates are those of source/46sp_r3_left.step: X across the half (0 = middle of the plate, +X = the user's left), Y to the front
 (0 = back face), Z up (0 = case bottom). The right half uses the same frame for its own case; its case width
-comes from the right bone bars (158); otherwise the right case is the left one mirrored (user 2026-11-13: the
-same, with the AUX jack on the other side), and there is no right STEP.
+comes from the right bone bars (158); otherwise the right case is the left one (user 2026-11-13: the same, a
+little wider, AUX hole in its left wall, no USB outlet on the back), and there is no right STEP.
 
     python 46sp/tools/build_plate_cover.py            # ~1 min, writes model/46sp-plate-cover.sc and the STLs
     python 46sp/tools/build_plate_cover.py --check-case   # also checks the left parts against the case STEP
@@ -76,9 +76,11 @@ SCREW_D, CS_D, CS_ANGLE = 3.4, 6.6, 90.0     # wood screw 3 mm countersunk
 SCREWS_Y_WALL, SCREW_FRONT = (45.0, 125.0), (162.0, 0.47)   # (Y, X as a share of the inner half width)
 BONE_GROOVES_Y = [(14.72, 20.93), (178.64, 184.84), (189.84, 196.04)]
 # The back block's inner half (left case: X -63..0, body (10) inside_bw_b) sits further forward than the outer
-# half (body (9)). The right case is the left one mirrored (user 2026-11-13: the same, with the AUX jack on the
-# other side), so its step is at +X.
+# half (body (9)). Read as the place of the left case's USB outlet on the back: the right case is the same as
+# the left, a little wider, with its AUX hole in its left (inner) wall and no USB outlet (user 2026-11-13), so
+# its cover has no back step (BACK_STEP).
 INNER_SIDE = {"L": -1, "R": 1}   # sign of X on the inner side (toward the other half)
+BACK_STEP = {"L": True, "R": False}
 
 
 # ---------------------------------------------------------------- drawing
@@ -404,10 +406,12 @@ def build_cover(r, half):
     screws = [(sx * cfg["wall_x"], y) for y in SCREWS_Y_WALL for sx in (-1, 1)]
     screws += [(sx * SCREW_FRONT[1] * inner, SCREW_FRONT[0]) for sx in (-1, 1)]
     sx = INNER_SIDE[half]
-    back_step, front_step = BACK_INNER_Y - COVER_Y[0], COVER_Y[1] - FRONT_INNER_Y
-    r.c("solid.box", length=inner, width=back_step + 1.0, height=COVER_T + 1.0,
-        corner=[min(0.0, sx * inner), COVER_Y[0] - 1.0, -COVER_T - 0.5], operation="cut", targets=[name],
-        name=f"{name}_BackStep")
+    back_step = BACK_INNER_Y - COVER_Y[0] if BACK_STEP[half] else 0.0
+    front_step = COVER_Y[1] - FRONT_INNER_Y
+    if back_step:
+        r.c("solid.box", length=inner, width=back_step + 1.0, height=COVER_T + 1.0,
+            corner=[min(0.0, sx * inner), COVER_Y[0] - 1.0, -COVER_T - 0.5], operation="cut", targets=[name],
+            name=f"{name}_BackStep")
     r.c("solid.box", length=2 * inner, width=front_step + 1.0, height=COVER_T + 1.0,
         corner=[-inner, FRONT_INNER_Y, -COVER_T - 0.5], operation="cut", targets=[name], name=f"{name}_FrontStep")
     for k, (x, y) in enumerate(screws):
