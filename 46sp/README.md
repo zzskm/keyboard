@@ -24,9 +24,33 @@
 | **출력 설계·펌웨어** | **6·6·5·3 = 20** | **7·7·5·3·4 = 26** | **46** |
 
 - 왼쪽 3행에는 바깥 열 키가 없다. r3 판에 있는 이 개구는 출력 설계에 넣지 않는다.
-- 오른쪽 1·2행은 r3 판보다 한 키씩 많다. r3 판은 5번과 6번 개구 사이가 34.4 mm(1u는 19.05)이고, 그 사이에 리브 두 장이 7 mm 통로를 이룬다(노치 X 270.4–272.1, 277.4–279.1). 통로의 용도는 확인하지 못했다. 7번째 열의 위치와 오른쪽 폭은 실물 케이스 검토 후 출력 설계에서 정한다.
+- 오른쪽 1·2행은 r3 판보다 한 키씩 많다. case 폭은 그대로 두고 plate만 바꿔 넣는다(사용자 결정 2026-11-13). 아래 [46키 plate](#46키-plate-기존-case-재사용)를 본다.
 - 46es 펌웨어의 키맵 행은 배선 행(4 × 12)이라 물리 행과 다르다. 46sp 펌웨어는 물리 행으로 정의한다.
 - [r3 모델](model/r3-plates.sc)과 [스위치 좌표](model/r3-switches.json)는 기존 가공 부품의 45개 개구 기록으로 그대로 둔다.
+
+## 46키 plate (기존 case 재사용)
+
+기조립된 합판 case와 아크릴 측판(cheek)을 그대로 두고 plate만 다시 만든다. [tools/plate_46key.py](tools/plate_46key.py)가 r3 도면(`source/46sp_plate_r3.converted.dxf`)을 고쳐 [46sp_plate_46key.dxf](source/46sp_plate_46key.dxf)와 [46key-switches.json](model/46key-switches.json)을 쓰고 검사한다. 판 외곽 길이와 행 모양은 r3와 같아서 기존 측판 홈에 그대로 들어간다.
+
+```powershell
+python 46sp/tools/plate_46key.py
+& 'C:\Program Files\ArtCraft\CADCraft\cadcraft-cli.exe' convert 46sp/source/46sp_plate_46key.dxf 46sp/source/46sp_plate_46key.dwg
+python 46sp/tools/render_plate_46key.py 46sp/source/46sp_plate_r3.converted.dxf 46sp/source/46sp_plate_46key.dxf 46sp/images/plate-46key.png
+```
+
+![46키 plate: 파랑 새 구멍, 빨강 뺀 구멍](images/plate-46key.png)
+
+| 판 | r3 → 46키 | 바뀐 것 |
+|---|---|---|
+| `L_R2` | 6 → 5 | 바깥 구멍(X 37.225)을 뺀다 |
+| `R_R0`·`R_R1` | 6 → 7 | 6번 구멍(X 296.09)을 빼고, 5번(261.725) 뒤에 19.05 간격으로 280.775·299.825를 낸다. 이 두 구멍 밑을 지나던 리브 홈(X 278.25·305.62) 두 개씩을 없앤다 |
+| 나머지 6장 | 그대로 | — |
+
+- 폭 검사(측판 두께 4 mm, `46sp_r3_left.step`의 keypad_side 값): 오른쪽 7번 키캡(18.2 mm) 끝에서 측판 안쪽 면까지 14.1 mm가 남는다. 안쪽 끝은 r3와 같은 2.4 mm다. 바꾼 3장의 구멍 사이 살은 5.05, 구멍–판 끝 살은 2.46 mm이고, 남은 리브 홈은 이어지는 행의 구멍과 X로 1.67 mm 이상 떨어져 있다.
+- 오른쪽 6·7번 대안이 없었던 이유: r3의 6번(296.09)을 두고 7번을 바깥에 더하면 키캡이 측판에 닿는다(315.14 + 9.1 > 323). 통로 안쪽(277)에 더하면 5번과 15.3 mm 간격이 되어 키캡이 겹친다.
+- **엄지(십자) 판 `178A`는 도면에서 10 mm 오른쪽에 그려져 있다.** 조립 위치는 X 255–327이다. 판 끝이 R3 끝(255), R2 끝(274.75), R0·R1 끝(327)과 맞고, 뒤 가장자리 리브 홈(도면 288.25·315.62)이 R0·R1 홈(278.25·305.62)과 10 mm씩 차이 난다. 조립 X로 십자 키는 ← 272.4, ↑·↓ 291.4, → 310.5이고, ↑은 새 PgUp·PgDn 두 열(280.8·299.8) 사이에 놓인다(6번 열에서 +10.7, 7번 열에서 −8.4). `46key-switches.json`의 `x_assembly_mm`가 이 값이다. 출력 모델(`build_print.py`)은 도면 X를 그대로 썼다.
+- **끝 리브 `Rib_End_A`·`Rib_End_B`(2767, 276F)는 그대로 못 쓴다.** 이 둘은 R0 → R1 → 엄지 판 뒤쪽을 X 278.25·305.62에서 받치는데, 이 X가 새 6·7번 스위치 몸체 밑이다. 엄지 판 앞쪽만 받치도록 잘라 쓰거나 출력 지지로 바꿔야 한다. 엄지 판의 리브 홈은 이 결정 전까지 그대로 둔다. 도면의 리브·측판은 r3 그대로다.
+- 확인하지 못한 것: 실물 측판 두께와 판–홈 여유(STEP의 판 폭은 134, r3 도면은 133), R1 6·7번 스위치 몸체와 엄지 판 사이의 상하 간격(단면 검토 필요), 바뀐 판 3장을 r3와 같은 5T 검정 아스텔로 다시 가공할지.
 
 ## 출력 모델 (MJF)
 
@@ -55,6 +79,15 @@ python 46sp/tools/build_print.py    # 약 2분, 46sp/model/46sp-print.sc를 다�
 아래 r3 복원 모델은 기존 가공 부품의 형상 참고 자료이고, 출력 모델의 행 단면과 키 위치를 여기서 읽는다. 리브 받침과 Pro Micro 받침은 기존 합판·아크릴 활용을 전제로 만든 초기 시제품이다.
 
 [Drive 원본](https://drive.google.com/drive/folders/1DNMSNlSEzdR8m5Bf25lDaad6fUhWz5xY) ZIP의 `keyboard/kb46sp/`에서 DWG, Fusion, DXF를 [source/](source/)에 옮겼다. `46sp_plate_r3.converted.dxf`는 CADCraft로 r3 DWG를 변환한 파일이다. `dxf/46sp_side.dxf`에는 합판 측판의 외곽과 개구, `dxf/46sp_inside_*.dxf`에는 안쪽 부품의 가공 윤곽이 있다. `46sp_r3_left.f3d`는 왼쪽 설계 참고용으로 보관한다.
+
+f3d는 Fusion에서 STEP으로 내보냈다(2026-11-12, `source/*.step`). 모두 **왼쪽 반쪽**의 부피 모델이고 스위치 구멍과 리브는 없다. 키 배열은 r3 도면에서 읽는다.
+
+| STEP | 내용 |
+|---|---|
+| `46sp_r3_left.step` | 조립된 case의 왼쪽: 합판 측벽 `side_l/r`(X ±63–75, 바깥 폭 150), 아크릴 측판 `keypad_side_l/r`(4 mm), 안쪽 합판 블록 `inside_fw`·`inside_bw_a/b`, 4행 plate `keypad`(판 폭 134). 측판 외곽은 r3 `229E`와 면적·모양이 같고(대칭 차 0) 13° 돌아가 놓여 있다. 측벽은 `dxf/46sp_side.dxf`(205.35 × 60)와 같다 |
+| `46sp_r2_left.step`, `46sp_v18.step` | 이전 리비전(r2, v18의 `bone` 포함) |
+| `kb46sp_r1.step`, `kb46sp_v11.step` | 첫 리비전의 한 덩어리 외형 |
+| `46sp_r3_v13.step` | 형상이 없다(헤더만). 양쪽 전체가 필요하면 Fusion에서 다시 내보낸다 |
 
 | 파일 | 내용 |
 |---|---|
