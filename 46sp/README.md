@@ -30,7 +30,7 @@
 
 ## 46키 plate (기존 case 재사용)
 
-기조립된 합판 case와 아크릴 측판(cheek)을 그대로 두고 plate만 다시 만든다. [tools/plate_46key.py](tools/plate_46key.py)가 r3 도면(`source/46sp_plate_r3.converted.dxf`)을 고쳐 [46sp_plate_46key.dxf](source/46sp_plate_46key.dxf)와 [46key-switches.json](model/46key-switches.json)을 쓰고 검사한다. 판 외곽 길이와 행 모양은 r3와 같아서 기존 측판 홈에 그대로 들어간다.
+기조립된 합판 case와 아크릴 측판(cheek)을 그대로 두고 plate만 다시 만든다. 2026-11-13부터 plate는 출력한다([출력 plate와 bottom cover](#출력-plate와-bottom-cover-기존-case-재사용)). 이 DXF는 그 키 위치의 기준이다. [tools/plate_46key.py](tools/plate_46key.py)가 r3 도면(`source/46sp_plate_r3.converted.dxf`)을 고쳐 [46sp_plate_46key.dxf](source/46sp_plate_46key.dxf)와 [46key-switches.json](model/46key-switches.json)을 쓰고 검사한다. 판 외곽 길이와 행 모양은 r3와 같아서 기존 측판 홈에 그대로 들어간다.
 
 ```powershell
 python 46sp/tools/plate_46key.py
@@ -53,9 +53,35 @@ python 46sp/tools/render_plate_46key.py 46sp/source/46sp_plate_r3.converted.dxf 
 - **아크릴 측판(cheek) 재사용**: 측판 4장의 홈은 모두 폭 5.5 mm(5 mm 판 + 0.25 mm 양쪽)이고, 모양은 46키 plate의 행 단면과 같다. 왼쪽 두 장과 오른쪽 안쪽 측판(22B8)은 4행(+22.5° / +6.07° / −8.19° / −22.5°)을 잡는다. 오른쪽 바깥 측판(22B6)은 R0·R1과 엄지 판의 15° 평면(길이 46.6)을 잡는다. 그래서 출력 plate 끝 4 mm를 r3 단면(두께 5.0)으로 만들면 기존 측판에 그대로 끼워진다. 다만 측판 홈은 막힌 창이라 plate 끝을 X 방향으로 밀어 넣어야 한다. 이미 측벽에 들어가 있는 측판을 쓰려면 측벽을 열 수 있어야 한다.
 - 확인하지 못한 것: 실물 측판 두께와 판–홈 여유(STEP의 판 폭은 134, r3 도면은 133), R1 6·7번 스위치 몸체와 엄지 판 사이의 상하 간격(단면 검토 필요), 바뀐 판 3장을 r3와 같은 5T 검정 아스텔로 다시 가공할지.
 
-## 출력 모델 (MJF)
+## 출력 plate와 bottom cover (기존 case 재사용)
 
-> **재검토 중(2026-11-12 사용자 정정)**: 기조립된 합판 case를 그대로 쓴다. 아래 출력 모델은 case까지 새로 출력하는 방향으로 만든 것이라 다시 설계한다. 컨트롤러 받침도 RP2040-Zero 치수(23.5 × 18)로 남아 있다. 기존 case의 3D 형상은 f3d에서 내보낸 STEP으로 받는다.
+2026-11-13 결정: 합판 case(CNC 적층, 측벽은 끼움 결합이고 작업이 끝나면 목공풀로 고정)와 아크릴 측판은 그대로 쓴다. 출력(MJF)하는 것은 반쪽마다 **plate**와 **bottom cover** 두 부품이다. 리브는 쓰지 않는다. [46sp-plate-cover.sc](model/46sp-plate-cover.sc)와 출력 파일 [model/print/](model/print/)(`46sp_Plate_L/R.stl`, `46sp_Cover_L/R.stl`, 조립 좌표 STEP)은 [tools/build_plate_cover.py](tools/build_plate_cover.py)가 만든다.
+
+```powershell
+python 46sp/tools/build_plate_cover.py --check-case   # 약 15초. --font <Xifiction.ttf>는 로고 글자 윤곽을 다시 뽑는다
+```
+
+| 왼쪽 | 오른쪽 |
+|---|---|
+| ![왼쪽 plate와 cover, 앞에서](images/plate-cover-left.png) | ![오른쪽 plate와 cover, 앞에서](images/plate-cover-right.png) |
+
+![왼쪽 case 단면(X 30): 빨강 plate, 파랑 cover](images/plate-cover-in-case.png)
+
+| 부품 | 형상 |
+|---|---|
+| plate (`Plate_L` 133 · `Plate_R` 157 mm) | 단면은 r3 측판 홈(왼쪽과 오른쪽 안쪽은 `22A0`, 오른쪽 바깥은 `22CB`)을 사방 0.25 mm 줄인 두께 5.0 띠다. 양 끝이 그대로 측판 홈(5.5)에 들어간다. 오른쪽은 X 구간마다 단면이 다르다: R3 끝(도면 255)까지는 4행, R2 끝(274.75)까지는 R1–R3와 엄지 평면 아랫부분, 그 바깥은 R1·R2와 15° 엄지 평면 전체다. 스위치 구멍 14.0, 윗면 걸쇠 층 1.5, 아래 릴리프 16.5(46es 값). 키 위치는 [46key-switches.json](model/46key-switches.json)이다 |
+| 로고 | 46es와 같은 Xifiction 폰트로 `kb46sp/26`을 왼쪽 엄지 행 바깥 빈자리(키를 뺀 3행 바깥 아래)에 음각한다. 높이 4.0, 폭 31.0, 획 1.0, 글자 사이 살 0.5, 깊이 0.8. 키보드 앞에서 바로 읽힌다 ![로고](images/plate-logo.png) |
+| bottom cover (`Cover_L` 149.4 · `Cover_R` 173.4 mm) | 3 mm 평판을 case 바닥(Z 0) 밑에 댄다. Y 4–205는 앞뒤 바닥 모서리의 둥근 곳 안쪽이다. 목재 나사 3 mm 접시머리 6개(Ø3.4, 접시 Ø6.6 · 90°): 측벽 X ±69(오른쪽 ±81)의 Y 45·125, 앞 블록의 Y 162. bone 막대 홈은 피했다. 측벽을 목공풀로 고정하면 배선과 컨트롤러를 정비할 길은 cover뿐이라, cover는 나사로 푼다 |
+
+- 좌표는 `46sp_r3_left.step`의 것이다: Y는 앞(0 = 뒷면), Z는 위(0 = case 바닥), X는 사용자 왼쪽이 +X다. 도면에서 옮길 때 측판 단면은 −13° 돌리고 (9.72, −26.19)만큼 옮긴다. STEP 측판 외곽이 r3 `229E`와 맞고, STEP의 아크릴 판 세 장이 이 홈 안에 모두 들어간다. X는 도면을 Z축으로 180° 돌린 값(`mid − x`)이다.
+- 생성기 검사: 부품 4개가 닫힌 솔리드인지와 부피가 계산값과 맞는지 본다. plate는 단면 넓이 × 길이에서 구멍·릴리프·로고를 빼고, cover는 판에서 나사 구멍을 뺀 값이다. 그 밖에 키캡–측판 1 mm, 릴리프–행 끝 1.5 mm, 로고–릴리프 1.5 mm, 나사–bone 홈 간격을 검사한다. `--check-case`는 왼쪽 plate·cover를 STEP case와 간섭 검사한다. 합판 측벽, 앞뒤 블록과는 겹치지 않는다.
+- **측판 홈이 두 가지다.** STEP(f3d)의 측판 홈은 폭 약 3.5, 끝이 둥글고, 행 길이가 26.86 / 19.05 / 19.05 / 26.86이다. r3 DWG 측판 홈(`22A0`)은 폭 5.5, 행 28.05 / 20.9 / 20.9 / 26.05다. 외곽은 같다. 출력 plate는 r3 DWG(5T 아스텔 판의 가공 도면)를 따랐다. 그래서 `--check-case`에서 plate 끝 혀가 STEP 측판과 양쪽 560 mm³씩 겹친다. 실물 아크릴 판 두께(5 또는 약 3.5)와 1·2행 판 폭(20.9 또는 19.05)을 재면 어느 쪽인지 정해진다.
+- 오른쪽 case는 STEP이 없다. 안쪽 폭 158은 오른쪽 bone 막대 길이에서 잡았고, 측벽 12 mm와 단면·바닥 홈은 왼쪽과 같다고 가정했다. 오른쪽 cover와 나사 위치는 이 가정을 따른다.
+- 확인하지 못한 것: MJF 음각 최소 치수(업체 기준), 실물 측판 홈 폭과 plate 끝 혀의 끼움(MJF 공차), 오른쪽 case 실측, 스위치 몸체와 R1–엄지 판 사이의 상하 간격, 고무발 자리, 컨트롤러 고정 위치(뒤 블록 바깥쪽 뒷면이 2.3 mm 들어가 있다. 사용자는 컨트롤러 자리로 본다).
+
+## 출력 모델 (MJF, 폐기)
+
+> **폐기(2026-11-13)**: 위의 [출력 plate와 bottom cover](#출력-plate와-bottom-cover-기존-case-재사용)가 대체한다. 아래는 case까지 새로 출력하는 방향으로 만든 것이다(2026-11-12). 기록으로 남긴다. 컨트롤러 받침도 RP2040-Zero 치수(23.5 × 18)로 남아 있다. 기존 case의 3D 형상은 f3d에서 내보낸 STEP으로 받는다.
 
 2026-11-12 결정: 출력은 46es처럼 외주 MJF(검정), 좌우 연결은 보유 AUX(3.5 mm 잭과 케이블)를 쓴다. 반쪽마다 **plate**와 **case** 두 부품이다. [46sp-print.sc](model/46sp-print.sc)는 [tools/build_print.py](tools/build_print.py)가 r3 DXF에서 만든다.
 
