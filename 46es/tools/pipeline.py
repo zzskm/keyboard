@@ -40,7 +40,7 @@ REPO = ROOT.parent
 DATA = ROOT / 'inspection/data'
 TIMINGS = ROOT / '.cache/pipeline-timings.json'
 REVIEW_RUNS = ROOT / 'guide/.cache/visual-review'
-REVIEW_STEPS = ('insert', 'trial', 'module')      # AGENTS.md §10; --review-steps changes them
+REVIEW_STEPS = ('insert', 'trial', 'module')      # validation.md 「재생성」 review line; --review-steps changes them
 REVIEW_VIEWS = ('reset', 'iso')
 
 

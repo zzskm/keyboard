@@ -852,6 +852,16 @@
     }
    ],
    "below_warn_count": 4
+  },
+  {
+   "file": "46es_v5_rear_rest",
+   "stl_sha256": "c504381701df5d491013c1463828385f67e5ebdaaa0fe774a73c87cdee505091",
+   "facets": 12,
+   "samples": 4084,
+   "min_mm": null,
+   "wall_min_mm": null,
+   "below_limit": [],
+   "below_warn_count": 0
   }
  ]
 }

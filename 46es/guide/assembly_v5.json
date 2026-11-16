@@ -264,7 +264,7 @@
         "PLATE_R_SPLIT_V1"
       ],
       "needs": {
-        "REAR_REST_1_V5": "3 · 높이 고르기",
+        "REAR_REST_1_V5": "3 · 패드 두께 고르기",
         "PLATE_L_SPLIT_V1": 1,
         "PLATE_R_SPLIT_V1": 1,
         "shim": "두께 확인",

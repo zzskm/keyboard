@@ -52,7 +52,7 @@ SPLIT_NAMES = [COVER_R, COVER_T]
 # Plan X range each piece must fall in (centre piece between the two split cuts).
 PIECE_X = {COVER_L: (-1, 102), COVER_T: (86, 176), COVER_R: (156, 286)}
 
-# Magnet bosses over the standoffs, in timeline order, and the piece each belongs to.
+# Magnet bosses over the SO screw heads, in timeline order, and the piece each belongs to.
 BOSSES = [(1, COVER_L), (2, COVER_L), (3, COVER_T), (6, COVER_T), (4, COVER_R), (5, COVER_R)]
 # Edge lip: (name, corner X, corner Y, length X, width Y) around the inside of the outline.
 LIPS = [

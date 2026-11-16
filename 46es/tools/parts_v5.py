@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from common import ROOT
 
 MODEL = ROOT / 'model/46es_mount_seam_v5.sc'
-TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap trials A/C, rear rest variants, seam and B coupons, boss tab
+TRIALS = ROOT / 'model/ctrl_trials_v5.sc'            # snap coupon, seam coupons, B coupon, boss tab
 
 MJF = 'MJF PA12S-HP 검정'
 RESIN = '8001 레진 투명'
@@ -61,32 +61,25 @@ PARTS = (
         ('cover_L', 'COVER_L_DRAFT_TBD', MODEL, RESIN, True),
         ('cover_T', 'COVER_T_DRAFT_TBD', MODEL, RESIN, True),
         ('cover_R', 'COVER_R_DRAFT_TBD', MODEL, RESIN, True),
+        # rear rest blocks on the PSD60 rear-wall bosses (build_seam_v5.py REAR_RESTS): one height, three prints; the
+        # pad thickness (and sanding) fits them at assembly. Order 1 until 2026-11-16, with two height variants
+        ('rear_rest', 'REAR_REST_1_V5', MODEL, MJF, False),
     ]),
-    # order 1: test parts. Snap bracket trial (tools/ctrl_v5.py TRIALS): B = production, A shallower, C deeper
+    # order 1: test parts, held to 10 uploads (one print each since 2026-11-16, decision in docs/design.md)
     *_rows('order1', [
         # B coupon and boss tab (tools/coupon_v5.py): the guide describes them in its trial table, not as parts
         ('sw_hole_coupon', 'SW_HOLE_SAMPLE', TRIALS, MJF, True),
         ('boss_tab', 'BOSS_TAB_SAMPLE', TRIALS, RESIN, False),
-        # front seam coupons (tools/seam_v5.py COUPONS): S0 = v4 dovetail (control), S1 = production half-lap,
-        # S2 = wider locating clearance and nut pocket
-        ('seam_coupon_S0_L', 'SEAM_COUPON_S0_L', TRIALS, MJF, True),
-        ('seam_coupon_S0_R', 'SEAM_COUPON_S0_R', TRIALS, MJF, True),
-        ('seam_coupon_S1_L', 'SEAM_COUPON_S1_L', TRIALS, MJF, True),
-        ('seam_coupon_S1_R', 'SEAM_COUPON_S1_R', TRIALS, MJF, True),
-        ('seam_coupon_S2_L', 'SEAM_COUPON_S2_L', TRIALS, MJF, True),
-        ('seam_coupon_S2_R', 'SEAM_COUPON_S2_R', TRIALS, MJF, True),
+        # front seam coupons (tools/seam_v5.py COUPON_PIECES): two double-ended pieces, S1 = production half-lap,
+        # S2 = wider locating clearance and nut pocket; 1 then 2 tests S1, 2 then 1 tests S2
+        ('seam_coupon_1', 'SEAM_COUPON_1', TRIALS, MJF, True),
+        ('seam_coupon_2', 'SEAM_COUPON_2', TRIALS, MJF, True),
         ('mount_L', 'MOUNT_L_PAIR_V3', MODEL, MJF, False),
         ('mount_R', 'MOUNT_R_PAIR_V3', MODEL, MJF, False),
         ('mount_H02_SO3', 'MOUNT_H02_SO3_MIN_V2', MODEL, MJF, False),
         ('mount_H03_SO6', 'MOUNT_H03_SO6_MIN_V2', MODEL, MJF, False),
-        ('ctrl_bracket', 'CTRL_BRACKET_SPLIT_V1', MODEL, MJF, True),
-        ('ctrl_snap_A', 'CTRL_SNAP_TRIAL_A', TRIALS, MJF, True),
-        ('ctrl_snap_C', 'CTRL_SNAP_TRIAL_C', TRIALS, MJF, True),
-        # rear rest blocks on the PSD60 rear-wall bosses (build_seam_v5.py REAR_RESTS): nominal height and the two
-        # variants, three prints each; the height that fits at trial assembly is used as it is (no order-2 part)
-        ('rear_rest', 'REAR_REST_1_V5', MODEL, MJF, False),
-        ('rear_rest_lo', 'REAR_REST_TRIAL_LO', TRIALS, MJF, False),
-        ('rear_rest_hi', 'REAR_REST_TRIAL_HI', TRIALS, MJF, False),
+        # snap coupon (tools/ctrl_v5.py TRIAL_SEATS): seats A shallower, B = production, C deeper in one body
+        ('ctrl_snap_trial', 'CTRL_SNAP_TRIAL', TRIALS, MJF, True),
     ]),
 )
 # CAD bodies with the shape of a listed part, printed from that part's file (the guide shows them, no file of their own)

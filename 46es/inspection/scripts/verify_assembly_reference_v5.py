@@ -60,7 +60,7 @@ def main():
     bodies = {b['name']: b for b in ev['bodies']}
     for prefix, count in [('REF_MX_LOWER', 46), ('REF_MX_GUIDE', 138), ('REF_MX_UPPER', 46), ('REF_MX_STEM', 46),
                           ('REF_MX_CONTACT', 92), ('REF_KEYCAP_OEM_', 46), ('REF_LEGMAG_', 4), ('REF_PSD_REAR_BOSS_', 4),
-                          ('REAR_REST_', 5)]:
+                          ('REAR_REST_', len(REAR_RESTS))]:     # the three blocks (height variants gone 2026-11-16)
         selected = [b for n, b in bodies.items() if n.startswith(prefix)]
         assert len(selected) == count and all(b['closed'] for b in selected), prefix
     params = {p['name']: p['value'] for p in ev['params'] if p.get('value') is not None}

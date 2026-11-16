@@ -207,11 +207,6 @@ def prepare_comparison(base, out, die):
     shutil.copyfile(folder / 'overview.svg', out / 'r2-overview.svg')
 
 
-DEFAULT_LABELS = dict(
-    eyebrow='BUILD / 46es v5',
-    case_hint='케이스는 부분 실측을 반영한 검토 형상입니다. 테두리 Z 14 / 커버 윗면 Z 15 mm(약 1 mm 돌출). 스위치·키캡은 MX·OEM 참고 형상이며 실물 치수는 미확정입니다. 배선은 3D 형상이 없고 배선 단계의 그림으로 보여 줍니다.')
-
-
 def markup(config=None):
     return '''<section id="interactive" class="assembly-app" aria-label="46es 시각 조립서">
 <div class="build-heading"><div><p class="eyebrow">46es / BUILD BOOK</p><h2>부품을 보고, 한 단계씩.</h2></div><span class="build-badge">v5 · 시험 출력 전</span></div>
