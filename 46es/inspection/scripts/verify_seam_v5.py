@@ -19,8 +19,8 @@ from check_stl import check
 
 sys.path.insert(0, str(ROOT / 'tools'))
 from make_key_dxf import load_keys, rect  # noqa: E402
-from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REAR_RESTS, REAR_REST_BODY, REAR_REST_TRIALS,  # noqa: E402
-                           seam_coupon_bodies,
+from build_seam_v5 import (COVERS, PLATE_SUPPORT_MOUNTS, SEAT_ROOT_Z, REAR_RESTS, REAR_REST_BODY,  # noqa: E402
+                           trial_bodies,
                            horizontal_faces, top_levels, cover_windows)
 import coupon_v5  # noqa: E402
 import ctrl_v5  # noqa: E402
@@ -493,8 +493,7 @@ def main(accept=False):
     for n in GENERATED:
         assert len(new[n]) == 1 and len(new[n][0]['shells']) == 1, n
     trials = live_shapes(TRIALS)       # order-1 trial bodies: their own model (build_seam_v5.trials_document)
-    assert (set(trials) == set(ctrl_v5.TRIALS) | set(REAR_REST_TRIALS) | set(seam_coupon_bodies()) | set(coupon_v5.BODIES)
-            and not set(trials) & set(new)), set(trials)
+    assert set(trials) == trial_bodies() and not set(trials) & set(new), set(trials)
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev, _ = evaluation(V5)

@@ -94,9 +94,17 @@ M2_XY = ((121.7, PCB_Y + PCB_W / 2 - 3.1), (121.7, PCB_Y + PCB_W / 2 + 3.1))   #
 CONTACT_R = 3.0                        # screw pads touching the plate bottom
 CHAMFER = 0.4                          # entry chamfer on the end lip and ledge
 FUSE = 0.1                             # profile extrusions reach this far into their host, never flush with its faces
-# Order-1 trial variants (same body, other engagement), placed beside the seam coupons.
-TRIALS = {'CTRL_SNAP_TRIAL_A': dict(hook_e=0.25, end_d=0.7, stop_gap=STOP_GAP, offset=(-40.0, -105.0)),
-          'CTRL_SNAP_TRIAL_C': dict(hook_e=0.55, end_d=1.2, stop_gap=1.1, offset=(0.0, -105.0))}
+# Order-1 snap trial: one coupon body with three seats side by side in Y (A shallower, B = production, C deeper),
+# joined rail to rail. Until 2026-11-16 the seats were three separate prints (bracket B, trials A and C); order 1 is
+# held to 10 uploads (decision, docs/design.md), so they print as one part that is not cut apart. Order 2 prints the
+# bracket with the engagement the trial picks.
+TRIAL_BODY = 'CTRL_SNAP_TRIAL'
+TRIAL_SEATS = {'A': dict(hook_e=0.25, end_d=0.7, stop_gap=STOP_GAP),
+               'B': dict(hook_e=HOOK_E, end_d=END_D, stop_gap=STOP_GAP),
+               'C': dict(hook_e=0.55, end_d=1.2, stop_gap=1.1)}
+TRIAL_ORIGIN = (0.0, -105.0)           # offset of seat A from the production position; B and C follow toward -Y
+TRIAL_GAP = 3.0                        # rail outer face to the next seat's rail outer face (the bridge length)
+TRIAL_BRIDGE_INSET = 0.5               # bridge ends and faces stay inside the rail faces (flush faces left bad STL edges)
 BODY = 'CTRL_BRACKET_SPLIT_V1'
 PLATE = 'PLATE_L_SPLIT_V1'
 CLIPPED_PEGS = {(1, +1), (23, -1)}     # (key, side of MX_GUIDES at +-5.08) clipped in assembly
@@ -140,6 +148,48 @@ def arm_strain(length, t_root, t_tip, deflection, steps=400):
     compliance = sum(12 * (length - (i + .5) * dx) ** 2 / h((i + .5) * dx) ** 3 * dx for i in range(steps))
     load = deflection / compliance            # P / (E b)
     return max(6 * load * (length - x) / h(x) ** 2 for x in (i * dx for i in range(steps)))
+
+
+def reach(stop_gap=STOP_GAP):
+    """Board edge to the rail outer face."""
+    return CLR + ARM_T_TIP + stop_gap + WALL
+
+
+def trial_seats():
+    """[(seat, spec, offset)] of the order-1 snap coupon, seat A first, the next seats toward -Y."""
+    out, (dx, dy), previous = [], TRIAL_ORIGIN, None
+    for seat, spec in TRIAL_SEATS.items():
+        if previous is not None:
+            dy -= PCB_W + previous + reach(spec['stop_gap']) + TRIAL_GAP
+        out.append((seat, spec, (dx, round(dy, 6))))
+        previous = reach(spec['stop_gap'])
+    return out
+
+
+def trial_bridges():
+    """Plan boxes (x0, y0, x1, y1) joining neighbouring seats rail to rail over the rails' X span less
+    TRIAL_BRIDGE_INSET at each end, reaching FUSE into each rail. Z: trial_bridge_z()."""
+    seats = trial_seats()
+    out = []
+    for (_, a, (_, ya)), (_, b, (_, yb)) in zip(seats, seats[1:]):
+        lower_a = PCB_Y + ya - reach(a['stop_gap'])
+        upper_b = PCB_Y + PCB_W + yb + reach(b['stop_gap'])
+        assert abs(lower_a - upper_b - TRIAL_GAP) < 1e-6, (lower_a, upper_b)
+        out.append((SHOULDER_X0 + TRIAL_BRIDGE_INSET, round(upper_b - FUSE, 6), BLOCK_X1 - TRIAL_BRIDGE_INSET,
+                    round(lower_a + FUSE, 6)))
+    return out
+
+
+def trial_bridge_z():
+    """Bridge Z span inside both rails (LOW_Z to UNDER_SWITCH_Z), TRIAL_BRIDGE_INSET from their bottom and top."""
+    return LOW_Z + TRIAL_BRIDGE_INSET, UNDER_SWITCH_Z - TRIAL_BRIDGE_INSET
+
+
+def trial_volume():
+    """Expected volume of the snap coupon: the seats, plus the bridges outside the rails."""
+    z0, z1 = trial_bridge_z()
+    bridges = sum((x1 - x0) * (y1 - y0 - 2 * FUSE) for x0, y0, x1, y1 in trial_bridges()) * (z1 - z0)
+    return sum(expected_volume(bracket(**spec)) for _, spec, _ in trial_seats()) + bridges
 
 
 def nut_hexagon(center, across_flats):
@@ -314,8 +364,9 @@ def check(design=None):
     return design['report']
 
 
-def emit(feature, sketch, design=None, body=BODY, plate=PLATE, references=True):
-    """Append the bracket (new body), the plate screw holes and the reference M2 screws/nuts.
+def emit(feature, sketch, design=None, body=BODY, plate=PLATE, references=True, tag=None, join=False):
+    """Append the bracket (new body, or joined to `body` with join=True), the plate screw holes and the reference M2
+    screws/nuts. `tag` prefixes the feature names (default CTRL for the production bracket).
 
     The plate cuts come after the order-1 seam coupon copy: the new head recess would sit 0.04 from the coupon
     trim, and the coupon only tests the seam."""
@@ -325,8 +376,8 @@ def emit(feature, sketch, design=None, body=BODY, plate=PLATE, references=True):
     def plane(z):
         return dict(type='offset', base=xy, distance=str(round(z, 6)))
 
-    tag = 'CTRL' if body == BODY else body
-    first = True
+    tag = tag or ('CTRL' if body == BODY else body)
+    first = not join
     for p in design['prisms']:
         if p['circles']:
             for j, ((x, y), r) in enumerate(p['circles'], 1):
@@ -380,6 +431,22 @@ def emit(feature, sketch, design=None, body=BODY, plate=PLATE, references=True):
                     height=str(NUT_H + 0.2), radius='1', operation='cut', participants=[f'{name}_NUT'])
 
 
+def emit_trial(feature, sketch):
+    """The order-1 snap coupon: each seat as its own body (joining a seat's lips into a body that already holds another
+    seat fails in the kernel), each bridge joined to the seat above it, then the seats combined into TRIAL_BODY."""
+    seats = trial_seats()
+    bodies = [TRIAL_BODY if i == 0 else f'{TRIAL_BODY}_SEAT_{seat}' for i, (seat, _, _) in enumerate(seats)]
+    for body, (seat, spec, offset) in zip(bodies, seats):
+        emit(feature, sketch, bracket(**spec, offset=offset), body=body, plate=None, references=False,
+             tag=f'{TRIAL_BODY}_{seat}')
+    z0, z1 = trial_bridge_z()
+    for j, ((x0, y0, x1, y1), body) in enumerate(zip(trial_bridges(), bodies), 1):
+        feature('box', f'{TRIAL_BODY}_BRIDGE_{j}', corner=[x0, y0, z0], length=str(round(x1 - x0, 6)),
+                width=str(round(y1 - y0, 6)), height=str(round(z1 - z0, 6)), operation='join',
+                participants=[body])
+    feature('combine', f'{TRIAL_BODY}_COMBINE', target=TRIAL_BODY, tools=bodies[1:], operation='join', keep_tools=False)
+
+
 def expected_volume(design=None):
     """Prism union (by Z slabs) + lip profiles (their FUSE overlap counted twice) - nut pockets and screw holes."""
     design = design or bracket()
@@ -405,6 +472,6 @@ if __name__ == '__main__':
     d = bracket()
     print(json.dumps(check(d), indent=1))
     print('wired pads per row:', sorted(wired_pins()))
-    for name, spec in TRIALS.items():
-        t = bracket(spec['hook_e'], spec['end_d'], spec['stop_gap'])
-        print(name, json.dumps(check(t)))
+    for seat, spec, offset in trial_seats():
+        print(seat, offset, json.dumps(check(bracket(**spec))))
+    print('trial bridges', trial_bridges(), 'volume', round(trial_volume(), 1))

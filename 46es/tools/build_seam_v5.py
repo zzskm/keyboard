@@ -1,8 +1,8 @@
 """Build the v5 production CAD from the v5 base timeline (model/seam_v5_base.json).
 
-The r2 cover layers have flat faces. Keep the raised v5 Z 19 top, existing
-three-piece outline, keycap clearance, and magnet seats, with one flat face
-per piece (plus the 1.0 mm engraved decoration floor: the name on L, tools/cover_pattern_v5.py). The four mounts are extruded directly from the CADCraft drawing
+The r2 cover layers have flat faces. The v5 cover keeps one flat Z 19 top per piece (plus the 1.0 mm engraved
+logo floor on L, tools/cover_pattern_v5.py), a key-block silhouette window with keycap clearance that also cuts the
+L/T/R split (straight split bands, cover_v5), and the magnet seats. The four mounts are extruded directly from the CADCraft drawing
 (tools/mounts_v5.py) and the Pro Micro bracket comes from tools/ctrl_v5.py (screwless
 snap, no gate). Three separate rest blocks stand on the PSD60 rear-wall bosses under the rear plate flanges
 (REAR_RESTS; the plates themselves carry no foot). The front seam of the plate halves (half-lap tab, M2, nut pocket)
@@ -18,14 +18,15 @@ move into generator code step by step when the shape stays identical (plan 4-5):
 hardware, and since the 2026-11-10 seam redesign the front seam and its coupons; the plate bodies themselves stay
 (their outlines and openings are the r2 drawing's sketches).
 
-Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 snap trials A/C, rear rest
-height variants, seam coupons, and the B coupon and boss tab of tools/coupon_v5.py),
+Outputs: model/46es_mount_seam_v5.sc (production), model/ctrl_trials_v5.sc (order-1 trial parts: the three-seat snap
+coupon, the two seam coupon pieces, and the B coupon and boss tab of tools/coupon_v5.py),
 model/parameters_seam_v5.csv (production parameters) and model/seam_v5_build.json (build record).
 Run from the repository root with python 46es/tools/build_seam_v5.py.
   --probe   build into .cache/v5 without replacing the current CAD
   --mounts  build only the four mounts into .cache/v5/mounts_v5.sc from a
             parameter-only document and check their sections (seconds, for mount iteration)
-  --ctrl    build only the brackets B, A, C into .cache/v5/ctrl_v5.sc and check volumes and keep-outs
+  --ctrl    build only the bracket B and the snap coupon (seats A, B, C) into .cache/v5/ctrl_v5.sc and check
+            volumes and keep-outs
   --covers  build only the three cover pieces into .cache/v5/covers_v5.sc, check them and compare with production
   --refresh-record  after an edit that must not change the model: probe-build, require the
             committed CAD's document and bodies to be reproduced exactly, update only
@@ -61,8 +62,8 @@ from common import ROOT, CLI, sha, fingerprints, write_json
 
 BASE = ROOT / 'model/seam_v5_base.json'
 OUTPUT = ROOT / 'model/46es_mount_seam_v5.sc'
-# Order-1 snap trial brackets A/C (tools/ctrl_v5.py TRIALS): free bodies without plate cuts, so they live in a small
-# parameter-only model of their own (plan 3-3, user 2026-11-10) instead of the production timeline.
+# Order-1 trial parts (snap coupon, seam coupons, B coupon, boss tab): free bodies without plate cuts, so they live in a
+# small parameter-only model of their own (plan 3-3, user 2026-11-10) instead of the production timeline.
 TRIALS_OUTPUT = ROOT / 'model/ctrl_trials_v5.sc'
 PARAMETERS_CSV = ROOT / 'model/parameters_seam_v5.csv'
 CACHE = ROOT / '.cache/v5'          # build scratch (seeds, pending models, reports); not tracked
@@ -73,13 +74,14 @@ KEY_MARGIN = 1.0
 LEGMAG_SKIN_MIN = 1.3
 CAP_1U = 18.05
 SEAT_ROOT_Z = PAD_ROOT_Z
-# Leg-end magnet pairs (lower legs only, user 2026-11-06). Chosen on a 0.05 mm raster so that
-# cover pocket Ø3.2 and plate pocket Ø3.3 keep >= 1.2 mm to the v5 window, the 16.5 openings
-# and the part edges, as close to the leg tip as that allows.
+# Leg-end magnet pairs (lower legs only, user 2026-11-06). Chosen on a 0.05 mm raster (per-key window, 2026-11-06)
+# so that cover pocket Ø3.2 and plate pocket Ø3.3 kept >= 1.2 mm to the window, the 16.5 openings and the part edges,
+# as close to the leg tip as that allowed. The silhouette window (2026-11-10) is held LEGMAG_WINDOW_WALL off the cover
+# pocket instead (measured 1.137: the buffer is a polygon).
 LEG_MAGNETS = {'L': (94.0, 2.5, 'PLATE_L_SPLIT_V1', 'COVER_L_DRAFT_TBD'),
                'R': (167.7, 2.5, 'PLATE_R_SPLIT_V1', 'COVER_R_DRAFT_TBD')}
 LEGMAG_POCKET_R = 1.6                # cover pocket (TBD_magnet_D 3 + 2 × TBD_magnet_clr 0.1) / 2
-LEGMAG_WINDOW_WALL = 1.15            # pocket wall to the cover window (per-key window: L 1.184, R 1.171; rule >= 1.0)
+LEGMAG_WINDOW_WALL = 1.15            # silhouette window kept off the cover pocket (measured wall 1.137; rule >= 1.0)
 COVERS = ['COVER_L_DRAFT_TBD', 'COVER_T_DRAFT_TBD', 'COVER_R_DRAFT_TBD']
 # PSD60 Defender rear-wall bosses (user photo, KPrepublic product image, 2026-11-09): four half-round bosses without
 # a hole on the inner rear wall. Centres X are photo estimates (perspective fitted on H01-H06, residual <= 0.8 mm,
@@ -101,10 +103,9 @@ REAR_FLANGE_BOTTOM_Z = 5.0         # plate_top_Z - TBD_plate_T - split_flange_H 
 REAR_REST_H = REAR_FLANGE_BOTTOM_Z - REAR_BOSS_TOP_Z - REAR_REST_GAP
 REAR_REST_CHORD_MARGIN = 2.0       # the boss chord under the flange stays under the block for this photo error (each side)
 REAR_REST_COLOR = [226, 172, 60]
-# Order-1 height variants (model/ctrl_trials_v5.sc): the boss top height is an assumption and MJF is +-0.3, so the
-# block that leaves room for the pad without lifting the plate off the SO bosses is picked at trial assembly.
-REAR_REST_TRIALS = {'REAR_REST_TRIAL_LO': dict(dh=-0.3, origin=(156.0, -50.0)),
-                    'REAR_REST_TRIAL_HI': dict(dh=0.3, origin=(156.0, -42.0))}
+# The blocks print in order 2 at this one height (2026-11-16, decision; until then order 1 printed 4.2 / 4.5 / 4.8,
+# three each). The boss top height is an assumption (M22) and MJF is +-0.3: the pad thickness takes up the gap, and a
+# block that is too tall is sanded (it is not the plate). Measure M22 before order 2 and move REAR_BOSS_TOP_Z.
 REAR_FLANGES = ('PLATE_FLANGE_L_REAR', 'PLATE_FLANGE_R_REAR_A', 'PLATE_FLANGE_R_REAR_B')
 PLATE_REAR_Y = 94.967              # rear plate edge (flange outer face), as in the base flange features
 # Reference-only solids of the base, suppressed in production. The review model
@@ -157,35 +158,9 @@ def run(*args):
         raise RuntimeError(result.stderr.decode('utf-8', errors='replace')[-5000:])
 
 
-def overlap(a, b):
-    """Separating-axis test for two convex polygons."""
-    for poly in (a, b):
-        for i in range(len(poly)):
-            (x1, y1), (x2, y2) = poly[i], poly[(i + 1) % len(poly)]
-            nx, ny = y1 - y2, x2 - x1
-            pa = [nx * x + ny * y for x, y in a]
-            pb = [nx * x + ny * y for x, y in b]
-            if max(pa) <= min(pb) + 1e-9 or max(pb) <= min(pa) + 1e-9:
-                return False
-    return True
-
-
 def key_rects(keys, m):
     """Keycap footprints (actual widths) grown by m on every side."""
     return [rect(k['x'], k['y'], CAP_1U + (k['w_u'] - 1) * 19.05 + 2 * m, CAP_1U + 2 * m, k['rot']) for k in keys]
-
-
-def margin_groups(keys, m=KEY_MARGIN):
-    """Grown keycap rectangles, split into groups whose members do not overlap (one sketch each)."""
-    groups = []
-    for r in key_rects(keys, m):
-        for g in groups:
-            if not any(overlap(r, o) for o in g):
-                g.append(r)
-                break
-        else:
-            groups.append([r])
-    return groups
 
 
 # ------------------------------------------------------------------------------------ BRep top-level audit
@@ -391,7 +366,7 @@ def cover_windows():
     import numpy, scipy, shapely
     import make_key_dxf
     sources = [inspect.getsource(f) for f in (cover_window_cuts, silhouette_polys, _trace_boundary, _dp, key_rects,
-                                              overlap, make_key_dxf.rect, make_key_dxf.load_keys, split_gaps,
+                                              make_key_dxf.rect, make_key_dxf.load_keys, split_gaps,
                                               clean_outline, _line_cross, _turn)]
     key_data = dict(keys=load_keys(.693, .667), silhouette=COVER_SILHOUETTE, edge_gap=COVER_EDGE_GAP,
                     magnets=LEG_MAGNETS, pocket_r=LEGMAG_POCKET_R, window_wall=LEGMAG_WINDOW_WALL, margin=KEY_MARGIN,
@@ -680,9 +655,9 @@ def rear_rest_plan(doc):
     return plan
 
 
-def check_rear_rests(evaluated, trials, plan):
+def check_rear_rests(evaluated, plan):
     """Each rest block is a closed box from the pad to the flange bottom; the plates end at the flange bottom (no
-    foot); the wall line the plan assumed is the evaluated one; the height variants differ only in height."""
+    foot); the wall line the plan assumed is the evaluated one."""
     bodies = {b['name']: b for b in evaluated['bodies']}
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     assert abs(values['TBD_case_in_D'] - values['TBD_pcb0_dy'] - (95.934 - 0.667)) < 1e-6
@@ -699,15 +674,7 @@ def check_rear_rests(evaluated, trials, plan):
         expected = (p['rest_X'][0], p['rest_Y'][0], bottom, p['rest_X'][1], p['rest_Y'][1], flange_bottom)
         assert b['closed'] and all(abs(a - e) < 1e-6 for a, e in zip(b['bbox']['min'] + b['bbox']['max'], expected)), (i, b['bbox'])
         assert abs(b['volume_mm3'] - volume) < 1e-6, (i, b['volume_mm3'])
-    variants = {}
-    trial_bodies = {b['name']: b for b in trials['bodies']}
-    for body, spec in REAR_REST_TRIALS.items():
-        b = trial_bodies[body]
-        height = REAR_REST_H + spec['dh']
-        size = [b['bbox']['max'][k] - b['bbox']['min'][k] for k in range(3)]
-        assert b['closed'] and all(abs(a - e) < 1e-6 for a, e in zip(size, (REAR_REST_L, REAR_REST_W, height))), (body, size)
-        variants[body] = round(height, 3)
-    return dict(rest_Z=[bottom, flange_bottom], rest_volume_mm3=round(volume, 3), height_variants_mm=variants, rests=plan)
+    return dict(rest_Z=[bottom, flange_bottom], rest_volume_mm3=round(volume, 3), rests=plan)
 
 
 def rear_rest_clearance(plan, mounts, bodies, minimum=1.0):
@@ -730,7 +697,12 @@ def rear_rest_clearance(plan, mounts, bodies, minimum=1.0):
 
 
 def seam_coupon_bodies():
-    return [body for name in seam_v5.COUPONS for body in seam_v5.coupon_bodies(name)]
+    return list(seam_v5.COUPON_PIECES)
+
+
+def trial_bodies():
+    """Every body of model/ctrl_trials_v5.sc."""
+    return {ctrl_v5.TRIAL_BODY, *seam_coupon_bodies(), *coupon_v5.BODIES}
 
 
 def switch_openings():
@@ -748,7 +720,7 @@ def emit_seam(doc, feature, sketch):
 
 def check_seam(evaluated, trials):
     """The document's seam_* parameters and plate levels are the numbers tools/seam_v5.py drew; every variant passes
-    its wall rules; each coupon piece is one closed body on its side of the seam with the tab reaching over."""
+    its wall rules; each coupon piece is one closed body from its pocket end to its tab end."""
     s, seam = seam_v5, seam_v5.PRODUCTION
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     for name, value in [('seam_tab_T', seam.tab_T), ('seam_M2_X', seam.screw[0]), ('seam_M2_Y', seam.screw[1]),
@@ -768,27 +740,22 @@ def check_seam(evaluated, trials):
     for name in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1', 'REF_M2_SEAM_FRONT', 'REF_M2_SEAM_FRONT_NUT'):
         assert bodies[name]['closed'], name
     assert abs(bodies['PLATE_L_SPLIT_V1']['bbox']['max'][0] - s.TAB_END_X) < 1e-6, bodies['PLATE_L_SPLIT_V1']['bbox']
-    trial_bodies = {b['name']: b for b in trials['bodies']}
-    x0, y0, x1, y1 = s.COUPON_BOX
-    for name, (variant, (dx, dy)) in s.COUPONS.items():
-        left, right = (trial_bodies[b] for b in s.coupon_bodies(name))
-        tab_end = max(x for x, _ in s.outlines(variant)[0])
-        boxes = ((left, (x0 + dx, y0 + dy, s.PLATE_BOTTOM_Z, tab_end + dx, y1 + dy, s.PLATE_TOP_Z)),
-                 (right, (s.SPLIT_LINE[2][0] + s.SPLIT_GAP / 2 + dx, y0 + dy, s.PLATE_BOTTOM_Z, x1 + dx, y1 + dy, s.PLATE_TOP_Z)))
-        for body, box in boxes:
-            assert body['closed'] and all(abs(a - e) < 1e-4 for a, e in zip(body['bbox']['min'] + body['bbox']['max'], box)), \
-                (name, body['name'], body['bbox'], box)
-        report['coupons'][name] = dict(s.check(variant), volume_mm3=[round(left['volume_mm3'], 3), round(right['volume_mm3'], 3)])
+    pieces = {b['name']: b for b in trials['bodies']}
+    report['variants'] = {name: s.check(variant) for name, variant in s.VARIANTS.items()}
+    for name in s.COUPON_PIECES:
+        body, box = pieces[name], s.coupon_box(name)
+        assert body['closed'] and all(abs(a - e) < 1e-4 for a, e in zip(body['bbox']['min'] + body['bbox']['max'], box)), \
+            (name, body['bbox'], box)
+        (pocket, _), (tab, _) = s.coupon_ends(name)
+        report['coupons'][name] = dict(pocket=pocket, tab=tab, volume_mm3=round(body['volume_mm3'], 3))
     return report
 
 
-def emit_rear_rest_trials(feature, doc):
-    """The order-1 height variants: free boxes beside the coupons (trials model and review model)."""
-    for body, spec in REAR_REST_TRIALS.items():
-        x, y = spec['origin']
-        feature('box', body, corner=[x, y, 0.0], length=str(REAR_REST_L), width=str(REAR_REST_W),
-                height=str(round(REAR_REST_H + spec['dh'], 6)), operation='new_body', body_names=[body])
-        doc['appearances']['bodies'][body] = dict(name='Custom', color=REAR_REST_COLOR, opacity=1.0)
+def emit_trial_parts(feature, sketch, doc):
+    """The order-1 trial parts built from production code: the snap coupon and the seam coupon pieces (trials
+    model and review model; the review model shows them beside the plate)."""
+    ctrl_v5.emit_trial(feature, sketch)
+    seam_v5.emit_coupons(feature, sketch, doc)
 
 
 def ctrl_params():
@@ -798,7 +765,7 @@ def ctrl_params():
     cannot leave a stale comment behind."""
     c = ctrl_v5
     (x1, y1), (x2, y2) = c.M2_XY
-    a, t = c.TRIALS['CTRL_SNAP_TRIAL_A'], c.TRIALS['CTRL_SNAP_TRIAL_C']
+    a, t = c.TRIAL_SEATS['A'], c.TRIAL_SEATS['C']
     report = c.bracket()['report']
     (cx, _), (cl, _), _ = c.COMPONENTS['CRYSTAL']
     crystal_end = c.PCB_L - (cx + cl)
@@ -807,12 +774,12 @@ def ctrl_params():
     assert abs(m2_offset - (y2 - c.PCB_Y - c.PCB_W / 2)) < 1e-9, c.M2_XY
     return [
         ('ctrl5_hook_e', c.HOOK_E, '[v5 2단계 2026-11-09 시험 후보] 스냅 암 립이 PCB 긴 변 아래로 겹치는 깊이(PCB 가운데 놓임). '
-         f"주문 1 시험편 A {a['hook_e']} / C {t['hook_e']}. 탄성 암 X {c.ARM_ROOT_X - c.ARM_FREE_X:.1f}·두께 {c.ARM_T_ROOT:.1f}(MJF 벽), "
+         f"주문 1 스냅 시험편 자리 A {a['hook_e']} / C {t['hook_e']}. 탄성 암 X {c.ARM_ROOT_X - c.ARM_FREE_X:.1f}·두께 {c.ARM_T_ROOT:.1f}(MJF 벽), "
          f"립까지 {report['lip_arm_mm']}, 삽입 변형률 약 {report['insert_strain_pct']:.1f}%(외팔보 계산, 실물 미확인)"),
         ('ctrl5_end_d', c.END_D, '[v5 2단계 시험 후보] +X 끝 립·받침이 PCB 끝을 덮는 길이. 패드 열 사이에서만 덮고 '
          f'크리스털(끝에서 {crystal_end:.1f}) 양옆으로 나눔. 12번 패드 링 끝 ↔ PCB 끝 {pad12_end:.2f}(검토 모델 참고 배치, M15 미실측). '
-         f"시험편 A {a['end_d']} / C {t['end_d']}"),
-        ('ctrl5_stop_gap', c.STOP_GAP, f"[v5 2단계 시험 후보] 암 끝 바깥면 ↔ 레일. 해제 이동 겸 과변형 제한(시험편 C {t['stop_gap']})"),
+         f"시험편 자리 A {a['end_d']} / C {t['end_d']}"),
+        ('ctrl5_stop_gap', c.STOP_GAP, f"[v5 2단계 시험 후보] 암 끝 바깥면 ↔ 레일. 해제 이동 겸 과변형 제한(시험편 자리 C {t['stop_gap']})"),
         ('ctrl5_clr_z', c.CLR_Z, f'[v5 2단계 설계 후보] PCB 면 ↔ 립·받침 Z 여유(편측). 립 윗면 Z {c.CATCH_Z:.2f}, 받침 Z {c.SUPPORT_Z:.2f}'),
         ('ctrl5_M2_1_X', x1, '[v5 2단계 2026-11-09] 브래킷 M2 앞(옛 125, 17: 배선 5번 패드 위 0.8에 너트 보스). 미배선 1–4번 구역, 패드 열 사이'),
         ('ctrl5_M2_1_Y', round(y1, 6), f'[v5 2단계 2026-11-09] 브래킷 M2 앞 Y = PCB 중심선 − {m2_offset:.1f}'),
@@ -835,13 +802,11 @@ def check_ctrl(evaluated, trials):
     assert abs(values['TBD_frame_T'] + values['TBD_standoff_H'] - c.PLATE_BOTTOM) < 1e-9
     assert 'CTRL_GATE_SPLIT_V1' not in bodies and 'REF_M2_GATE' not in bodies
     report = {}
-    assert not set(c.TRIALS) & set(bodies), 'snap trials belong in model/ctrl_trials_v5.sc'
+    assert c.TRIAL_BODY not in bodies, 'the snap coupon belongs in model/ctrl_trials_v5.sc'
     bodies.update({b['name']: b for b in trials['bodies']})
-    assert set(c.TRIALS) | set(REAR_REST_TRIALS) | set(seam_coupon_bodies()) | set(coupon_v5.BODIES) == \
-        {b['name'] for b in trials['bodies']}, trials['bodies']
-    for body, design in [(c.BODY, c.bracket())] + [(n, c.bracket(**s)) for n, s in c.TRIALS.items()]:
+    assert trial_bodies() == {b['name'] for b in trials['bodies']}, trials['bodies']
+    for body, expected in ((c.BODY, c.expected_volume()), (c.TRIAL_BODY, c.trial_volume())):
         b = bodies[body]
-        expected = c.expected_volume(design)
         assert b['closed'], b
         assert abs(b['volume_mm3'] - expected) / expected < 0.015, (body, b['volume_mm3'], expected)
         report[body] = dict(volume_mm3=round(b['volume_mm3'], 3), estimate_mm3=round(expected, 3), bbox=b['bbox'])
@@ -866,7 +831,8 @@ def cover_params(doc):
               '확정: 2 + g', before='TBD_cover_T')
     new_param('v5_keycap_bottom_rest_Z', 'plate_top_Z - TBD_upper_plate_T + v5_keycap_bottom_above_seat',
               '[v5 2차 유도값] 쉴 때 키캡 스커트 밑면 Z = 착좌 11.3 + 6.0 = 17.3', before='TBD_cover_T')
-    # Z 19 kept (user 2026-11-10); the lower candidates 1.2 (Z 18.5) / 0.7 (Z 18) are tried on codex/46es-cover-plate-trial.
+    # Z 19 kept (user 2026-11-10); the lower candidates 1.2 (Z 18.5) / 0.7 (Z 18) are not tried yet (the branch named for
+    # them, codex/46es-cover-plate-trial, was never pushed; checked 2026-11-16).
     new_param('v5_skirt_cover_H', 1.7, '[v5 2차 사용자 결정 2026-11-06] 턱이 쉴 때 키캡 옆면(스커트)을 덮는 높이. r2 약 3.0, v5 1차(평판 Z 18) 0.7. '
               '대안 1.2(턱 Z 18.5) / 0.7(Z 18)', before='TBD_cover_T')
     new_param('v5_cover_top_Z', 'v5_keycap_bottom_rest_Z + v5_skirt_cover_H',
@@ -905,7 +871,7 @@ def cover_params(doc):
     new_param('v5_legpad_L', 8, '[v5 설계 후보] 다리 자석 자리에서 plate 가장자리 단차(rabbet)를 메우는 받침 길이(X)')
     new_param('v5_lip_relief_clr', 0.3, '[v5 설계 후보] 받침 양끝 ↔ 커버 립 절단 끝 여유(X, 편측)')
     for s, (x, y, plate, cover) in LEG_MAGNETS.items():
-        new_param(f'v5_legmag_{s}_X', x, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2)')
+        new_param(f'v5_legmag_{s}_X', x, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 X(옛 키별 창에서 래스터로 고른 고정값. 실루엣 창은 포켓에서 1.15 띄움, 실측 벽 1.137)')
         new_param(f'v5_legmag_{s}_Y', y, f'[v5 2026-11-06] {s} 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽)')
     return new_param
 
@@ -969,11 +935,11 @@ def build(probe=False):
     add_mount_params(doc)
     feature, sketch = helpers(doc)
     emit_seam(doc, feature, sketch)
-    s2 = seam_v5.COUPONS['S2'][0]
+    s2 = seam_v5.VARIANTS['S2']
     new_param('v5_seam_fit', seam_v5.PRODUCTION.fit, '[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). '
-              f'주문 1 쿠폰 S2는 {s2.fit:g}, S0는 옛 dovetail')
+              f'주문 1 이음 쿠폰의 S2 끝은 {s2.fit:g}')
     new_param('v5_seam_nut_AF', seam_v5.PRODUCTION.nut_AF, '[2026-11-10 tools/seam_v5.py] 앞 이음 너트 포켓 맞변(닫힌 육각, M2 너트 4.0을 눌러 끼움). '
-              f'주문 1 쿠폰 S2는 {s2.nut_AF:g}, S0는 옛 {seam_v5.DOVETAIL.nut_AF:g}(이음면 쪽 열림)')
+              f'주문 1 이음 쿠폰의 S2 끝은 {s2.nut_AF:g}')
     new_param('v5_seam_tab_end_X', seam_v5.TAB_END_X, '[2026-11-10 tools/seam_v5.py] 앞 이음 tab 끝 X(L 조각의 오른쪽 끝). '
               f'걸림 턱은 X {seam_v5.NECK_END_X:g}부터 +Y로 {seam_v5.HOOK_Y:g}')
     emit_code_bodies(doc, feature)
@@ -994,9 +960,9 @@ def build(probe=False):
               '플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다')
     new_param('v5_rear_rest_W', REAR_REST_W, '[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + '
               f'보스 앞쪽으로 {REAR_REST_W - 2.0:g}')
-    variants = ' / '.join(f'{REAR_REST_H + t["dh"]:g}' for t in REAR_REST_TRIALS.values())
     new_param('v5_rear_rest_H', 'plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap',
-              f'[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 1 높이 변형 {variants}')
+              '[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 2에 이 높이 하나(2026-11-16). '
+              '남는 틈은 패드 두께로, 높으면 블록을 갈아 맞춘다')
     for i, (x, plate) in REAR_RESTS.items():
         side = 'L' if plate.startswith('PLATE_L') else 'R'
         body = REAR_REST_BODY.format(i)
@@ -1009,8 +975,8 @@ def build(probe=False):
         doc['appearances']['bodies'][body] = dict(name='Custom', color=REAR_REST_COLOR, opacity=1.0)
 
     # Phase 2 (2026-11-09): tools/ctrl_v5.py builds the snap bracket (the base has no bracket),
-    # its two plate screw holes and the reference M2 screws. The order-1 trial variants A/C are built into
-    # model/ctrl_trials_v5.sc (trials_document); their keep-out checks run here with the production bracket's.
+    # its two plate screw holes and the reference M2 screws. The order-1 snap coupon is built into
+    # model/ctrl_trials_v5.sc (trials_document); the keep-out checks of its seats run here with the production bracket's.
     for name, expr, comment in ctrl_params():
         new_param(name, expr, comment)
 
@@ -1019,8 +985,8 @@ def build(probe=False):
     emit_mounts(feature, sketch, mounts)
     ctrl_report = dict(production=ctrl_v5.check())
     ctrl_v5.emit(feature, sketch)
-    for body, spec in ctrl_v5.TRIALS.items():
-        ctrl_report[body] = ctrl_v5.check(ctrl_v5.bracket(spec['hook_e'], spec['end_d'], spec['stop_gap']))
+    for seat, spec, _ in ctrl_v5.trial_seats():
+        ctrl_report[f'{ctrl_v5.TRIAL_BODY}_{seat}'] = ctrl_v5.check(ctrl_v5.bracket(**spec))
 
     doc['name'] = '46es seam v5 - flat cover, drawing-built mounts, snap controller bracket'
     seed = CACHE / 'seed_v5.sc'
@@ -1051,7 +1017,7 @@ def build(probe=False):
     mount_report = check_mounts(evaluated, mounts)
     ctrl_report['bodies'] = check_ctrl(evaluated, trials)
     seam_report = check_seam(evaluated, trials)
-    rest_report = check_rear_rests(evaluated, trials, rests)
+    rest_report = check_rear_rests(evaluated, rests)
     rest_report['plan_clearance_mm'] = rear_rest_clearance(rests, mounts, bodies)
     coupon_report = coupon_v5.check(trials, values)
     active = sum(1 for f in evaluated['timeline'] if not f.get('suppressed'))
@@ -1096,23 +1062,20 @@ def refresh_record():
     print(f'build record refreshed: {count} bodies identical, {OUTPUT.name} and {TRIALS_OUTPUT.name} kept')
 
 
-def trials_document(rests=True):
-    """Parameter-only copy of the base document holding the order-1 snap trials A and C and the rear rest height
-    variants, the seam coupon pairs (tools/seam_v5.py), the B coupon and the boss tab (tools/coupon_v5.py). They are
-    free bodies (no plate cut, no reference screws), so they need the parameters and nothing else: the base's, the
-    cover parameters (cover thickness, leg magnet clearance) and the coupons' own SMP_*."""
+def trials_document(parts=True):
+    """Parameter-only copy of the base document holding the order-1 trial parts: the snap coupon (tools/ctrl_v5.py),
+    the seam coupon pieces (tools/seam_v5.py), the B coupon and the boss tab (tools/coupon_v5.py). They are free
+    bodies (no plate cut, no reference screws), so they need the parameters and nothing else: the base's, the cover
+    parameters (cover thickness, leg magnet clearance) and the coupons' own SMP_*. parts=False: parameters only."""
     doc, container = read_source()
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
     doc['appearances'] = {'bodies': {}}
-    doc['name'] = '46es v5 order-1 trials: snap brackets A/C, rear rest height variants, seam coupons, B coupon, boss tab'
+    doc['name'] = '46es v5 order-1 trials: snap coupon, seam coupons, B coupon, boss tab'
     feature, sketch = helpers(doc)
-    for body, spec in ctrl_v5.TRIALS.items():
-        ctrl_v5.emit(feature, sketch, ctrl_v5.bracket(**spec), body=body, plate=None, references=False)
-    if rests:
-        emit_rear_rest_trials(feature, doc)
-        seam_v5.emit_coupons(feature, sketch, doc)
+    if parts:
+        emit_trial_parts(feature, sketch, doc)
         cover_params(doc)
         add_mount_params(doc)
         coupon_v5.add_params(doc)
@@ -1121,23 +1084,26 @@ def trials_document(rests=True):
 
 
 def build_ctrl():
-    """Fast loop for bracket work (plan 3-2): the production bracket B and the snap trials A/C alone, from a
+    """Fast loop for bracket work (plan 3-2): the production bracket B and the snap coupon alone, from a
     parameter-only document (no plate cut, no reference screws), against their keep-outs and volume estimates."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    doc, container = trials_document(rests=False)
-    doc['name'] = '46es v5 snap brackets B, A, C only - bracket check'
+    doc, container = trials_document(parts=False)
+    doc['name'] = '46es v5 snap bracket B and snap coupon only - bracket check'
     feature, sketch = helpers(doc)
     ctrl_v5.emit(feature, sketch, plate=None, references=False)
-    designs = {ctrl_v5.BODY: ctrl_v5.bracket(), **{n: ctrl_v5.bracket(**s) for n, s in ctrl_v5.TRIALS.items()}}
-    keep_outs = {name: ctrl_v5.check(design) for name, design in designs.items()}
+    ctrl_v5.emit_trial(feature, sketch)
+    keep_outs = {ctrl_v5.BODY: ctrl_v5.check(),
+                 **{f'{ctrl_v5.TRIAL_BODY}_{seat}': ctrl_v5.check(ctrl_v5.bracket(**spec))
+                    for seat, spec, _ in ctrl_v5.trial_seats()}}
+    designs = {ctrl_v5.BODY: ctrl_v5.expected_volume(), ctrl_v5.TRIAL_BODY: ctrl_v5.trial_volume()}
     seed = CACHE / 'seed_ctrl_v5.sc'
     write_seed(doc, container, seed)
     evaluated, elapsed = evaluate(seed, CTRL_ONLY)
     bodies = {b['name']: b for b in evaluated['bodies']}
     assert set(bodies) == set(designs), sorted(bodies)
     report = {}
-    for name, design in designs.items():
-        b, expected = bodies[name], ctrl_v5.expected_volume(design)
+    for name, expected in designs.items():
+        b = bodies[name]
         rel = abs(b['volume_mm3'] - expected) / expected
         assert b['closed'] and rel < 0.015, (name, b['closed'], b['volume_mm3'], expected)
         report[name] = dict(volume_mm3=round(b['volume_mm3'], 3), estimate_mm3=round(expected, 3),
@@ -1234,7 +1200,7 @@ if __name__ == '__main__':
                     help='after a refactor: probe-build, require the committed CAD to be reproduced exactly, '
                          'and update model/seam_v5_build.json without replacing the CAD')
     ap.add_argument('--ctrl', action='store_true',
-                    help='build and check only the brackets B, A, C (.cache/v5/ctrl_v5.sc)')
+                    help='build and check only the bracket B and the snap coupon (.cache/v5/ctrl_v5.sc)')
     ap.add_argument('--covers', action='store_true',
                     help='build and check only the three cover pieces (.cache/v5/covers_v5.sc)')
     a = ap.parse_args()

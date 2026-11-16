@@ -97,12 +97,12 @@ TBD_cover_gap,mm,0.3 mm,0.3,[미확정] 커버 외곽↔하우징 내벽 간격.
 TBD_cover_R,mm,2.5 mm,2.5,"[미확정] 커버 외곽 코너 R. 샘플 R2/R2.5/R3/R3.5 시험 후 결정. 하우징 내측 R(M03)−간격 이상이어야 코너 간섭 없음, 너무 크면 r2처럼 유격",false
 TBD_cover_boss_H,mm,1.5,1.5,[사용자 결정 2026-11-04·치수 미확정] 커버 밑면 위치결정 보스 높이. plate 카운터보어(나사머리 위 빈 공간)에 꽂힌다,false
 TBD_cover_boss_clr,mm,0.3 mm,0.3,"[설계 후보 2026-11-04] 보스 편측여유0.3, 카운터보어Ø6 / 보스Ø5.4. 쿠폰 검증 필요",false
-TBD_cover_boss_D,mm,TBD_so_head_D - 2*TBD_cover_boss_clr,5.4,[유도값] 커버 보스 지름 = 카운터보어 Ø − 2·여유 (5.6),false
+TBD_cover_boss_D,mm,TBD_so_head_D - 2*TBD_cover_boss_clr,5.4,[유도값] 커버 보스 지름 = 카운터보어 Ø − 2·여유 (5.4),false
 TBD_magnet_D,mm,3,3,"[MJF 변경 2026-11-05] 네오디뮴 원형 자석 지름 Ø3(×2). Ø4면 보스 Ø5.4 둘레 살이 0.6으로 MJF 최소 벽 1.0 미달 → Ø3에서 1.1. 커버 보스 끝 포켓에 접착, 강철 나사머리를 끌어당김",false
 TBD_magnet_T,mm,2,2,[규격 미확정] 자석 두께. 포켓 깊이 = 두께 + 여유,false
 TBD_magnet_clr,mm,0.1,0.1,[미확정] 자석 포켓 반경·깊이 여유(접착제 포함). M18,false
 TBD_keycap_W,mm,18 mm,18,"[미확정·자리표시] 1u 키캡 하단 폭(일반값 약 18, 실측 M17)",false
-TBD_keycap_gap,mm,1 mm,1,[미사용 2026-11-04 후반] 키캡↔커버 간격. 실루엣 창은 스위치 개구 기준(TBD_cover_cell)이라 이 값을 쓰지 않음. M17 후 정리,false
+TBD_keycap_gap,mm,1 mm,1,[미사용 2026-11-04 후반] 키캡↔커버 간격 기록 칸(measure_psd60.html M17). 커버 창은 키캡 폭 기준 v5_key_margin을 쓴다,false
 TBD_cover_H,mm,TBD_cover_T,6,[설계 변경 2026-11-04] 커버 높이(plate 상면 기준) = 평판 베젤 두께. 이전 REF_draft_cover_H(8) 벽형 안은 폐기,false
 REF_r2_T_P0,mm,2 mm,2,"[DWG라벨·미실측] P0 투명아크릴 2T. DWG에 Z·두께 속성 없음(229개 모두 Z=0, thickness=0) — 두께는 MText 라벨뿐. 실측 M21",false
 REF_r2_T_P1,mm,5 mm,5,[DWG라벨·미실측] P1 투명아크릴 5T. 실측 M21,false
@@ -115,8 +115,8 @@ REF_draft_standoff_H,mm,5 mm,5,[초안 가정·미확정] 스탠드오프 높이
 REF_draft_cover_H,mm,8 mm,8,[폐기·미사용] 벽형 커버 높이 가정값. 뒤쪽 키캡↔하우징 내벽 여유 2.15 < 간격 0.3 + 벽 2 라 성립 불가(2026-11-04). 기록용,false
 TBD_sw_notch_L,mm,8 mm,8,[참고·미확정] 걸쇠 노치 길이(키 변 중앙 기준). 3×3 fidget 8.0 참고. 쿠폰 행 A 결과 후 확정. SK23 DXF는 고정 숫자 → 값 변경 시 tools/make_key_dxf.py notch 로 재생성,false
 TBD_sw_notch_H,mm,TBD_plate_T - TBD_upper_plate_T - TBD_sw_ledge_T,1.8,[설계 미확정] plate 하면 쪽 16.5 릴리프 층 높이(=1.5): 걸쇠 아래 공간. r2에서는 P1 5T 큰 개구부가 하던 역할. 이전 의미(걸쇠 노치 높이)는 2026-11-04 폐기,false
-TBD_so_head_D,mm,6 mm,6,[자료값·미확정] M3 팬헤드 머리 지름 약 5.5–6 → plate 상면 카운터보어 지름. M13,false
-TBD_so_head_H,mm,2 mm,2,[자료값·미확정] M3 팬헤드 머리 높이 약 2 → plate 카운터보어 깊이(머리가 커버 아래에 묻힘). M13,false
+TBD_so_head_D,mm,6 mm,6,[2026-11-12 보유품] plate 상면 카운터보어 지름. 보유 M3×10 버튼헤드(ISO 7380) 머리 Ø5.7 + 0.3. 커버 보스가 여기서 위치를 잡는다,false
+TBD_so_head_H,mm,2 mm,2,[2026-11-12 보유품] 카운터보어 안 나사머리 공간. 보유 M3×10 버튼헤드 머리 높이 1.65 + 0.35,false
 TBD_so_cb_D,mm,TBD_so_head_H + TBD_cover_boss_H,3.5,[유도값] plate 카운터보어 깊이 = 나사머리 공간 + 커버 보스 높이 (3.5). 나사머리 아래 plate 살 = TBD_plate_T − 이 값 = 1.5,false
 TBD_frame_bar_W,mm,10 mm,10,[설계 미확정] 프레임 중앙 세로 바 폭(H02 장공 + 스탠드오프 3·6 수용),false
 TBD_frame_boss_D,mm,10 mm,10,[설계 미확정] 케이스 구멍·스탠드오프 주변 보스 지름,false
@@ -128,9 +128,7 @@ TBD_usb_outlet_H,mm,8 mm,8,[미확정·자리표시] 같은 커넥터 하우징 
 TBD_usb_outlet_D,mm,12 mm,12,[미확정·자리표시] 같은 커넥터 깊이(개구부 면 → 안쪽). M16,false
 TBD_usb_glue,mm,1 mm,1,[설계 미확정] 커넥터 둘레 접착(글루) 여유. 프레임 노치 폭 = 커넥터 폭 + 2×여유,false
 TBD_ctrl_clr,mm,0.3 mm,0.3,[미확정] 컨트롤러 포켓 편측 여유. M18,false
-TBD_ctrl_wall,mm,3,3,[설계 미확정] 프레임 컨트롤러 개구부 둘레 링 벽 두께(끊기는 중앙 세로 바를 양쪽으로 잇는 구조재). 2026-11-04 마지막: 포켓이 아니라 plate 브래킷이 지나가는 개구부,false
 TBD_ctrl_lip_W,mm,1,1,[설계 미확정] plate 브래킷 레일 안쪽 턱 폭(PCB 가장자리를 0.7 물음). 위·아래 턱 2단으로 PCB 1.6+0.3 홈을 만든다,false
-TBD_ctrl_lip_T,mm,1,1,"[설계 미확정] 브래킷 턱 두께. 아래 턱 Z = TBD_ctrl_pcb_Z − 이 값, 위 턱 Z = PCB 상면 + 여유",false
 REF_ctrl_pcb_T,mm,1.6 mm,1.6,[자료값] Pro Micro PCB 두께,false
 v5_rim_ref_Z,mm,14,14,Approximate PSD60 rim height for comparison only,false
 v5_legmag_skin_min,mm,1.3,1.3,Minimum resin skin above the leg magnet pocket,false
@@ -143,18 +141,11 @@ v5_legmag_skin,mm,v5_cover_top_Z - plate_top_Z - TBD_magnet_T - TBD_magnet_clr,3
 TBD_cover_T,mm,v5_cover_top_Z - (TBD_frame_T + TBD_standoff_H + TBD_plate_T),6,Flat cover thickness from the plate top to Z 19,false
 TBD_cover_lip_H,mm,1 mm,1,[설계 미확정] 커버 테두리 립 높이 = plate 가장자리 단차(rabbet) 깊이,false
 TBD_cover_lip_clr,mm,0.3 mm,0.3,[미확정] 커버 립 ↔ plate 단차 안쪽 여유. M18,false
-TBD_cover_min_rail,mm,1.6 mm,1.6,[JLC3DP 최소 벽·DXF 생성 입력] 커버 창 ↔ 가장자리 최소 살. 실루엣 창은 가장자리 안쪽 이 값으로 잘림(현재 창은 위 2.29 / 아래 2.55 / 좌 5.65 / 우 4.73 여유로 잘리지 않음),false
 stab_2u,,0,0,[사용자 결정 2026-11-04] 2u 키 스태빌라이저 사용 안 함(0 = 컷 없음). 형상 없음,false
 TBD_cover_cell,mm,18.5 mm,18.5,[설계 미확정·DXF 생성 입력] 커버 실루엣 창을 만드는 키별 셀 한 변 = 스위치 상부 개구 16.5 + 편측 1.0 (폭 u 키는 u·pitch − (pitch − cell)). SK33은 고정 DXF → 변경 시 tools/make_key_dxf.py silhouette 로 재생성,false
-TBD_cover_close_R,mm,0 mm,0,"[설계 미확정·DXF 생성 입력] 실루엣 오목 모서리 둥글림 반지름(원판 닫힘, 좌·우 블록 따로). 8 → 2 → 0.5 → 0 (2026-11-04, 사용자 요청: 곡선 없음). 0이면 둥글림 없이 직각 계단. 틈 메움은 TBD_cover_fill_L 직선 닫힘이 맡는다",false
 TBD_cover_fill_L,mm,16 mm,16,[설계 미확정·DXF 생성 입력] 실루엣 창 직선 메움 길이(가로·세로 선분 닫힘). 이보다 좁은 키 사이 틈·쐐기는 직선 변으로 메워지고 계단 모서리는 그대로 남는다. 예전 R8 원판 닫힘의 지름과 같음. tools/make_key_dxf.py silhouette 마지막 인자,false
-TBD_cover_env_du,,0.5,0.5,"[설계 미확정·DXF 생성 입력] 키캡 보유 상황에 따라 폭이 바뀜 수 있는 키(PgUp·PgDn, 맨 아랫줄 1~6)의 커버 창 수용 폭 여유(u). 창 = 실제 폭 + 이 값, 스위치 중심 대칭. PgUp·PgDn은 오른쪽 베젤 살 때문에 1.5u 상한. tools/make_key_dxf.py ENVELOPE_U",false
 TBD_upper_plate_T,mm,1.7 mm,1.7,"[v5 사용자 결정 2026-11-06] upper plate 층 두께 1.7(v4: 2 = r2 P3 2T). r2는 키캡을 끼우면 유격이 거의 없지만 작동한다(사용자 확인) → 출력 공차를 감수하지 않도록 0.3 얇게. 스위치 착좌 Z 11 → 11.3, 14.0 홀 층 1.5 유지, 아래 릴리프 TBD_sw_notch_H 1.5 → 1.8",false
 TBD_ctrl_pcb_Z,mm,2,2,"[사용자 결정 2026-11-04·치수 미확정] 컨트롤러 PCB 하면(부품면) Z. plate 아랫면 브래킷 턱 위에 앉음. PCB 상면 3.6 < 스위치 핀 끝 4.7, 부품은 아래(하우징 바닥 쪽)",false
-TBD_ctrl_rail_T,mm,1.5,1.5,"[설계 미확정] plate 아랫면 컨트롤러 브래킷 레일(벽) 두께. MJF PA12 최소 벽 1.0, 기능부 권장 1.5(2026-11-05 재료 변경)",false
-TBD_ctrl_railB_L,mm,21,21,[설계 미확정] 뒤쪽(Y+) 레일 길이. 둘째 줄 스위치 16.5 개구 사이 빈 폭(여유 0.3 시 X 119.5~142.2)에 들어가도록 짧게. PCB 중심 X 기준 대칭,false
-TBD_ctrl_stop_L,mm,10,10,[설계 미확정] +X 끝막이 길이(앞 레일 바깥면에서 Y+ 방향). Y 22.2 위는 오른쪽 둘째 줄 스위치 개구라 10까지만,false
-TBD_ctrl_hex_wall,mm,1.5,1.5,[설계 미확정] 프레임 컨트롤러 개구부 앞변 ↔ SO6 육각 포켓 꼭짓점 사이 살,false
 TBD_usb_plug_W,mm,12,12,[미확정·자리표시] Pro Micro에 꽂는 연장 케이블 플러그 오버몰드 폭. 프레임 링 −X 벽 노치 폭. 실측 M16,false
 TBD_usb_plug_H,mm,7,7,[미확정·자리표시] 플러그 오버몰드 높이(커넥터 중심 기준 대칭). 실측 M16,false
 TBD_usb_plug_L,mm,25,25,[미확정·자리표시] PCB 끝에서 플러그+케이블 굽힘 시작까지 길이(−X 방향 점유). 실측 M16,false
@@ -175,19 +166,13 @@ split_fit_rear_Y,mm,0.4 mm,0.4,[candidate] rear locating recess lengthwise clear
 split_nut_AF,mm,4.4 mm,4.4,"[candidate] M2 hex nut pocket AF, assumed metal nut AF4.0",false
 split_nut_depth,mm,1.8 mm,1.8,[candidate] pocket for assumed M2 nut thickness1.6,false
 split_H05_adjust,mm,0.9 mm,0.9,[candidate] H05 X arc-center adjustment ±0.9; M2 axis approx ±1.1 incl clearance,false
-split_mount_overlap,mm,20 mm,20,[candidate] 18..22 mm lap length; centered on nominal X100,false
-split_mount_lap_T,mm,3 mm,3,[candidate] 3 mm tongue thickness below Z0,false
-split_mount_lap_gap,mm,0.2 mm,0.2,[candidate] 0.15..0.3 mm upper butt clearance,false
 split_support_Y,mm,56 mm,56,[candidate] H02 rear support; do not move over case screw,false
 split_support_gap,mm,0.05 mm,0.05,[assembly target] 0..0.1 mm spine bottom to Rear frame top after shim film; not as-printed accuracy,false
 split_flange_W,mm,2 mm,2,[candidate] interrupted perimeter flange width; switch guards required,false
 split_flange_H,mm,3 mm,3,"[candidate] underside flange depth, Z5..8 at default; mount top3",false
-split_usb_bridge_W,mm,4 mm,4,"[candidate 2026-11-05] Inboard U bypass width; preserves entire USB notch, verify local print",false
 split_M2_plate_seat_Z,mm,10.2 mm,10.2,"[2026-11-11] ISO 7380 M2×6 버튼헤드(머리 Ø3.5–3.8 × 1.3, 머리 윗면 Z11.5), 와셔 없음, 끝Z4.2. Plate 잔여 살1.7(spine seat)/2.2(bracket) 이상.",false
 split_gate_ear_Z,mm,4.8 mm,4.8,"[candidate] M2x5 low head below, 0.7 nominal clearance to mount top",false
 split_gate_cap_Z,mm,split_gate_ear_Z+1.6 mm,6.4,[검토 후보] ear 상면과 접촉. cap 아래6.4. PCB 위치와 독립.,false
-split_gate_cap_H,mm,3.2 mm,3.2,"[candidate] nut pocket floor7.8, bottom bearing1.4",false
-split_gate_nut_Z,mm,split_gate_cap_Z+1.4 mm,7.8,"[검토 후보] nut 바닥7.8, 금속너트 AF4/H1.6, 포켓AF4.4 깊이1.8, 아래 받침1.4.",false
 side_pair_bridge_W,mm,8 mm,8,[review v3] L/R pair connector width; existing mounting holes remain unchanged,false
 side_pair_bridge_end_setback,mm,3.7 mm,3.7,[review v3] Distance from case-hole axes to connector ends; clears existing head slots,false
 plate_top_Z,mm,TBD_frame_T + TBD_standoff_H + TBD_plate_T,13,[v4 2026-11-05] plate 윗면 Z(13). 이음·자석 기준,false
@@ -212,17 +197,17 @@ v5_cover_pattern_skin,mm,v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z -
 v5_legmag_plate_clr,mm,0.15,0.15,"[v5 설계 후보] plate 쪽 다리 자석 포켓 반경 여유(Ø3.3). MJF ±0.3: 빡빡하면 Ø3.3 드릴로 손질, 헐거우면 에폭시로 채움(plate 재출력 없음)",false
 v5_legpad_L,mm,8,8,[v5 설계 후보] 다리 자석 자리에서 plate 가장자리 단차(rabbet)를 메우는 받침 길이(X),false
 v5_lip_relief_clr,mm,0.3,0.3,"[v5 설계 후보] 받침 양끝 ↔ 커버 립 절단 끝 여유(X, 편측)",false
-v5_legmag_L_X,mm,94.0,94,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2),false
+v5_legmag_L_X,mm,94.0,94,"[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 X(옛 키별 창에서 래스터로 고른 고정값. 실루엣 창은 포켓에서 1.15 띄움, 실측 벽 1.137)",false
 v5_legmag_L_Y,mm,2.5,2.5,[v5 2026-11-06] L 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
-v5_legmag_R_X,mm,167.7,167.7,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 X(래스터로 고른 고정값: 벽 ≥ 1.2),false
+v5_legmag_R_X,mm,167.7,167.7,"[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 X(옛 키별 창에서 래스터로 고른 고정값. 실루엣 창은 포켓에서 1.15 띄움, 실측 벽 1.137)",false
 v5_legmag_R_Y,mm,2.5,2.5,[v5 2026-11-06] R 커버 아래 다리 끝 자석 쌍 Y(앞 가장자리 쪽),false
 v5_so_insert_D,mm,5 mm,5,"[보유품 2026-11-12] SO 열압입 인서트 외경. 원형 황동 M3 인서트 20개(외경 Ø5 × 높이 4, PURCHASE.md) 중 6개. 2026-11-12 이전의 황동 육각 지지대(길이 6, 맞변 5)와 아래 M3×5를 대신한다",false
 v5_so_insert_H,mm,4 mm,4,[보유품 2026-11-12] SO 인서트 높이. 보스 윗면(plate 밑면)과 같은 높이로 넣는다,false
 v5_so_insert_hole_D,mm,4.2 mm,4.2,[설계 후보 2026-11-12] SO 인서트 열압입 구멍. 외경 5 인서트의 일반 권장 4.0–4.4 중간. MJF 출력 편차는 주문 1 B 쿠폰 행 D(4.0/4.2/4.4/4.6)와 mount 4개로 확인,false
 v5_so_boss_D,mm,8 mm,8,"[설계 2026-11-12] SO 인서트 보스 지름(Z 1.5–8). AF 8.5 팔각 보존 구역 안. 외곽선·plate 플랜지에 걸리면 잘리고, 그때도 구멍까지 살 1.2 이상",false
 v5_so_insert_hole_depth,mm,plate_top_Z - TBD_plate_T - TBD_frame_T,5,[유도값 2026-11-12] 인서트 구멍 깊이 = 보스 윗면 Z 8 − 프레임 윗면 Z 3 = 5. 인서트 4 + 녹은 수지 자리 1. 아래 프레임에는 M3 관통 Ø3.4,false
-v5_seam_fit,mm,0.15,0.15,"[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). 주문 1 쿠폰 S2는 0.25, S0는 옛 dovetail",false
-v5_seam_nut_AF,mm,4.0,4,"[2026-11-10 tools/seam_v5.py] 앞 이음 너트 포켓 맞변(닫힌 육각, M2 너트 4.0을 눌러 끼움). 주문 1 쿠폰 S2는 4.2, S0는 옛 4.4(이음면 쪽 열림)",false
+v5_seam_fit,mm,0.15,0.15,[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). 주문 1 이음 쿠폰의 S2 끝은 0.25,false
+v5_seam_nut_AF,mm,4.0,4,"[2026-11-10 tools/seam_v5.py] 앞 이음 너트 포켓 맞변(닫힌 육각, M2 너트 4.0을 눌러 끼움). 주문 1 이음 쿠폰의 S2 끝은 4.2",false
 v5_seam_tab_end_X,mm,147.4,147.4,[2026-11-10 tools/seam_v5.py] 앞 이음 tab 끝 X(L 조각의 오른쪽 끝). 걸림 턱은 X 144.2부터 +Y로 2.4,false
 v5_rear_boss_1_X,mm,36.0,36,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 1 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22",false
 v5_rear_boss_2_X,mm,113.6,113.6,"[사진 추정·미실측 2026-11-09] PSD60 뒤 벽 안쪽 반원 보스 2 중심 X. 사용자 제공 KPrepublic 제품 사진을 H01–H06으로 사영 보정(잔차 ≤ 0.8, 기준점 하나씩 빼면 ±2–4). 실측 M22",false
@@ -233,13 +218,13 @@ v5_rear_boss_top_Z,mm,0.0,0,"[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지�
 v5_rear_rest_gap,mm,0.5,0.5,[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 보스 위에 붙인다. 딱 맞춰 만들면 SO 보스 6개가 정한 plate 높이와 겹친다(과구속),false
 v5_rear_rest_L,mm,14.0,14,[v5 설계 2026-11-10] 뒤 받침 블록 길이(X). 보스 추정 위치가 ±2 틀려도 플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다,false
 v5_rear_rest_W,mm,4.0,4,[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + 보스 앞쪽으로 2,false
-v5_rear_rest_H,mm,plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap,4.5,[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 1 높이 변형 4.2 / 4.8,false
+v5_rear_rest_H,mm,plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap,4.5,"[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 2에 이 높이 하나(2026-11-16). 남는 틈은 패드 두께로, 높으면 블록을 갈아 맞춘다",false
 v5_rear_rest_1_X,mm,37.0,37,"[v5 설계 2026-11-09] 뒤 받침 블록 1 중심 X(보스 1 위, plate L 뒤 플랜지 구간 안)",false
 v5_rear_rest_2_X,mm,113.0,113,"[v5 설계 2026-11-09] 뒤 받침 블록 2 중심 X(보스 2 위, plate L 뒤 플랜지 구간 안)",false
 v5_rear_rest_3_X,mm,170.0,170,"[v5 설계 2026-11-09] 뒤 받침 블록 3 중심 X(보스 3 위, plate R 뒤 플랜지 구간 안)",false
-ctrl5_hook_e,mm,0.4,0.4,"[v5 2단계 2026-11-09 시험 후보] 스냅 암 립이 PCB 긴 변 아래로 겹치는 깊이(PCB 가운데 놓임). 주문 1 시험편 A 0.25 / C 0.55. 탄성 암 X 9.0·두께 1.0(MJF 벽), 립까지 7.75, 삽입 변형률 약 1.8%(외팔보 계산, 실물 미확인)",false
-ctrl5_end_d,mm,0.98,0.98,"[v5 2단계 시험 후보] +X 끝 립·받침이 PCB 끝을 덮는 길이. 패드 열 사이에서만 덮고 크리스털(끝에서 0.7) 양옆으로 나눔. 12번 패드 링 끝 ↔ PCB 끝 0.39(검토 모델 참고 배치, M15 미실측). 시험편 A 0.7 / C 1.2",false
-ctrl5_stop_gap,mm,1.0,1,[v5 2단계 시험 후보] 암 끝 바깥면 ↔ 레일. 해제 이동 겸 과변형 제한(시험편 C 1.1),false
+ctrl5_hook_e,mm,0.4,0.4,"[v5 2단계 2026-11-09 시험 후보] 스냅 암 립이 PCB 긴 변 아래로 겹치는 깊이(PCB 가운데 놓임). 주문 1 스냅 시험편 자리 A 0.25 / C 0.55. 탄성 암 X 9.0·두께 1.0(MJF 벽), 립까지 7.75, 삽입 변형률 약 1.8%(외팔보 계산, 실물 미확인)",false
+ctrl5_end_d,mm,0.98,0.98,"[v5 2단계 시험 후보] +X 끝 립·받침이 PCB 끝을 덮는 길이. 패드 열 사이에서만 덮고 크리스털(끝에서 0.7) 양옆으로 나눔. 12번 패드 링 끝 ↔ PCB 끝 0.39(검토 모델 참고 배치, M15 미실측). 시험편 자리 A 0.7 / C 1.2",false
+ctrl5_stop_gap,mm,1.0,1,[v5 2단계 시험 후보] 암 끝 바깥면 ↔ 레일. 해제 이동 겸 과변형 제한(시험편 자리 C 1.1),false
 ctrl5_clr_z,mm,0.15,0.15,"[v5 2단계 설계 후보] PCB 면 ↔ 립·받침 Z 여유(편측). 립 윗면 Z 1.85, 받침 Z 3.75",false
 ctrl5_M2_1_X,mm,121.7,121.7,"[v5 2단계 2026-11-09] 브래킷 M2 앞(옛 125, 17: 배선 5번 패드 위 0.8에 너트 보스). 미배선 1–4번 구역, 패드 열 사이",false
 ctrl5_M2_1_Y,mm,18.964485,18.964485,[v5 2단계 2026-11-09] 브래킷 M2 앞 Y = PCB 중심선 − 3.1,false

@@ -18,7 +18,7 @@ A part whose body has the same shape digest (cad_model.shape_digests, recorded a
 record, and whose files and wall scan still match that record, is kept as it is (plan 3-4): only its source_sha256 is
 updated. So a rebuild that reproduces the bodies, or a change to one mount, re-exports and re-scans only what changed;
 a source whose parts are all kept is not opened. --force re-exports everything (after editing this exporter or the STL
-scripts it calls). Each order is replaced as a whole (publish()).
+scripts it calls). Each order is replaced as a whole (publish()), and files of parts no longer listed are removed.
 """
 import argparse
 import json
@@ -244,6 +244,12 @@ def export_order(order, parts, folders, bodies, input_hashes, digests, kept, scr
     targets[thin] = paths['wall']
     targets[record_path] = paths['record']
     publish(order, scratch, targets, {p.source: input_hashes[p.source] for p in parts})
+    # A part dropped from tools/parts_v5.py would otherwise leave its old STL/STEP in the set (2026-11-16).
+    current = {p.file + extension for p in parts for extension in ('.step', '.stl')}
+    for path in sorted(folder.iterdir()):
+        if path.suffix in ('.step', '.stl') and path.name not in current:
+            path.unlink()
+            print(f'{order}: removed {path.name} (no longer in tools/parts_v5.py)')
     return rows
 
 

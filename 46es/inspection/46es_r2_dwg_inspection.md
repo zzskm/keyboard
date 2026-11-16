@@ -4,6 +4,8 @@
 
 > **이 문서와 `46es/model/`의 어떤 값도 제작 확정 치수가 아니다.** DWG 값은 "DWG에 그렇게 그려져 있다"는 사실일 뿐 PSD60 하우징·실부품과 맞는다는 근거가 아니다. 최종 형상·STL은 만들지 않았다.
 
+> 정정 2026-11-16: 이 보고서가 말하는 `manifest.json`과 `tools/update_manifest.py`는 2026-11-10에 폐지했다. 추적 파일과 바이트는 git이 관리하고, 현행 정합성 검사는 `tools/check_repository.py`다([validation.md](../docs/validation.md#cad-없이-할-수-있는-검사)). DWG 해시는 git의 원본 blob으로 확인한다.
+
 > 정정 2026-11-09: 이 보고서가 만든 `model/parameters.csv`·`model/46es_draft_sketches.sc`와 계획 문서(`docs/planning.md`·`docs/assembly-revision.md`)는 v5로 대체되어 현행 트리에서 뺐다(태그 `46es-pre-cleanup-2026-11-09`). 현행 매개변수는 [`model/parameters_seam_v5.csv`](../model/parameters_seam_v5.csv), 현행 설계는 [`docs/design.md`](../docs/design.md)다.
 
 > 정정 2026-11-04: 46sp는 별도 split keyboard 예시라 대조 대상에서 뺐다(§1, §7). 부품 구성(§5)은 당시 계획 문서 `docs/assembly-revision.md` 기준으로 갱신했다. r2 DWG는 3D 프린팅 리비전이 아니라 아크릴 버전의 설계 파일로 확인됐다(§1). DWG 판독 결과는 바뀌지 않았다.

@@ -286,8 +286,8 @@ def pin_reliefs(outline, pads, keepouts, merge_into, keys):
     closer than MIN_WALL to the outline is opened through that edge (no thin wall, no
     powder trap); one closer than MIN_WALL to a case head recess is joined to it with a
     MIN_WALL closing (tangent fillets, no feather edge). Pins whose clearance only grazes
-    the body get a round scallop instead of a box. Pockets stay MIN_WALL from the hex
-    pockets and never lie under a plate pad.
+    the body get a round scallop instead of a box. Pockets stay MIN_WALL from the SO
+    insert bosses and never lie under a plate pad.
     """
     reliefs = {}
     for key in keys:
@@ -328,7 +328,7 @@ def finish_relief(pocket, outline, pads, merge_into, key, pins):
     """Common checks and the head-recess join for one pin relief pocket."""
     for pin in pins:
         if not pocket.buffer(1e-6).covers(pin.buffer(MOUNT_PIN_CLEARANCE).intersection(outline)):
-            raise ValueError(f'key {key["index"]} pin clearance is blocked by a hex pocket keep-out')
+            raise ValueError(f'key {key["index"]} pin clearance is blocked by an SO insert boss keep-out')
     # A pocket closer than MIN_WALL to a case head recess joins it: a closing by MIN_WALL fills the
     # gap with fillets tangent to both, where a plain union would leave a knife-edge of material.
     for head in merge_into:

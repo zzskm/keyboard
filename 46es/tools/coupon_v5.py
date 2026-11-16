@@ -13,7 +13,11 @@ design value 5.4. Now:
     face printed down, as the cover top) at the production size (stroke 0.5, rib 0.25) and at 1.6 times it (stroke
     0.8, the JLC3DP engraving minimum for SLA, rib 0.4), read mirrored in the model so it reads right from that face.
 2026-11-12: row D's four standoff hex pockets (AF 5.2-5.8 x 1) became heat-set holes for the stock M3 insert
-(OD 5 x 4) that replaced the standoffs, 4.0-4.6 around v5_so_insert_hole_D, each over the M3 bore.
+(OD 5 x 4) that replaced the standoffs, 4.0-4.6 around v5_so_insert_hole_D.
+2026-11-16: those holes were 4 deep (v5_so_insert_H) under a 1.0 skin, so a flush insert left the displaced plastic
+nowhere to go; the mount hole is v5_so_insert_hole_depth = 5 deep for that melt. That depth is the coupon thickness,
+so the holes go through: the insert is pressed flush with the top face and the melt leaves at the bottom, the grip
+and the pull-out direction of the M3 screw are the mount's.
 The engraving is a fixed-number sketch (the glyph outlines of tools/cover_pattern_v5.py); check() compares the evaluated bodies with volumes and boxes computed from the evaluated
 parameters.
 """
@@ -65,7 +69,7 @@ PARAMS = [
     ('SMP_cb_min', 'TBD_so_head_D - SMP_cb_step', '[쿠폰] 행 D 카운터보어 첫 값. 둘째가 plate 카운터보어(보스 편측 여유 0.2/0.3/0.4)'),
     ('SMP_ins_step', '0.2 mm', '[쿠폰 2026-11-12] 행 D SO 인서트 열압입 구멍 단계(옛 육각 포켓 자리)'),
     ('SMP_ins_min', 'v5_so_insert_hole_D - SMP_ins_step', '[쿠폰 2026-11-12] 행 D 인서트 구멍 첫 값. 둘째가 mount 보스 구멍. '
-     '깊이 v5_so_insert_H(아랫면에서), 위로 M3 관통 Ø3.4, 위 살 1.0'),
+     '관통(2026-11-16): mount 구멍 깊이 v5_so_insert_hole_depth 5 = 쿠폰 두께라 인서트를 윗면에 맞춰 넣으면 녹은 수지가 아래로 빠진다'),
     ('SMP_legmag_step', '0.1 mm', '[쿠폰] 행 D plate 다리 자석 포켓 단계'),
     ('SMP_legmag_min', 'TBD_magnet_D + 2 * v5_legmag_plate_clr - SMP_legmag_step',
      '[쿠폰 2026-11-10] 행 D plate 다리 자석 포켓(MJF) 첫 값. 둘째가 plate 포켓 Ø3.3'),
@@ -142,9 +146,8 @@ def emit(feature, sketch, doc):
     for i, x in enumerate(ROW_D['CB']):          # plate counterbore from the top over the M3 hole
         cyl(f'SMP_CB_{i}', X + x, y, f'SMP_cb_min + {i} * SMP_cb_step', 'SMP_T - TBD_so_cb_D', 'TBD_so_cb_D + 1')
         cyl(f'SMP_CB_HOLE_{i}', X + x, y, 'TBD_so_screw_D + TBD_so_clr', -1.0, 'SMP_T + 2')
-    for i, x in enumerate(ROW_D['INSERT']):      # SO insert: heat-set hole from the underside over the M3 bore
-        cyl(f'SMP_INSERT_{i}', X + x, y, f'SMP_ins_min + {i} * SMP_ins_step', -1.0, 'v5_so_insert_H + 1')
-        cyl(f'SMP_INSERT_BORE_{i}', X + x, y, 'TBD_so_screw_D + TBD_so_clr', -1.0, 'SMP_T + 2')
+    for i, x in enumerate(ROW_D['INSERT']):      # SO insert: heat-set hole through (mount hole depth >= SMP_T)
+        cyl(f'SMP_INSERT_{i}', X + x, y, f'SMP_ins_min + {i} * SMP_ins_step', -1.0, 'SMP_T + 2')
     for i, x in enumerate(ROW_D['LEGMAG']):      # plate leg magnet pocket, from the plate top
         cyl(f'SMP_LEGMAG_{i}', X + x, y, f'SMP_legmag_min + {i} * SMP_legmag_step',
             'SMP_T - TBD_magnet_T - TBD_magnet_clr', 'TBD_magnet_T + TBD_magnet_clr + 1')
@@ -198,9 +201,7 @@ def expected(values):
     for i in range(len(ROW_D['CB'])):
         cb = v['TBD_so_cb_D']
         cut += disc(v['SMP_cb_min'] + i * v['SMP_cb_step']) * cb + disc(bore) * (T - cb)
-    for i in range(len(ROW_D['INSERT'])):
-        depth = v['v5_so_insert_H']
-        cut += disc(v['SMP_ins_min'] + i * v['SMP_ins_step']) * depth + disc(bore) * (T - depth)
+    cut += sum(disc(v['SMP_ins_min'] + i * v['SMP_ins_step']) * T for i in range(len(ROW_D['INSERT'])))
     mag_h = v['TBD_magnet_T'] + v['TBD_magnet_clr']
     cut += sum(disc(v['SMP_legmag_min'] + i * v['SMP_legmag_step']) * mag_h for i in range(len(ROW_D['LEGMAG'])))
     x, y = COUPON_AT
@@ -234,7 +235,6 @@ def walls(values):
                ledge=v['SMP_ledge'],
                under_counterbore=round(v['SMP_T'] - v['TBD_so_cb_D'], 3),
                over_leg_magnet=round(v['SMP_T'] - v['TBD_magnet_T'] - v['TBD_magnet_clr'], 3),
-               over_insert=round(v['SMP_T'] - v['v5_so_insert_H'], 3),
                boss_magnet_wall=round((v['TBD_cover_boss_D'] - v['TBD_magnet_D'] - 2 * v['TBD_magnet_clr']) / 2, 3))
     from shapely.geometry import box
     x, y = TAB_AT
@@ -252,6 +252,9 @@ def check(evaluated, production_values):
                  'v5_so_insert_H'):
         assert abs(values[name] - production_values[name]) < 1e-9, (name, values[name], production_values[name])
     assert abs(values['SMP_ins_min'] + values['SMP_ins_step'] - mounts_v5.INSERT_HOLE_D) < 1e-9, 'insert row is stale'
+    # the through insert holes stand for the mount's 5 deep hole only while that is at least the coupon thickness
+    assert values['v5_so_insert_hole_depth'] >= values['SMP_T'] - 1e-9, 'insert hole depth < coupon: make row D blind'
+
     assert abs(values['SMP_T'] - values['SMP_upper'] - values['SMP_ledge'] - production_values['TBD_sw_notch_H']) < 1e-9
     bodies = {b['name']: b for b in evaluated['bodies']}
     report = {}

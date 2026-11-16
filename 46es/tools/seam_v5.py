@@ -1,19 +1,23 @@
 """Front seam between the plate halves: a half-lap tab on plate L over a pocket in plate R, one M2 screw from above
-and a nut in the underside of R. Also the order-1 seam coupons (one L/R pair per variant, built by the same code).
+and a nut in the underside of R. Also the order-1 seam coupons, built by the same code: two double-ended pieces that
+test both variants (COUPON_PIECES).
 
 2026-11-10 (decision, docs/design.md): the v4 dovetail tab with a shallow nut pocket open to the seam face became a
 straight half-lap with a locating hook and a closed press-fit nut pocket.
   - The tab drops in from above (straight walls). Its long sides locate in Y and limit in-plane rotation, the hook
     shoulder at the far end limits spreading in X; both with `fit` clearance per side. The tab end has `end_gap`.
   - The dovetail's 0.15 side clearance sat on slanted faces that could wedge; the plate is never trimmed, so a tight
-    print had no fix. No switch opening lies within 10 mm of the seam, so the tab could grow.
+    print had no fix. No switch opening lies within 5 mm of the pocket (5.72), so the tab could grow.
   - The nut sits in a hexagonal pocket closed on all sides (>= 1.0 wall to the seam face of R), deep enough to hold
     it by its flats; the floor above it keeps >= 1.0. It is pressed in (screw pull-in) and pushed out with the screw.
     A side-insert slot would need 1.0 + 1.8 + 1.0 = 3.8 of material where R has TBD_plate_T - tab_T = 2.6.
-The v4 seam stays as Seam(kind='dovetail') for the order-1 control coupon S0.
 2026-11-11 (decision): the screw is a common ISO 7380 M2x5 button head (head 3.5-3.8 x 1.3) instead of the
 low-head NBK SSH-M2-5 (4 x 1.1), which is hard to buy; the counterbore went 1.2 -> 1.4 so the head top stays
-at Z 12.9 (0.1 under the cover) and the tab keeps MIN_WALL under the head. S0 keeps the v4 1.2.
+at Z 12.9 (0.1 under the cover) and the tab keeps MIN_WALL under the head.
+2026-11-16 (decision): order 1 is held to 10 uploads. The three coupon pairs (S0 v4 dovetail control, S1, S2) became
+two pieces, each with an R-type pocket end and an L-type tab end: piece 1 = S2 pocket + S1 tab, piece 2 = S1 pocket +
+S2 tab. Piece 1 then piece 2 (left to right) tests S1, piece 2 then piece 1 tests S2. The S0 control was dropped: the
+dovetail was replaced for its slanted faces and open pocket, and its result could not bring it back.
 
 The numbers here are the source; the seam_* parameters of the document are documentation and are checked against
 them after evaluation (build_seam_v5.check_seam). Features are fixed numbers, as for the mounts and the bracket.
@@ -39,16 +43,10 @@ NUT_AF, NUT_H = 4.0, 1.6                      # DIN 934 M2: across flats 4.0 (3.
 REF_NUT_AF = 3.9                              # reference nut drawn inside its tolerance so it clears a 4.0 pocket
 MIN_WALL = 1.0
 FRONT_PAD_HOLE_R = 2.55                       # mounts_v5: clearance in Front pad 1 for the nut bottom and screw tip
-# v4 seam (control coupon S0): sketch outlines as they were in model/seam_v5_base.json
-DOVETAIL_TAB = [(136.3, 3.6), (137.131, 3.6), (138.6, 3.0), (142.9, 3.0), (142.9, 9.0), (141.7, 10.2), (138.6, 10.2),
-                (137.131, 9.6), (136.3, 9.6)]
-DOVETAIL_POCKET = [(137.0, 3.4914), (138.5705, 2.85), (143.05, 2.85), (143.05, 9.0621), (141.7621, 10.35),
-                   (138.5705, 10.35), (137.0, 9.7086)]
 
 
 @dataclass(frozen=True)
 class Seam:
-    kind: str = 'lap'                # 'lap': straight half-lap with hook; 'dovetail': the v4 seam
     tab_T: float = 2.4               # tab thickness from the plate top = pocket depth
     fit: float = 0.15                # locating clearance per side (tab sides, hook shoulder)
     end_gap: float = 0.3             # tab end and hook outer faces: not locating
@@ -56,7 +54,6 @@ class Seam:
     cb_D: float = 1.4                # head counterbore in the tab (head top = PLATE_TOP_Z - cb_D + SCREW_HEAD_H)
     nut_AF: float = 4.0              # nut pocket across flats (press fit on a 4.0 nut)
     nut_D: float = 1.3               # nut pocket depth from the plate underside
-    nut_open: bool = False           # v4: pocket open to the seam face
 
     @property
     def floor(self):
@@ -65,24 +62,27 @@ class Seam:
 
 
 PRODUCTION = Seam()
-DOVETAIL = Seam(kind='dovetail', screw=(139.5, 6.6), cb_D=1.2, nut_AF=4.4, nut_D=1.0, nut_open=True)
-# Order-1 coupons: (variant, offset of the pair from the plate position). S2 widens the locating clearance and the nut
-# pocket by one step each; the lap fit (hand insertion) and the nut fit (press, shake) are read separately.
-COUPONS = {'S0': (DOVETAIL, (60.0, -60.0)),
-           'S1': (PRODUCTION, (0.0, -60.0)),
-           'S2': (replace(PRODUCTION, fit=0.25, nut_AF=4.2), (110.0, -60.0))}
+# Order-1 coupon variants. S2 widens the locating clearance and the nut pocket by one step each; the lap fit (hand
+# insertion) and the nut fit (press, shake) are read separately.
+VARIANTS = {'S1': PRODUCTION, 'S2': replace(PRODUCTION, fit=0.25, nut_AF=4.2)}
 COUPON_BOX = (118.0, -0.367, 154.0, 21.2)     # blank before the split: plate front edge to behind the seam bend
+# The pocket end of a piece sits this far left of its tab end, so the R blank's right edge (COUPON_BOX x1) meets the
+# L blank's left edge (x0): one straight piece, pocket end at -X, tab end at +X.
+POCKET_END_DX = COUPON_BOX[0] - COUPON_BOX[2]
+# body: (pocket variant, tab variant, offset of the tab end from the plate position)
+COUPON_PIECES = {'SEAM_COUPON_1': ('S2', 'S1', (0.0, -60.0)),
+                 'SEAM_COUPON_2': ('S1', 'S2', (60.0, -60.0))}
 COUPON_COLOR = [143, 191, 106]
 
 
-def coupon_bodies(name):
-    return f'SEAM_COUPON_{name}_L', f'SEAM_COUPON_{name}_R'
+def coupon_ends(body):
+    """((pocket variant, offset), (tab variant, offset)) of one coupon piece."""
+    pocket, tab, (dx, dy) = COUPON_PIECES[body]
+    return (pocket, (dx + POCKET_END_DX, dy)), (tab, (dx, dy))
 
 
 def outlines(seam):
     """(tab, pocket) plan polygons at the plate position."""
-    if seam.kind == 'dovetail':
-        return DOVETAIL_TAB, DOVETAIL_POCKET
     (y0, y1), f, e = TAB_Y, seam.fit, seam.end_gap
     tab = [(TAB_ROOT_X, y0), (TAB_END_X, y0), (TAB_END_X, y1 + HOOK_Y), (NECK_END_X, y1 + HOOK_Y), (NECK_END_X, y1),
            (TAB_ROOT_X, y1)]
@@ -105,7 +105,7 @@ def check(seam, openings=()):
     sx, sy = seam.screw
     head = Point(sx, sy).buffer(M2_HEAD_D / 2, quad_segs=32)
     report = dict(
-        kind=seam.kind, fit=seam.fit, screw=list(seam.screw),
+        fit=seam.fit, screw=list(seam.screw),
         tab_under_head=round(seam.tab_T - seam.cb_D, 3),
         floor_under_pocket=round(seam.floor, 3),
         floor_over_nut=round(seam.floor - seam.nut_D, 3),
@@ -118,19 +118,17 @@ def check(seam, openings=()):
         pocket_to_switch_opening=round(min((pocket.distance(o) for o in openings), default=float('inf')), 3),
         tab_plan_area=round(tab.area, 2))
     assert tab.contains(head), (seam, 'counterbore leaves the tab')
-    if seam.kind == 'lap':
-        report['head_top_Z'] = round(PLATE_TOP_Z - seam.cb_D + SCREW_HEAD_H, 3)
-        assert report['head_top_Z'] <= PLATE_TOP_Z - 0.1 + 1e-9 and SCREW_HEAD_D < M2_HEAD_D, (seam, report)
+    report['head_top_Z'] = round(PLATE_TOP_Z - seam.cb_D + SCREW_HEAD_H, 3)
+    assert report['head_top_Z'] <= PLATE_TOP_Z - 0.1 + 1e-9 and SCREW_HEAD_D < M2_HEAD_D, (seam, report)
     assert pocket.buffer(1e-9).contains(tab.intersection(Polygon([(R_EDGE_X, -5), (200, -5), (200, 30), (R_EDGE_X, 30)]))), \
         (seam, 'tab outside its pocket')
     assert report['nut_below_plate'] >= 0 and report['nut_Z'][0] > report['screw_tip_Z'], (seam, report)   # full thread
     assert NUT_AF / math.sqrt(3) + 0.15 <= FRONT_PAD_HOLE_R, 'the nut corners do not clear the Front pad hole'
-    if seam.kind == 'lap':
-        thin = {k: report[k] for k in ('tab_under_head', 'floor_over_nut', 'counterbore_wall', 'nut_wall_to_seam_face',
-                                       'pocket_to_switch_opening') if report[k] < MIN_WALL - 1e-9}
-        assert not thin, (seam, thin)
-        assert not seam.nut_open and HOOK_Y >= 2 * MIN_WALL and TAB_END_X - NECK_END_X >= 2 * MIN_WALL
-        report['hook'] = dict(shoulder_X=NECK_END_X, depth_Y=HOOK_Y, length_X=round(TAB_END_X - NECK_END_X, 3))
+    thin = {k: report[k] for k in ('tab_under_head', 'floor_over_nut', 'counterbore_wall', 'nut_wall_to_seam_face',
+                                   'pocket_to_switch_opening') if report[k] < MIN_WALL - 1e-9}
+    assert not thin, (seam, thin)
+    assert HOOK_Y >= 2 * MIN_WALL and TAB_END_X - NECK_END_X >= 2 * MIN_WALL
+    report['hook'] = dict(shoulder_X=NECK_END_X, depth_Y=HOOK_Y, length_X=round(TAB_END_X - NECK_END_X, 3))
     return report
 
 
@@ -144,8 +142,9 @@ def expected_volumes(seam):
 
 def emit(feature, sketch, seam=PRODUCTION, left='PLATE_L_SPLIT_V1', right='PLATE_R_SPLIT_V1', offset=(0.0, 0.0),
          tag='', references=True):
-    """Seam features on the two bodies. `tag` keeps feature names unique per coupon; `references` adds the
-    reference screw and nut (production only)."""
+    """Seam features on the two bodies. `left` (tab side) or `right` (pocket side) may be None for a coupon end that
+    carries one side only. `tag` keeps feature names unique per coupon end; `references` adds the reference screw
+    and nut (production only)."""
     dx, dy = offset
     move = lambda poly: [(round(x + dx, 6), round(y + dy, 6)) for x, y in poly]
     plane = lambda z: dict(type='offset', base=dict(type='origin', name='XY'), distance=str(z))
@@ -155,30 +154,30 @@ def emit(feature, sketch, seam=PRODUCTION, left='PLATE_L_SPLIT_V1', right='PLATE
     lap_Z = round(PLATE_TOP_Z - seam.tab_T, 6)
     name = lambda base: f'{base}{tag}'
 
-    sk = sketch(name('SK_SEAM_FRONT_POCKET'), plane(lap_Z), [move(pocket)])
-    feature('extrude', name('SEAM_FRONT_POCKET_R'), sketch=sk, profiles=dict(type='all'), extent=cut(seam.tab_T + 1),
-            operation='cut', targets=[right])
-    sk = sketch(name('SK_SEAM_FRONT_TAB'), plane(lap_Z), [move(tab)])
-    feature('extrude', name('SEAM_FRONT_TAB_L'), sketch=sk, profiles=dict(type='all'), extent=cut(seam.tab_T),
-            operation='join', targets=[left])
+    if right:
+        sk = sketch(name('SK_SEAM_FRONT_POCKET'), plane(lap_Z), [move(pocket)])
+        feature('extrude', name('SEAM_FRONT_POCKET_R'), sketch=sk, profiles=dict(type='all'), extent=cut(seam.tab_T + 1),
+                operation='cut', targets=[right])
+    if left:
+        sk = sketch(name('SK_SEAM_FRONT_TAB'), plane(lap_Z), [move(tab)])
+        feature('extrude', name('SEAM_FRONT_TAB_L'), sketch=sk, profiles=dict(type='all'), extent=cut(seam.tab_T),
+                operation='join', targets=[left])
     feature('cylinder', name('SEAM_FRONT_M2_CLEAR'), axis=[0.0, 0.0, 1.0], base=[sx, sy, PLATE_BOTTOM_Z - 1],
             height=str(PLATE_TOP_Z - PLATE_BOTTOM_Z + 2), radius=str(M2_CLEAR_D / 2), operation='cut',
-            participants=[left, right])
-    feature('cylinder', name('SEAM_FRONT_M2_HEAD'), axis=[0.0, 0.0, 1.0], base=[sx, sy, round(PLATE_TOP_Z - seam.cb_D, 6)],
-            height='2', radius=str(M2_HEAD_D / 2), operation='cut', participants=[left])
-    sk = sketch(name('SK_SEAM_FRONT_NUT'), plane(PLATE_BOTTOM_Z - 0.5), [hexagon(sx, sy, seam.nut_AF)])
-    feature('extrude', name('SEAM_FRONT_NUT_POCKET_R'), sketch=sk, profiles=dict(type='all'), extent=cut(0.5 + seam.nut_D),
-            operation='cut', targets=[right])
-    if seam.nut_open:
-        feature('box', name('SEAM_FRONT_NUT_OPEN_R'), corner=[136.9 + dx, sy - 1.8, PLATE_BOTTOM_Z - 0.5],
-                length=str(round(seam.screw[0] - 136.9, 6)), width='3.6', height=str(0.5 + seam.nut_D), operation='cut',
-                participants=[right])
-    # The strip between the cover lip rabbet and the pocket would be a 0.9 mm fin above the rabbet floor: remove it.
-    front = min(y for _, y in pocket)
-    end = max(x for x, _ in pocket)
-    feature('box', name('SEAM_FRONT_RABBET_MERGE_R'), corner=[POCKET_X0 + dx, 1.7 + dy, PLATE_TOP_Z - COVER_LIP_H],
-            length=str(round(end - POCKET_X0, 6)), width=str(round(front + 0.75 - 1.7, 6)), height=str(COVER_LIP_H + 0.5),
-            operation='cut', participants=[right])
+            participants=[b for b in (left, right) if b])
+    if left:
+        feature('cylinder', name('SEAM_FRONT_M2_HEAD'), axis=[0.0, 0.0, 1.0], base=[sx, sy, round(PLATE_TOP_Z - seam.cb_D, 6)],
+                height='2', radius=str(M2_HEAD_D / 2), operation='cut', participants=[left])
+    if right:
+        sk = sketch(name('SK_SEAM_FRONT_NUT'), plane(PLATE_BOTTOM_Z - 0.5), [hexagon(sx, sy, seam.nut_AF)])
+        feature('extrude', name('SEAM_FRONT_NUT_POCKET_R'), sketch=sk, profiles=dict(type='all'), extent=cut(0.5 + seam.nut_D),
+                operation='cut', targets=[right])
+        # The strip between the cover lip rabbet and the pocket would be a 0.9 mm fin above the rabbet floor: remove it.
+        front = min(y for _, y in pocket)
+        end = max(x for x, _ in pocket)
+        feature('box', name('SEAM_FRONT_RABBET_MERGE_R'), corner=[POCKET_X0 + dx, 1.7 + dy, PLATE_TOP_Z - COVER_LIP_H],
+                length=str(round(end - POCKET_X0, 6)), width=str(round(front + 0.75 - 1.7, 6)), height=str(COVER_LIP_H + 0.5),
+                operation='cut', participants=[right])
     if not references:
         return
     screw, nut = 'REF_M2_SEAM_FRONT', 'REF_M2_SEAM_FRONT_NUT'
@@ -195,31 +194,43 @@ def emit(feature, sketch, seam=PRODUCTION, left='PLATE_L_SPLIT_V1', right='PLATE
             operation='cut', participants=[nut], radius='(2 mm) / 2')
 
 
-def coupon_blanks(offset=(0.0, 0.0)):
-    """Plan polygons (L, R) of a coupon pair: the coupon box split along the plate seam line with the seam gap."""
+def coupon_blank(body):
+    """Plan polygon of one coupon piece: the R part of the coupon box (split along the plate seam line with the seam
+    gap) at the pocket end, joined edge to edge with the L part at the tab end."""
     from shapely.geometry import LineString, box
     from shapely.affinity import translate
+    from shapely.ops import unary_union
     x0, y0, x1, y1 = COUPON_BOX
     gap = LineString(SPLIT_LINE).buffer(SPLIT_GAP / 2, cap_style='flat', join_style='mitre')
-    pieces = sorted(box(x0, y0, x1, y1).difference(gap).geoms, key=lambda g: g.bounds[0])
-    assert len(pieces) == 2, len(pieces)
-    return [[(round(x, 6), round(y, 6)) for x, y in translate(g, *offset).exterior.coords[:-1]] for g in pieces]
+    left, right = sorted(box(x0, y0, x1, y1).difference(gap).geoms, key=lambda g: g.bounds[0])
+    (_, pocket_at), (_, tab_at) = coupon_ends(body)
+    piece = unary_union([translate(right, *pocket_at), translate(left, *tab_at)]).simplify(1e-9)
+    assert piece.geom_type == 'Polygon' and not piece.interiors, piece.geom_type
+    return [(round(x, 6), round(y, 6)) for x, y in piece.exterior.coords[:-1]]
+
+
+def coupon_box(body):
+    """Expected bounding box (x0, y0, z0, x1, y1, z1) of one coupon piece."""
+    (_, (px, _)), (_, (tx, ty)) = coupon_ends(body)
+    _, y0, _, y1 = COUPON_BOX
+    return (SPLIT_LINE[2][0] + SPLIT_GAP / 2 + px, y0 + ty, PLATE_BOTTOM_Z, TAB_END_X + tx, y1 + ty, PLATE_TOP_Z)
 
 
 def emit_coupons(feature, sketch, doc):
-    """One L/R pair per variant: flat blanks of the plate thickness with the front cover-lip rabbet, split like the
-    plate, then the same seam features as the plate (no flanges, switch layers or standoff counterbore)."""
+    """The two coupon pieces: flat blanks of the plate thickness with the front cover-lip rabbet, then the seam
+    features of the plate at each end (pocket side at -X, tab side at +X; no flanges, switch layers or standoff
+    counterbore)."""
     plane = dict(type='offset', base=dict(type='origin', name='XY'), distance=str(PLATE_BOTTOM_Z))
-    for name, (seam, offset) in COUPONS.items():
-        bodies = coupon_bodies(name)
-        for body, polygon in zip(bodies, coupon_blanks(offset)):
-            sk = sketch(f'SK_{body}', plane, [polygon])
-            feature('extrude', f'{body}_BLANK', sketch=sk, profiles=dict(type='all'),
-                    extent=dict(convention='total_distance', direction='positive', distance=str(PLATE_TOP_Z - PLATE_BOTTOM_Z)),
-                    operation='new_body', body_names=[body])
-            doc['appearances']['bodies'][body] = dict(name='Custom', color=COUPON_COLOR, opacity=1.0)
-        x0, y0, x1, _ = COUPON_BOX
-        feature('box', f'SEAM_COUPON_{name}_RABBET', corner=[x0 + offset[0] - 1, y0 + offset[1] - 1, PLATE_TOP_Z - COVER_LIP_H],
-                length=str(x1 - x0 + 2), width=str(round(RABBET_INNER_Y - y0 + 1, 6)), height=str(COVER_LIP_H + 1),
-                operation='cut', participants=list(bodies))
-        emit(feature, sketch, seam, *bodies, offset=offset, tag=f'_{name}', references=False)
+    for body in COUPON_PIECES:
+        sk = sketch(f'SK_{body}', plane, [coupon_blank(body)])
+        feature('extrude', f'{body}_BLANK', sketch=sk, profiles=dict(type='all'),
+                extent=dict(convention='total_distance', direction='positive', distance=str(PLATE_TOP_Z - PLATE_BOTTOM_Z)),
+                operation='new_body', body_names=[body])
+        doc['appearances']['bodies'][body] = dict(name='Custom', color=COUPON_COLOR, opacity=1.0)
+        x0, y0, x1, _, _, _ = coupon_box(body)
+        feature('box', f'{body}_RABBET', corner=[round(x0 - 1, 6), round(y0 - 1, 6), PLATE_TOP_Z - COVER_LIP_H],
+                length=str(round(x1 - x0 + 2, 6)), width=str(round(RABBET_INNER_Y - COUPON_BOX[1] + 1, 6)),
+                height=str(COVER_LIP_H + 1), operation='cut', participants=[body])
+        (pocket, pocket_at), (tab, tab_at) = coupon_ends(body)
+        emit(feature, sketch, VARIANTS[pocket], left=None, right=body, offset=pocket_at, tag=f'_{body[-1]}P', references=False)
+        emit(feature, sketch, VARIANTS[tab], left=body, right=None, offset=tab_at, tag=f'_{body[-1]}T', references=False)
