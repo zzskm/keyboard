@@ -1,5 +1,5 @@
 """Browser check of a built guide: steps, parts, diagrams, 3D, fallback, saved progress, phone width, 3D auto-open,
-touch scrolling over the 3D.
+touch scrolling over the 3D, build-motion tools (fastener ticks, laid-out parts, box sizes).
 
   python guide/check_browser.py --site guide/out          # serve a build folder on a free local port
   GUIDE_URL=http://127.0.0.1:8766/ python guide/check_browser.py   # or check a running server
@@ -79,6 +79,29 @@ def run(base_url, shot_prefix, executable=None):
         page.locator('#asm-3d').click()
         page.wait_for_function(READY, timeout=120000)
         page.screenshot(path=shot_prefix + 'oem.png')
+        # Build-motion tools: tick a fastener ring, lay the step's parts out, show the CAD box sizes.
+        insert = steps[ids.index('insert')]
+        spots = sum(len(piece['instances']) for piece in next(p for p in parts if p['id'] == 'inserts')['pieces'])
+        page.locator('#asm-step').select_option(str(ids.index('insert')))
+        chip = page.locator('#asm-marks')
+        assert chip.inner_text().endswith(f'0 / {spots}'), chip.inner_text()
+        page.locator('#asm-canvas').scroll_into_view_if_needed()
+        spot = page.evaluate("document.getElementById('asm-canvas').markPoints()[0]")
+        page.mouse.click(spot['x'], spot['y'])
+        assert chip.inner_text().endswith(f'1 / {spots}'), chip.inner_text()
+        page.locator('#asm-knoll').click()
+        assert page.locator('#asm-canvas .asm-tag.part').count() == len(insert['show'])
+        assert not chip.is_visible() and page.locator('#asm-play').is_disabled()
+        page.screenshot(path=shot_prefix + 'knoll.png')
+        page.locator('#asm-knoll').click()
+        assert page.locator('#asm-canvas .asm-tag.part').count() == 0
+        page.locator('#asm-dims').click()
+        sizes = page.locator('#asm-canvas .asm-tag.dim').all_inner_texts()
+        assert len(sizes) == 3 and all(re.fullmatch(r'\d+\.\d mm', s) for s in sizes), sizes
+        page.screenshot(path=shot_prefix + 'dims.png')
+        page.locator('#asm-dims').click()
+        assert page.locator('#asm-canvas .asm-tag.dim').count() == 0
+        page.locator('#asm-step').select_option(str(last))
         page.locator('[data-view=front]').click()
         page.screenshot(path=shot_prefix + 'case-height.png')
         assert page.locator(f'#as-{ids[last]}').is_checked()
@@ -86,6 +109,8 @@ def run(base_url, shot_prefix, executable=None):
         page.locator('#assembly-ui').wait_for(state='visible', timeout=60000)
         assert page.locator('#asm-step').input_value() == str(last)
         assert page.locator('#asm-done').is_checked()
+        ticks = page.evaluate("JSON.parse(localStorage.getItem(document.documentElement.dataset.store + '-interactive')).marks.insert")
+        assert len(ticks) == 1 and ticks[0].startswith('inserts|'), ticks
         page.locator('.parts-catalog summary').first.click()
         page.locator('#asm-scope').select_option('all')
         assert page.locator('.assembly-part').count() == len(parts)
@@ -162,7 +187,7 @@ def run(base_url, shot_prefix, executable=None):
         browser.close()
     result = {'steps': len(steps), 'parts': len(parts), 'diagrams': shown, 'page_errors': errors,
               'mobile_overflow': False, 'fallback': 'passed', 'persistence': 'passed', 'auto_3d': 'passed',
-              'touch_scroll': 'passed'}
+              'touch_scroll': 'passed', 'motion_tools': 'passed'}
     assert not errors, errors
     return result
 
