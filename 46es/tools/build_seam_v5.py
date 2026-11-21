@@ -101,6 +101,12 @@ REAR_REST_W = 4.0                  # along Y from the rear plate edge: the 2 mm 
 REAR_REST_GAP = 0.5                # block bottom above the boss top: the adhesive pad
 REAR_FLANGE_BOTTOM_Z = 5.0         # plate_top_Z - TBD_plate_T - split_flange_H (checked after evaluation)
 REAR_REST_H = REAR_FLANGE_BOTTOM_Z - REAR_BOSS_TOP_Z - REAR_REST_GAP
+REAR_REST_FIT = 0.25               # X/Y slip clearance between rest lip/tenon and plate flange/notch (MJF, same as seam S2)
+REAR_REST_FIT_Z = 0.4              # Z top clearance inside the flange notch (prevents bottoming-out under MJF +-0.3)
+REAR_REST_LIP_W = REAR_REST_W - 2.0 - REAR_REST_FIT   # 1.75 mm inner backstop lip (-Y side of flange)
+REAR_REST_LIP_H = 2.5              # lip height above flange bottom (Z 5.0 -> 7.5; 0.5 mm clear of plate underside Z 8.0)
+REAR_REST_TENON_L = 6.0            # central tenon length along X (mates into flange notch)
+REAR_REST_TENON_H = 1.3            # central tenon height above flange bottom (Z 5.0 -> 6.3)
 REAR_REST_CHORD_MARGIN = 2.0       # the boss chord under the flange stays under the block for this photo error (each side)
 REAR_REST_COLOR = [226, 172, 60]
 # The blocks print in order 2 at this one height (2026-11-16, decision; until then order 1 printed 4.2 / 4.5 / 4.8,
@@ -632,12 +638,19 @@ def rear_rest_plan(doc):
     wall_y = 95.934 - 0.667                     # TBD_case_in_D - TBD_pcb0_dy (Wilmore stand-in, checked after eval)
     inner_y = PLATE_REAR_Y - 2.0
     assert REAR_REST_W >= 2.0 and PLATE_REAR_Y < wall_y
+    assert REAR_REST_LIP_W >= 1.0 and 3.0 - REAR_REST_LIP_H >= 0.3
+    notch_h = REAR_REST_TENON_H + REAR_REST_FIT_Z
+    assert 3.0 - notch_h >= 1.0, notch_h
     r = REAR_BOSS_D / 2
     chord = (r * r - (wall_y - inner_y) ** 2) ** 0.5   # half width of the boss top at the flange inner face
     plan = {}
     for i, (x, plate) in REAR_RESTS.items():
         x0, x1 = x - REAR_REST_L / 2, x + REAR_REST_L / 2
-        assert any(a <= x0 and x1 <= b for a, b in flanges[plate]), (i, x0, x1, flanges[plate])
+        flange_span = next(((a, b) for a, b in flanges[plate] if a <= x0 and x1 <= b), None)
+        assert flange_span is not None, (i, x0, x1, flanges[plate])
+        nx0, nx1 = x - REAR_REST_TENON_L / 2 - REAR_REST_FIT, x + REAR_REST_TENON_L / 2 + REAR_REST_FIT
+        end_margin = (round(nx0 - flange_span[0], 3), round(flange_span[1] - nx1, 3))
+        assert min(end_margin) >= 1.0, (i, end_margin)
         boss = REAR_BOSS_X[i - 1]
         margin = (round(boss - chord - x0, 3), round(x1 - boss - chord, 3))
         assert min(margin) >= REAR_REST_CHORD_MARGIN, (i, margin)
@@ -649,32 +662,44 @@ def rear_rest_plan(doc):
                        boss_chord_half=round(chord, 3), full_chord_margin_mm=list(margin),
                        bearing_on_boss_mm2=round(bearing[0], 2),
                        bearing_on_boss_min_mm2=round(min(bearing), 2),
-                       flange_contact_mm2=round(REAR_REST_L * 2.0, 2))
+                       notch_X=[round(nx0, 3), round(nx1, 3)],
+                       notch_top_Z=round(REAR_FLANGE_BOTTOM_Z + notch_h, 3),
+                       flange_residual_H=round(3.0 - notch_h, 3),
+                       notch_end_margin_mm=list(end_margin),
+                       flange_contact_mm2=round((REAR_REST_L - (nx1 - nx0)) * 2.0, 2))
     boss4 = REAR_BOSS_X[3]
     assert not any(a < boss4 + r and boss4 - r < b for spans in flanges.values() for a, b in spans), 'boss 4 under a flange'
     return plan
 
 
 def check_rear_rests(evaluated, plan):
-    """Each rest block is a closed box from the pad to the flange bottom; the plates end at the flange bottom (no
-    foot); the wall line the plan assumed is the evaluated one."""
+    """Each rest block is a closed stepped-and-tenoned body from the pad to flange_bottom + lip_H; the plates keep
+    their min Z at the flange bottom (output height 8 mm unchanged) with the stacked-joint notches cut into the
+    flanges; the wall line the plan assumed is the evaluated one."""
     bodies = {b['name']: b for b in evaluated['bodies']}
     values = {p['name']: p['value'] for p in evaluated['params'] if p.get('value') is not None}
     assert abs(values['TBD_case_in_D'] - values['TBD_pcb0_dy'] - (95.934 - 0.667)) < 1e-6
     flange_bottom = values['plate_top_Z'] - values['TBD_plate_T'] - values['split_flange_H']
     assert abs(flange_bottom - REAR_FLANGE_BOTTOM_Z) < 1e-9
-    assert abs(values['v5_rear_rest_H'] - REAR_REST_H) < 1e-9, values['v5_rear_rest_H']
+    for pname, expected_val in [('v5_rear_rest_H', REAR_REST_H), ('v5_rear_rest_fit', REAR_REST_FIT),
+                                ('v5_rear_rest_fit_Z', REAR_REST_FIT_Z), ('v5_rear_rest_lip_W', REAR_REST_LIP_W),
+                                ('v5_rear_rest_lip_H', REAR_REST_LIP_H), ('v5_rear_rest_tenon_L', REAR_REST_TENON_L),
+                                ('v5_rear_rest_tenon_H', REAR_REST_TENON_H)]:
+        assert abs(values[pname] - expected_val) < 1e-9, (pname, values[pname], expected_val)
     bottom = values['v5_rear_boss_top_Z'] + values['v5_rear_rest_gap']
+    rest_top = flange_bottom + REAR_REST_LIP_H
     for plate in {p['plate'] for p in plan.values()}:
         b = bodies[plate]
         assert b['closed'] and abs(b['bbox']['min'][2] - flange_bottom) < 1e-6, (plate, b['bbox'])
-    volume = REAR_REST_L * REAR_REST_W * REAR_REST_H
+    volume = (REAR_REST_L * REAR_REST_W * REAR_REST_H
+              + REAR_REST_L * REAR_REST_LIP_W * REAR_REST_LIP_H
+              + REAR_REST_TENON_L * (REAR_REST_W - REAR_REST_LIP_W) * REAR_REST_TENON_H)
     for i, p in plan.items():
         b = bodies[p['body']]
-        expected = (p['rest_X'][0], p['rest_Y'][0], bottom, p['rest_X'][1], p['rest_Y'][1], flange_bottom)
+        expected = (p['rest_X'][0], p['rest_Y'][0], bottom, p['rest_X'][1], p['rest_Y'][1], rest_top)
         assert b['closed'] and all(abs(a - e) < 1e-6 for a, e in zip(b['bbox']['min'] + b['bbox']['max'], expected)), (i, b['bbox'])
-        assert abs(b['volume_mm3'] - volume) < 1e-6, (i, b['volume_mm3'])
-    return dict(rest_Z=[bottom, flange_bottom], rest_volume_mm3=round(volume, 3), rests=plan)
+        assert abs(b['volume_mm3'] - volume) < 1e-4, (i, b['volume_mm3'], volume)
+    return dict(rest_Z=[bottom, rest_top], rest_seat_Z=flange_bottom, rest_volume_mm3=round(volume, 3), rests=plan)
 
 
 def rear_rest_clearance(plan, mounts, bodies, minimum=1.0):
@@ -893,10 +918,11 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
                                                           'plate_top_Z - TBD_cover_lip_H - 0.05'],
                     length='v5_legpad_L', width='TBD_cover_wall + TBD_cover_lip_clr + 0.05',
                     height='TBD_cover_lip_H + 0.05', operation='join', participants=[plate])
+        lip_len = 'v5_legpad_L + 2*v5_lip_relief_clr + 3.5' if s == 'L' else 'v5_legpad_L + 2*v5_lip_relief_clr'
         feature('box', f'COVER_LIP_RELIEF_{s}_V5', corner=[f'{X} - v5_legpad_L/2 - v5_lip_relief_clr',
                                                           '-TBD_pcb0_dy + TBD_cover_gap - 1',
                                                           'plate_top_Z - TBD_cover_lip_H - 0.5'],
-                length='v5_legpad_L + 2*v5_lip_relief_clr', width='TBD_cover_wall + 1.5',
+                length=lip_len, width='TBD_cover_wall + 1.5',
                 height='TBD_cover_lip_H + 0.5', operation='cut', participants=[cover])
         feature('cylinder', f'COVER_LEGMAG_{s}_V5', axis=[0., 0., 1.], base=[X, Y, 'plate_top_Z - 1'],
                 height='1 + TBD_magnet_T + TBD_magnet_clr', radius='(TBD_magnet_D + 2*TBD_magnet_clr) / 2',
@@ -914,6 +940,27 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
                     radius='TBD_magnet_D / 2', operation='new_body', body_names=[name])
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
+    feature('cylinder', 'COVER_T_SEAM_M2_RELIEF_V5', axis=[0., 0., 1.],
+            base=['seam_M2_X', 'seam_M2_Y', 'plate_top_Z - 0.5'],
+            height='1.1', radius='2.3', operation='cut', participants=['COVER_T_DRAFT_TBD'])
+
+
+def emit_plate_fixes(feature):
+    """Restore PLATE_L SO3 seat (Z 8.0-8.55, R 4.10) with non-coplanar bore reopen, and cut H05 flange notch."""
+    so3_xy = ('REF_SO_dX3 - TBD_pcb0_dx', 'REF_SO_dY3 - TBD_pcb0_dy')
+    feature('cylinder', 'PLATE_SO3_SEAT_RESTORE_V5', axis=[0., 0., 1.],
+            base=[*so3_xy, 'TBD_frame_T + TBD_standoff_H'],
+            height='split_spine_seat_D + 0.05', radius='4.1',
+            operation='join', participants=['PLATE_L_SPLIT_V1'])
+    feature('cylinder', 'PLATE_SO3_BORE_REOPEN_V5', axis=[0., 0., 1.],
+            base=[*so3_xy, 'TBD_frame_T + TBD_standoff_H - 0.5'],
+            height='2.5', radius='(TBD_so_screw_D + TBD_so_clr) / 2',
+            operation='cut', participants=['PLATE_L_SPLIT_V1'])
+    feature('box', 'PLATE_FLANGE_L_H05_NOTCH_V5',
+            corner=['-TBD_pcb0_dx + TBD_plate_gap - 0.5', 'CAND_H05_Y - 2.8',
+                    'plate_top_Z - TBD_plate_T - split_flange_H - 0.5'],
+            length='split_flange_W + 1', width='5.6', height='1.5 + 0.5',
+            operation='cut', participants=['PLATE_L_SPLIT_V1'])
 
 
 def emit_code_bodies(doc, feature):
@@ -931,10 +978,15 @@ def emit_code_bodies(doc, feature):
 def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     new_param = cover_params(doc)
     add_mount_params(doc)
     feature, sketch = helpers(doc)
     emit_seam(doc, feature, sketch)
+    emit_plate_fixes(feature)
     s2 = seam_v5.VARIANTS['S2']
     new_param('v5_seam_fit', seam_v5.PRODUCTION.fit, '[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). '
               f'주문 1 이음 쿠폰의 S2 끝은 {s2.fit:g}')
@@ -961,8 +1013,18 @@ def build(probe=False):
     new_param('v5_rear_rest_W', REAR_REST_W, '[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + '
               f'보스 앞쪽으로 {REAR_REST_W - 2.0:g}')
     new_param('v5_rear_rest_H', 'plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap',
-              '[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 2에 이 높이 하나(2026-11-16). '
-              '남는 틈은 패드 두께로, 높으면 블록을 갈아 맞춘다')
+              '[v5 유도값 2026-11-10] 뒤 받침 블록 베이스 받침 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈(전체 높이는 + v5_rear_rest_lip_H). '
+              '주문 2에 이 높이 하나(2026-11-16). 남는 틈은 패드 두께로, 높으면 블록 밑면을 갈아 맞춘다')
+    new_param('v5_rear_rest_fit', REAR_REST_FIT, '[v5 설계 2026-11-21] 뒤 받침 블록 L자 턱·장부 ↔ plate 뒤 플랜지·노치 편측 X/Y 끼움 여유(MJF 무쿠폰 직출, seam S2 동일)')
+    new_param('v5_rear_rest_fit_Z', REAR_REST_FIT_Z, '[v5 설계 2026-11-21] 플랜지 노치 천장 ↔ 장부 상면 Z 여유(MJF ±0.3 공차에서 장부 바닥침·플랜지 들뜸 방지)')
+    new_param('v5_rear_rest_lip_W', 'v5_rear_rest_W - split_flange_W - v5_rear_rest_fit',
+              '[v5 유도값 2026-11-21] 뒤 받침 블록 안쪽(-Y) L자 단차 턱 폭 = 블록 폭 − 플랜지 폭 − 끼움 여유')
+    new_param('v5_rear_rest_lip_H', REAR_REST_LIP_H,
+              '[v5 설계 2026-11-21] 뒤 받침 블록 안쪽 L자 단차 턱 높이(플랜지 밑면 Z 5 위, Z 7.5까지로 plate 밑면 Z 8과 0.5 여유)')
+    new_param('v5_rear_rest_tenon_L', REAR_REST_TENON_L,
+              '[v5 설계 2026-11-21] 뒤 받침 블록 중앙 장부 길이(X). plate 뒤 플랜지 밑면 노치(폭 + 2×fit)에 수직 적층 끼움')
+    new_param('v5_rear_rest_tenon_H', REAR_REST_TENON_H,
+              '[v5 설계 2026-11-21] 뒤 받침 블록 중앙 장부 높이(플랜지 밑면 Z 5 위, Z 6.3까지. 노치 천장 Z 6.7, 잔여 플랜지 살 1.3)')
     for i, (x, plate) in REAR_RESTS.items():
         side = 'L' if plate.startswith('PLATE_L') else 'R'
         body = REAR_REST_BODY.format(i)
@@ -972,6 +1034,27 @@ def build(probe=False):
                         'v5_rear_boss_top_Z + v5_rear_rest_gap'],
                 length='v5_rear_rest_L', width='v5_rear_rest_W', height='v5_rear_rest_H',
                 operation='new_body', body_names=[body])
+        # 0.05 mm overlap into base/lip keeps the Boolean join free of coplanar-face edge cases without changing outer bounds.
+        feature('box', f'{body}_LIP',
+                corner=[f'v5_rear_rest_{i}_X - v5_rear_rest_L/2', f'{PLATE_REAR_Y} - v5_rear_rest_W',
+                        'plate_top_Z - TBD_plate_T - split_flange_H - 0.05'],
+                length='v5_rear_rest_L', width='v5_rear_rest_lip_W', height='v5_rear_rest_lip_H + 0.05',
+                operation='join', participants=[body])
+        feature('box', f'{body}_TENON',
+                corner=[f'v5_rear_rest_{i}_X - v5_rear_rest_tenon_L/2',
+                        f'{PLATE_REAR_Y} - v5_rear_rest_W + v5_rear_rest_lip_W - 0.05',
+                        'plate_top_Z - TBD_plate_T - split_flange_H - 0.05'],
+                length='v5_rear_rest_tenon_L', width='v5_rear_rest_W - v5_rear_rest_lip_W + 0.05',
+                height='v5_rear_rest_tenon_H + 0.05',
+                operation='join', participants=[body])
+        feature('box', f'PLATE_REAR_REST_NOTCH_{i}_V5',
+                corner=[f'v5_rear_rest_{i}_X - v5_rear_rest_tenon_L/2 - v5_rear_rest_fit',
+                        f'{PLATE_REAR_Y} - split_flange_W - 0.5',
+                        'plate_top_Z - TBD_plate_T - split_flange_H - 0.5'],
+                length='v5_rear_rest_tenon_L + 2*v5_rear_rest_fit',
+                width='split_flange_W + 1',
+                height='v5_rear_rest_tenon_H + v5_rear_rest_fit_Z + 0.5',
+                operation='cut', participants=[plate])
         doc['appearances']['bodies'][body] = dict(name='Custom', color=REAR_REST_COLOR, opacity=1.0)
 
     # Phase 2 (2026-11-09): tools/ctrl_v5.py builds the snap bracket (the base has no bracket),
@@ -1068,6 +1151,10 @@ def trials_document(parts=True):
     bodies (no plate cut, no reference screws), so they need the parameters and nothing else: the base's, the cover
     parameters (cover thickness, leg magnet clearance) and the coupons' own SMP_*. parts=False: parameters only."""
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
@@ -1123,6 +1210,10 @@ def build_covers():
     from cad_model import live_shapes
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
@@ -1159,6 +1250,10 @@ def build_mounts():
     from mesh_section import read_stl, compare
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}

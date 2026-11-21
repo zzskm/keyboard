@@ -45,11 +45,9 @@ SCREWS = [('SPINE_M2_1', 126.381, 42.0, 10), ('SPINE_M2_2', 135.381, 42.0, 10),
           ('SPINE_M2_3', 121.881, 83.0, 5), ('SPINE_M2_4', 142.881, 83.0, 5)]
 SCREW_Z = 4.0
 NUT_Z = 5
-NUT_AF = 4.4                          # split_nut_AF (M2 nut across flats 4 + clearance); only for the stored pos
+NUT_AF = 4.2                          # split_nut_AF (M2 nut across flats 4 + clearance); only for the stored pos
 WIRE_NOTCH_Y = (49, 64, 72)           # wiring grooves across the spine bottom
 WIRE_NOTCH_L = 6
-# MJF: open the nut 4 pocket to the spine edge so the pocket has no 0.3 mm skin (MJF 2026-11-06)
-NUT4_OPEN = dict(corner=[144.2, 81.9, 4.9], length='2.3', width='2.2', height='1.9')
 # Over the H02 case screw head (Rear mount head recess, slot along Y +-TBD_case_adjust): back to the old bottom Z 4
 H02_HEAD_MARGIN = 0.3
 H02_HEAD_TOP_Z = 4.0                  # pre-2026-11-11 stem bottom: 0.7 above the assumed pan head (CASE_HEAD_H 1.3, 1.0 recessed)
@@ -93,6 +91,8 @@ def emit(feature):
     for name, (dx, y, length, width) in (('SPINE_FRONT_PAD', FRONT_PAD), ('SPINE_REAR_PAD', REAR_PAD)):
         feature('box', name, operation='join', participants=[BODY], corner=[f'split_center_X - {-dx}', y, PAD_Z],
                 length=str(length), width=str(width), height=f'3 + {seat}')
+    feature('box', 'SPINE_REAR_NUT4_EXT', operation='join', participants=[BODY],
+            corner=['split_center_X + 15 - 0.05', 79.0, 5.0], length='1.45', width='8', height='3.0')
     for name, points in SWITCH_GUARDS.items():
         sk = feature('sketch', name, plane=plane(GUARD_Z), sketch=polygon_sketch(points))
         cut_extrude(name.replace('SK_SPINE_SWITCH_GUARD', 'SPINE_TRIM_SWITCH'), sk, GUARD_H)
@@ -107,7 +107,6 @@ def emit(feature):
         feature('box', f'SPINE_WIRE_NOTCH_{i}_V4', operation='cut', participants=[BODY],
                 corner=[f'split_center_X - {WIRE_NOTCH_L / 2:g}', f'{y} - spine_wire_W/2', 'split_spine_bottom_Z - 0.5'],
                 length=str(WIRE_NOTCH_L), width='spine_wire_W', height='spine_wire_H + 0.5')
-    feature('box', 'SPINE_M2_4_NUT_OPEN_MJF', operation='cut', participants=[BODY], **NUT4_OPEN)
     head = f'(TBD_case_head_D + TBD_case_head_clr)/2 + {H02_HEAD_MARGIN:g}'
     feature('box', 'SPINE_H02_HEAD_RELIEF', operation='cut', participants=[BODY],
             corner=['split_center_X - split_spine_W/2 - 0.5', f'CAND_H02_Y - TBD_case_adjust - ({head})',

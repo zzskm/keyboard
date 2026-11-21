@@ -258,8 +258,12 @@ def write_engravings(path):
     (cover_pattern_v5.rib(), 0.25 at the production size), below the resin wall on purpose (user 2026-11-11); export
     checks them against that rib instead of the material wall."""
     import coupon_v5
+    import seam_v5
+    sx, sy = seam_v5.PRODUCTION.screw
     regions = {'46es_v5_cover_L': [dict(name='L_name', xy=list(cover_pattern_v5.text_shape().bounds), face='top',
                                         depth=cover_pattern_v5.DEPTH)],
+               '46es_v5_cover_T': [dict(name='T_seam_m2_relief', xy=[sx - 3.0, sy - 3.0, sx + 3.0, sy + 3.0],
+                                        face='bottom', depth=2.5)],
                '46es_v5_boss_tab': [dict(name=f'tab_text_{k}', xy=list(shape.bounds), face='bottom',
                                          depth=cover_pattern_v5.DEPTH) for k, shape in coupon_v5.tab_texts().items()]}
     write_json(path, regions)

@@ -1,25 +1,25 @@
 {
  "ok": true,
  "inputs": {
-  "inspection/scripts/verify_seam_v5.py": "ast:aa821d5557db3dcdc09ecb62cc80964a9f6b2b0839140f44944c5965b4cf5734",
+  "inspection/scripts/verify_seam_v5.py": "ast:1eeba1aeea6bdd7fba3f792fe6646bbbc55895520329123afbf57325d9fc4349",
   "tools/parts_v5.py": "ast:4be5b9e893ae0de7fc487b37275d1f0ec0ddd04830a72bc7bf25add19d4423d6",
-  "model/46es_mount_seam_v5.sc": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
-  "model/ctrl_trials_v5.sc": "a329e8afe54ed8ac3db43db35d69d519278155990b8086871b5d6905c2c9ebc5",
-  "model/parameters_seam_v5.csv": "82c1a84280e26e34ca763906fd8cfc6ac23d15a0899cd0078b266ff67eb357b0",
-  "inspection/data/seam-v5-baseline.json": "6ec41325e265373da4a7bc6f5f9d379f7aae675c62fba94b5a788edeaad186e3",
-  "inspection/data/seam-v5-print-set.json": "72a96072fb1d3e9764da24ea3df96576c3cced9d1a19bba7354a1bedc7c8bc14",
-  "inspection/data/seam-v5-mjf-thin-wall.json": "154b661f81120d611180d14e587e005d20707c43e82fa145e4d10b00a2839103",
-  "inspection/data/seam-v5-trial-print-set.json": "afb8993251dfd8596b1d3c2cd49e57ad12067f50e066ea2e443e6cfa1c3e27d2"
+  "model/46es_mount_seam_v5.sc": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "model/ctrl_trials_v5.sc": "646da4aed8229726eff0dd4e292ee0948fa13540c3b1a8a4db3df54267e203cd",
+  "model/parameters_seam_v5.csv": "d8ac3f162a6c4ab20da87ff3528f226ba553bd3125bf97a558b7f8ab78a18be3",
+  "inspection/data/seam-v5-baseline.json": "b5c6cb60f6cab75e74963a447b72365f79db3c503cd8bae7c7f8ba63ad5f59af",
+  "inspection/data/seam-v5-print-set.json": "30b3437ee617b6494a8a4ba20bb9bf21c727e028f3325a004aeec4c4ab22a85a",
+  "inspection/data/seam-v5-mjf-thin-wall.json": "1077c4823079995c7b302a71fd28c603b611b35ab2f24bf3441ed4f314280540",
+  "inspection/data/seam-v5-trial-print-set.json": "67525049088008523265f3a8feb94af02b593af211d4917fb0e5c75e7ebbc3a1"
  },
- "v5_sha": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
- "baseline_sha": "6ec41325e265373da4a7bc6f5f9d379f7aae675c62fba94b5a788edeaad186e3",
+ "v5_sha": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+ "baseline_sha": "b5c6cb60f6cab75e74963a447b72365f79db3c503cd8bae7c7f8ba63ad5f59af",
  "baseline_bodies": 62,
  "print_set": [
   {
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 38.358,
+   "volume_cm3": 38.307,
    "size": [
     147.79,
     95.33,
@@ -32,7 +32,7 @@
    "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 40.524,
+   "volume_cm3": 40.502,
    "size": [
     154.26,
     95.33,
@@ -45,20 +45,20 @@
    "file": "46es_v5_spine",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 1.774,
+   "volume_cm3": 1.821,
    "size": [
-    30.0,
+    31.4,
     49.0,
     5.45
    ],
    "wall_min_mm": null,
-   "rel": 4.6e-05
+   "rel": 4.5e-05
   },
   {
    "file": "46es_v5_ctrl_bracket",
    "material": "MJF PA12S-HP 검정",
    "flip": true,
-   "volume_cm3": 1.568,
+   "volume_cm3": 1.575,
    "size": [
     36.18,
     25.6,
@@ -71,7 +71,7 @@
    "file": "46es_v5_cover_L",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 15.57,
+   "volume_cm3": 15.571,
    "size": [
     101.75,
     95.33,
@@ -84,14 +84,14 @@
    "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
    "flip": true,
-   "volume_cm3": 14.187,
+   "volume_cm3": 14.177,
    "size": [
     86.35,
     95.33,
     7.5
    ],
    "wall_min_mm": 1.098,
-   "rel": 3e-06
+   "rel": 2e-06
   },
   {
    "file": "46es_v5_cover_R",
@@ -110,21 +110,21 @@
    "file": "46es_v5_rear_rest",
    "material": "MJF PA12S-HP 검정",
    "flip": false,
-   "volume_cm3": 0.252,
+   "volume_cm3": 0.331,
    "size": [
     14.0,
     4.0,
-    4.5
+    7.0
    ],
    "wall_min_mm": null,
    "rel": 0.0
   }
  ],
  "bodies": 58,
- "timeline_active": 349,
+ "timeline_active": 360,
  "rear_rest_Z": [
   0.5,
-  5.0
+  7.5
  ],
  "rear_rest_contacts": {
   "REAR_REST_1_V5": "PLATE_L_SPLIT_V1",
@@ -156,9 +156,9 @@
   "REF_M2_SEAM_FRONT",
   "REF_M2_SEAM_FRONT_NUT"
  ],
- "timeline": 356,
- "sketches": 77,
- "params": 231,
+ "timeline": 367,
+ "sketches": 76,
+ "params": 237,
  "cover_Z": [
   11.5,
   19.0
@@ -167,16 +167,16 @@
  "cover_levels": {
   "COVER_L_DRAFT_TBD": {
    "top_Z": 19.0,
-   "top_area_mm2": 2493.247,
-   "volume_mm3": 15570.385,
-   "floor_Z": 18.0,
-   "floor_area_mm2": 20.277,
-   "expected_mm2": 20.277
+   "top_area_mm2": 2484.326,
+   "volume_mm3": 15571.147,
+   "floor_Z": 18.5,
+   "floor_area_mm2": 29.199,
+   "expected_mm2": 29.199
   },
   "COVER_T_DRAFT_TBD": {
    "top_Z": 19.0,
    "top_area_mm2": 2320.967,
-   "volume_mm3": 14187.233
+   "volume_mm3": 14177.263
   },
   "COVER_R_DRAFT_TBD": {
    "top_Z": 19.0,
@@ -263,23 +263,15 @@
    "feature": "MOUNT_REAR_SO3_BOSS",
    "top_Z": 8.0,
    "profile_area_mm2": 36.405,
-   "contact_area_mm2": 23.115
+   "contact_area_mm2": 41.18
   },
   {
    "mount": "MOUNT_H03_SO6_MIN_V2",
    "target": "PLATE_R_SPLIT_V1",
    "feature": "MOUNT_FRONT_PAD_1",
    "top_Z": 8.0,
-   "profile_area_mm2": 93.906,
-   "contact_area_mm2": 83.416
-  },
-  {
-   "mount": "MOUNT_H03_SO6_MIN_V2",
-   "target": "PLATE_R_SPLIT_V1",
-   "feature": "MOUNT_FRONT_PAD_2",
-   "top_Z": 8.0,
-   "profile_area_mm2": 73.725,
-   "contact_area_mm2": 73.725
+   "profile_area_mm2": 277.561,
+   "contact_area_mm2": 267.597
   },
   {
    "mount": "MOUNT_H03_SO6_MIN_V2",
@@ -369,16 +361,16 @@
    "stl": "46es_v5_mount_R.stl",
    "sections": {
     "1.0": {
-     "section_area": 1064.224,
-     "expected_area": 1064.161,
-     "symmetric_difference_mm2": 0.0686,
+     "section_area": 1062.501,
+     "expected_area": 1062.437,
+     "symmetric_difference_mm2": 0.0681,
      "boundary_deviation_mm": 0.005,
      "ok": true
     },
     "2.5": {
-     "section_area": 1010.04,
-     "expected_area": 1009.978,
-     "symmetric_difference_mm2": 0.0967,
+     "section_area": 1008.316,
+     "expected_area": 1008.254,
+     "symmetric_difference_mm2": 0.0962,
      "boundary_deviation_mm": 0.0096,
      "ok": true
     },
@@ -442,8 +434,8 @@
     ]
    },
    "plate_pads": 2,
-   "volume_mm3": 4343.596,
-   "layered_volume_mm3": 4343.602
+   "volume_mm3": 4338.423,
+   "layered_volume_mm3": 4338.429
   },
   "MOUNT_H02_SO3_MIN_V2": {
    "stl": "46es_v5_mount_H02_SO3.stl",
@@ -506,23 +498,23 @@
      "ok": true
     },
     "2.5": {
-     "section_area": 436.162,
-     "expected_area": 436.123,
-     "symmetric_difference_mm2": 0.0401,
+     "section_area": 431.961,
+     "expected_area": 431.922,
+     "symmetric_difference_mm2": 0.041,
      "boundary_deviation_mm": 0.0032,
      "ok": true
     },
     "3.6": {
-     "section_area": 204.061,
-     "expected_area": 204.036,
-     "symmetric_difference_mm2": 0.0275,
+     "section_area": 313.992,
+     "expected_area": 313.965,
+     "symmetric_difference_mm2": 0.0284,
      "boundary_deviation_mm": 0.0033,
      "ok": true
     },
     "6.0": {
-     "section_area": 204.061,
-     "expected_area": 204.036,
-     "symmetric_difference_mm2": 0.0275,
+     "section_area": 313.992,
+     "expected_area": 313.965,
+     "symmetric_difference_mm2": 0.0285,
      "boundary_deviation_mm": 0.0033,
      "ok": true
     }
@@ -541,9 +533,9 @@
     }
    },
    "pin_reliefs": {},
-   "plate_pads": 2,
-   "volume_mm3": 2388.519,
-   "layered_volume_mm3": 2388.54
+   "plate_pads": 1,
+   "volume_mm3": 2931.862,
+   "layered_volume_mm3": 2931.885
   }
  },
  "leg_magnets": {
@@ -644,9 +636,9 @@
   {
    "file": "46es_v5_cover_T",
    "material": "8001 레진 투명",
-   "volume_cm3": 14.19,
+   "volume_cm3": 14.18,
    "wall_min_mm": 1.098,
-   "stl_volume_rel_err": 3e-06
+   "stl_volume_rel_err": 2e-06
   },
   {
    "file": "46es_v5_cover_R",
@@ -658,14 +650,14 @@
   {
    "file": "46es_v5_plate_L",
    "material": "MJF PA12S-HP 검정",
-   "volume_cm3": 38.36,
+   "volume_cm3": 38.31,
    "wall_min_mm": 1.0,
    "stl_volume_rel_err": 3.7e-05
   },
   {
    "file": "46es_v5_plate_R",
    "material": "MJF PA12S-HP 검정",
-   "volume_cm3": 40.52,
+   "volume_cm3": 40.5,
    "wall_min_mm": 1.047,
    "stl_volume_rel_err": 1.9e-05
   }
