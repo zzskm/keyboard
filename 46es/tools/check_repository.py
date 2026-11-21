@@ -168,18 +168,56 @@ def guide_checks(names):
         if patterns:
             expand(patterns, names, spec['groups'], 'hardware')
     procedural = set(config.get('procedural_parts', []))
+    non_countable = set(config.get('non_countable_parts', []))
     steps = config.get('steps', [])
-    require(config.get('schema_version') == 2 and len(steps) == 5, 'guide motion steps must be 5 (schema v2)')
+    layers = config.get('visibility_layers', [])
+    fastener_parts = config.get('fastener_parts', [])
+    fastener_specs = config.get('fastener_specs', {})
+    bom_groups = config.get('bom_groups', [])
+    require(config.get('schema_version') == 2 and len(steps) == 6, 'guide motion steps must be 6 (schema v2)')
+    require(abs(float(config.get('duration_sec', 0)) - 36.0) < 1e-6, 'guide duration_sec must be 36.0')
+    require(len(layers) == 9, 'guide visibility_layers must have 9 items')
     require(1 <= config.get('closeup_key_id', 0) <= 46, 'invalid closeup_key_id')
-    require(len(config.get('bom_groups', [])) == 16, 'guide bom_groups must have 16 items')
+    require(len(bom_groups) == 16, 'guide bom_groups must have 16 items')
     seen_parts = []
+    step_codes = set()
     for step in steps:
         require(step.get('id') and step.get('code') and step.get('parts'), f'invalid motion step: {step}')
+        step_codes.add(step['code'])
         for pid in step['parts']:
             require(pid in ids or pid in procedural, f"unknown guide part {pid} in {step['id']}")
             seen_parts.append(pid)
     require(len(seen_parts) == len(set(seen_parts)), 'duplicate part assigned across motion groups')
     require(set(ids) <= set(seen_parts), f'unassigned CAD parts in motion groups: {sorted(set(ids) - set(seen_parts))}')
+    seen_layer_parts = []
+    for layer in layers:
+        require(layer.get('id') and layer.get('label') and layer.get('parts'), f'invalid visibility_layer: {layer}')
+        for pid in layer['parts']:
+            require(pid in ids or pid in procedural, f"unknown guide part {pid} in layer {layer['id']}")
+            seen_layer_parts.append(pid)
+    require(len(seen_layer_parts) == len(set(seen_layer_parts)), 'duplicate part across visibility_layers')
+    require(set(seen_layer_parts) == set(seen_parts),
+            f'visibility_layers and steps part mismatch: {sorted(set(seen_layer_parts) ^ set(seen_parts))}')
+    require(non_countable <= set(seen_parts), f'unknown non_countable_parts: {sorted(non_countable - set(seen_parts))}')
+    for fid in fastener_parts:
+        fspec = fastener_specs.get(fid)
+        require(fspec, f'missing fastener_specs for {fid}')
+        axis = fspec.get('axis_local', [])
+        require(len(axis) == 3 and sum(x * x for x in axis) > 0, f'invalid axis_local for {fid}')
+        require(float(fspec.get('stroke_mm', 0)) > 0, f'invalid stroke_mm for {fid}')
+        require('M3×6' not in str(fspec.get('spec_label', '')), f'forbidden M3×6 spec on {fid}')
+    bom_parts = []
+    for bg in bom_groups:
+        require(bg.get('group') in step_codes, f"bom_group {bg.get('id')} references unknown step code {bg.get('group')}")
+        if bg.get('thumbnail_body'):
+            require(bg['thumbnail_body'] in names, f"bom_group {bg.get('id')} thumbnail_body not in CAD: {bg['thumbnail_body']}")
+        for pid in bg.get('parts', []):
+            require(pid not in non_countable, f"non_countable part {pid} must not be in bom_groups")
+            bom_parts.append(pid)
+    countable_non_keycap = set(seen_parts) - non_countable - {'keycaps'}
+    require(len(bom_parts) == len(set(bom_parts)), 'duplicate part across bom_groups')
+    require(set(bom_parts) == countable_non_keycap,
+            f'bom_groups part coverage mismatch: {sorted(set(bom_parts) ^ countable_non_keycap)}')
     return len(steps)
 
 

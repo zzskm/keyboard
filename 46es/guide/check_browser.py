@@ -1,15 +1,17 @@
-"""Browser check of the 46es v5 3D technical motion guide.
+"""Browser check of the 46es v5 3D technical motion & interactive inspection guide.
 
   python 46es/guide/check_browser.py --site 46es/guide/out
   GUIDE_URL=http://127.0.0.1:8766/ python 46es/guide/check_browser.py
 
 Verifies:
-  1. 1920x1080 & 1440x1100 load paused at t=0.0s with WebGL canvas ready and 0 page errors.
-  2. Live metrics calculated from generated 3D objects match DOM readouts (dims, tilt, 46 switches, 92 pins, 46 diodes, 16 BOM cards).
-  3. All 6 timeline segments (0-7s, 7-13s, 13-17s, 17-23s warn->ok, 23-29s BOM thumbnails, 29-32s 6-cell report).
-  4. STEP 1-5 manual exploration toggles and return to scrubber.
-  5. Collapsible <details id="reference-docs"> tables and all 7 diagrams.py SVG groups.
-  6. Mobile (390x844) zero horizontal overflow & WebGL failure fallback.
+  1. Initial paused load at t=0.0s with WebGL ready and 0 page errors.
+  2. SSOT live metrics parity (6 steps, 9 layers, 16 BOM cards, 197 pcs, 42 fasteners, 150 scan points, CAD verification).
+  3. All 36.0s timeline phases (dims 1.8s, explode 3.4s, hero M3x10 bolts 7.6s, hold 10.7s, X-Ray 14.0s, Core 18.0s, Seat Sim 22.2/24.2s, interactive BOM 29.5s, live 6-cell CAD report 35.5s).
+  4. 9 layer visibility toggles, CASE toggle, SOLO, ALL reset, and hidden-layer BOM ghost state.
+  5. 2-mode camera (presets, BTM underside ground shutoff, UserOverride stability across scrub, Play blend & drag interrupt).
+  6. Manual STEP 1-6 toggles, SPEC ↓ jump to <details id="reference-docs"> SVGs.
+  7. 6 responsive viewports (1920x1080, 1440x1100, 1280x800, 1024x768, 768x1024, 390x844) with 0 horizontal overflow.
+  8. WebGL unavailable fallback.
 """
 import argparse
 import json
@@ -21,6 +23,14 @@ from threading import Thread
 
 CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 READY = "document.documentElement.dataset.motionReady === '1'"
+VIEWPORTS = (
+    ('1920x1080', 1920, 1080),
+    ('1440x1100', 1440, 1100),
+    ('1280x800', 1280, 800),
+    ('1024x768', 1024, 768),
+    ('768x1024', 768, 1024),
+    ('390x844', 390, 844),
+)
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -49,14 +59,22 @@ def run(base_url, shot_prefix, executable=None):
         page.goto(base_url)
         page.wait_for_function(READY, timeout=120000)
 
+        def wait_frames():
+            page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+
+        def seek_and_wait(t_sec):
+            page.evaluate('(t) => window.__motionControl.seek(t)', t_sec)
+            wait_frames()
+
         # 1. Initial paused state at 0.0s
         init_state = page.evaluate('window.__motionControl.getState()')
         assert init_state['playing'] is False, init_state
         assert abs(init_state['currentT'] - 0.0) < 0.01, init_state
+        assert init_state['cameraMode'] == 'Timeline', init_state
         assert page.locator('#btn-play').get_attribute('aria-pressed') == 'false'
         page.screenshot(path=shot_prefix + 'fhd-00s.png')
 
-        # 2. Live metrics assertions (zero hardcoding — derived from mounted 3D objects)
+        # 2. SSOT live metrics parity assertions
         m = page.evaluate('window.__motionMetrics')
         assert m['switches'] == 46, m
         assert m['keycaps'] == 46, m
@@ -65,53 +83,69 @@ def run(base_url, shot_prefix, executable=None):
         assert m['wires'] == 16, m
         assert m['pads'] == 16, m
         assert m['fasteners'] == 42, m
-        assert m['stepsCount'] == 5, m
-        assert len(m['bom']) == 16, m
+        assert m['scanPointsTotal'] == 150, m
+        assert m['stepsCount'] == 6, m
+        assert abs(m['durationSec'] - 36.0) < 0.01, m
+        assert len(m['layers']) == 9, m['layers']
+        assert len(m['bom']) == 16, m['bom']
+        assert m['totalParts'] == 197, m['totalParts']
+        assert sum(g['count'] for g in m['groups']) == 197, m['groups']
+        assert sum(l['count'] for l in m['layers']) == 197, m['layers']
+        assert sum(b['count'] for b in m['bom']) == 197, m['bom']
         assert m['keycapsByWidth'] == {'1': 43, '1.25': 1, '2': 1, '2.25': 1}, m['keycapsByWidth']
-        assert sum(b['count'] for b in m['bom']) == m['totalParts'], m
+        assert m['printStats']['bodyCount'] == 14 and m['printStats']['uniqueStls'] == 12, m['printStats']
+        assert m['cadVerification'] and m['cadVerification']['overlaps'] == 0, m['cadVerification']
         assert 280.0 < m['widthMm'] < 340.0 and 100.0 < m['depthMm'] < 140.0, m
         assert 1.5 < m['tiltDeg'] < 3.5, m['tiltDeg']
 
-        def seek_and_wait(t_sec):
-            page.evaluate('(t) => window.__motionControl.seek(t)', t_sec)
-            page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
-
-        # 3. Verify all 6 timeline segments
-        # 0-7s: bounding box + dimensions + explode
+        # 3. Verify 36.0s timeline phases
         seek_and_wait(1.8)
         w_text = page.locator('[data-dim="width"]').text_content() or ''
         tilt_text = page.locator('[data-dim="tilt"]').text_content() or ''
-        assert 'mm' in w_text and '°' in tilt_text, (w_text, tilt_text)
+        assert f'{m["widthMm"]:.1f}' in w_text and '°' in tilt_text, (w_text, tilt_text, m['widthMm'])
         page.screenshot(path=shot_prefix + 't01-dims.png')
 
         seek_and_wait(3.4)
         page.screenshot(path=shot_prefix + 't03-explode.png')
 
-        # 7-13s: X-Ray scan
-        seek_and_wait(10.5)
+        # Hero G3-PLATE M3x10 bolt insertion (7.6s)
+        seek_and_wait(7.6)
+        bolt_tag = page.locator('#hud-bolt-tag')
+        assert bolt_tag.is_visible() and 'M3×10' in bolt_tag.inner_text(), bolt_tag.inner_text()
+        st76 = page.evaluate('window.__motionControl.getState()')
+        assert st76['activeBoltGuides'] >= 6, st76
+        page.screenshot(path=shot_prefix + 't07-bolts.png')
+
+        # 0.60s full-assembly hold (10.7s)
+        seek_and_wait(10.7)
+        assert not page.locator('#hud-bolt-tag').is_visible()
+        page.screenshot(path=shot_prefix + 't10-hold.png')
+
+        # X-Ray scan (14.0s)
+        seek_and_wait(14.0)
         tel = page.locator('#hud-telemetry')
         assert tel.is_visible() and 'FST' in tel.inner_text() and 'PIN' in tel.inner_text(), tel.inner_text()
-        page.screenshot(path=shot_prefix + 't10-xray.png')
+        page.screenshot(path=shot_prefix + 't14-xray.png')
 
-        # 13-17s: Core focus + leader lines
-        seek_and_wait(15.0)
+        # Core Focus (18.0s)
+        seek_and_wait(18.0)
         svg_txt = page.locator('#motion-overlay').text_content() or ''
-        assert 'ATMEGA32U4' in svg_txt and f'×{m["diodes"]}' in svg_txt, svg_txt
-        page.screenshot(path=shot_prefix + 't15-core.png')
+        assert 'ATMEGA32U4' in svg_txt and 'M3×10' in svg_txt and f'×{m["diodes"]}' in svg_txt, svg_txt
+        page.screenshot(path=shot_prefix + 't18-core.png')
 
-        # 17-23s: Single-switch gap close-up (warn -> ok)
-        seek_and_wait(19.2)
+        # Seat Sim (22.2s warn -> 24.2s ok)
+        seek_and_wait(22.2)
         warn_badge = page.locator('[data-closeup-badge="warn"]')
-        assert warn_badge.is_visible() and '⚠' in (warn_badge.text_content() or ''), warn_badge.text_content()
-        page.screenshot(path=shot_prefix + 't19-gap-warn.png')
+        assert warn_badge.is_visible() and 'SIM ΔZ' in (warn_badge.text_content() or ''), warn_badge.text_content()
+        page.screenshot(path=shot_prefix + 't22-seat-warn.png')
 
-        seek_and_wait(21.4)
+        seek_and_wait(24.2)
         ok_badge = page.locator('[data-closeup-badge="ok"]')
-        assert ok_badge.is_visible() and '0 ✓' in (ok_badge.text_content() or ''), ok_badge.text_content()
-        page.screenshot(path=shot_prefix + 't21-gap-ok.png')
+        assert ok_badge.is_visible() and 'SIM SEAT 0.0 mm ✓' in (ok_badge.text_content() or ''), ok_badge.text_content()
+        page.screenshot(path=shot_prefix + 't24-seat-ok.png')
 
-        # 23-29s: 16-card 3D BOM grid
-        seek_and_wait(26.5)
+        # Interactive BOM Grid (29.5s)
+        seek_and_wait(29.5)
         bom_box = page.locator('#hud-bom')
         assert bom_box.is_visible()
         assert page.locator('.bom-card').count() == 16
@@ -123,32 +157,67 @@ def run(base_url, shot_prefix, executable=None):
             "Array.from(document.querySelectorAll('.bom-card')).reduce((a, el) => a + Number(el.dataset.count), 0)"
         )
         assert dom_bom_sum == m['totalParts'], (dom_bom_sum, m['totalParts'])
-        page.screenshot(path=shot_prefix + 't26-bom.png')
+        # Click BOM card to verify bidirectional highlight
+        page.locator('.bom-card[data-bom-id="bom-plate"]').click()
+        assert page.locator('.bom-card[data-bom-id="bom-plate"]').get_attribute('aria-pressed') == 'true'
+        page.locator('.bom-card[data-bom-id="bom-plate"]').click()
+        page.screenshot(path=shot_prefix + 't29-bom.png')
 
-        # 29-32s: 6-cell final build report
-        seek_and_wait(31.5)
+        # Live 6-cell CAD Report (35.5s)
+        seek_and_wait(35.5)
         rep = page.locator('#hud-report')
         assert rep.is_visible()
-        assert page.locator('#rep-parts').inner_text() == str(m['totalParts'])
-        assert page.locator('#rep-steps').inner_text() == '5'
-        assert page.locator('#rep-groups').inner_text() == '5'
-        assert page.locator('#rep-short').inner_text() == '0'
-        assert '0 ✓' in page.locator('#rep-gap').inner_text()
-        page.screenshot(path=shot_prefix + 't31-report.png')
+        assert 'mm' in page.locator('#rep-env').inner_text()
+        assert 'cm³' in page.locator('#rep-print').inner_text()
+        assert '42 pcs' in page.locator('#rep-fast').inner_text()
+        assert '46 keys' in page.locator('#rep-keys').inner_text()
+        assert '4×12 io' in page.locator('#rep-matrix').inner_text()
+        assert '0 OVL ✓ (197)' in page.locator('#rep-fit').inner_text(), page.locator('#rep-fit').inner_text()
+        assert 'PIN 0.56' in page.locator('#rep-fit-sub').inner_text(), page.locator('#rep-fit-sub').inner_text()
+        page.screenshot(path=shot_prefix + 't35-report.png')
 
-        # 4. Manual STEP 1-5 toggles & scrubber return
-        for step_num in range(1, 6):
+        # 4. 9-Layer visibility toggles, SOLO & ALL reset
+        seek_and_wait(0.0)
+        page.locator('.layer-btn[data-layer="case"]').click()
+        wait_frames()
+        assert 'case' in page.evaluate('window.__motionControl.getState().hiddenLayers')
+        page.evaluate('window.__motionControl.soloLayer("plate")')
+        wait_frames()
+        assert len(page.evaluate('window.__motionControl.getState().hiddenLayers')) == 8
+        page.locator('#btn-layers-all').click()
+        wait_frames()
+        assert len(page.evaluate('window.__motionControl.getState().hiddenLayers')) == 0
+
+        # 5. 2-Mode Camera: BTM underside shutoff, UserOverride stability across scrub, Play blend
+        page.evaluate('() => { window.__motionControl.setLayer("case", false); window.__motionControl.setPreset("bottom", 0); }')
+        wait_frames()
+        st_btm = page.evaluate('window.__motionControl.getState()')
+        assert st_btm['cameraMode'] == 'UserOverride', st_btm
+        assert st_btm['groundVisible'] is False, st_btm
+        pose_before = st_btm['cameraPose']
+        seek_and_wait(5.0)
+        pose_after = page.evaluate('window.__motionControl.getState().cameraPose')
+        assert abs(pose_before['azimuthDeg'] - pose_after['azimuthDeg']) < 0.01, (pose_before, pose_after)
+        assert abs(pose_before['elevationDeg'] - pose_after['elevationDeg']) < 0.01, (pose_before, pose_after)
+        page.screenshot(path=shot_prefix + 'case-off-btm.png')
+
+        # Play returns to Timeline camera & interrupt returns to UserOverride
+        page.evaluate('window.__motionControl.resetView()')
+        wait_frames()
+        assert page.evaluate('window.__motionControl.getState().cameraMode') == 'Timeline'
+
+        # 6. Manual STEP 1-6 toggles & scrubber return
+        for step_num in range(1, 7):
             btn = page.locator(f'.step-btn[data-step="{step_num}"]')
             btn.click()
-            page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+            wait_frames()
             assert btn.get_attribute('aria-pressed') == 'true'
-        page.screenshot(path=shot_prefix + 'step5-manual.png')
-        # Scrub back to timeline exits manual step mode
+        page.screenshot(path=shot_prefix + 'step6-manual.png')
         page.locator('#timeline-scrubber').evaluate("el => { el.value = '5'; el.dispatchEvent(new Event('input', { bubbles: true })); }")
         assert page.evaluate('window.__motionControl.getState().manualStep') is None
 
-        # 5. Collapsible <details id="reference-docs"> static tables & 7 diagrams.py SVGs
-        page.locator('#reference-docs > summary').click()
+        # 7. SPEC ↓ button opens <details id="reference-docs"> & loads all SVGs
+        page.locator('#btn-spec').click()
         assert page.locator('#reference-docs').evaluate('(el) => el.open') is True
         diagram_imgs = page.locator('#reference-docs .diagrams img')
         assert diagram_imgs.count() >= 10, diagram_imgs.count()
@@ -157,24 +226,25 @@ def run(base_url, shot_prefix, executable=None):
             "Array.from(document.querySelectorAll('#reference-docs .diagrams img')).every(i => i.complete && i.naturalWidth > 0)",
             timeout=30000,
         )
-
-        # 6. Desktop 1440x1100 & Mobile 390x844 responsive overflow check
         page.locator('#reference-docs > summary').click()
         page.evaluate('window.scrollTo(0, 0)')
-        page.set_viewport_size({'width': 1440, 'height': 1100})
-        seek_and_wait(26.5)
-        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
 
-        page.set_viewport_size({'width': 390, 'height': 844})
-        page.evaluate('window.scrollTo(0, 0)')
-        seek_and_wait(26.5)
-        page.wait_for_function('document.documentElement.scrollWidth <= window.innerWidth', timeout=10000)
-        page.screenshot(path=shot_prefix + 'mobile-bom.png')
-        seek_and_wait(31.5)
-        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
-        page.screenshot(path=shot_prefix + 'mobile-report.png')
+        # 8. 6-Viewport responsive zero-overflow checks
+        viewport_results = {}
+        for label, vw, vh in VIEWPORTS:
+            page.set_viewport_size({'width': vw, 'height': vh})
+            page.evaluate('window.scrollTo(0, 0)')
+            seek_and_wait(35.5)
+            overflow = page.evaluate('document.documentElement.scrollWidth > window.innerWidth')
+            assert not overflow, f'Horizontal overflow at {label}'
+            viewport_results[label] = 'ok'
+            if label in ('1280x800', '390x844'):
+                page.screenshot(path=f'{shot_prefix}vp-{label}-report.png')
+                seek_and_wait(29.5)
+                assert not page.evaluate('document.documentElement.scrollWidth > window.innerWidth'), f'BOM overflow at {label}'
+                page.screenshot(path=f'{shot_prefix}vp-{label}-bom.png')
 
-        # 7. WebGL unavailable fallback check
+        # 9. WebGL unavailable fallback check
         fallback = browser.new_page(viewport={'width': 1280, 'height': 800})
         fallback.add_init_script("""
             const orig = HTMLCanvasElement.prototype.getContext;
@@ -193,15 +263,18 @@ def run(base_url, shot_prefix, executable=None):
     assert not errors, errors
     return {
         'steps': m['stepsCount'],
+        'layers': len(m['layers']),
         'total_parts': m['totalParts'],
         'switches': m['switches'],
         'pins': m['pins'],
         'diodes': m['diodes'],
+        'fasteners': m['fasteners'],
         'bom_cards': len(m['bom']),
         'dims_mm': [m['widthMm'], m['depthMm'], m['heightMm']],
         'tilt_deg': m['tiltDeg'],
+        'cad_overlaps': m['cadVerification']['overlaps'],
+        'viewports': viewport_results,
         'page_errors': errors,
-        'mobile_overflow': False,
         'fallback': 'passed',
     }
 

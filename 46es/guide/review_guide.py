@@ -1,4 +1,4 @@
-"""Build the current motion guide and capture manual STEP 1-5 + 32s key frames for visual review."""
+"""Build the current motion guide and capture manual STEP 1-6 + 36s key frames + underside view for visual review."""
 import argparse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -18,12 +18,14 @@ MOTION_KEYFRAMES = (
     ('t00-0s-idle', 0.0),
     ('t01-8s-dims', 1.8),
     ('t03-4s-explode', 3.4),
-    ('t10-0s-xray', 10.0),
-    ('t15-0s-core', 15.0),
-    ('t19-2s-gap-warn', 19.2),
-    ('t21-4s-gap-ok', 21.4),
-    ('t26-5s-bom', 26.5),
-    ('t31-5s-report', 31.5),
+    ('t07-6s-hero-bolts', 7.6),
+    ('t10-7s-hold', 10.7),
+    ('t14-0s-xray', 14.0),
+    ('t18-0s-core', 18.0),
+    ('t22-2s-seat-warn', 22.2),
+    ('t24-2s-seat-ok', 24.2),
+    ('t29-5s-bom', 29.5),
+    ('t35-5s-report', 35.5),
 )
 
 
@@ -60,7 +62,17 @@ def capture(site, evidence, steps, views):
                         name = f'motion-{label}.png'
                         page.locator('#motion-stage').screenshot(path=evidence / name)
                         frame_images.append(name)
-                    captures.append({'id': 'timeline', 'title': '32.0s technical motion sequence', 'images': frame_images})
+
+                    # Underside + CASE OFF inspection capture
+                    page.evaluate('() => { window.__motionControl.seek(0); window.__motionControl.setLayer("case", false); window.__motionControl.setPreset("bottom", 0); }')
+                    page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+                    btm_name = 'motion-case-off-btm.png'
+                    page.locator('#motion-stage').screenshot(path=evidence / btm_name)
+                    frame_images.append(btm_name)
+                    page.evaluate('() => window.__motionControl.resetView()')
+                    page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+
+                    captures.append({'id': 'timeline', 'title': '36.0s technical motion sequence + underside inspection', 'images': frame_images})
 
                 for step_num, step_code in steps:
                     page.locator(f'.step-btn[data-step="{step_num}"]').click()
@@ -80,10 +92,10 @@ def capture(site, evidence, steps, views):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--steps', nargs='+', default=['step1', 'step2', 'step3', 'step4', 'step5'],
-                        help='manual step IDs (step1..step5)')
+    parser.add_argument('--steps', nargs='+', default=['step1', 'step2', 'step3', 'step4', 'step5', 'step6'],
+                        help='manual step IDs (step1..step6)')
     parser.add_argument('--views', nargs='+', choices=('motion', 'steps-only'), default=['motion'],
-                        help='motion = capture 32s keyframes + requested steps; steps-only = steps only')
+                        help='motion = capture 36s keyframes + underside + requested steps; steps-only = steps only')
     parser.add_argument('--cli', default=str(DEFAULT_CLI))
     args = parser.parse_args()
 

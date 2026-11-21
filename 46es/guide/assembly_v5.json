@@ -1,18 +1,22 @@
 {
   "schema_version": 2,
-  "duration_sec": 32.0,
+  "duration_sec": 36.0,
   "closeup_key_id": 40,
   "tilt_source": "housing_bottom_mesh",
   "exclude_from_scene": [
     "CTRL_SNAP_TRIAL",
     "SEAM_COUPON_L"
   ],
+  "non_countable_parts": [
+    "matrix-wires"
+  ],
   "steps": [
     {
       "id": "step-1",
       "code": "G1-BASE",
       "label": "BASE",
-      "explode_z": -40,
+      "color": "#7a7265",
+      "explode_z": -42,
       "parts": [
         "housing",
         "MOUNT_L_PAIR_V3",
@@ -28,7 +32,8 @@
       "id": "step-2",
       "code": "G2-CORE",
       "label": "CORE",
-      "explode_z": -14,
+      "color": "#1f6d60",
+      "explode_z": -16,
       "parts": [
         "CTRL_BRACKET_SPLIT_V1",
         "controller",
@@ -43,7 +48,8 @@
       "id": "step-3",
       "code": "G3-PLATE",
       "label": "PLATE",
-      "explode_z": 14,
+      "color": "#485159",
+      "explode_z": 10,
       "parts": [
         "PLATE_L_SPLIT_V1",
         "PLATE_R_SPLIT_V1",
@@ -58,22 +64,127 @@
       "id": "step-4",
       "code": "G4-SW",
       "label": "SWITCHES",
-      "explode_z": 44,
+      "color": "#d8a832",
+      "explode_z": 38,
       "parts": [
         "switches"
       ]
     },
     {
       "id": "step-5",
-      "code": "G5-TOP",
-      "label": "TOP",
-      "explode_z": 78,
+      "code": "G5-COVER",
+      "label": "COVERS",
+      "color": "#5b93c4",
+      "explode_z": 64,
       "parts": [
         "COVER_L_DRAFT_TBD",
         "COVER_T_DRAFT_TBD",
         "COVER_R_DRAFT_TBD",
-        "magnets",
+        "magnets"
+      ]
+    },
+    {
+      "id": "step-6",
+      "code": "G6-KEYCAP",
+      "label": "KEYCAPS",
+      "color": "#9a8f82",
+      "explode_z": 92,
+      "parts": [
         "keycaps"
+      ]
+    }
+  ],
+  "visibility_layers": [
+    {
+      "id": "case",
+      "label": "CASE",
+      "title": "PSD60 Case Housing (Hotkey: C)",
+      "hotkey": "C",
+      "parts": [
+        "housing"
+      ]
+    },
+    {
+      "id": "mounts",
+      "label": "MNT",
+      "title": "Mounts & Rear Rests",
+      "parts": [
+        "MOUNT_L_PAIR_V3",
+        "MOUNT_R_PAIR_V3",
+        "MOUNT_H02_SO3_MIN_V2",
+        "MOUNT_H03_SO6_MIN_V2",
+        "REAR_REST_1_V5"
+      ]
+    },
+    {
+      "id": "wiring",
+      "label": "WIRE",
+      "title": "Controller, Bracket, USB, Diodes & Matrix Wires",
+      "parts": [
+        "CTRL_BRACKET_SPLIT_V1",
+        "controller",
+        "usb",
+        "diodes",
+        "matrix-wires"
+      ]
+    },
+    {
+      "id": "plate",
+      "label": "PLT",
+      "title": "3-Layer Split Plate & Spine",
+      "parts": [
+        "PLATE_L_SPLIT_V1",
+        "PLATE_R_SPLIT_V1",
+        "PLATE_SPINE_V1"
+      ]
+    },
+    {
+      "id": "switches",
+      "label": "SW",
+      "title": "46 MX 5-Pin Switches",
+      "parts": [
+        "switches"
+      ]
+    },
+    {
+      "id": "cover",
+      "label": "CVR",
+      "title": "3 SLA Clear Resin Covers",
+      "parts": [
+        "COVER_L_DRAFT_TBD",
+        "COVER_T_DRAFT_TBD",
+        "COVER_R_DRAFT_TBD"
+      ]
+    },
+    {
+      "id": "keycaps",
+      "label": "CAP",
+      "title": "46 OEM Keycaps",
+      "parts": [
+        "keycaps"
+      ]
+    },
+    {
+      "id": "bolts",
+      "label": "BOLT",
+      "title": "32 Fasteners (M3 Inserts, M3×10, M2 Screws & Nuts)",
+      "parts": [
+        "inserts",
+        "case-screws",
+        "m2-bracket",
+        "m2-nuts-bracket",
+        "m2-5",
+        "m2-plate",
+        "m2-nuts-plate",
+        "m3-upper"
+      ]
+    },
+    {
+      "id": "magnets",
+      "label": "MAG",
+      "title": "10 Neodymium Ø3×2 Magnets",
+      "parts": [
+        "magnets"
       ]
     }
   ],
@@ -92,6 +203,125 @@
     "m3-upper",
     "magnets"
   ],
+  "fastener_specs": {
+    "inserts": {
+      "spec_label": "M3 INS Ø5×4",
+      "standard": "Brass Heat-Set",
+      "diameter_mm": 5.0,
+      "length_mm": 4.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 20.0,
+      "target": "MOUNT_* SO1..SO6",
+      "step": 1,
+      "stage": "1a",
+      "kind": "insert",
+      "prefix": "INS"
+    },
+    "case-screws": {
+      "spec_label": "M2×5 CASE",
+      "standard": "PSD60 Tray Screw",
+      "diameter_mm": 2.0,
+      "length_mm": 5.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 22.0,
+      "target": "MOUNT_* H01..H06 → housing",
+      "step": 1,
+      "stage": "1b",
+      "kind": "screw",
+      "prefix": "CASE"
+    },
+    "m2-bracket": {
+      "spec_label": "M2×6",
+      "standard": "ISO 7380 Button Head",
+      "diameter_mm": 2.0,
+      "length_mm": 6.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 18.0,
+      "target": "PLATE_L → CTRL_BRACKET",
+      "step": 2,
+      "stage": "2a",
+      "kind": "screw",
+      "prefix": "M2-BRK"
+    },
+    "m2-nuts-bracket": {
+      "spec_label": "M2 NUT",
+      "standard": "DIN 934 Hex",
+      "diameter_mm": 4.0,
+      "length_mm": 1.6,
+      "axis_local": [0, 0, 1],
+      "stroke_mm": 11.0,
+      "target": "CTRL_BRACKET pocket",
+      "step": 2,
+      "stage": "2a",
+      "kind": "nut",
+      "prefix": "NUT-BRK"
+    },
+    "m2-plate": {
+      "spec_label": "M2×6",
+      "standard": "ISO 7380 Button Head",
+      "diameter_mm": 2.0,
+      "length_mm": 6.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 24.0,
+      "target": "PLATE_L/R → SPINE",
+      "step": 3,
+      "stage": "3a",
+      "kind": "screw",
+      "prefix": "M2-PLT"
+    },
+    "m2-5": {
+      "spec_label": "M2×5",
+      "standard": "ISO 7380 Button Head",
+      "diameter_mm": 2.0,
+      "length_mm": 5.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 24.0,
+      "target": "PLATE_L tab → PLATE_R",
+      "step": 3,
+      "stage": "3a",
+      "kind": "screw",
+      "prefix": "M2-SEAM"
+    },
+    "m2-nuts-plate": {
+      "spec_label": "M2 NUT",
+      "standard": "DIN 934 Hex",
+      "diameter_mm": 4.0,
+      "length_mm": 1.6,
+      "axis_local": [0, 0, 1],
+      "stroke_mm": 12.0,
+      "target": "SPINE / PLATE_R pocket",
+      "step": 3,
+      "stage": "3a",
+      "kind": "nut",
+      "prefix": "NUT-PLT"
+    },
+    "m3-upper": {
+      "spec_label": "M3×10",
+      "standard": "ISO 7380 Button Head",
+      "diameter_mm": 3.0,
+      "length_mm": 10.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 30.0,
+      "target": "PLATE CB → SO1..SO6 INS",
+      "step": 3,
+      "stage": "3b",
+      "kind": "screw",
+      "prefix": "M3"
+    },
+    "magnets": {
+      "spec_label": "MAG Ø3×2",
+      "standard": "Neodymium N52",
+      "diameter_mm": 3.0,
+      "length_mm": 2.0,
+      "axis_local": [0, 0, -1],
+      "stroke_mm": 14.0,
+      "target": "COVER / PLATE pockets",
+      "step": 5,
+      "stage": "5a",
+      "kind": "magnet",
+      "prefix": "MAG"
+    }
+  },
   "hardware_bodies": {
     "inserts": [
       "@inserts"
@@ -187,15 +417,15 @@
     "housing": "#cfc9be",
     "controller": "#1f6d60",
     "usb": "#5f6870",
-    "inserts": "#c99b44",
-    "m3-upper": "#2b3036",
-    "m2-bracket": "#6c747c",
-    "m2-plate": "#6c747c",
-    "m2-5": "#6c747c",
-    "m2-nuts-bracket": "#8b9299",
-    "m2-nuts-plate": "#8b9299",
-    "case-screws": "#777e85",
-    "magnets": "#aeb5bc",
+    "inserts": "#d6a13a",
+    "m3-upper": "#1d2228",
+    "m2-bracket": "#b8c2cc",
+    "m2-plate": "#b8c2cc",
+    "m2-5": "#b8c2cc",
+    "m2-nuts-bracket": "#cfd6dd",
+    "m2-nuts-plate": "#cfd6dd",
+    "case-screws": "#a8b2bc",
+    "magnets": "#d8e0e8",
     "switches": "#d8c89c",
     "keycaps": "#eae5dc"
   },
@@ -203,27 +433,34 @@
     {
       "id": "bom-housing",
       "code": "HSG-PSD60",
+      "spec": "CNC ALU CASE",
       "group": "G1-BASE",
       "parts": ["housing"],
-      "sample": "housing"
+      "sample": "housing",
+      "thumbnail_body": "REF_HOUSING_PSD60_MEASURED"
     },
     {
       "id": "bom-mounts",
       "code": "MNT-MJF",
+      "spec": "MJF PA12 ×4",
       "group": "G1-BASE",
       "parts": ["MOUNT_L_PAIR_V3", "MOUNT_R_PAIR_V3", "MOUNT_H02_SO3_MIN_V2", "MOUNT_H03_SO6_MIN_V2"],
-      "sample": "MOUNT_L_PAIR_V3"
+      "sample": "MOUNT_L_PAIR_V3",
+      "thumbnail_body": "MOUNT_L_PAIR_V3"
     },
     {
       "id": "bom-rests",
       "code": "RST-REAR",
+      "spec": "MJF PA12 ×3",
       "group": "G1-BASE",
       "parts": ["REAR_REST_1_V5"],
-      "sample": "REAR_REST_1_V5"
+      "sample": "REAR_REST_1_V5",
+      "thumbnail_body": "REAR_REST_1_V5"
     },
     {
       "id": "bom-mcu",
       "code": "MCU-32U4",
+      "spec": "PRO MICRO",
       "group": "G2-CORE",
       "parts": ["controller"],
       "sample": "controller"
@@ -231,13 +468,16 @@
     {
       "id": "bom-bracket",
       "code": "BRK-USB",
+      "spec": "MJF + USB-C",
       "group": "G2-CORE",
       "parts": ["CTRL_BRACKET_SPLIT_V1", "usb"],
-      "sample": "CTRL_BRACKET_SPLIT_V1"
+      "sample": "CTRL_BRACKET_SPLIT_V1",
+      "thumbnail_body": "CTRL_BRACKET_SPLIT_V1"
     },
     {
       "id": "bom-diodes",
       "code": "DIO-1N4148",
+      "spec": "DO-35 4×12",
       "group": "G2-CORE",
       "parts": ["diodes"],
       "sample": "diodes"
@@ -245,13 +485,16 @@
     {
       "id": "bom-plate",
       "code": "PLT-3L",
+      "spec": "MJF PA12 ×3",
       "group": "G3-PLATE",
       "parts": ["PLATE_L_SPLIT_V1", "PLATE_R_SPLIT_V1", "PLATE_SPINE_V1"],
-      "sample": "PLATE_L_SPLIT_V1"
+      "sample": "PLATE_L_SPLIT_V1",
+      "thumbnail_body": "PLATE_L_SPLIT_V1"
     },
     {
       "id": "bom-switches",
       "code": "SW-MX5P",
+      "spec": "MILKY YLW",
       "group": "G4-SW",
       "parts": ["switches"],
       "sample": "switches"
@@ -259,58 +502,70 @@
     {
       "id": "bom-covers",
       "code": "CVR-RESIN",
-      "group": "G5-TOP",
+      "spec": "SLA 8001 ×3",
+      "group": "G5-COVER",
       "parts": ["COVER_L_DRAFT_TBD", "COVER_T_DRAFT_TBD", "COVER_R_DRAFT_TBD"],
-      "sample": "COVER_L_DRAFT_TBD"
+      "sample": "COVER_L_DRAFT_TBD",
+      "thumbnail_body": "COVER_L_DRAFT_TBD"
     },
     {
       "id": "bom-magnets",
       "code": "MAG-3X2",
-      "group": "G5-TOP",
+      "spec": "N52 Ø3×2",
+      "group": "G5-COVER",
       "parts": ["magnets"],
-      "sample": "magnets"
+      "sample": "magnets",
+      "thumbnail_body": "REF_SO1_MAGNET"
     },
     {
       "id": "bom-kc-1u",
       "code": "KC-1.00U",
-      "group": "G5-TOP",
+      "spec": "OEM 1.00U",
+      "group": "G6-KEYCAP",
       "keycap_w_u": 1.0,
       "sample": "keycap:1"
     },
     {
       "id": "bom-kc-125u",
       "code": "KC-1.25U",
-      "group": "G5-TOP",
+      "spec": "OEM 1.25U",
+      "group": "G6-KEYCAP",
       "keycap_w_u": 1.25,
       "sample": "keycap:1.25"
     },
     {
       "id": "bom-kc-2u",
       "code": "KC-2.00U",
-      "group": "G5-TOP",
+      "spec": "OEM 2.00U",
+      "group": "G6-KEYCAP",
       "keycap_w_u": 2.0,
       "sample": "keycap:2"
     },
     {
       "id": "bom-kc-225u",
       "code": "KC-2.25U",
-      "group": "G5-TOP",
+      "spec": "OEM 2.25U",
+      "group": "G6-KEYCAP",
       "keycap_w_u": 2.25,
       "sample": "keycap:2.25"
     },
     {
       "id": "bom-fast-m3",
       "code": "FST-M3",
+      "spec": "M3×10 + INS",
       "group": "G3-PLATE",
       "parts": ["inserts", "m3-upper"],
-      "sample": "m3-upper"
+      "sample": "m3-upper",
+      "thumbnail_body": "REF_SO1_M3_UPPER"
     },
     {
       "id": "bom-fast-m2",
       "code": "FST-M2",
+      "spec": "M2×5/6 + NUT",
       "group": "G3-PLATE",
       "parts": ["case-screws", "m2-bracket", "m2-plate", "m2-5", "m2-nuts-bracket", "m2-nuts-plate"],
-      "sample": "m2-plate"
+      "sample": "m2-plate",
+      "thumbnail_body": "REF_M2_PLATE_3"
     }
   ]
 }

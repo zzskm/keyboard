@@ -2,6 +2,7 @@
 import hashlib
 import json
 import math
+import re
 import shutil
 from pathlib import Path
 
@@ -21,6 +22,64 @@ VENDOR_FILES = (
 
 def _body_center(box):
     return [round((box['min'][i] + box['max'][i]) / 2, 3) for i in range(3)]
+
+
+def _fastener_trace_id(prefix, body_name, idx):
+    """Deterministic human-readable CAD trace ID for each of the 42 physical fasteners."""
+    m = re.search(r'(SO\d+|H0\d|LEGMAG_[LR]_(?:COVER|PLATE)|PLATE_\d+|SEAM_FRONT)', body_name)
+    if m:
+        tag = m.group(1).replace('_', '-')
+        return f'{prefix}-{tag}'
+    return f'{prefix}-{idx:02d}'
+
+
+def _load_cad_verification(base, model_sha, closeup_key_id, die):
+    """Read hash-verified CAD clearance & overlap measurements from inspection/data/."""
+    verif_path = (base.parent / 'inspection' / 'data' / 'assembly-reference-v5-verification.json').resolve()
+    if not verif_path.is_file():
+        die(f'interactive: missing CAD verification record: {verif_path}')
+    verif = json.loads(verif_path.read_text(encoding='utf-8-sig'))
+    if verif.get('model_sha') != model_sha:
+        die('interactive: assembly-reference-v5-verification.json model_sha differs from current CAD model')
+
+    pin_dists = [
+        float(m['min_distance_mm'])
+        for m in verif.get('mount_switch_pin_fit', {}).get('mounts', {}).values()
+        if m.get('min_distance_mm') is not None
+    ]
+    pin_min = round(min(pin_dists), 2) if pin_dists else None
+
+    kc_pressed = verif.get('keycap', {}).get('pressed_4mm', {})
+    cap_cover_min = round(float(kc_pressed.get('cover_min_mm', 0.0)), 2)
+    cap_plate_min = round(float(verif.get('pressed_vs_plate', {}).get('min_distance_mm', 0.0)), 2)
+    bracket_pairs = verif.get('controller', {}).get('bracket_switch_case_min', [])
+    bracket_min = round(float(bracket_pairs[0][0]), 2) if bracket_pairs else None
+
+    overlaps = (
+        int(verif.get('mount_review_fit', {}).get('overlaps', 0))
+        + int(verif.get('controller', {}).get('bracket_overlap_count', 0))
+        + int(verif.get('pressed_vs_plate', {}).get('overlapping_caps', 0))
+    )
+
+    closeup_cover_mm = cap_cover_min
+    closeup_cover_part = ''
+    for entry in kc_pressed.get('closest', []):
+        if int(entry[0]) == int(closeup_key_id):
+            closeup_cover_mm = round(float(entry[1]), 2)
+            closeup_cover_part = str(entry[2])
+            break
+
+    return dict(
+        ok=bool(verif.get('ok', False)),
+        overlaps=overlaps,
+        pin_min_mm=pin_min,
+        cap_cover_min_mm=cap_cover_min,
+        cap_plate_min_mm=cap_plate_min,
+        bracket_min_mm=bracket_min,
+        closeup_key_cover_min_mm=closeup_cover_mm,
+        closeup_key_cover_part=closeup_cover_part,
+        model_sha_prefix=model_sha[:12],
+    )
 
 
 def _export_keys_and_pads(ctx, base):
@@ -101,6 +160,8 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
     sections = ctx.spec['sections']
     source = next(s for s in sections if s['type'] == 'parts')
     excluded = set(config.get('exclude_from_scene', []))
+    non_countable = set(config.get('non_countable_parts', []))
+    fastener_specs = config.get('fastener_specs', {})
     hw_labels_override = config.get('hardware_labels', {})
     hw_by_id = {h['id']: h for h in source['hardware']}
 
@@ -109,10 +170,13 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
         pid = p['bodies'][0]
         if pid in excluded:
             continue
+        material = 'SLA 8001 Resin' if pid.startswith('COVER_') else 'MJF PA12'
         parts.append(dict(
             id=pid,
             label=ctx.text(p['label']),
             category='printed',
+            material=material,
+            unique_stl_count=1,
             bodies=list(p['bodies']),
         ))
     for pid, patterns in config['hardware_bodies'].items():
@@ -122,6 +186,8 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
             id=pid,
             label=label,
             category='hardware',
+            material='Hardware',
+            unique_stl_count=0,
             bodies=list(patterns),
         ))
     for p in config.get('references', []):
@@ -129,6 +195,8 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
             id=p['id'],
             label=p['label'],
             category='reference',
+            material='CNC Aluminum',
+            unique_stl_count=0,
             bodies=list(p['bodies']),
         ))
 
@@ -139,17 +207,32 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
     procedural = set(config.get('procedural_parts', []))
     steps = config['steps']
     group_by_part = {}
-    for step in steps:
+    step_num_by_part = {}
+    for idx, step in enumerate(steps, 1):
         for pid in step['parts']:
             if pid not in by_id and pid not in procedural:
                 die(f"interactive: unknown part {pid} in {step['id']}")
             group_by_part[pid] = step['code']
+            step_num_by_part[pid] = idx
+
+    layers = config.get('visibility_layers', [])
+    layer_by_part = {}
+    for layer in layers:
+        for pid in layer['parts']:
+            if pid in layer_by_part:
+                die(f"interactive: part {pid} assigned to multiple visibility_layers")
+            layer_by_part[pid] = layer['id']
 
     keys_out, pads_out, spine_grooves, pins_spec = _export_keys_and_pads(ctx, base)
+    cad_verification = _load_cad_verification(base, model_sha, config['closeup_key_id'], die)
 
+    fastener_instances = []
     for p in parts:
         p['bodies'] = expand(p['bodies'], ctx.names, ctx.groups, p['id'])
         p['group'] = group_by_part.get(p['id'], '')
+        p['step'] = step_num_by_part.get(p['id'], 0)
+        p['layer'] = layer_by_part.get(p['id'], '')
+        p['countable'] = p['id'] not in non_countable
         p['color'] = config.get('colors', {}).get(p['id'], '#87959f')
         p['fastener'] = p['id'] in set(config.get('fastener_parts', []))
         if p['bodies']:
@@ -158,12 +241,59 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
             p['bbox'] = [[round(v, 3) for v in lo], [round(v, 3) for v in hi]]
             p['size'] = ' × '.join(f'{hi[i] - lo[i]:.1f}' for i in range(3)) + ' mm'
             p['body_centers'] = [_body_center(ctx.bodies[b]['bbox']) for b in p['bodies']]
-        if p['id'] in ('housing', 'controller'):
+            p['volume_cm3'] = round(sum(float(ctx.bodies[b].get('volume_mm3', 0.0)) for b in p['bodies']) / 1000.0, 2)
+            p['body_meta'] = {
+                b: dict(
+                    bbox=[
+                        [round(v, 3) for v in ctx.bodies[b]['bbox']['min']],
+                        [round(v, 3) for v in ctx.bodies[b]['bbox']['max']],
+                    ],
+                    center=_body_center(ctx.bodies[b]['bbox']),
+                    volume_cm3=round(float(ctx.bodies[b].get('volume_mm3', 0.0)) / 1000.0, 3),
+                )
+                for b in p['bodies']
+            }
+        else:
+            p['volume_cm3'] = 0.0
+            p['body_meta'] = {}
+        if not p['countable']:
+            p['instance_count'] = 0
+        elif p['id'] in ('housing', 'controller'):
             p['instance_count'] = 1
         elif p['id'] in ('switches', 'keycaps'):
             p['instance_count'] = len(keys_out)
         else:
             p['instance_count'] = len(p['bodies'])
+
+        if p['fastener']:
+            fspec = fastener_specs.get(p['id'])
+            if not fspec:
+                die(f"interactive: missing fastener_specs entry for {p['id']}")
+            p['spec_label'] = fspec['spec_label']
+            p['standard'] = fspec['standard']
+            for f_idx, bname in enumerate(p['bodies'], 1):
+                bmeta = p['body_meta'][bname]
+                fastener_instances.append(dict(
+                    id=_fastener_trace_id(fspec['prefix'], bname, f_idx),
+                    body_name=bname,
+                    part_id=p['id'],
+                    label=p['label'],
+                    spec_label=fspec['spec_label'],
+                    standard=fspec['standard'],
+                    kind=fspec['kind'],
+                    group=p['group'],
+                    step=int(fspec['step']),
+                    stage=fspec['stage'],
+                    layer=p['layer'],
+                    target=fspec['target'],
+                    axis_local=list(fspec['axis_local']),
+                    stroke_mm=float(fspec['stroke_mm']),
+                    diameter_mm=float(fspec['diameter_mm']),
+                    length_mm=float(fspec['length_mm']),
+                    center_local=bmeta['center'],
+                    bbox_local=bmeta['bbox'],
+                    qty_in_part=p['instance_count'],
+                ))
 
     piece_colors = config.get('piece_colors', {})
     cache_key = hashlib.sha256(json.dumps(
@@ -242,13 +372,19 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
         duration_sec=config['duration_sec'],
         closeup_key_id=config['closeup_key_id'],
         tilt_source=config['tilt_source'],
+        non_countable_parts=list(config.get('non_countable_parts', [])),
+        procedural_parts=list(config.get('procedural_parts', [])),
         steps=steps,
+        visibility_layers=layers,
+        fastener_specs=fastener_specs,
+        fastener_instances=fastener_instances,
         bom_groups=config['bom_groups'],
         parts=parts,
         keys=keys_out,
         controller_pads=pads_out,
         spine_grooves=spine_grooves,
         matrix_pins=pins_spec,
+        cad_verification=cad_verification,
         model_sha=model_sha,
         model_bytes=glb_path.stat().st_size,
     )
@@ -292,11 +428,39 @@ def instances(boxes, gap=0.2):
 
 
 def markup(config=None, fallback_hero='img/hero.png'):
-    steps = (config or {}).get('steps', [])
+    cfg = config or {}
+    dur = float(cfg.get('duration_sec', 36.0))
+    steps = cfg.get('steps', [])
+    layers = cfg.get('visibility_layers', [])
     step_buttons = ''.join(
         f'<button type="button" class="step-btn" data-step="{idx}" aria-pressed="false" '
-        f'title="{s["code"]} · {s["label"]}">STEP {idx}</button>'
+        f'title="{s["code"]} · {s["label"]} (Hotkey: {idx})">'
+        f'<span class="step-lbl-full">STEP {idx}</span><span class="step-lbl-short">S{idx}</span></button>'
         for idx, s in enumerate(steps, 1)
+    )
+    layer_buttons = (
+        '<button type="button" id="btn-layers-all" class="layer-btn layer-all" data-layer="all" '
+        'aria-pressed="true" title="Show all layers">ALL</button>'
+        + ''.join(
+            f'<button type="button" class="layer-btn" data-layer="{ly["id"]}" aria-pressed="true" '
+            f'title="{ly.get("title", ly["label"])} · Shift/DblClick: Solo">{ly["label"]}</button>'
+            for ly in layers
+        )
+    )
+    ticks = [
+        (0.0, '0s', '01 · DIM'),
+        (4.05, '4s', '01 · BUILD'),
+        (11.0, '11s', '02 · X-RAY'),
+        (16.0, '16s', '03 · CORE'),
+        (20.0, '20s', '04 · SEAT'),
+        (26.0, '26s', '05 · BOM'),
+        (32.0, '32s', '06 · REPORT'),
+        (dur, f'{int(dur)}s', 'END'),
+    ]
+    tick_buttons = ''.join(
+        f'<button type="button" class="phase-tick" data-seek="{t:.2f}" style="left:{(t / dur) * 100:.3f}%" '
+        f'title="Jump to {lbl} ({t:.1f}s)">{txt}</button>'
+        for t, txt, lbl in ticks
     )
     hero_html = (
         f'<img id="motion-fallback-img" src="{fallback_hero}" alt="46es v5 assembly">'
@@ -304,24 +468,37 @@ def markup(config=None, fallback_hero='img/hero.png'):
     )
     return f'''<section id="motion-stage" class="motion-stage" aria-label="46es v5 3D Technical Assembly Guide">
   <div class="stage-frame" id="stage-frame">
-    <div id="motion-canvas" class="motion-canvas" aria-label="46es v5 3D isometric assembly canvas"></div>
+    <div id="motion-canvas" class="motion-canvas" aria-label="46es v5 3D interactive assembly canvas"></div>
     <svg id="motion-overlay" class="motion-overlay" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true"></svg>
     <div class="stage-header" aria-hidden="true">
       <div class="brand-tag"><span class="brand-code">46ES-V5</span><span class="brand-sep">/</span><span id="hud-phase-code" class="phase-code">01 · DIM + EXPLODE</span></div>
       <div id="hud-telemetry" class="hud-telemetry" hidden></div>
-      <div class="time-readout"><span id="hud-time-big">00.0</span><span class="unit">s</span><span class="time-total">/ 32.0s</span></div>
+      <div class="header-right">
+        <div id="hud-cam-chip" class="hud-cam-chip" hidden>FREE ORBIT</div>
+        <div class="time-readout"><span id="hud-time-big">00.0</span><span class="unit">s</span><span class="time-total">/ {dur:.1f}s</span></div>
+      </div>
     </div>
+    <div id="hud-bolt-tag" class="hud-bolt-tag" hidden aria-hidden="true"></div>
+    <div id="hud-pick" class="hud-pick" hidden aria-live="polite"></div>
+    <div id="hud-legend" class="hud-legend" hidden aria-label="Scene legend"></div>
     <div id="hud-bom" class="hud-bom" hidden aria-label="BOM inventory grid">
-      <div class="bom-head"><span class="bom-title">BOM</span><span id="bom-total-badge" class="bom-total">0 pcs</span></div>
+      <div class="bom-head">
+        <span class="bom-title">BOM</span>
+        <div id="bom-legend" class="bom-legend" aria-label="Assembly step groups"></div>
+        <span id="bom-total-badge" class="bom-total">—</span>
+      </div>
       <div id="bom-grid" class="bom-grid"></div>
     </div>
-    <div id="hud-report" class="hud-report" hidden aria-label="Build verification report">
-      <div class="rep-cell"><span class="rep-k">PARTS</span><strong id="rep-parts" class="rep-v">0</strong><span class="rep-u">pcs</span></div>
-      <div class="rep-cell"><span class="rep-k">STEPS</span><strong id="rep-steps" class="rep-v">0</strong><span class="rep-u">seq</span></div>
-      <div class="rep-cell"><span class="rep-k">GROUPS</span><strong id="rep-groups" class="rep-v">0</strong><span class="rep-u">grp</span></div>
-      <div class="rep-cell"><span class="rep-k">CYCLE</span><strong id="rep-time" class="rep-v">0.0</strong><span class="rep-u">s</span></div>
-      <div class="rep-cell rep-ok"><span class="rep-k">SHORT</span><strong id="rep-short" class="rep-v">0</strong><span class="rep-u">err</span></div>
-      <div class="rep-cell rep-ok"><span class="rep-k">GAP</span><strong id="rep-gap" class="rep-v">0 ✓</strong><span class="rep-u">mm</span></div>
+    <div id="hud-report-panel" class="hud-report-panel" hidden aria-label="Build verification report">
+      <div id="report-legend" class="report-legend" aria-label="Assembly step breakdown"></div>
+      <div id="hud-report" class="hud-report">
+        <div class="rep-cell"><span class="rep-k">ENVELOPE</span><strong id="rep-env" class="rep-v">—</strong><span id="rep-env-sub" class="rep-sub">—</span></div>
+        <div class="rep-cell"><span class="rep-k">3D PRINT</span><strong id="rep-print" class="rep-v">—</strong><span id="rep-print-sub" class="rep-sub">—</span></div>
+        <div class="rep-cell"><span class="rep-k">FASTENERS</span><strong id="rep-fast" class="rep-v">—</strong><span id="rep-fast-sub" class="rep-sub">—</span></div>
+        <div class="rep-cell"><span class="rep-k">KEYS · LAYOUT</span><strong id="rep-keys" class="rep-v">—</strong><span id="rep-keys-sub" class="rep-sub">—</span></div>
+        <div class="rep-cell"><span class="rep-k">MATRIX · WIRE</span><strong id="rep-matrix" class="rep-v">—</strong><span id="rep-matrix-sub" class="rep-sub">—</span></div>
+        <div class="rep-cell rep-ok"><span class="rep-k">CAD FIT</span><strong id="rep-fit" class="rep-v">—</strong><span id="rep-fit-sub" class="rep-sub">—</span></div>
+      </div>
     </div>
     <div id="motion-loading" class="motion-loading" role="status"><span class="load-code">46ES-V5</span><span id="motion-status-text">LOADING CAD</span></div>
     <div id="motion-fallback" class="motion-fallback" hidden>
@@ -329,21 +506,36 @@ def markup(config=None, fallback_hero='img/hero.png'):
       <div class="fallback-badge">WEBGL UNAVAILABLE · STATIC CAD FALLBACK</div>
     </div>
   </div>
-  <div class="control-bar" role="region" aria-label="Sequence controls">
-    <button id="btn-play" class="ctrl-play" type="button" aria-label="Play or pause" aria-pressed="false">▶</button>
-    <div class="scrubber-wrap">
-      <input id="timeline-scrubber" class="scrubber" type="range" min="0" max="32" step="0.05" value="0" aria-label="Timeline scrubber (seconds)">
-      <div class="phase-ticks" aria-hidden="true">
-        <span style="left:0%">0s</span>
-        <span style="left:21.875%">7s</span>
-        <span style="left:40.625%">13s</span>
-        <span style="left:53.125%">17s</span>
-        <span style="left:71.875%">23s</span>
-        <span style="left:90.625%">29s</span>
-        <span style="left:100%">32s</span>
+  <div class="control-bar" role="region" aria-label="Sequence and 3D inspection controls">
+    <div class="ctrl-row ctrl-row-1">
+      <button id="btn-play" class="ctrl-play" type="button" aria-label="Play or pause" aria-pressed="false" title="Play / Pause (Space)">▶</button>
+      <button id="btn-speed" class="ctrl-speed" type="button" aria-label="Playback speed" title="Toggle speed (0.5× / 1× / 1.5×)">1×</button>
+      <div class="scrubber-wrap">
+        <input id="timeline-scrubber" class="scrubber" type="range" min="0" max="{dur:g}" step="0.05" value="0" aria-label="Timeline scrubber (seconds)">
+        <div class="phase-ticks">{tick_buttons}</div>
       </div>
+      <span id="ctrl-time" class="ctrl-time">00.0s</span>
+      <button id="btn-spec" class="ctrl-spec" type="button" title="Open and scroll to Spec, BOM & SVG Diagrams">SPEC ↓</button>
     </div>
-    <span id="ctrl-time" class="ctrl-time">00.0s</span>
-    <div class="step-toggles" role="group" aria-label="Manual assembly steps">{step_buttons}</div>
+    <div class="ctrl-row ctrl-row-2">
+      <div class="mob-drawer-bar">
+        <button id="btn-mob-layers" class="mob-drawer-btn" type="button" aria-expanded="false">LAYERS ▾</button>
+        <button id="btn-mob-view" class="mob-drawer-btn" type="button" aria-expanded="false">VIEW ▾</button>
+      </div>
+      <div id="layer-toggles" class="ctrl-group layer-toggles" role="group" aria-label="Layer visibility toggles">{layer_buttons}</div>
+      <div id="view-toggles" class="ctrl-group view-toggles" role="group" aria-label="Camera presets and inspection tools">
+        <button type="button" class="view-btn" data-preset="iso" aria-pressed="false" title="Isometric View">ISO</button>
+        <button type="button" class="view-btn" data-preset="top" aria-pressed="false" title="Top View">TOP</button>
+        <button type="button" class="view-btn" data-preset="front" aria-pressed="false" title="Front View">FRT</button>
+        <button type="button" class="view-btn" data-preset="side" aria-pressed="false" title="Side View">SID</button>
+        <button type="button" class="view-btn" data-preset="bottom" aria-pressed="false" title="Bottom Underside View">BTM</button>
+        <span class="ctrl-sep" aria-hidden="true"></span>
+        <button type="button" id="btn-turntable" class="tool-btn" aria-pressed="false" title="Auto 360° Turntable">⟳</button>
+        <button type="button" id="btn-explode" class="tool-btn" aria-pressed="false" title="Manual Exploded View (Hotkey: E)">EXP</button>
+        <button type="button" id="btn-xray" class="tool-btn" aria-pressed="false" title="Manual X-Ray Inspection (Hotkey: X)">XRAY</button>
+        <button type="button" id="btn-reset-view" class="tool-btn" title="Reset Camera & Layers (Hotkey: R)">↺</button>
+      </div>
+      <div id="step-toggles" class="ctrl-group step-toggles" role="group" aria-label="Manual assembly steps">{step_buttons}</div>
+    </div>
   </div>
 </section>'''
