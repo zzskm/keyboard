@@ -932,8 +932,8 @@
  },
  "trials": {
   "BOSS_TAB_SAMPLE": {
-   "shape_sha256": "f0cf048a946e599b56b7c04fa16397b0adc6242242f5efbd2d13254050f6265e",
-   "volume_mm3": 5291.368,
+   "shape_sha256": "0eed42d8a9ac63c617b216c32c756a4f3820def4380cfa78162a82b0debfc4d2",
+   "volume_mm3": 6245.368,
    "bbox": [
     [
      160.0,
@@ -942,7 +942,7 @@
     ],
     [
      190.0,
-     -270.0,
+     -262.0,
      7.5
     ]
    ]
@@ -963,12 +963,12 @@
     ]
    ]
   },
-  "SEAM_COUPON_1": {
-   "shape_sha256": "e7b0ec0dbb7035a0a7c2eae44b2f9a9390bd2bf29efee0e60b537b38bd099522",
-   "volume_mm3": 3745.627,
+  "SEAM_COUPON_L": {
+   "shape_sha256": "6a08ea627714b4f6ddc9dfe9b8e0dcbc2fe4f43b012386c2f2763649382be8d8",
+   "volume_mm3": 1910.422,
    "bbox": [
     [
-     95.131,
+     118.0,
      -60.367,
      8.0
     ],
@@ -979,34 +979,18 @@
     ]
    ]
   },
-  "SEAM_COUPON_2": {
-   "shape_sha256": "4cf0a50de53d56329d20bcb61b73e9e108e6912463d58bc9300e5a118e596507",
-   "volume_mm3": 3751.201,
-   "bbox": [
-    [
-     155.131,
-     -60.367,
-     8.0
-    ],
-    [
-     207.4,
-     -38.8,
-     13.0
-    ]
-   ]
-  },
   "SW_HOLE_SAMPLE": {
-   "shape_sha256": "19c0a98acd7531577df3cdf1b3fa13cf69eddfed22741b162a5c66419a974f30",
-   "volume_mm3": 28272.956,
+   "shape_sha256": "52bc6171b769f076070d2105d145ca9d65f541d57d5dcc53a69bc71adf9332b3",
+   "volume_mm3": 21686.617,
    "bbox": [
     [
      -0.0,
      -300.0,
-     -0.0
+     -3.0
     ],
     [
      145.35,
-     -225.85,
+     -256.5,
      5.0
     ]
    ]

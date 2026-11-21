@@ -49,7 +49,7 @@ def main():
     openings = switch_openings()
     seams = {'production': seam_v5.check(seam_v5.PRODUCTION, openings)}
     seams.update({name: seam_v5.check(variant) for name, variant in seam_v5.VARIANTS.items()})
-    assert all(len(seam_v5.coupon_blank(body)) == 8 for body in seam_v5.COUPON_PIECES)
+    assert all(len(seam_v5.coupon_blank(body)) == 6 for body in seam_v5.COUPON_PIECES)
 
     # Cover silhouette window: the generator asserts keycap coverage and the keep-outs itself.
     windows = cover_windows()

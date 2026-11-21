@@ -2,18 +2,18 @@
  "ok": true,
  "inputs": {
   "inspection/scripts/verify_seam_v5.py": "ast:aa821d5557db3dcdc09ecb62cc80964a9f6b2b0839140f44944c5965b4cf5734",
-  "tools/parts_v5.py": "ast:90cab6267769b8e4d947e5289f0dbb922872ec9a7914b0c8a55c8a2a74b57e38",
-  "model/46es_mount_seam_v5.sc": "6a6641743ec80fd530b0ae88db662ea920e83fb146c9d07ea53ed0ed4f296ab4",
-  "model/ctrl_trials_v5.sc": "de37809d78cd2c02a4c812d99d223ff6e97614b70439af622a8ee9842421ec26",
+  "tools/parts_v5.py": "ast:4be5b9e893ae0de7fc487b37275d1f0ec0ddd04830a72bc7bf25add19d4423d6",
+  "model/46es_mount_seam_v5.sc": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
+  "model/ctrl_trials_v5.sc": "a329e8afe54ed8ac3db43db35d69d519278155990b8086871b5d6905c2c9ebc5",
   "model/parameters_seam_v5.csv": "82c1a84280e26e34ca763906fd8cfc6ac23d15a0899cd0078b266ff67eb357b0",
-  "inspection/data/seam-v5-baseline.json": "529fa147444b722429f858d9f5b86599b943b0c7b49c3056c8c6a945a5722092",
-  "inspection/data/seam-v5-print-set.json": "88e5e302f32045892d6047fcbfbbccdf032da42b29274ab2c04bbbe08f0efaa6",
+  "inspection/data/seam-v5-baseline.json": "6ec41325e265373da4a7bc6f5f9d379f7aae675c62fba94b5a788edeaad186e3",
+  "inspection/data/seam-v5-print-set.json": "72a96072fb1d3e9764da24ea3df96576c3cced9d1a19bba7354a1bedc7c8bc14",
   "inspection/data/seam-v5-mjf-thin-wall.json": "154b661f81120d611180d14e587e005d20707c43e82fa145e4d10b00a2839103",
-  "inspection/data/seam-v5-trial-print-set.json": "58c69e434bda317b5af3fbbe5b48bc47614855c233415c703bb91dba9edaf9da"
+  "inspection/data/seam-v5-trial-print-set.json": "afb8993251dfd8596b1d3c2cd49e57ad12067f50e066ea2e443e6cfa1c3e27d2"
  },
- "v5_sha": "6a6641743ec80fd530b0ae88db662ea920e83fb146c9d07ea53ed0ed4f296ab4",
- "baseline_sha": "529fa147444b722429f858d9f5b86599b943b0c7b49c3056c8c6a945a5722092",
- "baseline_bodies": 63,
+ "v5_sha": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
+ "baseline_sha": "6ec41325e265373da4a7bc6f5f9d379f7aae675c62fba94b5a788edeaad186e3",
+ "baseline_bodies": 62,
  "print_set": [
   {
    "file": "46es_v5_plate_L",

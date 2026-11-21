@@ -65,15 +65,13 @@ PARTS = (
         # pad thickness (and sanding) fits them at assembly. Order 1 until 2026-11-16, with two height variants
         ('rear_rest', 'REAR_REST_1_V5', MODEL, MJF, False),
     ]),
-    # order 1: test parts, held to 10 uploads (one print each since 2026-11-16, decision in docs/design.md)
+    # order 1: test parts (8 parts: consolidated B coupon + boss tab + standalone seam L + 4 mounts + 3-seat snap trial)
     *_rows('order1', [
         # B coupon and boss tab (tools/coupon_v5.py): the guide describes them in its trial table, not as parts
         ('sw_hole_coupon', 'SW_HOLE_SAMPLE', TRIALS, MJF, True),
         ('boss_tab', 'BOSS_TAB_SAMPLE', TRIALS, RESIN, False),
-        # front seam coupons (tools/seam_v5.py COUPON_PIECES): two double-ended pieces, S1 = production half-lap,
-        # S2 = wider locating clearance and nut pocket; 1 then 2 tests S1, 2 then 1 tests S2
-        ('seam_coupon_1', 'SEAM_COUPON_1', TRIALS, MJF, True),
-        ('seam_coupon_2', 'SEAM_COUPON_2', TRIALS, MJF, True),
+        # standalone front-seam L tab (tools/seam_v5.py COUPON_PIECES); mates with S1/S2/S3 R pockets on sw_hole_coupon
+        ('seam_coupon_L', 'SEAM_COUPON_L', TRIALS, MJF, True),
         ('mount_L', 'MOUNT_L_PAIR_V3', MODEL, MJF, False),
         ('mount_R', 'MOUNT_R_PAIR_V3', MODEL, MJF, False),
         ('mount_H02_SO3', 'MOUNT_H02_SO3_MIN_V2', MODEL, MJF, False),

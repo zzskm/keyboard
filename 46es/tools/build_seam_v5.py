@@ -746,8 +746,8 @@ def check_seam(evaluated, trials):
         body, box = pieces[name], s.coupon_box(name)
         assert body['closed'] and all(abs(a - e) < 1e-4 for a, e in zip(body['bbox']['min'] + body['bbox']['max'], box)), \
             (name, body['bbox'], box)
-        (pocket, _), (tab, _) = s.coupon_ends(name)
-        report['coupons'][name] = dict(pocket=pocket, tab=tab, volume_mm3=round(body['volume_mm3'], 3))
+        tab, _ = s.COUPON_PIECES[name]
+        report['coupons'][name] = dict(tab=tab, volume_mm3=round(body['volume_mm3'], 3))
     return report
 
 

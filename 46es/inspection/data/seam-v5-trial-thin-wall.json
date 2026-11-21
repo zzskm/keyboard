@@ -5,23 +5,23 @@
  "parts": [
   {
    "file": "46es_v5_sw_hole_coupon",
-   "stl_sha256": "2fa865f691e0329368fa984e0263aeed7a4ca6ba3d34f3152b83f102d82efaa8",
-   "facets": 15264,
-   "samples": 1049451,
-   "min_mm": 1.5,
-   "wall_min_mm": 1.5,
+   "stl_sha256": "0a40b03c0dcd9656c5ce3147f3f298855bf8740c325fec43a4b6ed385da23031",
+   "facets": 19104,
+   "samples": 697636,
+   "min_mm": 1.069,
+   "wall_min_mm": 1.069,
    "below_limit": [],
-   "below_warn_count": 45
+   "below_warn_count": 13
   },
   {
    "file": "46es_v5_boss_tab",
-   "stl_sha256": "9cf4f476bb70ef0b226e6b9a4f72fa87853e5bc7c7892509edab1387ce932d61",
-   "facets": 7920,
-   "samples": 189224,
+   "stl_sha256": "205fa30c5c6c5f04f6c3a0ddc27e002309ec52f03b936ec7ba06d84157015ee0",
+   "facets": 7628,
+   "samples": 195846,
    "min_mm": 0.032,
    "wall_min_mm": 1.099,
    "below_limit": [],
-   "below_warn_count": 1,
+   "below_warn_count": 2,
    "excluded_wall_min_mm": 0.249,
    "excluded": [
     {
@@ -32,12 +32,12 @@
      "at_print": [
       21.728,
       23.75,
-      0.778
+      0.111
      ],
      "to_print": [
       21.725,
       23.781,
-      0.778
+      0.111
      ],
      "dir_print": [
       -0.093,
@@ -59,12 +59,12 @@
      "at_assembly": [
       181.728,
       -276.25,
-      0.778
+      0.111
      ],
      "to_assembly": [
       181.725,
       -276.219,
-      0.778
+      0.111
      ],
      "box_assembly": [
       [
@@ -88,12 +88,12 @@
      "at_print": [
       25.765,
       11.399,
-      0.778
+      0.111
      ],
      "to_print": [
       25.76,
       11.45,
-      0.778
+      0.111
      ],
      "dir_print": [
       -0.093,
@@ -115,12 +115,12 @@
      "at_assembly": [
       185.765,
       -288.601,
-      0.778
+      0.111
      ],
      "to_assembly": [
       185.76,
       -288.55,
-      0.778
+      0.111
      ],
      "box_assembly": [
       [
@@ -139,24 +139,14 @@
    ]
   },
   {
-   "file": "46es_v5_seam_coupon_1",
-   "stl_sha256": "9138c70ec50fbeebdec935ead85e0a1bf4453fd938a9b9ecc28a6f863aa564ef",
-   "facets": 1964,
-   "samples": 68292,
+   "file": "46es_v5_seam_coupon_L",
+   "stl_sha256": "9277281836f9b93eb5d8f1cf6fb7bb2cb7fb328b13830d5ddc8344bdc188944d",
+   "facets": 1930,
+   "samples": 33812,
    "min_mm": 1.0,
    "wall_min_mm": 1.0,
    "below_limit": [],
-   "below_warn_count": 2
-  },
-  {
-   "file": "46es_v5_seam_coupon_2",
-   "stl_sha256": "1988c995e1e58937e78473ddbefc6fbcfa0e387b91a703ea1cac7399222b5899",
-   "facets": 1964,
-   "samples": 68283,
-   "min_mm": 1.0,
-   "wall_min_mm": 1.0,
-   "below_limit": [],
-   "below_warn_count": 2
+   "below_warn_count": 1
   },
   {
    "file": "46es_v5_mount_L",

@@ -62,23 +62,18 @@ class Seam:
 
 
 PRODUCTION = Seam()
-# Order-1 coupon variants. S2 widens the locating clearance and the nut pocket by one step each; the lap fit (hand
-# insertion) and the nut fit (press, shake) are read separately.
-VARIANTS = {'S1': PRODUCTION, 'S2': replace(PRODUCTION, fit=0.25, nut_AF=4.2)}
+# Order-1 seam test: the L tab is identical across all straight half-lap variants, so order 1 prints one standalone
+# L tab piece (COUPON_PIECES: SEAM_COUPON_L) and integrates three R-side pockets (VARIANTS: S1/S2/S3) along the +Y
+# edge of the consolidated B coupon (tools/coupon_v5.py).
+VARIANTS = {
+    'S1': PRODUCTION,
+    'S2': replace(PRODUCTION, fit=0.25, nut_AF=4.2),
+    'S3': replace(PRODUCTION, fit=0.35, nut_AF=4.4),
+}
 COUPON_BOX = (118.0, -0.367, 154.0, 21.2)     # blank before the split: plate front edge to behind the seam bend
-# The pocket end of a piece sits this far left of its tab end, so the R blank's right edge (COUPON_BOX x1) meets the
-# L blank's left edge (x0): one straight piece, pocket end at -X, tab end at +X.
-POCKET_END_DX = COUPON_BOX[0] - COUPON_BOX[2]
-# body: (pocket variant, tab variant, offset of the tab end from the plate position)
-COUPON_PIECES = {'SEAM_COUPON_1': ('S2', 'S1', (0.0, -60.0)),
-                 'SEAM_COUPON_2': ('S1', 'S2', (60.0, -60.0))}
+# body: (tab variant, offset from the plate position)
+COUPON_PIECES = {'SEAM_COUPON_L': ('S1', (0.0, -60.0))}
 COUPON_COLOR = [143, 191, 106]
-
-
-def coupon_ends(body):
-    """((pocket variant, offset), (tab variant, offset)) of one coupon piece."""
-    pocket, tab, (dx, dy) = COUPON_PIECES[body]
-    return (pocket, (dx + POCKET_END_DX, dy)), (tab, (dx, dy))
 
 
 def outlines(seam):
@@ -195,42 +190,36 @@ def emit(feature, sketch, seam=PRODUCTION, left='PLATE_L_SPLIT_V1', right='PLATE
 
 
 def coupon_blank(body):
-    """Plan polygon of one coupon piece: the R part of the coupon box (split along the plate seam line with the seam
-    gap) at the pocket end, joined edge to edge with the L part at the tab end."""
+    """Plan polygon of the standalone L tab coupon: the L part of the coupon box split along the plate seam line."""
     from shapely.geometry import LineString, box
     from shapely.affinity import translate
-    from shapely.ops import unary_union
     x0, y0, x1, y1 = COUPON_BOX
     gap = LineString(SPLIT_LINE).buffer(SPLIT_GAP / 2, cap_style='flat', join_style='mitre')
-    left, right = sorted(box(x0, y0, x1, y1).difference(gap).geoms, key=lambda g: g.bounds[0])
-    (_, pocket_at), (_, tab_at) = coupon_ends(body)
-    piece = unary_union([translate(right, *pocket_at), translate(left, *tab_at)]).simplify(1e-9)
-    assert piece.geom_type == 'Polygon' and not piece.interiors, piece.geom_type
+    left, _ = sorted(box(x0, y0, x1, y1).difference(gap).geoms, key=lambda g: g.bounds[0])
+    _, offset = COUPON_PIECES[body]
+    piece = translate(left, *offset)
     return [(round(x, 6), round(y, 6)) for x, y in piece.exterior.coords[:-1]]
 
 
 def coupon_box(body):
-    """Expected bounding box (x0, y0, z0, x1, y1, z1) of one coupon piece."""
-    (_, (px, _)), (_, (tx, ty)) = coupon_ends(body)
-    _, y0, _, y1 = COUPON_BOX
-    return (SPLIT_LINE[2][0] + SPLIT_GAP / 2 + px, y0 + ty, PLATE_BOTTOM_Z, TAB_END_X + tx, y1 + ty, PLATE_TOP_Z)
+    """Expected bounding box (x0, y0, z0, x1, y1, z1) of the standalone L tab coupon."""
+    _, (dx, dy) = COUPON_PIECES[body]
+    x0, y0, _, y1 = COUPON_BOX
+    return (x0 + dx, y0 + dy, PLATE_BOTTOM_Z, TAB_END_X + dx, y1 + dy, PLATE_TOP_Z)
 
 
 def emit_coupons(feature, sketch, doc):
-    """The two coupon pieces: flat blanks of the plate thickness with the front cover-lip rabbet, then the seam
-    features of the plate at each end (pocket side at -X, tab side at +X; no flanges, switch layers or standoff
-    counterbore)."""
+    """Standalone L tab coupon: flat blank of the plate thickness with the front cover-lip rabbet, plus the L-side
+    tab, M2 clearance hole and button-head counterbore. Mates with the S1/S2/S3 R pockets on the B coupon."""
     plane = dict(type='offset', base=dict(type='origin', name='XY'), distance=str(PLATE_BOTTOM_Z))
-    for body in COUPON_PIECES:
+    for body, (tab, offset) in COUPON_PIECES.items():
         sk = sketch(f'SK_{body}', plane, [coupon_blank(body)])
         feature('extrude', f'{body}_BLANK', sketch=sk, profiles=dict(type='all'),
                 extent=dict(convention='total_distance', direction='positive', distance=str(PLATE_TOP_Z - PLATE_BOTTOM_Z)),
                 operation='new_body', body_names=[body])
         doc['appearances']['bodies'][body] = dict(name='Custom', color=COUPON_COLOR, opacity=1.0)
-        x0, y0, x1, _, _, _ = coupon_box(body)
+        x0, y0, _, x1, _, _ = coupon_box(body)
         feature('box', f'{body}_RABBET', corner=[round(x0 - 1, 6), round(y0 - 1, 6), PLATE_TOP_Z - COVER_LIP_H],
                 length=str(round(x1 - x0 + 2, 6)), width=str(round(RABBET_INNER_Y - COUPON_BOX[1] + 1, 6)),
                 height=str(COVER_LIP_H + 1), operation='cut', participants=[body])
-        (pocket, pocket_at), (tab, tab_at) = coupon_ends(body)
-        emit(feature, sketch, VARIANTS[pocket], left=None, right=body, offset=pocket_at, tag=f'_{body[-1]}P', references=False)
-        emit(feature, sketch, VARIANTS[tab], left=body, right=None, offset=tab_at, tag=f'_{body[-1]}T', references=False)
+        emit(feature, sketch, VARIANTS[tab], left=body, right=None, offset=offset, tag=f'_{body[-1]}T', references=False)
