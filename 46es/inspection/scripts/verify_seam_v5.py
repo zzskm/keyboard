@@ -513,16 +513,17 @@ def main(accept=False):
         assert abs(hi - cover_hi) < 1e-6 and abs(lo - cover_lo) < 1e-6, n
     # current values (cover T 6, top Z 19, skin 3.9, keycap rest Z 17.3) are pinned by the baseline's `values`
     walls = leg_magnet_walls(params)
-    # Rear rest blocks: the plates end at the rear flange bottom (no foot) and each block spans pad top -> flange bottom,
-    # touching its plate's flange (the contact shows in the clearance pass below).
+    # Rear rest blocks: the plates end at the rear flange bottom (Z 5, with 3 stacked-joint notches) and each block
+    # spans pad top -> flange bottom + inner backstop lip (Z 0.5 -> 7.5), contacting the flange bottom at Z 5.
     flange_bottom = params['plate_top_Z'] - params['TBD_plate_T'] - params['split_flange_H']
     rest_bottom = params['v5_rear_boss_top_Z'] + params['v5_rear_rest_gap']
+    rest_top = flange_bottom + params['v5_rear_rest_lip_H']
     for plate in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1'):
         assert abs(bodies[plate]['bbox']['min'][2] - flange_bottom) < 1e-6, (plate, bodies[plate]['bbox'])
     for i in REAR_RESTS:
         box = bodies[REAR_REST_BODY.format(i)]['bbox']
-        assert abs(box['min'][2] - rest_bottom) < 1e-6 and abs(box['max'][2] - flange_bottom) < 1e-6, (i, box)
-        assert abs(box['max'][2] - box['min'][2] - params['v5_rear_rest_H']) < 1e-6, (i, box)
+        assert abs(box['min'][2] - rest_bottom) < 1e-6 and abs(box['max'][2] - rest_top) < 1e-6, (i, box)
+        assert abs(box['max'][2] - box['min'][2] - (params['v5_rear_rest_H'] + params['v5_rear_rest_lip_H'])) < 1e-6, (i, box)
     levels = cover_levels(params, bodies)
     support_plan = support_contact_plan(params)
 
@@ -578,7 +579,7 @@ def main(accept=False):
                          for k in ('generated_vs_rest', 'among_generated')}
     result = dict(ok=True, inputs=fingerprints(VERIFY_INPUTS), v5_sha=sha(V5), baseline_sha=sha(BASELINE),
                   baseline_bodies=len(baseline['bodies']) + len(baseline['trials']), print_set=print_set, bodies=len(new),
-                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')), rear_rest_Z=[rest_bottom, flange_bottom], rear_rest_contacts=rest_contacts,
+                  timeline_active=sum(1 for t in ev['timeline'] if not t.get('suppressed')), rear_rest_Z=[rest_bottom, rest_top], rear_rest_contacts=rest_contacts,
                   generated=sorted(GENERATED), timeline=len(ev['timeline']), sketches=len(ev['sketches']), params=len(p5),
                   cover_Z=[cover_lo, cover_hi], cover_T=params['TBD_cover_T'], cover_levels=levels,
                   plate_supports=seats, mounts=verify_mounts(bodies), leg_magnets=walls,

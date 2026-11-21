@@ -218,7 +218,13 @@ v5_rear_boss_top_Z,mm,0.0,0,"[가정 2026-11-09] 뒤 벽 보스 윗면 = 지지�
 v5_rear_rest_gap,mm,0.5,0.5,[v5 설계 2026-11-10] 뒤 받침 블록 밑면 ↔ 보스 윗면 공칭 틈 = 점착 패드 자리. 블록을 패드로 보스 위에 붙인다. 딱 맞춰 만들면 SO 보스 6개가 정한 plate 높이와 겹친다(과구속),false
 v5_rear_rest_L,mm,14.0,14,[v5 설계 2026-11-10] 뒤 받침 블록 길이(X). 보스 추정 위치가 ±2 틀려도 플랜지 안쪽 면에서 본 보스 윗면 폭이 블록 밑에 다 들어온다,false
 v5_rear_rest_W,mm,4.0,4,[v5 설계 2026-11-10] 뒤 받침 블록 폭(Y). plate 뒤 가장자리에서 안쪽으로: 플랜지 폭 split_flange_W + 보스 앞쪽으로 2,false
-v5_rear_rest_H,mm,plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap,4.5,"[v5 유도값 2026-11-10] 뒤 받침 블록 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈. 주문 2에 이 높이 하나(2026-11-16). 남는 틈은 패드 두께로, 높으면 블록을 갈아 맞춘다",false
+v5_rear_rest_H,mm,plate_top_Z - TBD_plate_T - split_flange_H - v5_rear_boss_top_Z - v5_rear_rest_gap,4.5,"[v5 유도값 2026-11-10] 뒤 받침 블록 베이스 받침 높이 = 플랜지 밑면 − 보스 윗면 − 패드 틈(전체 높이는 + v5_rear_rest_lip_H). 주문 2에 이 높이 하나(2026-11-16). 남는 틈은 패드 두께로, 높으면 블록 밑면을 갈아 맞춘다",false
+v5_rear_rest_fit,mm,0.25,0.25,"[v5 설계 2026-11-21] 뒤 받침 블록 L자 턱·장부 ↔ plate 뒤 플랜지·노치 편측 X/Y 끼움 여유(MJF 무쿠폰 직출, seam S2 동일)",false
+v5_rear_rest_fit_Z,mm,0.4,0.4,[v5 설계 2026-11-21] 플랜지 노치 천장 ↔ 장부 상면 Z 여유(MJF ±0.3 공차에서 장부 바닥침·플랜지 들뜸 방지),false
+v5_rear_rest_lip_W,mm,v5_rear_rest_W - split_flange_W - v5_rear_rest_fit,1.75,[v5 유도값 2026-11-21] 뒤 받침 블록 안쪽(-Y) L자 단차 턱 폭 = 블록 폭 − 플랜지 폭 − 끼움 여유,false
+v5_rear_rest_lip_H,mm,2.5,2.5,"[v5 설계 2026-11-21] 뒤 받침 블록 안쪽 L자 단차 턱 높이(플랜지 밑면 Z 5 위, Z 7.5까지로 plate 밑면 Z 8과 0.5 여유)",false
+v5_rear_rest_tenon_L,mm,6.0,6,[v5 설계 2026-11-21] 뒤 받침 블록 중앙 장부 길이(X). plate 뒤 플랜지 밑면 노치(폭 + 2×fit)에 수직 적층 끼움,false
+v5_rear_rest_tenon_H,mm,1.3,1.3,"[v5 설계 2026-11-21] 뒤 받침 블록 중앙 장부 높이(플랜지 밑면 Z 5 위, Z 6.3까지. 노치 천장 Z 6.7, 잔여 플랜지 살 1.3)",false
 v5_rear_rest_1_X,mm,37.0,37,"[v5 설계 2026-11-09] 뒤 받침 블록 1 중심 X(보스 1 위, plate L 뒤 플랜지 구간 안)",false
 v5_rear_rest_2_X,mm,113.0,113,"[v5 설계 2026-11-09] 뒤 받침 블록 2 중심 X(보스 2 위, plate L 뒤 플랜지 구간 안)",false
 v5_rear_rest_3_X,mm,170.0,170,"[v5 설계 2026-11-09] 뒤 받침 블록 3 중심 X(보스 3 위, plate R 뒤 플랜지 구간 안)",false

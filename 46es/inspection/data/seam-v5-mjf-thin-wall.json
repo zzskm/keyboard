@@ -5,9 +5,9 @@
  "parts": [
   {
    "file": "46es_v5_plate_L",
-   "stl_sha256": "66ffe40cff4d9b27901eaa57aed7d0d64aebd5532da65ed158a0cd18110742e8",
-   "facets": 8846,
-   "samples": 1004300,
+   "stl_sha256": "f75dc291342653779739e459944af2b8d8f3f03b9a3aff3af6dc09ffc4258ba3",
+   "facets": 8904,
+   "samples": 1039653,
    "min_mm": 0.026,
    "wall_min_mm": 1.0,
    "below_limit": [
@@ -123,18 +123,18 @@
     },
     {
      "min_mm": 0.79,
-     "points": 8899,
+     "points": 8901,
      "wall_min_mm": 1.047,
      "wall_points_below_limit": 0,
      "at_print": [
       115.973,
       16.99,
-      4.983
+      4.533
      ],
      "to_print": [
       116.124,
       16.214,
-      4.983
+      4.533
      ],
      "dir_print": [
       0.191,
@@ -156,12 +156,12 @@
      "at_assembly": [
       115.58,
       77.977,
-      8.017
+      8.467
      ],
      "to_assembly": [
       115.731,
       78.753,
-      8.017
+      8.467
      ],
      "box_assembly": [
       [
@@ -181,9 +181,9 @@
   },
   {
    "file": "46es_v5_plate_R",
-   "stl_sha256": "d0200da2f4c339a17916b578a318e739c6898405cc8abbc54f8aa4d241df85c4",
-   "facets": 5758,
-   "samples": 1090469,
+   "stl_sha256": "07655cd9fad39028de0683f09152bffdeec56ccfe2643827bf87c9b9f46e1ee6",
+   "facets": 5802,
+   "samples": 1125851,
    "min_mm": 0.026,
    "wall_min_mm": 1.047,
    "below_limit": [
@@ -855,9 +855,9 @@
   },
   {
    "file": "46es_v5_rear_rest",
-   "stl_sha256": "c504381701df5d491013c1463828385f67e5ebdaaa0fe774a73c87cdee505091",
-   "facets": 12,
-   "samples": 4084,
+   "stl_sha256": "6d540a73472df1aa463b7a558afee0b06835643882e7cdf3016cdb14c6cef811",
+   "facets": 36,
+   "samples": 5712,
    "min_mm": null,
    "wall_min_mm": null,
    "below_limit": [],

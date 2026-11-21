@@ -304,6 +304,8 @@ DESIGN_ROWS = {
     '커버 윗면 / 본체 두께': ['v5_cover_top_Z', 'TBD_cover_T'],
     'mount–plate 접촉면': ['plate_top_Z - TBD_plate_T'],
     '뒤 받침 블록': ['v5_rear_rest_L', 'v5_rear_rest_W', 'v5_rear_rest_H', 'v5_rear_rest_gap',
+                    'v5_rear_rest_lip_W', 'v5_rear_rest_lip_H', 'v5_rear_rest_tenon_L', 'v5_rear_rest_tenon_H',
+                    'v5_rear_rest_fit', 'v5_rear_rest_fit_Z',
                     *[f'v5_rear_rest_{i}_X {s} v5_rear_rest_L / 2' for i in (1, 2, 3) for s in '-+']],
     '커버 다리 자석 포켓 위 살': ['v5_legmag_skin'],
     '커버 창 윤곽': ['v5_cover_silhouette_cell', 'v5_cover_silhouette_min_rail'],

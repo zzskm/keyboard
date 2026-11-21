@@ -35,10 +35,10 @@
   "ok": true,
   "inputs": {
     "inspection/scripts/verify_assembly_reference_v5.py": "ast:452c457cfd6394e1f7d57ee32c987fd84f4582fc31d3b100d840adf489e1a7f0",
-    "model/46es_assembly_review_v5.sc": "c135db5aeedc1fbe2fcf64cdd6e34ffccccb96ffcf468099e1fd278600efe6ba",
-    "model/assembly_reference_v5.json": "84f47b8069ed9c4822cea81d347980beae44c3e49409601054fa77834014922d",
-    "model/46es_mount_seam_v5.sc": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
-    "inspection/data/seam-v5-trial-print-set.json": "afb8993251dfd8596b1d3c2cd49e57ad12067f50e066ea2e443e6cfa1c3e27d2"
+    "model/46es_assembly_review_v5.sc": "9ba64dddc3eb8514a9c2d957ff62fcb2da5dc7e422583c41e3e489d235accbd2",
+    "model/assembly_reference_v5.json": "d0da01dee70bedff6aa5ebea5330ea3c96e8591fd2b4443589d37c6ba4a6efbd",
+    "model/46es_mount_seam_v5.sc": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
+    "inspection/data/seam-v5-trial-print-set.json": "467235a262c29f79ce2f6f392de8adc70373e4cfb987b39fa9caa8b097e08edc"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -115,8 +115,8 @@
       }
     }
   },
-  "model_sha": "c135db5aeedc1fbe2fcf64cdd6e34ffccccb96ffcf468099e1fd278600efe6ba",
-  "source_sha": "7f6d63adac09a94bb0f843fd961ec90ac3362ad4babb54ddd669a42a8c3e95ff",
+  "model_sha": "9ba64dddc3eb8514a9c2d957ff62fcb2da5dc7e422583c41e3e489d235accbd2",
+  "source_sha": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 18.999999999999996,
   "cover_above_rim_mm": 5.0,
@@ -242,7 +242,7 @@
     "min_distance_mm": 0.3,
     "target_mm": 0.25,
     "cap_bottom_rest_Z": 17.3,
-    "plate_top_Z": 13.000000000014394,
+    "plate_top_Z": 13.000000000031346,
     "travel_to_plate_mm": 4.3,
     "note": "Reference caps: bottom Z 17.30 = seat Z 11.30 + 6.0 (r2 based: on a 2T upper plate a fully pressed cap has almost no play -> about seat + 2 at bottom-out, about seat + 6 at rest). Pressed 4 mm they stop 0.30 above the plate top (Z 13); v5 upper layer 1.7 provides that 0.3 over r2. Real check since the 2nd pass (2026-11-06)."
   },
