@@ -31,7 +31,8 @@ CAD 재생성·검증·정적 검사 명령은 [validation.md 「재생성」](.
 | 항목 | 상태 |
 |---|---|
 | `measure_psd60.html` | 실측 입력 시트. 내보낸 JSON은 `measurements/`에 원본으로 두고 채택 판단은 `measurements.csv`에 적는다 |
-| `reference_r2/` | DWG/r2 비교 참고 |
+
+`r2` 비교용 복원 모델(`reference_r2/`)은 테크니컬 모션 가이드 전환 시 현행 트리에서 제거하고 Git 이력으로 옮겼다(원본 근거 `cad/46es_r2_keyboard.dwg`·`inspection/46es_r2_dwg_inspection.md`는 보존).
 
 split v1, minimal v2, side-pairs v3의 모델·검토 출력·설계 보고·검증 로그는 Git 커밋 `7744368`의 `46es/`에서 찾을 수 있다. 예를 들어 저장소 루트에서 `git ls-tree -r --name-only 7744368 -- 46es/model 46es/docs 46es/inspection`으로 목록을 확인한다. v4·v5 두 단 커버 문서, `print_v4`, `guide_v4.json`은 태그 `46es-pre-cleanup-2026-11-06`(= `72d3ea1`)에 있다. 초기 스케치 모델(`46es_draft_sketches.sc`·`parameters.csv`), 지그 A(`jigs/`), 2026-11-04 조립 여유 렌더, 옛 B 쿠폰 STL/STEP은 태그 `46es-pre-cleanup-2026-11-09`에 있다. 2026-11-10까지 생성 입력·회귀 기준이던 `baselines/seam_v4.sc`(v4 CAD)와 `baselines/flat_Z18.sc`(v5 1차 평판 커버)도 같은 태그에 같은 내용으로 있다.
 

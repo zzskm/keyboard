@@ -102,7 +102,7 @@ python 46es/tools/export_print_v5.py                       # print: 주문 1·2(
 python -B 46es/inspection/scripts/verify_seam_v5.py        # verify_seam(--accept: 의도한 설계 변경 뒤 기준 갱신, 아래)
 python 46es/tools/build_assembly_reference_v5.py           # assembly
 python -B 46es/inspection/scripts/verify_assembly_reference_v5.py   # verify_assembly
-python -B 46es/guide/review_guide.py --steps insert trial module --views reset iso   # review(캡처만, 판정은 사람)
+python -B 46es/guide/review_guide.py --steps step1 step2 step3 step4 step5 --views motion   # review(캡처만, 판정은 사람)
 ```
 
 파이프라인 밖의 명령:

@@ -4,6 +4,6 @@ numpy==2.5.3
 scipy==1.18.1
 shapely==2.2.0
 ezdxf==1.4.5
-# guide build and visual review only (guide/illustrations.py, guide/preview_from_published.py)
+# guide preview and optional inspection tools
 matplotlib==3.11.2
 Pillow==13.0.0

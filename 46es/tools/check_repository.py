@@ -154,21 +154,32 @@ def guide_checks(names):
         if render.get('hide'):
             expand(render['hide'], names, spec['groups'], render['id'])
     source = next(s for s in spec['sections'] if s['type'] == 'parts')
-    ids = [p['bodies'][0] for p in source['printed']] + [p['id'] for p in source['hardware']] + [p['id'] for p in config['references']]
+    printed_checks(source['printed'])
+    excluded = set(config.get('exclude_from_scene', []))
+    printed_ids = [p['bodies'][0] for p in source['printed'] if p['bodies'][0] not in excluded]
+    hw_ids = list(config['hardware_bodies'].keys())
+    ref_ids = [p['id'] for p in config.get('references', [])]
+    ids = printed_ids + hw_ids + ref_ids
     require(len(ids) == len(set(ids)), 'duplicate guide part ID')
-    for p in source['printed'] + config['references']:
+    for p in source['printed'] + config.get('references', []):
         if p['bodies']:
             expand(p['bodies'], names, spec['groups'], 'part')
-    printed_checks(source['printed'])
     for patterns in config['hardware_bodies'].values():
         if patterns:
             expand(patterns, names, spec['groups'], 'hardware')
-    assembly = next(s for s in spec['sections'] if s['type'] == 'assembly')
-    steps = [s['id'] for phase in assembly['phases'] for s in phase['steps']]
-    require(len(steps) == len(set(steps)) and set(steps) == set(config['steps']), 'guide step mismatch')
-    for key, step in config['steps'].items():
-        require(set(step['focus']) <= set(step['show']), f'invisible focus: {key}')
-        require(set(step['show'] + step['focus'] + list(step['needs'])) <= set(ids), f'unknown guide part: {key}')
+    procedural = set(config.get('procedural_parts', []))
+    steps = config.get('steps', [])
+    require(config.get('schema_version') == 2 and len(steps) == 5, 'guide motion steps must be 5 (schema v2)')
+    require(1 <= config.get('closeup_key_id', 0) <= 46, 'invalid closeup_key_id')
+    require(len(config.get('bom_groups', [])) == 16, 'guide bom_groups must have 16 items')
+    seen_parts = []
+    for step in steps:
+        require(step.get('id') and step.get('code') and step.get('parts'), f'invalid motion step: {step}')
+        for pid in step['parts']:
+            require(pid in ids or pid in procedural, f"unknown guide part {pid} in {step['id']}")
+            seen_parts.append(pid)
+    require(len(seen_parts) == len(set(seen_parts)), 'duplicate part assigned across motion groups')
+    require(set(ids) <= set(seen_parts), f'unassigned CAD parts in motion groups: {sorted(set(ids) - set(seen_parts))}')
     return len(steps)
 
 

@@ -453,8 +453,13 @@ def s_log(s, ctx):
             f'{ul(s.get("rejected", []), True)}</div></section>')
 
 
+def s_diagrams(s, ctx):
+    return sec_open(s, ctx) + diagram_block(ctx, s) + "</section>"
+
+
 SECTIONS = {"summary": s_summary, "structure": s_structure, "fit": s_fit, "issues": s_issues, "parts": s_parts,
-            "assembly": s_assembly, "steps": s_steps, "table": s_table, "measurements": s_measurements, "log": s_log}
+            "assembly": s_assembly, "steps": s_steps, "table": s_table, "measurements": s_measurements,
+            "log": s_log, "diagrams": s_diagrams}
 
 
 # ---------------------------------------------------------------- page
@@ -464,63 +469,43 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
     errors = sum(1 for t in ev["timeline"] if t.get("error"))
     warnings = sum(1 for t in ev["timeline"] if t.get("warning"))
     dof_ok = all(s.get("dof") == 0 for s in ev["sketches"])
-    chips = ""
-    for c in pg.get("chips", []):
-        if c.get("auto") == "measurements":
-            chips += measurement_chip(ctx.mrows)
-        elif c.get("auto") == "model":
-            chips += pill("ok" if errors == 0 else "risk", f"모델 바디 {ev['body_count']} · 오류 {errors}")
-        else:
-            chips += pill(c["tone"], ctx.text(c["text"]))
-    legend = "".join(f'<span><i style="background:{l["color"]}"></i>{ctx.text(l["label"])}</span>' for l in pg.get("legend", []))
-    callout = f'<div class="callout" style="margin-top:1.1rem"><p>{ctx.text(pg["callout"])}</p></div>' if pg.get("callout") else ""
-    hero = f'<div class="hero">{figure(ctx, pg["hero"], pg.get("hero_caption"), eager=True)}</div>' if pg.get("hero") else ""
     interactive = bool(spec.get('interactive'))
-    nav = ('<a href="#interactive">3D 조립</a>' if interactive else '') + "".join(f'<a href="#{s["id"]}">{ctx.text(s.get("nav", s["title"]))}</a>' for s in spec["sections"])
     body = "".join(SECTIONS[s["type"]](s, ctx) for s in spec["sections"])
     stamp = datetime.date.today().isoformat()
     auto_foot = (f"모델 <code>{html.escape(model_name)}</code>(SHA-256 {model_sha[:12]}): 바디 {ev['body_count']}, "
                  f"피처 {len(ev['timeline'])}, 스케치 {len(ev['sketches'])}{'개 모두 dof 0' if dof_ok else ''}, "
-                 f"타임라인 오류 {errors}, 경고 {warnings}. 렌더 {n_renders}장과 부품 표는 이 모델에서 자동으로 만들었다"
-                 f"(생성 {stamp}).")
+                 f"타임라인 오류 {errors}, 경고 {warnings}. 렌더 {n_renders}장·SVG·GLB는 CAD에서 자동 생성({stamp}).")
     foot = "".join(f"<p>{ctx.text(p)}</p>" for p in spec.get("footer", [])) + f"<p>{auto_foot}</p>"
     robots = '<meta name="robots" content="noindex, nofollow">\n' if pg.get("noindex") else ""
-    mark = pg.get("mark", ["46", "es"])
     css = (HERE / "assets" / "guide.css").read_text(encoding="utf-8")
-    js = (HERE / "assets" / "guide.js").read_text(encoding="utf-8")
+    fallback_hero = f'img/{pg["hero"]}.png' if pg.get("hero") and pg["hero"] in ctx.sizes else ''
+    stage = assembly.markup(getattr(ctx, 'interactive', None), fallback_hero=fallback_hero) if interactive else ''
     return f"""<!doctype html>
 <html lang="ko" data-theme="light" data-store="{html.escape(pg.get('store_key', '46es-guide'))}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{html.escape(pg['title'])}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23F2EEE6'/><rect x='3' y='3' width='26' height='26' rx='2' fill='none' stroke='%23E8612C' stroke-width='2.5'/><text x='16' y='21' text-anchor='middle' font-family='monospace' font-size='13' font-weight='700' fill='%231E1E1E'>46</text></svg>">
 <meta name="description" content="{html.escape(pg['description'])}">
 {robots}{FONTS}
 <style>
 {css}</style>
-{('<link rel="stylesheet" href="assembly.css">' if interactive else '')}
+{('<link rel="stylesheet" href="motion/motion.css">' if interactive else '')}
 </head>
-<body>
-<header class="wrap mast">
-  <div class="mast-top"><div class="mark" aria-hidden="true">{mark[0]}<span>{mark[1]}</span></div><h1>{ctx.text(pg['h1'])}</h1></div>
-  <p class="sub">{ctx.text(pg['sub'])}</p>
-  <p class="lede">{ctx.text(pg['lede'])}</p>
-  <div class="chips">{chips}</div>
-  {callout}
-  <div class="legend" aria-label="렌더 색 구분">{legend}</div>
-  {hero}
-</header>
-<div class="bar"><div class="wrap"><nav aria-label="섹션">{nav}</nav></div></div>
-<main class="wrap">
-{assembly.markup(getattr(ctx, 'interactive', None)) if interactive else ''}
-<details id="reference-docs" class="reference-docs"><summary>상세 설계 · 전체 조립 순서 · 시험 항목</summary>
-{body}
+<body class="motion-page">
+{stage}
+<div class="ref-shell">
+<details id="reference-docs" class="reference-docs">
+  <summary><span>SPEC · BOM · DIAGRAMS</span><span class="ref-meta">46es v5 · {ev['body_count']} CAD bodies</span></summary>
+  <div class="ref-body wrap">
+    {body}
+    <footer class="ref-foot">{foot}</footer>
+  </div>
 </details>
-</main>
-<footer class="wrap">{foot}</footer>
-<script>
-{js}</script>
-{('<script type="module" src="assembly.js"></script>' if interactive else '')}
+</div>
+<noscript><div class="ref-shell wrap"><p>JavaScript가 필요합니다. 아래 참고 표와 SVG 도면을 이용하세요.</p></div></noscript>
+{('<script type="module" src="motion/controller.js"></script>' if interactive else '')}
 </body>
 </html>
 """
@@ -604,6 +589,9 @@ def main():
                 print(f"removed unused {p.name}")
     ctx.diagrams = diagrams.build(out, ctx)
     for section in spec["sections"]:
+        for gid in section.get("diagrams", []):
+            if gid not in ctx.diagrams:
+                die(f"section {section['id']}: unknown diagram {gid}")
         for st in [s for ph in section.get("phases", []) for s in ph["steps"]] + section.get("steps", []):
             unknown = set(st.get("diagrams", [])) - set(ctx.diagrams)
             if unknown:
@@ -612,12 +600,7 @@ def main():
                      assembly_only=a.assembly_only)
     page_spec = spec
     if a.assembly_only:
-        section = next(section for section in spec['sections'] if section['type'] == 'assembly')
-        phases = [dict(phase, steps=[dict(step, render=None) for step in phase['steps']])
-                  for phase in section['phases']]
-        page_spec = dict(spec, sections=[dict(section, phases=phases)],
-                         page=dict(spec['page'], hero=None, noindex=True,
-                                   lede='조립 시각 검토용 · 현재 CAD의 3D 모델과 조립도를 표시합니다.'))
+        page_spec = dict(spec, page=dict(spec['page'], hero=None, noindex=True))
     page = build_page(page_spec, ctx, model.name, model_sha, len(results))
     (out / "index.html").write_text(page, encoding="utf-8", newline="\n")
     print(f"wrote {out / 'index.html'} ({len(page.encode('utf-8'))} bytes), {len(results)} images, {fresh} rendered now")
