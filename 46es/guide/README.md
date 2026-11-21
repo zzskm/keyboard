@@ -1,26 +1,40 @@
-# v5 조립 가이드
+# v5 3D 테크니컬 모션 조립 가이드
 
-`guide_v5.json`(설명) + `assembly_v5.json`(3D 단계) + `model/46es_assembly_review_v5.sc` → 정적 웹 가이드. 게시: https://zzskm.github.io/keyboard-46es/ (`/v4/`는 과거 기록, 현행 생성 대상 아님).
+`guide_v5.json`(정적 참고 표·fallback hero 렌더) + `assembly_v5.json`(5그룹·32초 모션 스키마) + `model/46es_assembly_review_v5.sc` → 풀스크린 1920×1080 테크니컬 모션 3D 웹 가이드. 게시: https://zzskm.github.io/keyboard-46es/ (`/v4/`는 과거 기록, 현행 생성 대상 아님).
 
-설명/재료/구매 수량=spec, 부피/경계/렌더/본문 숫자=CAD, 실측 상태=`model/measurements.csv`. 검토 CAD 실측 원본=`model/measurements/2026-11-04T111846Z.json`(역할 다름, [측정 안내](../model/measurements/README.md)).
+모든 외곽 치수(`W × D × H mm`), 경사각(`°`), 부품/접점 수량(`pcs`), 16칸 BOM 합계, 6칸 빌드 리포트 수치는 하드코딩 없이 Three.js가 실제 씬에 생성한 객체 트리에서 실시간 계산한다.
+
+## 아키텍처
+
+- **5개 조립 그룹 (`assembly_v5.json` `schema_version: 2`)**:
+  - `G1-BASE`: PSD60 하우징, MJF mount 4, 뒤 받침 블록 3, M3 인서트 6, 케이스 나사 6 (20 pcs)
+  - `G2-CORE`: 컨트롤러 브래킷 1, Pro Micro 1, USB 아웃렛 1, 브래킷 M2×6/너트 각 2, 절차적 1N4148 다이오드 46 + 4×12 매트릭스 배선 16경로 (53 pcs)
+  - `G3-PLATE`: 분할 plate L/R 2, spine 1, 앞 이음 M2×5 1, spine M2×6 4, plate/spine M2 너트 5, 상부 M3×10 볼트 6 (19 pcs)
+  - `G4-SW`: MX 스위치 46개 (역회전 OBB로 개별 분리, 92 금속 접점 핀) (46 pcs)
+  - `G5-TOP`: 투명 레진 커버 L/T/R 3, Ø3×2 자석 10, OEM 키캡 46개 (`1u` 43 · `1.25u` 1 · `2u` 1 · `2.25u` 1 개별 분리) (59 pcs)
+- **32.0초 결정론적 시퀀스 (`assets/motion/`)**:
+  - `0–7s`: 주황 3D 바운딩 박스 선 드로잉 + 실측 치수/바닥 실측 경사각(`2.2°`) 카운트업 → 5레이어 로컬 Z 분해 후 `G1→G5` 안착
+  - `7–13s`: X-Ray 와이어프레임 전환 + 수직 스캔 평면 상승하며 체결부 42 · 스위치 핀 92 · Pro Micro 패드 16 주황→파랑 하이라이트
+  - `13–17s`: 코어(`G2/G3/G4`) 100% 컬러 · 외곽(`G1/G5`) 20% 고스트 + SVG 지시선 4종
+  - `17–23s`: Key #40(`2u` 썸키) 클로즈업 줌인 → `+1.8 mm` 들뜸 주황 점멸(`⚠`) → 수직 결착 파랑(`0 ✓`) → 원위치 복귀
+  - `23–29s`: 키보드 우측 이동/축소 + 좌측 4×4(16칸) 오프스크린 3D 아이소메트릭 BOM 그리드 스태거 등장
+  - `29–32s`: 전체 아이소메트릭 복귀 + 하단 6칸 빌드 리포트 카운트업
+- **인터랙티브 컨트롤 & 참고 자료**:
+  - 로드 시 `0.0s` 완성 상태로 정지 대기 → `[▶/⏸]`(`Space`), `0.0s–32.0s` 스크러버(`←/→`), `[STEP 1~5]`(`1~5`, 고정 아이소메트릭 누적 탐색)
+  - 하단 접이식 `<details id="reference-docs">`에 출력 부품·구매품·주문 1 시험 표와 `diagrams.py` SVG 7종(배선 지도, 핀맵, 다이오드, 자석 극성, 스냅, 46키 시험표, 키캡 배열) 보존.
+  - WebGL 불가/실패 시 `img/hero.png` 정적 fallback과 `<details>` 자동 오픈으로 전환.
+- **런타임 자산**: `assets/vendor/` = Three.js 0.180.0 (`three.module.js`, `three.core.js`, `GLTFLoader.js`, `BufferGeometryUtils.js`, `LICENSE`, 오프라인, `OrbitControls` 미사용). `models/assembly.glb`는 `glb.py`로 양자화 압축(`KHR_mesh_quantization`, 주문 1 시험편 `CTRL_SNAP_TRIAL`·`SEAM_COUPON_L` 제외).
 
 ## 실행 (저장소 루트)
 
-SolidCraft CLI + Python NumPy·Matplotlib·Shapely·ezdxf 필요(`SOLIDCRAFT_CLI` 또는 기본 `C:/Program Files/SolidCraft/solidcraft-cli.exe`, `--cli` 변경).
-
-검토 CAD 갱신·검사는 [validation.md 「재생성」](../docs/validation.md#재생성-저장소-루트)의 `pipeline.py`(assembly·verify_assembly·review 단계)로 한다. 그 뒤 로컬 가이드:
+SolidCraft CLI + Python NumPy·Shapely·ezdxf 필요(`SOLIDCRAFT_CLI` 또는 기본 `C:/Program Files/SolidCraft/solidcraft-cli.exe`, `--cli` 변경).
 
 ```sh
-python 46es/guide/build_guide.py
+python 46es/guide/build_guide.py --clean-img
 python -m http.server 8766 --bind 127.0.0.1 --directory 46es/guide/out
 ```
 
-`http://127.0.0.1:8766/#interactive`. 원본 CAD/측정 JSON/생성기/검토 CAD 해시 불일치 시 중단.
-
-- `--skip-renders`: 유효 캐시 재사용(없으면 실패). `--only hero,st-ctrl`: 일부만.
-- `--out PATH --clean-img`, `--jobs N`(기본 4).
-
-`.cache/`, `out/`, `out_*/`는 생성물(Git 제외).
+`http://127.0.0.1:8766/`. 원본 CAD/측정 JSON/생성기/검토 CAD 해시 불일치 시 중단. `.cache/`, `out/`, `out_*/`는 생성물(Git 제외).
 
 ## 게시
 
@@ -29,37 +43,17 @@ python 46es/guide/publish_guide.py            # origin/main에 있는 깨끗한 
 python 46es/guide/publish_guide.py --dry-run  # 빌드·브라우저 검사만
 ```
 
-한 번에 빌드(`out_publish/`) → 브라우저 검사 → Pages clone(`D:/work/zzskm.github.io`)의 `keyboard-46es/`에 복사(`v4/` 유지) → 커밋·push → 게시본 확인까지 한다. 46es에 미커밋 변경이 있거나, HEAD가 origin/main에 없거나(`--allow-branch`로 완화), Pages clone 작성자가 zzskm noreply가 아니면 멈춘다. 빌드마다 `build.json`(원본 커밋·검토 모델 해시·파일 해시)을 넣고, `https://zzskm.github.io/keyboard-46es/build.json`이 이 커밋을 가리키고 `index.html`이 같아질 때까지 기다린다(기본 15분). 이 저장소 커밋만으로는 게시가 갱신되지 않는다.
+빌드(`out_publish/`) → 브라우저 검사(`check_browser.py`) → Pages clone(`D:/work/zzskm.github.io/keyboard-46es`, `v4/` 유지) 복사 → 커밋·push → 라이브 `build.json`·`index.html` 대조까지 일괄 수행한다.
 
 ## 시각 검토
 
-형상·체결·배치·조립 순서·부품 설명이 바뀌면 변경 단계와 완성 상태를 확인한다. 먼저 조립 검토 CAD를 갱신하고 위 검사를 실행한다. 다음 명령은 현행 CAD에서 로컬 조립 뷰를 빌드한 뒤 브라우저에서 지정한 단계와 마지막 단계를 열고, 2D 조립도와 3D 캡처를 남긴다. 시각 검토용 빌드는 게시 가이드의 정적 CAD 스냅샷 생성을 생략한다. Playwright와 Chrome이 필요하며 다른 Chromium 실행 파일은 `BROWSER_EXECUTABLE`로 지정한다.
-
 ```sh
-# 예시: 마운트와 컨트롤러 변경 검토
-python -B 46es/guide/review_guide.py --steps insert trial ctrl wire module --views iso bottom
+python -B 46es/tools/check_repository.py
+python 46es/guide/check_browser.py --site 46es/guide/out
+python -B 46es/guide/review_guide.py --steps step1 step2 step3 step4 step5 --views motion
 ```
 
-명령이 출력하는 `guide/.cache/visual-review/`의 실행 폴더에는 로컬 `site/`, 캡처와 `review.json`이 들어간다. 기록은 원본 CAD·검토 CAD·가이드 spec 해시(`pipeline.py --status`의 review 단계가 이것으로 판정), 실제 단계 ID·제목, 이미지 파일을 묶는다. 캡처 후에는 부품 표시·강조·수량, 체결 방향, 설치 및 분해 접근 공간을 눈으로 확인하고 변경 보고에 판정을 적는다. 예를 들어 마운트 변경이면 장착 단계와 plate를 얹은 상태를 함께 확인한다. 자동 캡처 직후 기록 상태는 `pending_manual_review`다.
-
-가이드 화면·3D 조작을 바꿨다면 아래의 전체 브라우저 검사로 데스크톱·모바일과 3D 실패 대체 화면도 확인한다. 기존 게시 자산으로 UI만 확인했다면 `UI 미리보기`, 실행할 수 없었다면 `미실행`, 가이드에 영향이 없는 정리라면 `대상 없음`으로 보고한다.
-
-## 그림
-
-`diagrams.py`가 조립 단계 그림(SVG)을 만든다. 손으로 그리지 않고 CAD 생성 원본에서 읽는다: 배선 지도·키캡 폭(키 위치 `tools/make_key_dxf.py`, mount 윤곽 `tools/mounts_v5.py`, plate·spine 범위는 검토 CAD), Pro Micro 핀 배치·스냅 끼우기/빼기(`tools/ctrl_v5.py`), 행·열·핀(`firmware/46es_kbfirmware.json`), 스위치 번호 ↔ 펌웨어 키(`matrix_v5.json`, 범례·키 폭으로 대응, 10·11번 Esc/Tab 순서는 미확인). 단계의 `diagrams`에 그림 ID를 적는다(`magnet-polarity`, `snap`, `wiring-map`, `pinmap`, `diode`, `test-grid`, `keycaps`). 빌드는 대응이 일대일인지, 행이 CAD X 순서인지, 검토 CAD의 Pro Micro 위치가 `ctrl_v5.py`와 같은지 확인한다.
-
-## spec
-
-`groups`=CAD 바디 패턴+`@그룹`. `renders`=표시/카메라/단면. 본문 토큰 `{{p:}} {{v:}} {{d:}} {{l:}} {{n:}}`(`l`=바디 평면 최대 길이). 수치는 손으로 적지 말고 토큰으로 쓴다. yaw 0=−Y(앞), −π/2=+X. 조립 단계 ID/구매품 ID는 체크·진행 기록에 쓰이므로 변경 금지. 3D 단계는 `assembly_v5.json`(`show,focus,needs,view,hardwareStages`). 배선은 3D 형상 없음, 케이스/하드웨어/키캡은 참고. `assets/vendor/`=Three.js 0.180.0+MIT(오프라인). 3D는 조립서가 화면 가까이 오면 저절로 열린다(받는 동안 2D 조립도 유지, 실패하면 2D 그대로). `조립도로 돌아가기`를 누르면 그 브라우저는 다음에도 2D로 시작하고(`localStorage` `view: '2d'`), `3D로 보기`를 누르면 지운다. 데이터 절약(`navigator.connection.saveData`, `prefers-reduced-data`)이면 열지 않는다. 검사 스크립트는 2D부터 보려고 데이터 절약 브라우저로 열고, `check_browser.py`가 자동 열기·2D 기억(`auto_3d`)과 폰에서 3D 위 세로 밀기=페이지 스크롤·가로 밀기=회전(`touch_scroll`, 캔버스 `touch-action: pan-y`)을 따로 본다. 3D 메시는 빌드가 SolidCraft STL(빌드 캐시에만 남김)을 `models/assembly.glb` 하나로 묶는다(`glb.py`: 같은 정점 합치기, 메시 상자 안 uint16 좌표 `KHR_mesh_quantization`, 법선 없음 → 뷰어·2D 그림이 면 법선을 다시 계산, 오차 0.003 mm 미만). 조각의 `mesh`는 `models/assembly.glb#part-ii-jj`, r2 비교는 `models/r2.glb`. STL 33 MB → GLB 9 MB, Pages가 gzip으로 보내 약 3.5 MB를 받는다. 진행률은 `assembly.json` `model_bytes` 기준.
-
-## 비교/검토/검증
-
-`comparison_r2.json`=DWG 판 윤곽·두께·배치 가정(공칭/가정). `model/reference_r2/` STEP/STL. 갱신: `python 46es/tools/build_r2_reference.py`(CadQuery 2.6, ezdxf).
-
-3D 시점 버튼: `맞춤`(`data-view=reset`)은 단계 기본 시점(이번 작업 부품 중심, 주변은 전체의 일부만), `입체`·`위`·`아래`·`앞`은 고정 시점이다. `시점 유지`를 켜면 단계를 넘겨도 카메라가 그대로이고, `크게 보기`는 3D를 화면 전체로 띄운다(Esc로 닫기, 모바일은 이때만 한 손가락 자유 회전). 크기 14 mm 이하 instance로만 이뤄진 부품(나사·너트·자석·인서트)은 작업 대상일 때 위치에 고리를 표시하며, instance는 빌드가 CAD body bbox로 묶는다(`assembly.py` `instances`). 카메라 이동은 `prefers-reduced-motion`이면 즉시 끝나며 검사 스크립트는 이 설정으로 캡처한다. `단면`은 x 또는 y 평면으로 모델을 잘라 잘린 면을 빗금으로 보여 준다. 카메라 쪽 절반을 지우고(y는 앞, x는 왼쪽), 아래 시점 단계는 아래에서 본다. 단계 기본 단면은 `assembly_v5.json` 단계의 `section`(`axis`, `through`=CAD body 이름, `note`)이고 빌드가 그 body 중심으로 위치를 정하므로 형상이 바뀌어도 따라간다. 없으면 작업 부품 중심을 자른다. 위치 슬라이더와 `앞에서`/`옆에서` 전환이 있다. 위아래로 겹친 instance(다리 자석 쌍)는 이중 고리로 표시한다(`instances`의 세 번째 값이 개수). `review_guide.py --views`도 같은 이름을 쓴다(`reset iso top bottom front section`). 그림이 있는 단계는 `<단계>-diagrams.png`도 남긴다.
-
-조립 동작 도구(3D 표시 도구 묶음): `▶ 동작`은 단계에 들어올 때 저절로 한 번 재생되고 버튼으로 다시 본다. `assembly_v5.json` 단계의 `illustrationLift`(2D 조립도와 같은 값)가 있는 부품은 그만큼 위에서 내려와 자리 잡고, 그 뒤 이번 작업 부품이 한 번 밝아지며 작은 부품 고리가 좁혀 든다. `illustrationLift`가 없는 단계는 방향을 암시하지 않도록 밝아짐·고리만 쓴다(끼움 방향을 넣으려면 그 단계에 `illustrationLift`를 적는다. 2D 조립도도 함께 바뀐다). `부품 펼치기`는 그 단계에 보이는 부품을 바닥에 줄지어 놓고 이름과 `needs` 수량을 붙인다(출력 부품 먼저, 큰 것부터. 나사·너트·인서트·자석은 instance마다 나눠 한 줄로, 참고 케이스는 뺀다). `치수`는 선택한 부품, 없으면 이번 작업 부품의 바깥 상자와 세 변 길이를 mm로 보여 준다. GLB 메시에서 계산한 CAD 설계값이며(부품 목록의 `size`와 같다) 출력물 실측이 아니다. 작은 부품 고리는 누르면 체크로 바뀌고 `체결 위치 확인 n / N`이 갱신된다. 체크는 단계별로 `localStorage`(`marks`)에 남고, 키는 `부품 id|piece:instance`(빌드의 instance 정렬 순서)라 형상이 바뀌어 instance 수·순서가 달라지면 맞지 않는 체크는 버려진다. `prefers-reduced-motion`이면 움직임 없이 최종 상태만 보인다. `check_browser.py`가 고리 체크·저장, 펼치기 이름표 수, 치수 표기를 본다(`motion_tools`).
-
-SolidCraft 없는 UI 검토: `python 46es/guide/preview_from_published.py --published <v5 자산 폴더>`(`assembly.json,models/,img/`, 해시 일치, Pillow). 식으로 정해지는 매개변수 값은 `model/parameters_seam_v5.csv`에서 식이 같은 것만 가져온다. 정식 빌드 대체 아님.
-
-검증: `python -B 46es/tools/check_repository.py`(경로/참조, CAD 재평가·브라우저 아님). 브라우저: `python 46es/guide/check_browser.py --site 46es/guide/out`(Playwright, 폴더를 직접 띄움. 실행 중인 서버는 `GUIDE_URL`, 그 밖에 `BROWSER_EXECUTABLE/GUIDE_SHOT_PREFIX`). 단계·부품 수는 빌드의 `assembly.json`에서 읽는다.
+- `review_guide.py`는 `--assembly-only`로 로컬 빌드 후 Playwright(1920×1080)로 32초 핵심 시점 9장 + `STEP 1~5` 5장을 `guide/.cache/visual-review/`에 캡처하고 `review.json`을 기록한다(`pipeline.py --status`의 `review` 단계가 이 해시로 판정).
+- `check_browser.py`는 1920×1080·1440×1100·390×844에서 초기 정지 상태, `window.__motionMetrics` 실측/카운팅 어서션, 32초 6개 구간, 16칸 BOM 썸네일, `STEP 1~5`, `<details>` SVG 로드, WebGL 실패 fallback을 자동 검증한다.
+- SolidCraft 없는 UI 검토: `python 46es/guide/preview_from_published.py --published <v5 자산 폴더>`.
+- 폐지된 구 16단계 조립서 및 `r2` 비교 UI/모델(`comparison_r2.json`, `model/reference_r2/`, `tools/build_r2_reference.py`)은 Git 이력에서 조회할 수 있다.

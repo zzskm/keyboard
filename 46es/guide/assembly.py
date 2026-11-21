@@ -1,73 +1,177 @@
-"""CAD-backed assets and data for the progressive assembly viewer."""
+"""CAD-backed assets and metadata for the 46es v5 technical motion 3D assembly guide."""
 import hashlib
 import json
+import math
 import shutil
 from pathlib import Path
 
 import numpy as np
 
+import diagrams
 import glb
+
+VENDOR_FILES = (
+    'three.module.js',
+    'three.core.js',
+    'GLTFLoader.js',
+    'BufferGeometryUtils.js',
+    'LICENSE',
+)
+
+
+def _body_center(box):
+    return [round((box['min'][i] + box['max'][i]) / 2, 3) for i in range(3)]
+
+
+def _export_keys_and_pads(ctx, base):
+    """Export 46 switch positions/pins/matrix roles and 16 Pro Micro signal pads from CAD sources."""
+    import ctrl_v5
+    from mounts_v5 import MX_CONTACTS, MX_PIN_DEPTH_FROM_SEAT
+
+    key_rows, pins_spec, role_map = diagrams.load(ctx)
+    upper_t = float(ctx.params.get('TBD_upper_plate_T', 1.7))
+    seat_z = round(13.0 - upper_t, 4)
+    pin_tip_z = round(seat_z - MX_PIN_DEPTH_FROM_SEAT, 4)
+
+    # OEM row lookup matching tools/build_assembly_reference_v5.py
+    oem_rows = {
+        2: {3, 6, 9, 11, 14, 17, 25, 28, 31, 33, 36, 39, 18},
+        3: {2, 5, 8, 10, 13, 16, 24, 27, 30, 32, 35, 38},
+        4: {1, 4, 7, 12, 15, 23, 26, 29, 34, 37, 43},
+        1: {19},
+    }
+    keys_out = []
+    for k in key_rows:
+        rad = math.radians(k['rot'])
+        ca, sa = math.cos(rad), math.sin(rad)
+        contact_xy = [
+            [round(k['x'] + ox * ca - oy * sa, 3), round(k['y'] + ox * sa + oy * ca, 3)]
+            for ox, oy in MX_CONTACTS
+        ]
+        oem_row = next((r for r, ids in oem_rows.items() if k['n'] in ids), 5)
+        keys_out.append(dict(
+            id=k['n'],
+            x=round(k['x'], 3),
+            y=round(k['y'], 3),
+            seat_z=seat_z,
+            pin_tip_z=pin_tip_z,
+            rot=round(k['rot'], 3),
+            w_u=k['w'],
+            oem_row=oem_row,
+            row=k['row'],
+            col=k['col'],
+            legend=k['legend'],
+            pins=contact_xy,
+        ))
+
+    solder_z = round(ctrl_v5.PCB_Z + ctrl_v5.PCB_T, 4)
+    pads_out = []
+    for pad in diagrams.pad_table(role_map):
+        if pad['role']:
+            pads_out.append(dict(
+                name=pad['name'],
+                role=pad['role'],
+                header=pad['header'],
+                pin=pad['n'],
+                x=round(pad['x'], 3),
+                y=round(pad['y'], 3),
+                z=solder_z,
+            ))
+
+    spine_box = ctx.bodies['PLATE_SPINE_V1']['bbox']
+    plates = [ctx.bodies[n]['bbox'] for n in ('PLATE_L_SPLIT_V1', 'PLATE_R_SPLIT_V1')]
+    seam_x = round(float(ctx.params.get('split_center_X', (plates[0]['max'][0] + plates[1]['min'][0]) / 2)), 3)
+    spine_grooves = dict(
+        x_min=round(spine_box['min'][0], 3),
+        x_max=round(spine_box['max'][0], 3),
+        ys=list(diagrams.SPINE_GROOVES_Y),
+        z=round(float(ctx.params.get('split_spine_bottom_Z', 3.05)) + 0.9, 3),
+        seam_x=seam_x,
+    )
+    return keys_out, pads_out, spine_grooves, pins_spec
 
 
 def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, assembly_only=False):
-    config = ctx.spec.get('interactive')
-    if not config:
+    config_rel = ctx.spec.get('interactive')
+    if not config_rel:
         return
-    config = json.loads((base / config).read_text(encoding='utf-8'))
+    config = json.loads((base / config_rel).read_text(encoding='utf-8'))
     ctx.interactive = config
+
     sections = ctx.spec['sections']
     source = next(s for s in sections if s['type'] == 'parts')
-    assembly = next(s for s in sections if s['type'] == 'assembly')
+    excluded = set(config.get('exclude_from_scene', []))
+    hw_labels_override = config.get('hardware_labels', {})
+    hw_by_id = {h['id']: h for h in source['hardware']}
+
     parts = []
     for p in source['printed']:
-        parts.append(dict(id=p['bodies'][0], label=ctx.text(p['label']), qty=p.get('qty', 1),
-                          category='출력 부품', detail=ctx.text(p.get('note', '')),
-                          bodies=p['bodies']))
-    for p in source['hardware']:
-        parts.append(dict(id=p['id'], label=ctx.text(p['item']), qty=p['qty'], category='구매품',
-                          detail=ctx.text(p['spec']) + ' · ' + ctx.text(p['decide']),
-                          bodies=config['hardware_bodies'].get(p['id'], [])))
-    for p in config['references']:
-        parts.append(dict(p, category='참고 형상'))
+        pid = p['bodies'][0]
+        if pid in excluded:
+            continue
+        parts.append(dict(
+            id=pid,
+            label=ctx.text(p['label']),
+            category='printed',
+            bodies=list(p['bodies']),
+        ))
+    for pid, patterns in config['hardware_bodies'].items():
+        hw = hw_by_id.get(pid)
+        label = hw_labels_override.get(pid) or (ctx.text(hw['item']) if hw else pid)
+        parts.append(dict(
+            id=pid,
+            label=label,
+            category='hardware',
+            bodies=list(patterns),
+        ))
+    for p in config.get('references', []):
+        parts.append(dict(
+            id=p['id'],
+            label=p['label'],
+            category='reference',
+            bodies=list(p['bodies']),
+        ))
+
     by_id = {p['id']: p for p in parts}
     if len(by_id) != len(parts):
         die('interactive: duplicate part ids')
+
+    procedural = set(config.get('procedural_parts', []))
+    steps = config['steps']
+    group_by_part = {}
+    for step in steps:
+        for pid in step['parts']:
+            if pid not in by_id and pid not in procedural:
+                die(f"interactive: unknown part {pid} in {step['id']}")
+            group_by_part[pid] = step['code']
+
+    keys_out, pads_out, spine_grooves, pins_spec = _export_keys_and_pads(ctx, base)
+
     for p in parts:
         p['bodies'] = expand(p['bodies'], ctx.names, ctx.groups, p['id'])
-        p['detail'] = p.get('detail', '')
+        p['group'] = group_by_part.get(p['id'], '')
         p['color'] = config.get('colors', {}).get(p['id'], '#87959f')
-        p['reference'] = p['category'] == '참고 형상' or p['id'] in config.get('approximate', [])
-        if p['reference']:
-            p['detail'] += ' · 형상은 위치 확인용이며 실물과 다를 수 있습니다.'
+        p['fastener'] = p['id'] in set(config.get('fastener_parts', []))
         if p['bodies']:
             lo = [min(ctx.bodies[b]['bbox']['min'][i] for b in p['bodies']) for i in range(3)]
             hi = [max(ctx.bodies[b]['bbox']['max'][i] for b in p['bodies']) for i in range(3)]
-            p['bbox'] = [lo, hi]
-            p['size'] = ' × '.join(f'{hi[i]-lo[i]:.1f}' for i in range(3)) + ' mm'
-    steps = []
-    for phase in assembly['phases']:
-        for st in phase['steps']:
-            if st['id'] not in config['steps']:
-                die(f"interactive: missing step {st['id']}")
-            setting = config['steps'][st['id']]
-            for pid in setting['show'] + setting['focus'] + list(setting['needs']):
-                if pid not in by_id:
-                    die(f'interactive: unknown part {pid}')
-            if not set(setting['focus']) <= set(setting['show']):
-                die(f"interactive: focus not visible in {st['id']}")
-            steps.append(dict(id=st['id'], title=ctx.text(st['title']), phase=phase['title'],
-                              body=ctx.text(st.get('text', '')),
-                              items=[ctx.text(x) for x in st.get('list', [])],
-                              check=ctx.text(st.get('check', '')), fix=ctx.text(st.get('fix', '')),
-                              diagrams=[d for gid in st.get('diagrams', []) for d in ctx.diagrams[gid]],
-                              image='img/' + st.get('render', 'hero') + '.png', **setting))
-            if 'section' in setting:
-                steps[-1]['section'] = section(setting['section'], ctx.bodies, st['id'], die)
+            p['bbox'] = [[round(v, 3) for v in lo], [round(v, 3) for v in hi]]
+            p['size'] = ' × '.join(f'{hi[i] - lo[i]:.1f}' for i in range(3)) + ' mm'
+            p['body_centers'] = [_body_center(ctx.bodies[b]['bbox']) for b in p['bodies']]
+        if p['id'] in ('housing', 'controller'):
+            p['instance_count'] = 1
+        elif p['id'] in ('switches', 'keycaps'):
+            p['instance_count'] = len(keys_out)
+        else:
+            p['instance_count'] = len(p['bodies'])
+
     piece_colors = config.get('piece_colors', {})
-    key = hashlib.sha256(json.dumps([model_sha, [(p['id'], p['bodies']) for p in parts],
-                                     piece_colors, 2]).encode()).hexdigest()[:20]
-    meshes = cache / 'web' / key
+    cache_key = hashlib.sha256(json.dumps(
+        [model_sha, [(p['id'], p['bodies']) for p in parts], piece_colors, 3]
+    ).encode()).hexdigest()[:20]
+    meshes = cache / 'web' / cache_key
     meshes.mkdir(parents=True, exist_ok=True)
+
     commands = []
     exports = []
     for i, p in enumerate(parts):
@@ -82,30 +186,37 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
                 die(f"interactive: invalid color groups for {p['id']}")
             p['preserveColors'] = True
         elif p['id'] == 'switches':
-            body_sets = [[b for b in p['bodies'] if b.startswith(prefixes)]
-                         for prefixes in (('REF_MX_LOWER','REF_MX_GUIDE'), ('REF_MX_UPPER',), ('REF_MX_STEM',), ('REF_MX_CONTACT',))]
+            body_sets = [
+                [b for b in p['bodies'] if b.startswith(prefixes)]
+                for prefixes in (('REF_MX_LOWER', 'REF_MX_GUIDE'), ('REF_MX_UPPER',), ('REF_MX_STEM',), ('REF_MX_CONTACT',))
+            ]
             body_sets = [b for b in body_sets if b]
         else:
-            body_sets = [[b] for b in p['bodies']] if p['id'] in ('m2-5','m2-6','m2-nuts') else [p['bodies']]
+            body_sets = [p['bodies']]
         for j, bodies in enumerate(body_sets):
             filename = f'part-{i:02}-{j:02}.stl'
-            # every piece is one named mesh in a single GLB (glb.py); the STL stays in the build cache
-            piece = dict(mesh=f'models/assembly.glb#{Path(filename).stem}', bodies=bodies,
-                         instances=instances([ctx.bodies[b]['bbox'] for b in bodies]))
+            piece = dict(
+                mesh=f'models/assembly.glb#{Path(filename).stem}',
+                bodies=bodies,
+                instances=instances([ctx.bodies[b]['bbox'] for b in bodies]),
+            )
             if colors:
                 piece['color'] = list(colors.values())[j]
             elif p['id'] == 'switches':
-                piece['color'] = ['#c8bc98','#e6dfca','#e8bd30','#be9456'][j]
+                piece['role'] = ['lower', 'upper', 'stem', 'contact'][j]
+                piece['color'] = ['#c8bc98', '#e6dfca', '#e8bd30', '#be9456'][j]
             p['pieces'].append(piece)
             exports.append((p, piece))
             if not (meshes / filename).exists():
                 commands.append(dict(command='file.export_stl', params=dict(
                     path=str(meshes / filename), bodies=bodies, quality='standard')))
         p['mesh'] = p['pieces'][0]['mesh']
+
     if commands:
         script = meshes / 'export.json'
         script.write_text(json.dumps(commands), encoding='utf-8')
         run([cli, 'run', script, '--in', model, '--quiet'])
+
     loaded = []
     for p, piece in exports:
         name = piece['mesh'].split('#')[1]
@@ -113,52 +224,57 @@ def prepare(ctx, base, out, cli, model, model_sha, cache, expand, run, die, asse
             tris = glb.read_stl(meshes / f'{name}.stl')
         except ValueError as e:
             die(f'interactive: {e}')
-        # Refuse stale print-oriented meshes: every vertex must stay in CAD world bounds.
         low, high = np.array(p['bbox'][0]), np.array(p['bbox'][1])
-        if (tris < low - .1).any() or (tris > high + .1).any():
+        if (tris < low - 0.1).any() or (tris > high + 0.1).any():
             die(f"interactive: mesh outside CAD bounds: {p['id']}")
         loaded.append((name, tris))
+
     (out / 'models').mkdir(parents=True, exist_ok=True)
-    for stale in (out / 'models').glob('part-*.stl'):  # older builds shipped one STL per piece
+    for stale in (out / 'models').glob('part-*.stl'):
         stale.unlink()
-    glb.write(out / 'models' / 'assembly.glb', loaded)
-    data = dict(parts=parts, steps=steps, model_sha=model_sha, tools=ctx.text(source.get('tools', '')),
-                model_bytes=(out / 'models' / 'assembly.glb').stat().st_size)
-    prepare_comparison(base, out, die)
-    from illustrations import prepare as draw_illustrations
-    draw_illustrations(out, data)
-    if assembly_only:
-        for step in steps:
-            step['image'] = step['illustration']
-    (out / 'assembly.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
-    for name in ('assembly.js', 'viewer.js', 'assembly.css', 'comparison.js'):
-        shutil.copyfile(Path(__file__).parent / 'assets' / name, out / name)
-    shutil.copytree(Path(__file__).parent / 'assets' / 'vendor', out / 'vendor', dirs_exist_ok=True)
+    for stale in (out / 'models').glob('r2*'):
+        stale.unlink()
+    glb_path = out / 'models' / 'assembly.glb'
+    glb.write(glb_path, loaded)
+
+    data = dict(
+        schema_version=config['schema_version'],
+        duration_sec=config['duration_sec'],
+        closeup_key_id=config['closeup_key_id'],
+        tilt_source=config['tilt_source'],
+        steps=steps,
+        bom_groups=config['bom_groups'],
+        parts=parts,
+        keys=keys_out,
+        controller_pads=pads_out,
+        spine_grooves=spine_grooves,
+        matrix_pins=pins_spec,
+        model_sha=model_sha,
+        model_bytes=glb_path.stat().st_size,
+    )
+    (out / 'assembly.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8', newline='\n')
+    copy_assets(out)
 
 
-def section(spec, bodies, step, die):
-    """Resolve a step's default cut plane from a CAD body, so it follows the model.
+def copy_assets(out):
+    """Copy motion engine modules, stylesheet, and vendored Three.js runtime (no OrbitControls)."""
+    assets_root = Path(__file__).parent / 'assets'
+    motion_dst = out / 'motion'
+    if motion_dst.exists():
+        shutil.rmtree(motion_dst)
+    shutil.copytree(assets_root / 'motion', motion_dst)
 
-    `{"axis": "y", "through": "REF_SO2_MAGNET"}` cuts across y at that body's centre and is
-    seen from the front; axis x is seen from the left. `note` says what the cut shows."""
-    axis, name = spec.get('axis'), spec.get('through')
-    if axis not in ('x', 'y') or name not in bodies:
-        die(f'interactive: invalid section in {step}: {spec}')
-    box = bodies[name]['bbox']
-    i = 'xy'.index(axis)
-    centre = [round((box['min'][k] + box['max'][k]) / 2, 2) for k in range(3)]
-    return dict(axis=axis, at=centre[i], center=centre, through=name, note=spec.get('note', ''))
+    vendor_dst = out / 'vendor'
+    vendor_dst.mkdir(parents=True, exist_ok=True)
+    for stale in vendor_dst.iterdir():
+        if stale.name not in VENDOR_FILES:
+            stale.unlink() if stale.is_file() else shutil.rmtree(stale)
+    for name in VENDOR_FILES:
+        shutil.copyfile(assets_root / 'vendor' / name, vendor_dst / name)
 
 
-def instances(boxes, gap=.2):
-    """Group CAD body boxes that share one plan-view spot into one physical instance each.
-
-    A switch is several bodies (housing, stem, contacts) stacked at one XY spot; a screw
-    set is several bodies far apart. A body joins a group when its centre lies inside the
-    group's first box (or the reverse), so neighbouring keycaps never chain together. The
-    viewer marks and frames these groups and the part thumbnail draws only the first one.
-    A group of several bodies carries the count as a third item (a leg magnet pair stacks
-    a cover magnet over a plate magnet at one spot), so the viewer can say "2 here"."""
+def instances(boxes, gap=0.2):
+    """Group CAD body boxes that share one plan-view spot into one physical instance each."""
     inside = lambda c, b: all(b['min'][i] - gap <= c[i] <= b['max'][i] + gap for i in (0, 1))
     centre = lambda b: [(b['min'][i] + b['max'][i]) / 2 for i in range(3)]
     groups = []
@@ -174,66 +290,60 @@ def instances(boxes, gap=.2):
     return [[[round(v, 2) for v in g[1]], [round(v, 2) for v in g[2]]] + ([g[3]] if g[3] > 1 else [])
             for g in groups]
 
-def prepare_comparison(base, out, die):
-    root = base.parent
-    folder = root / 'model/reference_r2'
-    manifest = folder / 'reference.json'
-    if not manifest.exists():
-        die('r2 reference missing: run python 46es/tools/build_r2_reference.py')
-    ref = json.loads(manifest.read_text(encoding='utf-8'))
-    for path, expected in ref['source_files'].items():
-        if hashlib.sha256((root / path).read_bytes()).hexdigest() != expected:
-            die('r2 reference stale: run python 46es/tools/build_r2_reference.py')
-    loaded = []
-    for p in ref['parts']:
-        src = folder / Path(p['mesh']).name
-        if hashlib.sha256(src.read_bytes()).hexdigest() != p['sha256']:
-            die('r2 reference mesh hash mismatch: ' + p['id'])
-        loaded.append((src.stem, glb.read_stl(src)))
-        # the site reads the same GLB format as the v5 viewer; sha256 stays the committed STL's
-        p['mesh'] = f'models/r2.glb#{src.stem}'
-        for piece in p.get('pieces', []):
-            piece['mesh'] = p['mesh']
-    (out / 'models').mkdir(exist_ok=True, parents=True)
-    for stale in (out / 'models').glob('r2-P*.stl'):
-        stale.unlink()
-    glb.write(out / 'models' / 'r2.glb', loaded)
-    step = folder / '46es_r2_reference.step'
-    if hashlib.sha256(step.read_bytes()).hexdigest() != ref['step_sha256']:
-        die('r2 reference STEP hash mismatch')
-    shutil.copyfile(step, out / step.name)
-    (out / 'r2-reference.json').write_text(json.dumps(ref, ensure_ascii=False, indent=2) + '\n',
-                                           encoding='utf-8', newline='\n')
-    shutil.copyfile(folder / 'overview.svg', out / 'r2-overview.svg')
 
-
-def markup(config=None):
-    return '''<section id="interactive" class="assembly-app" aria-label="46es 시각 조립서">
-<div class="build-heading"><div><p class="eyebrow">46es / BUILD BOOK</p><h2>부품을 보고, 한 단계씩.</h2></div><span class="build-badge">v5 · 시험 출력 전</span></div>
-<div class="build-modes" role="group" aria-label="가이드 모드"><button id="mode-build" aria-pressed="true">조립하기</button><button id="mode-compare" aria-pressed="false">r2와 비교</button><a href="#reference-docs">상세 자료 ↗</a></div>
-<p id="assembly-status" role="status">조립서를 불러오는 중입니다. 아래 전체 설명도 이용할 수 있습니다.</p>
-<div id="assembly-ui" hidden>
-<div id="build-panel">
-<div class="assembly-nav"><button id="asm-prev" type="button" aria-label="이전 조립 단계">←</button><label><span class="sr-only">조립 단계</span><select id="asm-step"></select></label><button id="asm-next" type="button" aria-label="다음 조립 단계">→</button></div>
-<div id="asm-phases" class="phase-track" aria-label="조립 구간"></div>
-<div class="build-sheet">
-<div class="build-step-heading"><span id="asm-number" class="build-number">01</span><div><p id="asm-phase" class="eyebrow"></p><h3 id="asm-title"></h3></div><span id="asm-progress"></span></div>
-<div class="parts-tray"><div class="tray-label">이번에 사용할 부품 <span>3D에서 위치 표시</span></div><div id="asm-tray" class="tray-items"></div></div>
-<div class="assembly-layout"><div class="assembly-visual" id="asm-visual"><div class="expand-bar"><button id="asm-x-prev" type="button" aria-label="이전 조립 단계">←</button><span id="asm-x-title"></span><button id="asm-x-next" type="button" aria-label="다음 조립 단계">→</button><button id="asm-x-close" type="button">닫기 ✕</button></div><div class="visual-key"><span><i class="old-dot"></i>앞 단계 / 주변 부품</span><span><i class="new-dot"></i>이번 작업</span><span class="key-3d"><i class="ring-dot"></i>작은 부품 위치</span><span class="key-3d"><i class="pick-dot"></i>선택한 부품</span><span class="key-3d" id="asm-key-pair" hidden><i class="ring2-dot"></i>2개 겹침</span><span class="key-3d" id="asm-key-cut" hidden><i class="cut-dot"></i>잘린 면</span><span class="key-3d" id="asm-key-done" hidden><i class="done-dot"></i>고리를 눌러 체결 확인</span><span class="key-3d" id="asm-key-dims" hidden><i class="dim-dot"></i>바깥 치수 · CAD 설계값</span></div><img id="asm-drawing" alt="현재 단계 조립도"><p id="asm-section-note" class="section-note" hidden></p><p id="asm-marks" class="marks-chip" role="status" hidden></p><div id="asm-canvas" hidden tabindex="0" aria-label="3D 조립 모델. 드래그로 회전, 휠 또는 두 손가락으로 확대, 더블클릭한 곳으로 확대"></div>
-<div class="assembly-toolbar"><button id="asm-installed" type="button" hidden>장착 후 보기</button><button id="asm-3d" type="button">3D로 보기</button><div id="asm-3d-tools" hidden><span class="tool-group" role="group" aria-label="시점"><button type="button" data-view="reset" title="이 단계의 기본 시점">맞춤</button><button type="button" data-view="iso">입체</button><button type="button" data-view="top">위</button><button type="button" data-view="bottom">아래</button><button type="button" data-view="front">앞</button></span><span class="tool-group" role="group" aria-label="표시"><button id="asm-focus" type="button" aria-pressed="false">작업 부품만</button><button id="asm-keep" type="button" aria-pressed="false" title="단계를 넘겨도 지금 시점을 유지">시점 유지</button><button id="asm-expand" type="button" aria-pressed="false">크게 보기</button><button id="asm-play" type="button">▶ 동작</button><button id="asm-knoll" type="button" aria-pressed="false" title="이 단계에 보이는 부품을 바닥에 펼쳐 이름·수량과 함께 봅니다">부품 펼치기</button><button id="asm-dims" type="button" aria-pressed="false" title="이번 작업 부품(또는 선택한 부품)의 바깥 치수. CAD 설계값이며 출력물 실측이 아닙니다">치수</button><label>분해<input id="asm-explode" aria-label="조립 분해 정도" type="range" min="0" max="1" step="0.01" value="0"></label></span><span class="tool-group" role="group" aria-label="단면"><button id="asm-section" type="button" aria-pressed="false" title="모델을 잘라 안쪽 끼움 상태를 봅니다">단면</button><button id="asm-section-axis" type="button" hidden title="자르는 방향 바꾸기">앞에서</button><label id="asm-section-pos" hidden>위치 <input id="asm-section-at" aria-label="단면 위치" type="range" min="0" max="1" step="0.1" value="0"></label></span></div></div>
-<p id="asm-picked" aria-live="polite"></p><details id="asm-fallback"><summary>참고 이미지 보기</summary><img id="asm-image" alt="현재 조립 단계 참고 이미지"></details></div>
-<article class="assembly-instruction"><ol id="asm-actions" class="action-list"></ol><div id="asm-check" class="assembly-check"></div><details id="asm-details"><summary>세부 설명 · 안 맞을 때</summary><div id="asm-body"></div><div id="asm-fix"></div><a id="asm-detail">전체 설명에서 보기 ↗</a></details><label class="tick"><input type="checkbox" id="asm-done"> 이 단계 확인 완료</label><button id="asm-complete-next" class="primary-button" type="button">완료하고 다음 →</button></article></div>
-<section id="asm-diagrams" class="step-diagrams" aria-label="이번 단계 그림" hidden></section>
-</div>
-<details class="parts-catalog"><summary>전체 부품 · 준비 체크 · 검색</summary><div class="assembly-parts-head"><label>목록 <select id="asm-scope"><option value="step">현재 단계</option><option value="all">전체 부품</option></select></label><label>검색 <input id="asm-search" type="search" placeholder="이름 또는 규격"></label></div><p id="asm-parts-note"></p><div id="asm-parts" class="assembly-parts"></div><p id="asm-tools" class="note"></p></details>
-<p class="reference-note">케이스·스위치·키캡·구매품은 참고 형상입니다. 배선은 3D 대신 배선 단계의 그림으로 보여 줍니다. 분해 간격·화살표·부품 움직임·펼친 배치는 조립 설명용이며 실물 끼움·공차를 보증하지 않습니다. 3D 치수는 CAD 형상의 바깥 상자 크기(설계값)이고 출력물 실측값이 아닙니다.</p>
-</div>
-<div id="compare-panel" hidden>
-<div class="compare-heading"><div><p class="eyebrow">r2 ACRYLIC → v5 PRINTED</p><h3>무엇이 달라졌을까?</h3></div><span class="build-badge">같은 시점 · 같은 축척</span></div>
-<p class="reference-note">r2는 도면 윤곽을 복원한 비교용 모델입니다. 두께는 공칭값, 아래→위 P0→P5 적층과 설치 높이는 가정입니다. 제작용으로 쓰지 마세요.</p>
-<div class="compare-toolbar"><label>비교 대상 <select id="cmp-scope"><option value="all">전체 구조</option><option value="plate">스위치 판</option><option value="cover">커버</option></select></label><button id="cmp-3d" type="button">3D로 보기</button><div id="cmp-3d-tools" hidden><button data-compare-view="iso">입체</button><button data-compare-view="top">위</button><button data-compare-view="front">앞</button><label>분해 <input id="cmp-explode" aria-label="비교 모델 분해 정도" type="range" min="0" max="1" step="0.01" value="0.35"></label></div></div>
-<p id="compare-status" role="status">비교 모델을 준비하고 있습니다.</p>
-<div class="compare-grid"><article><h4>r2 <small>아크릴 · 6종 / 10조각</small></h4><div id="r2-canvas" class="compare-canvas" hidden aria-label="r2 비교 모델"></div><img id="r2-fallback" src="img/build/r2-all.png" alt="r2 아크릴 적층 조립도"><div id="r2-layers" class="layer-list"></div></article><article><h4>v5 <small>현행 · 분리형 plate + 자석 커버</small></h4><div id="v5-canvas" class="compare-canvas" hidden aria-label="v5 비교 모델"></div><img id="v5-fallback" src="img/build/v5-all.png" alt="현행 v5 분해 조립도"><p>좌우 plate는 mount 받침 7곳에 놓입니다. 평면 커버는 L·T·R을 개별 탈착합니다.</p></article></div>
-<div class="compare-facts"><div><b>46개 키 위치</b><span>r2의 2D 키 배열이 기준</span></div><div><b>plate 구조</b><span>r2 1.5T 판 → v5 좌우 분할·국부 걸쇠 층</span></div><div><b>커버 유지보수</b><span>r2 적층 판 → v5 자석 탈착 3조각</span></div></div>
-<details><summary>복원 근거와 가정 · 모델 내려받기</summary><ul id="r2-assumptions"></ul><p>좌표는 r2 P2 윗면과 v5 스위치 착좌면을 맞춘 비교 기준입니다. 하우징 설치 높이 비교가 아닙니다.</p><a href="46es_r2_reference.step" download>r2 비교용 STEP</a> · <a href="r2-reference.json">복원 근거와 파일 해시</a></details>
-</div></div><noscript><p>시각 조립서는 JavaScript가 필요합니다. 아래 전체 조립 순서와 이미지를 이용하세요.</p></noscript></section>'''
+def markup(config=None, fallback_hero='img/hero.png'):
+    steps = (config or {}).get('steps', [])
+    step_buttons = ''.join(
+        f'<button type="button" class="step-btn" data-step="{idx}" aria-pressed="false" '
+        f'title="{s["code"]} · {s["label"]}">STEP {idx}</button>'
+        for idx, s in enumerate(steps, 1)
+    )
+    hero_html = (
+        f'<img id="motion-fallback-img" src="{fallback_hero}" alt="46es v5 assembly">'
+        if fallback_hero else ''
+    )
+    return f'''<section id="motion-stage" class="motion-stage" aria-label="46es v5 3D Technical Assembly Guide">
+  <div class="stage-frame" id="stage-frame">
+    <div id="motion-canvas" class="motion-canvas" aria-label="46es v5 3D isometric assembly canvas"></div>
+    <svg id="motion-overlay" class="motion-overlay" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div class="stage-header" aria-hidden="true">
+      <div class="brand-tag"><span class="brand-code">46ES-V5</span><span class="brand-sep">/</span><span id="hud-phase-code" class="phase-code">01 · DIM + EXPLODE</span></div>
+      <div id="hud-telemetry" class="hud-telemetry" hidden></div>
+      <div class="time-readout"><span id="hud-time-big">00.0</span><span class="unit">s</span><span class="time-total">/ 32.0s</span></div>
+    </div>
+    <div id="hud-bom" class="hud-bom" hidden aria-label="BOM inventory grid">
+      <div class="bom-head"><span class="bom-title">BOM</span><span id="bom-total-badge" class="bom-total">0 pcs</span></div>
+      <div id="bom-grid" class="bom-grid"></div>
+    </div>
+    <div id="hud-report" class="hud-report" hidden aria-label="Build verification report">
+      <div class="rep-cell"><span class="rep-k">PARTS</span><strong id="rep-parts" class="rep-v">0</strong><span class="rep-u">pcs</span></div>
+      <div class="rep-cell"><span class="rep-k">STEPS</span><strong id="rep-steps" class="rep-v">0</strong><span class="rep-u">seq</span></div>
+      <div class="rep-cell"><span class="rep-k">GROUPS</span><strong id="rep-groups" class="rep-v">0</strong><span class="rep-u">grp</span></div>
+      <div class="rep-cell"><span class="rep-k">CYCLE</span><strong id="rep-time" class="rep-v">0.0</strong><span class="rep-u">s</span></div>
+      <div class="rep-cell rep-ok"><span class="rep-k">SHORT</span><strong id="rep-short" class="rep-v">0</strong><span class="rep-u">err</span></div>
+      <div class="rep-cell rep-ok"><span class="rep-k">GAP</span><strong id="rep-gap" class="rep-v">0 ✓</strong><span class="rep-u">mm</span></div>
+    </div>
+    <div id="motion-loading" class="motion-loading" role="status"><span class="load-code">46ES-V5</span><span id="motion-status-text">LOADING CAD</span></div>
+    <div id="motion-fallback" class="motion-fallback" hidden>
+      {hero_html}
+      <div class="fallback-badge">WEBGL UNAVAILABLE · STATIC CAD FALLBACK</div>
+    </div>
+  </div>
+  <div class="control-bar" role="region" aria-label="Sequence controls">
+    <button id="btn-play" class="ctrl-play" type="button" aria-label="Play or pause" aria-pressed="false">▶</button>
+    <div class="scrubber-wrap">
+      <input id="timeline-scrubber" class="scrubber" type="range" min="0" max="32" step="0.05" value="0" aria-label="Timeline scrubber (seconds)">
+      <div class="phase-ticks" aria-hidden="true">
+        <span style="left:0%">0s</span>
+        <span style="left:21.875%">7s</span>
+        <span style="left:40.625%">13s</span>
+        <span style="left:53.125%">17s</span>
+        <span style="left:71.875%">23s</span>
+        <span style="left:90.625%">29s</span>
+        <span style="left:100%">32s</span>
+      </div>
+    </div>
+    <span id="ctrl-time" class="ctrl-time">00.0s</span>
+    <div class="step-toggles" role="group" aria-label="Manual assembly steps">{step_buttons}</div>
+  </div>
+</section>'''

@@ -1,7 +1,4 @@
-"""Build the current guide and capture selected assembly steps for visual review.
-
-Per step: the 2D drawing, the step diagrams (wiring map, snap, ...) when it has any, and one 3D capture per --views.
-"""
+"""Build the current motion guide and capture manual STEP 1-5 + 32s key frames for visual review."""
 import argparse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -15,9 +12,19 @@ from threading import Thread
 
 from build_guide import DEFAULT_CLI, file_sha256
 
-
 HERE = Path(__file__).resolve().parent
 CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+MOTION_KEYFRAMES = (
+    ('t00-0s-idle', 0.0),
+    ('t01-8s-dims', 1.8),
+    ('t03-4s-explode', 3.4),
+    ('t10-0s-xray', 10.0),
+    ('t15-0s-core', 15.0),
+    ('t19-2s-gap-warn', 19.2),
+    ('t21-4s-gap-ok', 21.4),
+    ('t26-5s-bom', 26.5),
+    ('t31-5s-report', 31.5),
+)
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -38,43 +45,30 @@ def capture(site, evidence, steps, views):
                     executable_path=os.environ.get('BROWSER_EXECUTABLE', CHROME),
                     args=['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
                 )
-                page = browser.new_page(viewport={'width': 1440, 'height': 1100}, reduced_motion='reduce')  # camera moves land in one frame
-                # as a data-saver browser, so the 2D drawing stays up until the 3D button is pressed
-                page.add_init_script("Object.defineProperty(navigator, 'connection', {value: {saveData: true}, configurable: true})")
+                page = browser.new_page(viewport={'width': 1920, 'height': 1080}, reduced_motion='reduce')
                 errors = []
                 page.on('pageerror', lambda error: errors.append(str(error)))
-                page.goto(f'http://127.0.0.1:{server.server_port}/#interactive')
-                page.locator('#asm-drawing').wait_for(state='visible')
+                page.goto(f'http://127.0.0.1:{server.server_port}/')
+                page.wait_for_function("document.documentElement.dataset.motionReady === '1'", timeout=120000)
+
                 captures = []
-                for index, step_id in steps:
-                    page.locator('#asm-step').select_option(str(index))
-                    title = page.locator('#asm-title').inner_text()
-                    page.locator('#asm-drawing').evaluate('(image) => image.decode()')
-                    drawing = f'{step_id}-drawing.png'
-                    page.locator('#asm-drawing').screenshot(path=evidence / drawing)
-                    images = [drawing]
-                    diagrams = page.locator('#asm-diagrams')
-                    if diagrams.is_visible():
-                        page.wait_for_function("Array.from(document.querySelectorAll('#asm-diagrams img')).every(i => i.complete && i.naturalWidth > 0)")
-                        images.append(f'{step_id}-diagrams.png')
-                        diagrams.screenshot(path=evidence / images[-1])
-                    page.locator('#asm-3d').click()
-                    page.wait_for_function(
-                        "document.getElementById('assembly-status').textContent.includes('3D 준비 완료')",
-                        timeout=120000,
-                    )
-                    for view in views:
-                        # section = the step's own cut (assembly_v5.json "section"), seen from its side
-                        toggle = '#asm-section' if view == 'section' else f'[data-view={view}]'
-                        page.locator(toggle).click()
-                        page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
-                        name = f'{step_id}-{view}.png'
-                        page.locator('#asm-canvas').screenshot(path=evidence / name)
-                        images.append(name)
-                        if view == 'section':
-                            page.locator('#asm-section').click()
-                    page.locator('#asm-3d').click()
-                    captures.append({'id': step_id, 'title': title, 'images': images})
+                if 'motion' in views:
+                    frame_images = []
+                    for label, t_sec in MOTION_KEYFRAMES:
+                        page.evaluate('(t) => window.__motionControl.seek(t)', t_sec)
+                        page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+                        name = f'motion-{label}.png'
+                        page.locator('#motion-stage').screenshot(path=evidence / name)
+                        frame_images.append(name)
+                    captures.append({'id': 'timeline', 'title': '32.0s technical motion sequence', 'images': frame_images})
+
+                for step_num, step_code in steps:
+                    page.locator(f'.step-btn[data-step="{step_num}"]').click()
+                    page.evaluate('() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))')
+                    name = f'step{step_num}-{step_code}.png'
+                    page.locator('#motion-stage').screenshot(path=evidence / name)
+                    captures.append({'id': f'step{step_num}', 'title': step_code, 'images': [name]})
+
                 if errors:
                     raise RuntimeError('browser errors: ' + '; '.join(errors))
                 browser.close()
@@ -86,21 +80,20 @@ def capture(site, evidence, steps, views):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--steps', nargs='+', required=True, help='assembly step IDs; the final step is included')
-    parser.add_argument('--views', nargs='+', choices=('reset', 'iso', 'top', 'bottom', 'front', 'section'),
-                        default=['iso'], help='reset = view of the step itself; iso/top/bottom/front = fixed views; '
-                        'section = the step cut from assembly_v5.json (or one through its work parts)')
+    parser.add_argument('--steps', nargs='+', default=['step1', 'step2', 'step3', 'step4', 'step5'],
+                        help='manual step IDs (step1..step5)')
+    parser.add_argument('--views', nargs='+', choices=('motion', 'steps-only'), default=['motion'],
+                        help='motion = capture 32s keyframes + requested steps; steps-only = steps only')
     parser.add_argument('--cli', default=str(DEFAULT_CLI))
     args = parser.parse_args()
 
     spec = json.loads((HERE / 'guide_v5.json').read_text(encoding='utf-8'))
-    section = next(section for section in spec['sections'] if section['type'] == 'assembly')
-    ids = [step['id'] for phase in section['phases'] for step in phase['steps']]
-    unknown = sorted(set(args.steps) - set(ids))
+    config = json.loads((HERE / spec['interactive']).read_text(encoding='utf-8'))
+    valid_map = {f'step{i}': (i, s['code']) for i, s in enumerate(config['steps'], 1)}
+    unknown = sorted(set(args.steps) - set(valid_map))
     if unknown:
-        parser.error('unknown step(s): ' + ', '.join(unknown) + '. Available: ' + ', '.join(ids))
-    steps = [(index, step_id) for index, step_id in enumerate(ids)
-             if step_id in args.steps or index == len(ids) - 1]
+        parser.error('unknown step(s): ' + ', '.join(unknown) + '. Available: ' + ', '.join(valid_map))
+    steps = [valid_map[s] for s in valid_map if s in args.steps]
 
     manifest_path = (HERE / spec['reference_manifest']).resolve()
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
@@ -114,18 +107,20 @@ def main():
     site = evidence / 'site'
     subprocess.run([sys.executable, '-B', str(HERE / 'build_guide.py'),
                     '--assembly-only', '--out', str(site), '--cli', args.cli], check=True)
-    assembly = json.loads((site / 'assembly.json').read_text(encoding='utf-8'))
-    if assembly['model_sha'] != model_sha or file_sha256(model) != model_sha or file_sha256(source) != source_sha:
+    built = json.loads((site / 'assembly.json').read_text(encoding='utf-8'))
+    if built['model_sha'] != model_sha or file_sha256(model) != model_sha or file_sha256(source) != source_sha:
         raise RuntimeError('CAD changed during guide build; rerun visual review')
-    if [step['id'] for step in assembly['steps']] != ids:
-        raise RuntimeError('built guide step list differs from the requested spec')
+    if len(built['steps']) != len(config['steps']):
+        raise RuntimeError('built guide step count differs from assembly_v5.json')
 
     captures = capture(site, evidence, steps, args.views)
-    report = {'status': 'pending_manual_review', 'source_sha256': source_sha,
-              'review_model_sha256': model_sha,
-              # tools/pipeline.py --status compares these with the working tree to tell whether a review is current
-              'spec_sha256': {name: file_sha256(HERE / name) for name in ('guide_v5.json', spec['interactive'])},
-              'steps': captures}
+    report = {
+        'status': 'pending_manual_review',
+        'source_sha256': source_sha,
+        'review_model_sha256': model_sha,
+        'spec_sha256': {name: file_sha256(HERE / name) for name in ('guide_v5.json', spec['interactive'])},
+        'steps': captures,
+    }
     (evidence / 'review.json').write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     print('Inspect the captures and record the visual verdict in the change report.')

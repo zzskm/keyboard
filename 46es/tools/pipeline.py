@@ -40,8 +40,8 @@ REPO = ROOT.parent
 DATA = ROOT / 'inspection/data'
 TIMINGS = ROOT / '.cache/pipeline-timings.json'
 REVIEW_RUNS = ROOT / 'guide/.cache/visual-review'
-REVIEW_STEPS = ('insert', 'trial', 'module')      # validation.md 「재생성」 review line; --review-steps changes them
-REVIEW_VIEWS = ('reset', 'iso')
+REVIEW_STEPS = ('step1', 'step2', 'step3', 'step4', 'step5')  # validation.md 「재생성」 review line
+REVIEW_VIEWS = ('motion',)
 
 
 def seam_stale():

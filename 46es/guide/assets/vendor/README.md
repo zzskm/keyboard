@@ -4,7 +4,6 @@ Vendored from https://cdn.jsdelivr.net/npm/three@0.180.0/ :
 
 - build/three.module.js
 - build/three.core.js
-- examples/jsm/controls/OrbitControls.js
 - examples/jsm/loaders/GLTFLoader.js
 - examples/jsm/utils/BufferGeometryUtils.js (imported by GLTFLoader)
 - LICENSE
