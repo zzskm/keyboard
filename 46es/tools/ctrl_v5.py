@@ -42,7 +42,7 @@ ROOF_GAP, ROOF_T = 0.3, 1.5            # split_bracket_gap, split_bracket_T
 M2_SEAT_Z, M2_L = 10.2, 6.0            # split_M2_plate_seat_Z (ISO 7380 M2x6 button head, tip Z 4.2)
 M2_CLEAR_D, M2_HEAD_D = 2.4, 4.4       # split_M2_clear_D, split_M2_head_D
 NUT_AF, NUT_H = 4.0, 1.6               # DIN 934 M2
-NUT_POCKET_AF = 4.4
+NUT_POCKET_AF = 4.2
 
 # Pro Micro pin-out, pin 1 at the USB end. Pads and component-side parts follow the Arduino Pro Micro reference and
 # are the one definition of the board: the review model (tools/build_assembly_reference_v5.py) draws it from these

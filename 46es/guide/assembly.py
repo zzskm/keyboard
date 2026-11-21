@@ -1,5 +1,6 @@
 """CAD-backed assets and metadata for the 46es v5 technical motion 3D assembly guide."""
 import hashlib
+import html
 import json
 import math
 import re
@@ -427,8 +428,15 @@ def instances(boxes, gap=0.2):
             for g in groups]
 
 
-def markup(config=None, fallback_hero='img/hero.png'):
+def markup(config=None, fallback_hero='img/hero.png', status_badge=''):
     cfg = config or {}
+    badge_html = (
+        f'<span class="rc-badge" style="margin-left:8px;padding:2px 7px;border-radius:3px;'
+        f'background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.55);'
+        f'color:#fbbf24;font-size:10px;letter-spacing:0.06em;font-weight:600">'
+        f'{html.escape(status_badge)}</span>'
+        if status_badge else ''
+    )
     dur = float(cfg.get('duration_sec', 36.0))
     steps = cfg.get('steps', [])
     layers = cfg.get('visibility_layers', [])
@@ -471,7 +479,7 @@ def markup(config=None, fallback_hero='img/hero.png'):
     <div id="motion-canvas" class="motion-canvas" aria-label="46es v5 3D interactive assembly canvas"></div>
     <svg id="motion-overlay" class="motion-overlay" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true"></svg>
     <div class="stage-header" aria-hidden="true">
-      <div class="brand-tag"><span class="brand-code">46ES-V5</span><span class="brand-sep">/</span><span id="hud-phase-code" class="phase-code">01 · DIM + EXPLODE</span></div>
+      <div class="brand-tag"><span class="brand-code">46ES-V5</span><span class="brand-sep">/</span><span id="hud-phase-code" class="phase-code">01 · DIM + EXPLODE</span>{badge_html}</div>
       <div id="hud-telemetry" class="hud-telemetry" hidden></div>
       <div class="header-right">
         <div id="hud-cam-chip" class="hud-cam-chip" hidden>FREE ORBIT</div>

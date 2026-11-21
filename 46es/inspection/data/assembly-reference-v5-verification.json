@@ -34,11 +34,11 @@
   },
   "ok": true,
   "inputs": {
-    "inspection/scripts/verify_assembly_reference_v5.py": "ast:452c457cfd6394e1f7d57ee32c987fd84f4582fc31d3b100d840adf489e1a7f0",
-    "model/46es_assembly_review_v5.sc": "9ba64dddc3eb8514a9c2d957ff62fcb2da5dc7e422583c41e3e489d235accbd2",
-    "model/assembly_reference_v5.json": "d0da01dee70bedff6aa5ebea5330ea3c96e8591fd2b4443589d37c6ba4a6efbd",
-    "model/46es_mount_seam_v5.sc": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-    "inspection/data/seam-v5-trial-print-set.json": "467235a262c29f79ce2f6f392de8adc70373e4cfb987b39fa9caa8b097e08edc"
+    "inspection/scripts/verify_assembly_reference_v5.py": "ast:d3a2b656cc5fafda10b3da1cac596502469705f53f4dc971ddd6039380049460",
+    "model/46es_assembly_review_v5.sc": "171e3fc7d5dbdedc84de713a81cc9a6eb8ece49029397d541e2947ec6b688304",
+    "model/assembly_reference_v5.json": "e92bd9613004caf5c83a563970ef3380d32cdc2035afad1f2dfa84933796eec3",
+    "model/46es_mount_seam_v5.sc": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+    "inspection/data/seam-v5-trial-print-set.json": "67525049088008523265f3a8feb94af02b593af211d4917fb0e5c75e7ebbc3a1"
   },
   "mount_review_fit": {
     "overlaps": 0,
@@ -87,7 +87,7 @@
     "bosses_without_rest": [
       "REF_PSD_REAR_BOSS_4"
     ],
-    "note": "Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap under each block is the adhesive pad, and the block height is picked from the order-1 variants at trial assembly."
+    "note": "Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap under each block is the adhesive pad, and the single stacked block height in order 2 is tuned with the pad thickness or light sanding of the block underside."
   },
   "mount_switch_pin_fit": {
     "target_mm": 0.4,
@@ -115,15 +115,15 @@
       }
     }
   },
-  "model_sha": "9ba64dddc3eb8514a9c2d957ff62fcb2da5dc7e422583c41e3e489d235accbd2",
-  "source_sha": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
+  "model_sha": "171e3fc7d5dbdedc84de713a81cc9a6eb8ece49029397d541e2947ec6b688304",
+  "source_sha": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
   "rim_Z": 14.000000000000007,
   "cover_top_Z": 18.999999999999996,
   "cover_above_rim_mm": 5.0,
   "cover_levels": {
     "COVER_L_DRAFT_TBD": {
-      "18.0": 20.277,
-      "19.0": 2493.247
+      "18.5": 29.199,
+      "19.0": 2484.326
     },
     "COVER_T_DRAFT_TBD": {
       "19.0": 2320.967
@@ -242,7 +242,7 @@
     "min_distance_mm": 0.3,
     "target_mm": 0.25,
     "cap_bottom_rest_Z": 17.3,
-    "plate_top_Z": 13.000000000031346,
+    "plate_top_Z": 13.000000000014348,
     "travel_to_plate_mm": 4.3,
     "note": "Reference caps: bottom Z 17.30 = seat Z 11.30 + 6.0 (r2 based: on a 2T upper plate a fully pressed cap has almost no play -> about seat + 2 at bottom-out, about seat + 6 at rest). Pressed 4 mm they stop 0.30 above the plate top (Z 13); v5 upper layer 1.7 provides that 0.3 over r2. Real check since the 2nd pass (2026-11-06)."
   },

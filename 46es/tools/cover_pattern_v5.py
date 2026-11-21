@@ -20,9 +20,9 @@ from pathlib import Path
 
 from cover_v5 import COVER_L
 
-DEPTH = 1.0            # engraving depth (parameter v5_cover_pattern_depth)
+DEPTH = 0.5            # engraving depth (parameter v5_cover_pattern_depth)
 TEXT = 'kb46es/26'
-TEXT_HEIGHT = 2.0      # glyph cell height (font units 0..1600): stroke 0.5, narrowest rib 0.25, 15.5 wide
+TEXT_HEIGHT = 2.4      # glyph cell height (font units 0..1600): stroke 0.6, narrowest rib 0.3, 18.59 wide
 TEXT_AT = (11.0, 40.5)  # centre of the text box: L left block (X -0.4..22, Y 29..45), under its rear edge
 TEXT_EDGE = 1.0        # full-height wall kept from the text to the cover edge and window
 FONT_DATA = Path(__file__).with_name('cover_logo_xifiction.json')

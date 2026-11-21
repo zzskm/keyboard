@@ -5,11 +5,11 @@
   "body": "PLATE_L_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 38314.2873,
-  "stl_triangles": 8904,
+  "cad_volume_mm3": 38307.0997,
+  "stl_triangles": 9088,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 38315.6969,
+  "stl_volume_mm3": 38308.5073,
   "stl_rel_volume_error": 3.7e-05,
   "print_bbox_mm": [
    147.793,
@@ -17,10 +17,10 @@
    8.0
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "f75dc291342653779739e459944af2b8d8f3f03b9a3aff3af6dc09ffc4258ba3",
-  "step_sha256": "599a625304f3f11265e9d3a5ef3fcb1dfb4b08e50d60f2b9573f82ff0d690480",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-  "shape_sha256": "113358b5b1ccb8bc15dc58bb891b5ed1902e78190d32e07c4222b6c97ff6e485"
+  "stl_sha256": "97fabf4bb24e04c54e7b06b9436430b05b681025c7e56bc298d08b79098509aa",
+  "step_sha256": "90f88a081ae75c20186d224a9e6287ac8c72093b424b1610c167ec1dde68a6a0",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "shape_sha256": "1ca88e3e8d692a2cb42d15a808365a71d0f48ef8f202e618f191d2256c57d8e4"
  },
  {
   "order": "order2",
@@ -42,7 +42,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "07655cd9fad39028de0683f09152bffdeec56ccfe2643827bf87c9b9f46e1ee6",
   "step_sha256": "d9c96df2b78ab732021b134e32c281e6da1452b61d620413261a530a17c40366",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
   "shape_sha256": "51b971087515a065e692048ada2c7bdaf7523e38f6e0fabaeecd1d9cd991ca3d"
  },
  {
@@ -51,22 +51,22 @@
   "body": "PLATE_SPINE_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 1773.8511,
-  "stl_triangles": 3622,
+  "cad_volume_mm3": 1821.2537,
+  "stl_triangles": 3594,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 1773.9332,
-  "stl_rel_volume_error": 4.6e-05,
+  "stl_volume_mm3": 1821.3361,
+  "stl_rel_volume_error": 4.5e-05,
   "print_bbox_mm": [
-   30.0,
+   31.4,
    49.0,
    5.45
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "6c784b4b36e1b08eb8fc4953b16db39de50592d3e1f0ede8b3800d8cb7c4437e",
-  "step_sha256": "d2968c08d374182547c1e53b5193488227cd849c8a3fa753f079ffa2b3d317ac",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-  "shape_sha256": "de17646cb2294c0619d3b929888d973d105374fbfc66888dcfcc8daefd8c26a3"
+  "stl_sha256": "e34e6a4194ba0e2d809590c5e0e6744aa5b76f2f7a7025bc79198dac37fc7cd0",
+  "step_sha256": "4ec5ed1b013a78ecb8218bf2cf4707cfbefa4b2d8d91b08c5de0ad83bae2fc51",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "shape_sha256": "2b9d2b2b3698047401574aff72f3f874e058729a3e36d0d2937e28f40ad87829"
  },
  {
   "order": "order2",
@@ -74,11 +74,11 @@
   "body": "CTRL_BRACKET_SPLIT_V1",
   "material": "MJF PA12S-HP 검정",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 1568.0607,
+  "cad_volume_mm3": 1575.3595,
   "stl_triangles": 3220,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 1568.0746,
+  "stl_volume_mm3": 1575.3734,
   "stl_rel_volume_error": 9e-06,
   "print_bbox_mm": [
    36.181,
@@ -86,10 +86,10 @@
    8.0
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "60aa77a29fc7a3398c3e0372fb5c05504b22bd46b6447177766a43868cd7b388",
-  "step_sha256": "14edf20aecbe9406f547d331c72a75e12acfa01e86c624d05387a6774e05e3ee",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-  "shape_sha256": "ab53b867d3223b53cba27765acac5fb761c858d14e40e2aea808b3c9f95d66e0"
+  "stl_sha256": "fc2787c8cc1adfec796bb5d7ac4a4c265160a742cbdfc93b45cebb45ddd03903",
+  "step_sha256": "0b36e88d3e6858ff1e358343e590eeff84329ee4078f03a80ec5067e7e05237a",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "shape_sha256": "8dc06da295f570c8286d708db2c8901c953a3689973208101bfd1a5aaaa8e25b"
  },
  {
   "order": "order2",
@@ -97,11 +97,11 @@
   "body": "COVER_L_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 15570.3846,
-  "stl_triangles": 3616,
+  "cad_volume_mm3": 15571.147,
+  "stl_triangles": 3590,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 15570.2925,
+  "stl_volume_mm3": 15571.0549,
   "stl_rel_volume_error": 6e-06,
   "print_bbox_mm": [
    101.747,
@@ -109,10 +109,10 @@
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "6a63b7a90a175588f55f8392dbcbbe999124427a5916f28da6366935b5f58b85",
-  "step_sha256": "af362fe8f9463d67e1b3bdd57cb62c050b171eb86fd4241c4cf65ac932c8fd1c",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-  "shape_sha256": "56c58794460456d8bca47826f69c93308603b4210472121680749794577dce7a"
+  "stl_sha256": "96f1bf80342889b2991694a7051f1330f0091642c2085fb50032b8554760ca4f",
+  "step_sha256": "418fc630b745d94355499a11688a295209ee6c1cb34754445a11539fa3c7b2b1",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "shape_sha256": "73f7cc8323a765e1199b29caee4cfef3ce9fe6ac2793e1df72f7ca114b72e780"
  },
  {
   "order": "order2",
@@ -120,22 +120,22 @@
   "body": "COVER_T_DRAFT_TBD",
   "material": "8001 레진 투명",
   "print_flip_about_X": true,
-  "cad_volume_mm3": 14187.2331,
-  "stl_triangles": 1732,
+  "cad_volume_mm3": 14177.2633,
+  "stl_triangles": 1988,
   "stl_components": 1,
   "stl_bad_edges": 0,
-  "stl_volume_mm3": 14187.1889,
-  "stl_rel_volume_error": 3e-06,
+  "stl_volume_mm3": 14177.2354,
+  "stl_rel_volume_error": 2e-06,
   "print_bbox_mm": [
    86.348,
    95.334,
    7.5
   ],
   "bed_zmin": 0.0,
-  "stl_sha256": "d5760df308a8e53ef335d31f5666d3b4d0720ce87d8b4e962f79084fad1abcb1",
-  "step_sha256": "9ae829517da0331070c0c6aac2fc5b3be5e6356a78a5b79c530c6280e7d406b7",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
-  "shape_sha256": "d7cfc36630ac23f4b7f8c275636e72f8d633f8da51ccfbd64ccf67fb1cebef0a"
+  "stl_sha256": "fabd7f9dcc50fdbb38119540a792ae8d06a284cb592b47f3528f3caec9c1ebad",
+  "step_sha256": "63524f974e0385f8d921e77e6b63e65515f91bd7c9dd68ec477604c80d1f74b1",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
+  "shape_sha256": "7224299f8d7120bc810b764f367e7300d85353338b5bc4a1ffcb16aeb8072aea"
  },
  {
   "order": "order2",
@@ -157,7 +157,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "00a1a70d27cad3de01b528ca8e646a2b70390e65362117acc07d33d137d39a16",
   "step_sha256": "d286f1fdcda9f37436970739a9191001f0dea03693cf7fea799cd75720397f9a",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
   "shape_sha256": "efb6447b78bb15d5d30c77a22f40d76f2c847371bee7ea36499dbbc0236499a0"
  },
  {
@@ -180,7 +180,7 @@
   "bed_zmin": 0.0,
   "stl_sha256": "6d540a73472df1aa463b7a558afee0b06835643882e7cdf3016cdb14c6cef811",
   "step_sha256": "101ee68d20bc350c03d096a8ad8d600d30f3fe49491db57945c63eceb38787a7",
-  "source_sha256": "7e420d9619ac769e5703d9bee518cbfbc4b98a4f9bf06d4651e8ae0decd740d5",
+  "source_sha256": "67cedcbca317f5805d83ff729199a531524b9b3cec675d141720cc697bd59007",
   "shape_sha256": "045b606dc9abe6cfb57adde8392717831b42567728e4371efcf18cacd71728e9"
  }
 ]

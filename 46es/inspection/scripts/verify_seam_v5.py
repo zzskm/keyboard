@@ -92,13 +92,15 @@ def baseline_diff(old, new):
     return out
 
 
-def check_baseline(ev, trials_ev, params, accept):
+def check_baseline(ev, trials_ev, params, accept, report_diff=False):
     now = baseline_now(ev, trials_ev, params)
     old = json.loads(BASELINE.read_text(encoding='utf-8')) if BASELINE.is_file() else {}
     diff = baseline_diff(old, now)
     if accept:
         print('\n'.join(['baseline differences (put them in the commit message):'] + (diff or ['none'])))
         write_json(BASELINE, now)
+    elif report_diff:
+        print('\n'.join(['baseline differences (non-destructive --report-diff):'] + (diff or ['none'])))
     else:
         assert not diff, ('the model differs from inspection/data/seam-v5-baseline.json; after an intended change run '
                           'verify_seam_v5.py --accept and record the differences in the commit message:\n' + '\n'.join(diff))
@@ -482,7 +484,7 @@ def check_print_set(bodies):
     return out
 
 
-def main(accept=False):
+def main(accept=False, report_diff=False):
     v5 = document(V5)
     p5 = {p['name']: p['expr'] for p in v5['params'] if not p['model']}
     rows = {r['name']: r for r in csv.DictReader((ROOT / 'model/parameters_seam_v5.csv').open(encoding='utf-8-sig'))}
@@ -497,7 +499,7 @@ def main(accept=False):
     assert all(len(s) == 1 and len(s[0]['shells']) == 1 for s in trials.values())
 
     ev, _ = evaluation(V5)
-    baseline = check_baseline(ev, evaluation(TRIALS)[0], p5, accept)
+    baseline = check_baseline(ev, evaluation(TRIALS)[0], p5, accept, report_diff=report_diff)
     errors = [t['name'] for t in ev['timeline'] if t.get('error')]
     warnings = [t['name'] for t in ev['timeline'] if t.get('warning')]
     dof = [s['name'] for s in ev['sketches'] if s.get('dof') != 0]
@@ -593,4 +595,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--accept', action='store_true',
                     help='after an intended design change: print the differences from the baseline, rewrite it, verify')
-    main(ap.parse_args().accept)
+    ap.add_argument('--report-diff', action='store_true',
+                    help='print baseline differences without overwriting seam-v5-baseline.json and run all checks')
+    args = ap.parse_args()
+    main(accept=args.accept, report_diff=args.report_diff)

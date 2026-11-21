@@ -213,7 +213,7 @@ def read_drawing(path=DRAWING):
         'R': sorted([p for p in layer0 if p.bounds[0] > 240], key=lambda p: -p.bounds[3]),
         'REAR': [single('REAR_PLATE_SEATS')],
     }
-    for suffix, count in [('L', 2), ('R', 2), ('REAR', 1), ('FRONT', 2)]:
+    for suffix, count in [('L', 2), ('R', 2), ('REAR', 1), ('FRONT', 1)]:
         if len(pads[suffix]) != count or any(not p.is_valid for p in pads[suffix]):
             raise ValueError(f'{suffix} must have {count} valid plate pad profiles')
     # Pads are drawn to the rail edges; keep them clear of the plate's downturned flanges.

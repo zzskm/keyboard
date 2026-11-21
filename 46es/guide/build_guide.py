@@ -479,7 +479,15 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
     robots = '<meta name="robots" content="noindex, nofollow">\n' if pg.get("noindex") else ""
     css = (HERE / "assets" / "guide.css").read_text(encoding="utf-8")
     fallback_hero = f'img/{pg["hero"]}.png' if pg.get("hero") and pg["hero"] in ctx.sizes else ''
-    stage = assembly.markup(getattr(ctx, 'interactive', None), fallback_hero=fallback_hero) if interactive else ''
+    status_badge = pg.get('status_badge', '')
+    badge_html = (
+        f' · <span class="rc-badge" style="padding:1px 6px;border-radius:3px;'
+        f'background:rgba(245,158,11,0.16);border:1px solid rgba(245,158,11,0.5);'
+        f'color:#d97706;font-size:11px;font-weight:600">{html.escape(status_badge)}</span>'
+        if status_badge else ''
+    )
+    stage = assembly.markup(getattr(ctx, 'interactive', None), fallback_hero=fallback_hero,
+                            status_badge=status_badge) if interactive else ''
     return f"""<!doctype html>
 <html lang="ko" data-theme="light" data-store="{html.escape(pg.get('store_key', '46es-guide'))}">
 <head>
@@ -497,7 +505,7 @@ def build_page(spec, ctx, model_name, model_sha, n_renders):
 {stage}
 <div class="ref-shell">
 <details id="reference-docs" class="reference-docs">
-  <summary><span>SPEC · BOM · DIAGRAMS</span><span class="ref-meta">46es v5 · {ev['body_count']} CAD bodies</span></summary>
+  <summary><span>SPEC · BOM · DIAGRAMS</span><span class="ref-meta">46es v5 · {ev['body_count']} CAD bodies{badge_html}</span></summary>
   <div class="ref-body wrap">
     {body}
     <footer class="ref-foot">{foot}</footer>

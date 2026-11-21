@@ -44,7 +44,7 @@ TAB_RIB_W = 1.1                    # v5_cover_silhouette_min_rail: thin-bezel ri
 TAB_WIN_X = (6.0, 24.0)            # 18 mm wide through-window (approx 1u span)
 TAB_WIN_H = 4.5                    # window depth in Y (y = 32.4 .. 36.9, leaving 1.1 mm rib at 36.9 .. 38.0)
 # Cover name on the tab's cosmetic face: (scale, centre from the tab corner). Scale 1 is the cover_L engraving.
-TAB_TEXT = {'X1': (1.0, (15.0, 23.5)), 'X1_6': (1.6, (15.0, 11.0))}
+TAB_TEXT = {'X1': (1.0, (15.0, 23.5)), 'X1_3': (1.3, (15.0, 11.0))}
 TEXT_EDGE = 1.0
 COLOR = [143, 191, 106]
 

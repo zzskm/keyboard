@@ -42,7 +42,7 @@ SCREW_HEAD_D = 3.8
 NUT_AF, NUT_H = 4.0, 1.6                      # DIN 934 M2: across flats 4.0 (3.82-4.0), height 1.6
 REF_NUT_AF = 3.9                              # reference nut drawn inside its tolerance so it clears a 4.0 pocket
 MIN_WALL = 1.0
-FRONT_PAD_HOLE_R = 2.55                       # mounts_v5: clearance in Front pad 1 for the nut bottom and screw tip
+FRONT_PAD_HOLE_R = 2.80                       # mounts_v5: clearance in Front pad 1 for the nut bottom and screw tip
 
 
 @dataclass(frozen=True)

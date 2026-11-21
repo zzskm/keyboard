@@ -2,8 +2,8 @@
  "about": "Expected v5 state: verify_seam_v5.py fails on any difference; --accept rewrites this file and prints the differences for the commit message. check_repository.py compares the fingerprints.",
  "bodies": {
   "COVER_L_DRAFT_TBD": {
-   "shape_sha256": "56c58794460456d8bca47826f69c93308603b4210472121680749794577dce7a",
-   "volume_mm3": 15570.385,
+   "shape_sha256": "73f7cc8323a765e1199b29caee4cfef3ce9fe6ac2793e1df72f7ca114b72e780",
+   "volume_mm3": 15571.147,
    "bbox": [
     [
      -0.393,
@@ -34,8 +34,8 @@
    ]
   },
   "COVER_T_DRAFT_TBD": {
-   "shape_sha256": "d7cfc36630ac23f4b7f8c275636e72f8d633f8da51ccfbd64ccf67fb1cebef0a",
-   "volume_mm3": 14187.233,
+   "shape_sha256": "7224299f8d7120bc810b764f367e7300d85353338b5bc4a1ffcb16aeb8072aea",
+   "volume_mm3": 14177.263,
    "bbox": [
     [
      87.6835,
@@ -50,8 +50,8 @@
    ]
   },
   "CTRL_BRACKET_SPLIT_V1": {
-   "shape_sha256": "ab53b867d3223b53cba27765acac5fb761c858d14e40e2aea808b3c9f95d66e0",
-   "volume_mm3": 1568.061,
+   "shape_sha256": "8dc06da295f570c8286d708db2c8901c953a3689973208101bfd1a5aaaa8e25b",
+   "volume_mm3": 1575.36,
    "bbox": [
     [
      113.0,
@@ -98,8 +98,8 @@
    ]
   },
   "MOUNT_H03_SO6_MIN_V2": {
-   "shape_sha256": "7b8a8c2ca0e33716c88c30a95d1e5a568bcdd37132a1bc3c9ccc9f58268ef97f",
-   "volume_mm3": 2388.519,
+   "shape_sha256": "c8beb3a461fc50b2e587116ecbc27d477a4dc248fedbccc50abff05d3176309e",
+   "volume_mm3": 2931.862,
    "bbox": [
     [
      125.881,
@@ -130,8 +130,8 @@
    ]
   },
   "MOUNT_R_PAIR_V3": {
-   "shape_sha256": "f8d571841cbe1b605f7016cda236d39aa6924fdfdbc745d953f0f804350cc22a",
-   "volume_mm3": 4343.596,
+   "shape_sha256": "3b529ef43a39bd765f7168dca417f86596a9cee7926445676f15c4617370df97",
+   "volume_mm3": 4338.423,
    "bbox": [
     [
      244.046,
@@ -140,14 +140,14 @@
     ],
     [
      285.05,
-     95.1201,
+     94.0,
      8.0
     ]
    ]
   },
   "PLATE_L_SPLIT_V1": {
-   "shape_sha256": "113358b5b1ccb8bc15dc58bb891b5ed1902e78190d32e07c4222b6c97ff6e485",
-   "volume_mm3": 38314.287,
+   "shape_sha256": "1ca88e3e8d692a2cb42d15a808365a71d0f48ef8f202e618f191d2256c57d8e4",
+   "volume_mm3": 38307.1,
    "bbox": [
     [
      -0.393,
@@ -178,8 +178,8 @@
    ]
   },
   "PLATE_SPINE_V1": {
-   "shape_sha256": "de17646cb2294c0619d3b929888d973d105374fbfc66888dcfcc8daefd8c26a3",
-   "volume_mm3": 1773.851,
+   "shape_sha256": "2b9d2b2b3698047401574aff72f3f874e058729a3e36d0d2937e28f40ad87829",
+   "volume_mm3": 1821.254,
    "bbox": [
     [
      115.881,
@@ -187,7 +187,7 @@
      3.05
     ],
     [
-     145.881,
+     147.281,
      87.0,
      8.5
     ]
@@ -932,8 +932,8 @@
  },
  "trials": {
   "BOSS_TAB_SAMPLE": {
-   "shape_sha256": "0eed42d8a9ac63c617b216c32c756a4f3820def4380cfa78162a82b0debfc4d2",
-   "volume_mm3": 6245.368,
+   "shape_sha256": "3480a8df111bcf9acb44f45f56fcd4d738534e8c0aad8cc74bbecbb55e266b09",
+   "volume_mm3": 6278.282,
    "bbox": [
     [
      160.0,
@@ -948,8 +948,8 @@
    ]
   },
   "CTRL_SNAP_TRIAL": {
-   "shape_sha256": "8584968025d9eaa72f3b3b76823cff7bc6a8a8c7ffaa065f00600bdc2993eb96",
-   "volume_mm3": 4899.855,
+   "shape_sha256": "62156b4fabd790dba1ea0f91cde264c086e915ba5ec6d4849cfbad83e2830ea4",
+   "volume_mm3": 4921.752,
    "bbox": [
     [
      113.0,
@@ -1172,7 +1172,7 @@
   "split_flange_W": "2 mm",
   "split_gate_cap_Z": "split_gate_ear_Z+1.6 mm",
   "split_gate_ear_Z": "4.8 mm",
-  "split_nut_AF": "4.4 mm",
+  "split_nut_AF": "4.2 mm",
   "split_nut_depth": "1.8 mm",
   "split_plate_gap": "0.5 mm",
   "split_spine_W": "4 mm",
@@ -1181,11 +1181,11 @@
   "split_support_Y": "56 mm",
   "split_support_gap": "0.05 mm",
   "stab_2u": "0",
-  "v5_cover_pattern_depth": "1.0",
+  "v5_cover_pattern_depth": "0.5",
   "v5_cover_pattern_skin": "v5_cover_top_Z - v5_cover_pattern_depth - plate_top_Z - TBD_magnet_T - TBD_magnet_clr",
-  "v5_cover_pattern_text_height": "2.0",
-  "v5_cover_pattern_text_rib": "0.25",
-  "v5_cover_pattern_text_stroke": "0.5",
+  "v5_cover_pattern_text_height": "2.4",
+  "v5_cover_pattern_text_rib": "0.3",
+  "v5_cover_pattern_text_stroke": "0.6",
   "v5_cover_silhouette_cell": "20.35",
   "v5_cover_silhouette_close_r": "0.0",
   "v5_cover_silhouette_fill_L": "16.0",
@@ -1411,7 +1411,7 @@
   "split_flange_W": 2.0,
   "split_gate_cap_Z": 6.4,
   "split_gate_ear_Z": 4.8,
-  "split_nut_AF": 4.4,
+  "split_nut_AF": 4.2,
   "split_nut_depth": 1.8,
   "split_plate_gap": 0.5,
   "split_spine_W": 4.0,
@@ -1420,11 +1420,11 @@
   "split_support_Y": 56.0,
   "split_support_gap": 0.05,
   "stab_2u": 0.0,
-  "v5_cover_pattern_depth": 1.0,
-  "v5_cover_pattern_skin": 2.9,
-  "v5_cover_pattern_text_height": 2.0,
-  "v5_cover_pattern_text_rib": 0.25,
-  "v5_cover_pattern_text_stroke": 0.5,
+  "v5_cover_pattern_depth": 0.5,
+  "v5_cover_pattern_skin": 3.4,
+  "v5_cover_pattern_text_height": 2.4,
+  "v5_cover_pattern_text_rib": 0.3,
+  "v5_cover_pattern_text_stroke": 0.6,
   "v5_cover_silhouette_cell": 20.35,
   "v5_cover_silhouette_close_r": 0.0,
   "v5_cover_silhouette_fill_L": 16.0,

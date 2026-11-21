@@ -253,8 +253,8 @@ def main():
                               rear_boss_within_1mm=[list(c) for c in boss_contacts]),
         rear_rests=dict(gap_target_mm=gap, clearance_target_mm=REST_CLEARANCE, rests=rests, bosses_without_rest=unrested,
                         note='Boss X, diameter and top are photo estimates / an assumption (M22, not measured); the gap '
-                             'under each block is the adhesive pad, and the block height is picked from the order-1 '
-                             'variants at trial assembly.'),
+                             'under each block is the adhesive pad, and the single stacked block height in order 2 is '
+                             'tuned with the pad thickness or light sanding of the block underside.'),
         mount_switch_pin_fit=dict(target_mm=MOUNT_PIN_CLEARANCE, search_radius_mm=pin_search_radius,
                                   mounts=pin_fit),
         model_sha=manifest['output_sha'], source_sha=manifest['source_sha'],

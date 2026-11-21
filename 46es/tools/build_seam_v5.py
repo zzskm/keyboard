@@ -918,10 +918,11 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
                                                           'plate_top_Z - TBD_cover_lip_H - 0.05'],
                     length='v5_legpad_L', width='TBD_cover_wall + TBD_cover_lip_clr + 0.05',
                     height='TBD_cover_lip_H + 0.05', operation='join', participants=[plate])
+        lip_len = 'v5_legpad_L + 2*v5_lip_relief_clr + 3.5' if s == 'L' else 'v5_legpad_L + 2*v5_lip_relief_clr'
         feature('box', f'COVER_LIP_RELIEF_{s}_V5', corner=[f'{X} - v5_legpad_L/2 - v5_lip_relief_clr',
                                                           '-TBD_pcb0_dy + TBD_cover_gap - 1',
                                                           'plate_top_Z - TBD_cover_lip_H - 0.5'],
-                length='v5_legpad_L + 2*v5_lip_relief_clr', width='TBD_cover_wall + 1.5',
+                length=lip_len, width='TBD_cover_wall + 1.5',
                 height='TBD_cover_lip_H + 0.5', operation='cut', participants=[cover])
         feature('cylinder', f'COVER_LEGMAG_{s}_V5', axis=[0., 0., 1.], base=[X, Y, 'plate_top_Z - 1'],
                 height='1 + TBD_magnet_T + TBD_magnet_clr', radius='(TBD_magnet_D + 2*TBD_magnet_clr) / 2',
@@ -939,6 +940,27 @@ def emit_cover_cuts(doc, feature, sketch, plates=True):
                     radius='TBD_magnet_D / 2', operation='new_body', body_names=[name])
             doc['appearances']['bodies'][name] = copy.deepcopy(doc['appearances']['bodies'].get(
                 'REF_SO1_MAGNET', dict(name='Custom', color=[167, 174, 181], opacity=1.0)))
+    feature('cylinder', 'COVER_T_SEAM_M2_RELIEF_V5', axis=[0., 0., 1.],
+            base=['seam_M2_X', 'seam_M2_Y', 'plate_top_Z - 0.5'],
+            height='1.1', radius='2.3', operation='cut', participants=['COVER_T_DRAFT_TBD'])
+
+
+def emit_plate_fixes(feature):
+    """Restore PLATE_L SO3 seat (Z 8.0-8.55, R 4.10) with non-coplanar bore reopen, and cut H05 flange notch."""
+    so3_xy = ('REF_SO_dX3 - TBD_pcb0_dx', 'REF_SO_dY3 - TBD_pcb0_dy')
+    feature('cylinder', 'PLATE_SO3_SEAT_RESTORE_V5', axis=[0., 0., 1.],
+            base=[*so3_xy, 'TBD_frame_T + TBD_standoff_H'],
+            height='split_spine_seat_D + 0.05', radius='4.1',
+            operation='join', participants=['PLATE_L_SPLIT_V1'])
+    feature('cylinder', 'PLATE_SO3_BORE_REOPEN_V5', axis=[0., 0., 1.],
+            base=[*so3_xy, 'TBD_frame_T + TBD_standoff_H - 0.5'],
+            height='2.5', radius='(TBD_so_screw_D + TBD_so_clr) / 2',
+            operation='cut', participants=['PLATE_L_SPLIT_V1'])
+    feature('box', 'PLATE_FLANGE_L_H05_NOTCH_V5',
+            corner=['-TBD_pcb0_dx + TBD_plate_gap - 0.5', 'CAND_H05_Y - 2.8',
+                    'plate_top_Z - TBD_plate_T - split_flange_H - 0.5'],
+            length='split_flange_W + 1', width='5.6', height='1.5 + 0.5',
+            operation='cut', participants=['PLATE_L_SPLIT_V1'])
 
 
 def emit_code_bodies(doc, feature):
@@ -956,10 +978,15 @@ def emit_code_bodies(doc, feature):
 def build(probe=False):
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     new_param = cover_params(doc)
     add_mount_params(doc)
     feature, sketch = helpers(doc)
     emit_seam(doc, feature, sketch)
+    emit_plate_fixes(feature)
     s2 = seam_v5.VARIANTS['S2']
     new_param('v5_seam_fit', seam_v5.PRODUCTION.fit, '[2026-11-10 tools/seam_v5.py] 앞 이음 tab 옆면·걸림 턱의 위치결정 여유(편측). '
               f'주문 1 이음 쿠폰의 S2 끝은 {s2.fit:g}')
@@ -1124,6 +1151,10 @@ def trials_document(parts=True):
     bodies (no plate cut, no reference screws), so they need the parameters and nothing else: the base's, the cover
     parameters (cover thickness, leg magnet clearance) and the coupons' own SMP_*. parts=False: parameters only."""
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
@@ -1179,6 +1210,10 @@ def build_covers():
     from cad_model import live_shapes
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
@@ -1215,6 +1250,10 @@ def build_mounts():
     from mesh_section import read_stl, compare
     CACHE.mkdir(parents=True, exist_ok=True)
     doc, container = read_source()
+    for p in doc['params']:
+        if p['name'] == 'split_nut_AF':
+            p['expr'] = '4.2 mm'
+            break
     doc['features'] = []
     doc['next_id'] = 1
     doc['visibility'] = {key: [] for key in doc['visibility']}
